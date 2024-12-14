@@ -51,10 +51,10 @@ export class AppComponent implements OnInit {
     const autocomplete = new google.maps.places.Autocomplete(input, {
       componentRestrictions: { country: 'PH' },  // Restrict to the Philippines
       bounds: new google.maps.LatLngBounds(
-        new google.maps.LatLng(14.8850, 120.5490),  // Southwest coordinates of Clark
-        new google.maps.LatLng(15.2000, 120.6500)   // Northeast coordinates of Clark
+        new google.maps.LatLng(15.167864949136394, 120.48439979553223),  // Southwest coordinates of Clark
+        new google.maps.LatLng(15.22415233433501, 120.58105440940092)   // Northeast coordinates of Clark
       ),
-      strictBounds: false,  // Ensure results are strictly within the bounds of Clark
+      strictBounds: true,  // Ensure results are strictly within the bounds of Clark
       // Removed 'types' property to allow all types of places
     });
 
