@@ -1,3 +1,7 @@
+<!-- Search bar for Google Places Autocomplete -->
+<input type="text" id="search-box" class="form-control" placeholder="Search for a place" />
+
+<!-- Google Map -->
 <google-map height="98vh"
             width="100%"
             [center]="center"
@@ -6,6 +10,6 @@
             (mapMousemove)="move($event)">
 </google-map>
 
-<!-- debug location
+<!-- debug location -->
 <div>Latitude: {{display?.lat}}</div>
-<div>Longitude: {{display?.lng}}</div> -->
+<div>Longitude: {{display?.lng}}</div>
