@@ -2,35 +2,35 @@
 <div class="display-searchbox">
     <!-- Editable Current Location -->
     <div>
-        <input
-            type="text"
-            id="current-location-box"
-            class="form-control"
-            placeholder="Enter your current location"
-        />
-        <button (click)="useMyLocation()">Use My Location</button>
+      <input
+        type="text"
+        id="current-location-box"
+        class="form-control"
+        placeholder="Enter your current location"
+      />
     </div>
-
+  
     <!-- Destination Search -->
     <div>
-        <input
-            type="text"
-            id="search-box"
-            class="form-control"
-            placeholder="Search for a destination"
-        />
+      <input
+        type="text"
+        id="search-box"
+        class="form-control"
+        placeholder="Search for a destination"
+      />
     </div>
-
+  
+    <!-- Use Current Location Button -->
+    <div>
+      <button (click)="useMyLocation()">Use My Location</button>
+    </div>
+  
     <!-- Navigate Button -->
     <div class="navigate-button">
-        <button (click)="navigateToDestination()">Navigate</button>
+      <button (click)="navigateToDestination()">Navigate</button>
     </div>
-</div>
-
-<!-- Google Map -->
-<div id="map"></div>
-
-<!-- Debug Latitude Longitude -->
-<!-- <h1>Debug Latitude Longitude</h1>
-<div>Latitude: {{display?.lat}}</div>
-<div>Longitude: {{display?.lng}}</div> -->
+  </div>
+  
+  <!-- Google Map -->
+  <div id="map"></div>
+  

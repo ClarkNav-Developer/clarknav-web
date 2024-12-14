@@ -36,7 +36,10 @@ export class AppComponent implements OnInit {
     if (mapElement) {
       this.map = new google.maps.Map(mapElement as HTMLElement, {
         center: { lat: 15.187769063648858, lng: 120.55950164794922 },
-        zoom: 14
+        zoom: 14,
+        mapTypeControl: false,  // Removes map type (satellite, terrain, etc.)
+        streetViewControl: false,  // Optional: Disables Street View control
+        fullscreenControl: false,  // Optional: Disables fullscreen control
       });
 
       this.directionsService = new google.maps.DirectionsService();

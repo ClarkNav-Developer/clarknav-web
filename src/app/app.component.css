@@ -11,42 +11,54 @@
   /* Search Box Styling */
   .display-searchbox {
     position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60%;
+    top:10px;
+    left: 10px;
+    width: 17%; /* Adjusted width for better visibility */
     background-color: white;
-    padding: 10px;
+    padding: 20px; /* Added more padding for spacing */
     border: 2px solid #ccc;
     border-radius: 8px;
-    z-index: 1000; /* Ensure it stays above the map */
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added subtle shadow for better visibility */
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Space between inputs and buttons */
   }
   
+  /* Input Fields */
   .display-searchbox input {
-    width: calc(75% - 12px);
-    padding: 8px;
-    font-size: 14px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .display-searchbox button {
-    width: 20%;
-    padding: 8px;
-    font-size: 14px;
-    margin-left: 5px;
-    cursor: pointer;
-  }
-  
-  .navigate-button button {
     width: 100%;
     padding: 10px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* Ensure padding is included in width */
+  }
+  
+  /* Button Styling */
+  .display-searchbox button {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
     border-radius: 5px;
     cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    width: 100%; /* Ensures buttons take full width of the container */
+    box-sizing: border-box;
+  }
+  
+  .display-searchbox button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+  }
+  
+  /* Navigate Button */
+  .navigate-button button {
+    background-color: #28a745; /* Green background for the Navigate button */
+    color: white;
+  }
+  
+  .navigate-button button:hover {
+    background-color: #218838; /* Darker green on hover */
   }
   
