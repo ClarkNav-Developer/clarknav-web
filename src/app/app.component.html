@@ -1,15 +1,36 @@
-<!-- Search bar for Google Places Autocomplete -->
-<input type="text" id="search-box" class="form-control" placeholder="Search for a place" />
+<!-- Search bar for Current Location and Destination -->
+<div class="display-searchbox">
+    <!-- Editable Current Location -->
+    <div>
+        <input
+            type="text"
+            id="current-location-box"
+            class="form-control"
+            placeholder="Enter your current location"
+        />
+        <button (click)="useMyLocation()">Use My Location</button>
+    </div>
+
+    <!-- Destination Search -->
+    <div>
+        <input
+            type="text"
+            id="search-box"
+            class="form-control"
+            placeholder="Search for a destination"
+        />
+    </div>
+
+    <!-- Navigate Button -->
+    <div class="navigate-button">
+        <button (click)="navigateToDestination()">Navigate</button>
+    </div>
+</div>
 
 <!-- Google Map -->
-<google-map height="98vh"
-            width="100%"
-            [center]="center"
-            [zoom]="zoom"
-            (mapClick)="moveMap($event)"
-            (mapMousemove)="move($event)">
-</google-map>
+<div id="map"></div>
 
-<h1>Debug Latitude Longitude</h1>
+<!-- Debug Latitude Longitude -->
+<!-- <h1>Debug Latitude Longitude</h1>
 <div>Latitude: {{display?.lat}}</div>
-<div>Longitude: {{display?.lng}}</div>
+<div>Longitude: {{display?.lng}}</div> -->
