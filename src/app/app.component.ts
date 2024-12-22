@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FloatingWindowService } from './floating-window.service';
 
 declare var google: any;
 
@@ -20,12 +21,29 @@ export class AppComponent implements OnInit {
     new google.maps.LatLng(15.22415233433501, 120.58105440940092)   // Northeast coordinates of Clark
   );
 
-  constructor() {}
+  // Declare but do not initialize the observable
+  isFloatingVisible: any;
+
+  constructor(private floatingWindowService: FloatingWindowService) {}
 
   ngOnInit(): void {
+    // Properly assign the observable in ngOnInit
+    this.isFloatingVisible = this.floatingWindowService.isVisible$;
+
     this.initMap();
     this.initAutocomplete();
     this.initCurrentLocationAutocomplete();
+  }
+
+  /*------------------------------------------
+  Floating Window Logic
+  --------------------------------------------*/
+  openAccountComponent() {
+    this.floatingWindowService.open();
+  }
+
+  closeAccountComponent() {
+    this.floatingWindowService.close();
   }
 
   /*------------------------------------------
