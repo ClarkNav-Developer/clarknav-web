@@ -1,0 +1,35 @@
+{
+    "jeepneyRoutes": [
+      {
+        "routeName": "Route 1",
+        "stops": [
+          { "name": "Stop 1", "latitude": 15.1234, "longitude": 120.9876 },
+          { "name": "Stop 2", "latitude": 15.2345, "longitude": 120.8765 }
+        ]
+      },
+      {
+        "routeName": "Route 2",
+        "stops": [
+          { "name": "Stop 1", "latitude": 15.3456, "longitude": 120.7654 },
+          { "name": "Stop 2", "latitude": 15.4567, "longitude": 120.6543 }
+        ]
+      }
+    ],
+    "busRoutes": [
+      {
+        "routeName": "Bus Route 1",
+        "stops": [
+          { "name": "Stop 1", "latitude": 15.5678, "longitude": 120.5432 },
+          { "name": "Stop 2", "latitude": 15.6789, "longitude": 120.4321 }
+        ]
+      },
+      {
+        "routeName": "Bus Route 2",
+        "stops": [
+          { "name": "Stop 1", "latitude": 15.7890, "longitude": 120.3210 },
+          { "name": "Stop 2", "latitude": 15.8901, "longitude": 120.2109 }
+        ]
+      }
+    ]
+  }
+  
