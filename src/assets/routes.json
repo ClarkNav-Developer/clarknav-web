@@ -47,8 +47,8 @@
       {
         "routeName": "Bus Loop Northbound",
         "stops": [
-          { "name": "Stop 1", "latitude": 15.167716, "longitude": 120.582248 },
-          { "name": "SM City Clark", "latitude": 15.167017, "longitude": 120.580126 },
+          { "name": "SM City Clark Gate 1", "latitude": 15.167716, "longitude": 120.582248 },
+          { "name": "SM City Clark Flagpole Area", "latitude": 15.167017, "longitude": 120.580126 },
           { "name": "Mercedes Benz", "latitude": 15.166849, "longitude": 120.570899},
           { "name": "Aderans/Laus Group", "latitude": 15.167524, "longitude": 120.566492},
           { "name": "Friendship Gate", "latitude": 15.164361, "longitude": 120.549854},
