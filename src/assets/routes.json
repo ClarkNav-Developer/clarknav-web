@@ -79,8 +79,33 @@
       {
         "routeName": "Bus Loop Southbound",
         "stops": [
-          { "name": "Stop 1", "latitude": 15.7890, "longitude": 120.3210 },
-          { "name": "Stop 2", "latitude": 15.8901, "longitude": 120.2109 }
+          { "name": "Clark Airport (Need to check)", "latitude": 15.197704, "longitude": 120.557411 },
+          { "name": "Mabalacat Gate (Need to check)", "latitude": 15.219941, "longitude": 120.571913},
+          { "name": "Picnic Grounds/Dinosaur Island", "latitude": 15.205929, "longitude": 120.546710 },
+          { "name": "Texas Instruments/El Kabayo", "latitude": 15.199211, "longitude": 120.541200 },
+          { "name": "Centennial Road (Need to check)", "latitude": 15.195469, "longitude": 120.535045 },
+          { "name": "Puregold Clark/UP Clark", "latitude": 15.193712, "longitude": 120.530572 },
+          { "name": "National Museum Clark", "latitude": 15, "longitude": 120 },
+          { "name": "Midori Hotel/Hann Casino Resort", "latitude": 15.189450, "longitude": 120.524808},
+          { "name": "Filinvest Mimosa Plus", "latitude": 15.183942, "longitude": 120.527646 },
+          { "name": "PLDT-Smart Clark", "latitude": 15, "longitude": 120 },
+          { "name": "Clark Museum", "latitude": 15.182105, "longitude": 120.526470 },
+          { "name": "Barn Houses/Quest Hotel", "latitude": 15.181654, "longitude": 120.522416 },
+          { "name": "Parade Grounds/Children's Playground", "latitude": 15.180705, "longitude": 120.520049 },
+          { "name": "CDC Corporate Office", "latitude": 15.178726, "longitude": 120.518738 },
+          { "name": "CDC BOSS (2126)", "latitude": 15.178105, "longitude": 120.518072},
+          { "name": "Clark One Stop Government Center/D'Heights", "latitude": 15.183071, "longitude": 120.512133 },
+          { "name": "Amertron", "latitude": 15.176592, "longitude": 120.519536 },
+          { "name": "Sapangbato/7-Eleven", "latitude": 15.176150, "longitude": 120.521944},
+          { "name": "Clark Electric", "latitude": 15.176318, "longitude": 120.524045 },
+          { "name": "Bertaphil I", "latitude": 15.176438, "longitude": 120.525425 },
+          { "name": "Clark Center", "latitude": 15.176794, "longitude": 120.528240 },
+          { "name": "Philexcel Gate", "latitude": 15.175374, "longitude": 120.534325 },
+          { "name": "Friendship Gate", "latitude": 15.164361, "longitude": 120.549854},
+          { "name": "Don Juico Gate", "latitude": 15, "longitude": 120},
+          { "name": "Clark Cityfront Steel Parking", "latitude": 15.166849, "longitude": 120.570899},
+          { "name": "Clark Cityfront Mall", "latitude": 15.167017, "longitude": 120.580126 },
+          { "name": "SM City Clark Gate 1", "latitude": 15.167716, "longitude": 120.582248 }
         ]
       }
     ]
