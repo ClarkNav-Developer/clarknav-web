@@ -1,0 +1,49 @@
+<!-- Search bar for Current Location and Destination -->
+<div class="display-searchbox">
+    <!-- Editable Current Location -->
+    <div>
+      <input
+        type="text"
+        id="current-location-box"
+        class="form-control"
+        placeholder="Enter your current location"
+      />
+    </div>
+  
+    <!-- Destination Search -->
+    <div>
+      <input
+        type="text"
+        id="search-box"
+        class="form-control"
+        placeholder="Search for a destination"
+      />
+    </div>
+  
+    <!-- Use Current Location Button -->
+    <div>
+      <button (click)="useMyLocation()">Use My Location</button>
+    </div>
+  
+    <!-- Navigate Button -->
+    <div class="navigate-button">
+      <button (click)="navigateToDestination()">Navigate</button>
+    </div>
+
+    <!-- route list -->
+     <div class="route-list">
+      
+     </div>
+</div>
+  
+<!-- side nav bar button -->
+<div class="account-button">
+  <button (click)="openAccountComponent()">Open Account</button>
+
+  <div *ngIf="isFloatingVisible | async" class="floating-overlay"></div>
+  <app-account *ngIf="isFloatingVisible | async"></app-account>
+</div>
+
+<!-- Google Map -->
+<div id="map"></div>
+  

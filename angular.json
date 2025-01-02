@@ -33,7 +33,17 @@
             "assets": [
               {
                 "glob": "**/*",
+<<<<<<< HEAD
                 "input": "public"
+=======
+                "input": "src/assets",
+                "output": "/assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "public",
+                "output": "/public"
+>>>>>>> b109598da4ec5d8a64fc4d9f17f2b1732bde8cea
               }
             ],
             "styles": [
@@ -91,7 +101,17 @@
             "assets": [
               {
                 "glob": "**/*",
+<<<<<<< HEAD
                 "input": "public"
+=======
+                "input": "src/assets",
+                "output": "/assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "public",
+                "output": "/public"
+>>>>>>> b109598da4ec5d8a64fc4d9f17f2b1732bde8cea
               }
             ],
             "styles": [
@@ -102,5 +122,11 @@
         }
       }
     }
+<<<<<<< HEAD
+=======
+  },
+  "cli": {
+    "analytics": false
+>>>>>>> b109598da4ec5d8a64fc4d9f17f2b1732bde8cea
   }
 }
