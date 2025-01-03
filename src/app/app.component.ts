@@ -9,6 +9,12 @@ declare var google: any;
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+  isVisible: boolean = false;
+
+  toggleVisibility() {
+    this.isVisible = !this.isVisible;
+  }
+
   map: any;
   directionsService: any;
   directionsRenderer: any;
@@ -72,55 +78,64 @@ export class AppComponent implements OnInit {
   Initialize Autocomplete for Destination
   --------------------------------------------*/
   initAutocomplete() {
-    const input = document.getElementById('search-box') as HTMLInputElement;
-
-    const autocomplete = new google.maps.places.Autocomplete(input, {
-      componentRestrictions: { country: 'PH' },
-      bounds: this.clarkBounds,  // Restrict to Clark bounds
-      strictBounds: true
-    });
-
-    autocomplete.addListener('place_changed', () => {
-      const place = autocomplete.getPlace();
-      if (place.geometry) {
-        this.destination = {
-          lat: place.geometry.location.lat(),
-          lng: place.geometry.location.lng()
-        };
-
-        // Add marker for destination
-        this.addMarker(this.destination, 'Destination');
-        this.map.setCenter(this.destination);
+    const desktopInput = document.getElementById('search-box') as HTMLInputElement;
+    const mobileInput = document.getElementById('search-box-mobile') as HTMLInputElement;
+  
+    [desktopInput, mobileInput].forEach((input) => {
+      if (input) {
+        const autocomplete = new google.maps.places.Autocomplete(input, {
+          componentRestrictions: { country: 'PH' },
+          bounds: this.clarkBounds, // Restrict to Clark bounds
+          strictBounds: true,
+        });
+  
+        autocomplete.addListener('place_changed', () => {
+          const place = autocomplete.getPlace();
+          if (place.geometry) {
+            this.destination = {
+              lat: place.geometry.location.lat(),
+              lng: place.geometry.location.lng(),
+            };
+  
+            this.addMarker(this.destination, 'Destination');
+            this.map.setCenter(this.destination);
+          }
+        });
       }
     });
   }
+  
 
   /*------------------------------------------
   Initialize Autocomplete for Current Location
   --------------------------------------------*/
   initCurrentLocationAutocomplete() {
-    const input = document.getElementById('current-location-box') as HTMLInputElement;
-
-    const autocomplete = new google.maps.places.Autocomplete(input, {
-      componentRestrictions: { country: 'PH' },
-      bounds: this.clarkBounds,  // Restrict to Clark bounds
-      strictBounds: true
-    });
-
-    autocomplete.addListener('place_changed', () => {
-      const place = autocomplete.getPlace();
-      if (place.geometry) {
-        this.currentLocation = {
-          lat: place.geometry.location.lat(),
-          lng: place.geometry.location.lng()
-        };
-
-        // Add marker for current location
-        this.addMarker(this.currentLocation, 'Your Location');
-        this.map.setCenter(this.currentLocation);
+    const desktopInput = document.getElementById('current-location-box') as HTMLInputElement;
+    const mobileInput = document.getElementById('current-location-box-mobile') as HTMLInputElement;
+  
+    [desktopInput, mobileInput].forEach((input) => {
+      if (input) {
+        const autocomplete = new google.maps.places.Autocomplete(input, {
+          componentRestrictions: { country: 'PH' },
+          bounds: this.clarkBounds, // Restrict to Clark bounds
+          strictBounds: true,
+        });
+  
+        autocomplete.addListener('place_changed', () => {
+          const place = autocomplete.getPlace();
+          if (place.geometry) {
+            this.currentLocation = {
+              lat: place.geometry.location.lat(),
+              lng: place.geometry.location.lng(),
+            };
+  
+            this.addMarker(this.currentLocation, 'Your Location');
+            this.map.setCenter(this.currentLocation);
+          }
+        });
       }
     });
-  }
+  }  
 
   /*------------------------------------------
   Use Device's Geolocation for Current Location
@@ -133,21 +148,34 @@ export class AppComponent implements OnInit {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           };
-
-          const input = document.getElementById('current-location-box') as HTMLInputElement;
-          input.value = `Lat: ${this.currentLocation.lat}, Lng: ${this.currentLocation.lng}`;
-
+  
+          // Update input fields for both desktop and mobile views
+          const desktopInput = document.getElementById('current-location-box') as HTMLInputElement;
+          const mobileInput = document.getElementById('current-location-box-mobile') as HTMLInputElement;
+  
+          if (desktopInput) {
+            desktopInput.value = `Lat: ${this.currentLocation.lat}, Lng: ${this.currentLocation.lng}`;
+          }
+  
+          if (mobileInput) {
+            mobileInput.value = `Lat: ${this.currentLocation.lat}, Lng: ${this.currentLocation.lng}`;
+          }
+  
+          // Add a marker and center the map on the current location
           this.addMarker(this.currentLocation, 'Your Location');
           this.map.setCenter(this.currentLocation);
         },
         (error) => {
           console.error('Error getting current location', error);
+          alert('Unable to fetch your current location. Please try again.');
         }
       );
     } else {
       console.error('Geolocation is not supported by this browser.');
+      alert('Geolocation is not supported by your browser.');
     }
   }
+  
 
   /*------------------------------------------
   Add Marker to Map

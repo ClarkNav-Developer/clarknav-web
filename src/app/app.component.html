@@ -1,5 +1,9 @@
-<!-- Search bar for Current Location and Destination -->
-<div class="display-searchbox">
+<!-- Google Map -->
+<div id="map"></div>
+
+<div class="desktop-view">
+  <!-- Search bar for Current Location and Destination -->
+  <div class="display-searchbox">
     <!-- Editable Current Location -->
     <div>
       <input
@@ -9,7 +13,7 @@
         placeholder="Enter your current location"
       />
     </div>
-  
+
     <!-- Destination Search -->
     <div>
       <input
@@ -19,31 +23,71 @@
         placeholder="Search for a destination"
       />
     </div>
-  
+
     <!-- Use Current Location Button -->
     <div>
       <button (click)="useMyLocation()">Use My Location</button>
     </div>
-  
+
     <!-- Navigate Button -->
     <div class="navigate-button">
       <button (click)="navigateToDestination()">Navigate</button>
     </div>
 
     <!-- route list -->
-     <div class="route-list">
+    <div class="route-list">
       
-     </div>
-</div>
-  
-<!-- side nav bar button -->
-<div class="account-button">
+    </div>
+  </div>
+
+  <!-- side nav bar button -->
+  <div class="account-button">
   <button (click)="openAccountComponent()">Open Account</button>
 
   <div *ngIf="isFloatingVisible | async" class="floating-overlay"></div>
   <app-account *ngIf="isFloatingVisible | async"></app-account>
+  </div>
 </div>
 
-<!-- Google Map -->
-<div id="map"></div>
+
+<!-- mobile view -->
+<div class="mobile-view">
+  <!-- Search bar for Current Location and Destination -->
+  <div class="mobile-display-searchbox">
+    <!-- Editable Current Location -->
+    <!-- Current Location -->
+  <div class="current-location">
+    <input
+      type="text"
+      id="current-location-box-mobile"
+      class="form-control"
+      placeholder="Enter your current location"
+      style="width: 90%;"
+    />
+    <button (click)="useMyLocation()">O</button>
+  </div>
+
+  <!-- Destination -->
+  <div class="destination">
+    <input
+      type="text"
+      id="search-box-mobile"
+      class="form-control"
+      placeholder="Search for a destination"
+      style="width: 90%;"
+    />
+    <button (click)="useMyLocation()">↕</button>
+  </div>
+
+    <!-- Navigate Button -->
+    <div class="navigate-button">
+      <button (click)="navigateToDestination()">Navigate</button>
+    </div>
+
+    <!-- route list -->
+    <div class="route-list">
+      
+    </div>
+  </div>
+</div>
   
