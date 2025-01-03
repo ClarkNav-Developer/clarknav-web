@@ -10,12 +10,6 @@ declare var google: any;
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  isVisible: boolean = false;
-
-  toggleVisibility() {
-    this.isVisible = !this.isVisible;
-  }
-
   map: any;
   directionsService: any;
   directionsRenderer: any;
@@ -42,6 +36,7 @@ export class AppComponent implements OnInit {
     });
     this.initAutocomplete();
     this.initCurrentLocationAutocomplete();
+    this.initSearchLocationAutocomplete();
   }
 
   /*------------------------------------------
@@ -84,6 +79,35 @@ export class AppComponent implements OnInit {
       console.error('Map element not found!');
     }
   }
+
+  /*------------------------------------------
+  Initialize Autocomplete for Searching Locations
+  --------------------------------------------*/
+  initSearchLocationAutocomplete() {
+    const searchInput = document.getElementById('search-location-box-mobile') as HTMLInputElement;
+
+    if (searchInput) {
+      const autocomplete = new google.maps.places.Autocomplete(searchInput, {
+        componentRestrictions: { country: 'PH' },
+        bounds: this.clarkBounds, // Restrict to Clark bounds
+        strictBounds: true,
+      });
+
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        if (place.geometry) {
+          const location = {
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng(),
+          };
+
+          this.addMarker(location, 'Searched Location');
+          this.map.setCenter(location);
+        }
+      });
+    }
+  }
+
 
   /*------------------------------------------
   Initialize Autocomplete for Destination
