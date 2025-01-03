@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { FloatingWindowService } from './floating-window.service';
 
 declare var google: any;
@@ -30,13 +31,15 @@ export class AppComponent implements OnInit {
   // Declare but do not initialize the observable
   isFloatingVisible: any;
 
-  constructor(private floatingWindowService: FloatingWindowService) {}
+  constructor(private floatingWindowService: FloatingWindowService, private http: HttpClient) {}
 
   ngOnInit(): void {
     // Properly assign the observable in ngOnInit
     this.isFloatingVisible = this.floatingWindowService.isVisible$;
 
-    this.initMap();
+    this.loadMapStyle().subscribe(style => {
+      this.initMap(style);  // Pass the style to the initMap function
+    });
     this.initAutocomplete();
     this.initCurrentLocationAutocomplete();
   }
@@ -53,9 +56,16 @@ export class AppComponent implements OnInit {
   }
 
   /*------------------------------------------
+  Load Retro Map Style
+  --------------------------------------------*/
+  loadMapStyle() {
+    return this.http.get<any>('assets/retro.json');
+  }
+
+  /*------------------------------------------
   Initialize Map
   --------------------------------------------*/
-  initMap() {
+  initMap(style: any) {
     const mapElement = document.getElementById('map');
     if (mapElement) {
       this.map = new google.maps.Map(mapElement as HTMLElement, {
@@ -64,6 +74,7 @@ export class AppComponent implements OnInit {
         mapTypeControl: false,  // Removes map type (satellite, terrain, etc.)
         streetViewControl: false,  // Optional: Disables Street View control
         fullscreenControl: false,  // Optional: Disables fullscreen control
+        styles: style  // Apply the loaded style here
       });
 
       this.directionsService = new google.maps.DirectionsService();
@@ -135,7 +146,47 @@ export class AppComponent implements OnInit {
         });
       }
     });
-  }  
+  }
+  
+  /*------------------------------------------
+  Reversing the Current Location and Destination
+  --------------------------------------------*/
+  reverseLocation() {
+    if (this.currentLocation && this.destination) {
+      // Swap the locations
+      const temp = this.currentLocation;
+      this.currentLocation = this.destination;
+      this.destination = temp;
+  
+      // Update the input fields
+      const currentLocationInput = document.getElementById('current-location-box') as HTMLInputElement;
+      const destinationInput = document.getElementById('search-box') as HTMLInputElement;
+      const currentLocationInputMobile = document.getElementById('current-location-box-mobile') as HTMLInputElement;
+      const destinationInputMobile = document.getElementById('search-box-mobile') as HTMLInputElement;
+  
+      if (currentLocationInput) {
+        currentLocationInput.value = `Lat: ${this.currentLocation.lat}, Lng: ${this.currentLocation.lng}`;
+      }
+  
+      if (destinationInput) {
+        destinationInput.value = `Lat: ${this.destination.lat}, Lng: ${this.destination.lng}`;
+      }
+  
+      if (currentLocationInputMobile) {
+        currentLocationInputMobile.value = `Lat: ${this.currentLocation.lat}, Lng: ${this.currentLocation.lng}`;
+      }
+  
+      if (destinationInputMobile) {
+        destinationInputMobile.value = `Lat: ${this.destination.lat}, Lng: ${this.destination.lng}`;
+      }
+  
+      // Re-center the map
+      this.map.setCenter(this.currentLocation);
+    } else {
+      alert('Both current location and destination must be set to reverse.');
+    }
+  }
+  
 
   /*------------------------------------------
   Use Device's Geolocation for Current Location

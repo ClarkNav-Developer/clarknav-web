@@ -8,6 +8,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { AccountComponent } from './account/account.component';
 import { JeepneyRouteComponent } from './jeepney-route/jeepney-route.component';
 import { BusRouteComponent } from './bus-route/bus-route.component';
+import { AnnouncementComponent } from './announcement/announcement.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { BusRouteComponent } from './bus-route/bus-route.component';
     AccountComponent,
     JeepneyRouteComponent,
     BusRouteComponent,
+    AnnouncementComponent,
   ],
   imports: [
     BrowserModule,
