@@ -103,16 +103,18 @@
 
   .mobile-display-searchbox {
     position: fixed;
-    width: 90%; /* Adjusted width for better visibility */
+    width: calc(100% - 20px); /* Subtracting the margin from the total width */
     background-color: white;
-    padding: 10px; /* Added more padding for spacing */
+    padding: 10px;
+    margin: 10px;
     border: 2px solid #ccc;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added subtle shadow for better visibility */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     z-index: 1000;
-    gap: 15px; /* Space between inputs and buttons */
+    gap: 15px;
+    box-sizing: border-box; /* Ensures padding and border are included in the width */
   }
 
   .mobile-display-searchbox button {
@@ -135,5 +137,28 @@
   .navigation-button button {
     padding: 10px;
   }
+
+  /* navigation bar */
+  .nav-container {
+    position: absolute;
+    z-index: 1000;
+    bottom: 0;
+    width: 100%;
+    background-color: white;
+    padding: 15px 0;
+  }
+
+  .nav-container-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+
+  .menu-box button{
+    padding: 10px;
+  }
+
+  
 
 }

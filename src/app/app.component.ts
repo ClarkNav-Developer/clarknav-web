@@ -69,6 +69,7 @@ export class AppComponent implements OnInit {
         mapTypeControl: false,  // Removes map type (satellite, terrain, etc.)
         streetViewControl: false,  // Optional: Disables Street View control
         fullscreenControl: false,  // Optional: Disables fullscreen control
+        zoomControl: false, //Optional: Disables zom control
         styles: style  // Apply the loaded style here
       });
 

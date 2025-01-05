@@ -43,7 +43,6 @@
   <!-- side nav bar button -->
   <div class="account-button">
   <button (click)="openAccountComponent()">Open Account</button>
-
   <div *ngIf="isFloatingVisible | async" class="floating-overlay"></div>
   <app-account *ngIf="isFloatingVisible | async"></app-account>
   </div>
@@ -101,9 +100,26 @@
     </div>
   </div>
 
-
   <div class="navigation-button">
     <button onclick="showSearchbox()">Navigate</button>
   </div>
+
+  <!-- navigation bar -->
+   <div class="nav-container">
+    <div class="nav-container-box">
+      <div class="menu-box">
+        <button>Map</button>
+      </div>
+      <div class="menu-box">
+        <button>Routes</button>
+      </div>
+      <div class="menu-box">
+        <button>Planner</button>
+      </div>
+      <div class="menu-box">
+        <button (click)="openAccountComponent()">Account</button>
+      </div>
+    </div>
+   </div>
 </div>
   
