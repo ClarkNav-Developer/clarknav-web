@@ -5,14 +5,14 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class FloatingWindowService {
-  private isVisible = new BehaviorSubject<boolean>(false);
-  isVisible$ = this.isVisible.asObservable();
+  private visibleComponent = new BehaviorSubject<string | null>(null);
+  visibleComponent$ = this.visibleComponent.asObservable();
 
-  open() {
-    this.isVisible.next(true);
+  open(componentName: string) {
+    this.visibleComponent.next(componentName);
   }
 
   close() {
-    this.isVisible.next(false);
+    this.visibleComponent.next(null);
   }
 }

@@ -114,11 +114,15 @@
         <button>Routes</button>
       </div>
       <div class="menu-box">
-        <button>Planner</button>
+        <button (click)="openPlannerComponent()">Planner</button>
+        <div *ngIf="(floatingWindowService.visibleComponent$ | async) === 'planner'" class="floating-overlay"></div>
+        <app-planner *ngIf="(floatingWindowService.visibleComponent$ | async) === 'planner'"></app-planner>
       </div>
       <div class="menu-box">
         <button (click)="openAccountComponent()">Account</button>
-      </div>
+        <div *ngIf="(floatingWindowService.visibleComponent$ | async) === 'account'" class="floating-overlay"></div>
+        <app-account *ngIf="(floatingWindowService.visibleComponent$ | async) === 'account'"></app-account>
+      </div>      
     </div>
    </div>
 </div>

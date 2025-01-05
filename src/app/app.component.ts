@@ -25,11 +25,11 @@ export class AppComponent implements OnInit {
   // Declare but do not initialize the observable
   isFloatingVisible: any;
 
-  constructor(private floatingWindowService: FloatingWindowService, private http: HttpClient) {}
+  constructor(public floatingWindowService: FloatingWindowService, private http: HttpClient) {}
 
   ngOnInit(): void {
     // Properly assign the observable in ngOnInit
-    this.isFloatingVisible = this.floatingWindowService.isVisible$;
+    this.isFloatingVisible = this.floatingWindowService.visibleComponent$;
 
     this.loadMapStyle().subscribe(style => {
       this.initMap(style);  // Pass the style to the initMap function
@@ -43,12 +43,17 @@ export class AppComponent implements OnInit {
   Floating Window Logic
   --------------------------------------------*/
   openAccountComponent() {
-    this.floatingWindowService.open();
+    this.floatingWindowService.open('account');
   }
-
-  closeAccountComponent() {
+  
+  openPlannerComponent() {
+    this.floatingWindowService.open('planner');
+  }
+  
+  closeFloatingWindow() {
     this.floatingWindowService.close();
   }
+  
 
   /*------------------------------------------
   Load Retro Map Style

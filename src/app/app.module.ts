@@ -9,6 +9,8 @@ import { AccountComponent } from './account/account.component';
 import { JeepneyRouteComponent } from './jeepney-route/jeepney-route.component';
 import { BusRouteComponent } from './bus-route/bus-route.component';
 import { AnnouncementComponent } from './announcement/announcement.component';
+import { PlannerComponent } from './planner/planner.component';
+import { RouteComponent } from './route/route.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +19,8 @@ import { AnnouncementComponent } from './announcement/announcement.component';
     JeepneyRouteComponent,
     BusRouteComponent,
     AnnouncementComponent,
+    PlannerComponent,
+    RouteComponent,
   ],
   imports: [
     BrowserModule,
