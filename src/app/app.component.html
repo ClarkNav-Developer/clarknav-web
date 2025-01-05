@@ -108,10 +108,9 @@
    <div class="nav-container">
     <div class="nav-container-box">
       <div class="menu-box">
-        <button>Map</button>
-      </div>
-      <div class="menu-box">
-        <button>Routes</button>
+        <button (click)="openRouteComponent()">Routes</button>
+        <div *ngIf="(floatingWindowService.visibleComponent$ | async) === 'route'" class="floating-overlay"></div>
+        <app-route *ngIf="(floatingWindowService.visibleComponent$ | async) === 'route'"></app-route>
       </div>
       <div class="menu-box">
         <button (click)="openPlannerComponent()">Planner</button>

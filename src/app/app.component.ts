@@ -49,6 +49,10 @@ export class AppComponent implements OnInit {
   openPlannerComponent() {
     this.floatingWindowService.open('planner');
   }
+
+  openRouteComponent() {
+    this.floatingWindowService.open('route');
+  }
   
   closeFloatingWindow() {
     this.floatingWindowService.close();
