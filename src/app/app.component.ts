@@ -201,7 +201,6 @@ export class AppComponent implements OnInit {
       return;
     }
   
-    // Find nearest stops to the current location and destination
     const nearestStartStop = this.findNearestStop(this.currentLocation);
     const nearestEndStop = this.findNearestStop(this.destination);
   
@@ -210,55 +209,61 @@ export class AppComponent implements OnInit {
       return;
     }
   
-    // Find the route connecting the two stops
-    const routePath = this.findRoutePath(nearestStartStop, nearestEndStop);
+    // Show walking path to the nearest start stop
+    this.displayWalkingPath(this.currentLocation, {
+      lat: nearestStartStop.latitude,
+      lng: nearestStartStop.longitude,
+    });
   
+    // Find and display transit route
+    const routePath = this.findRoutePath(nearestStartStop, nearestEndStop);
     if (!routePath.length) {
       alert('No route found connecting the selected stops.');
       return;
     }
+    this.displayRoutePath(routePath);
   
-    // Get the travel mode selected by the user
-    const travelMode = google.maps.TravelMode.TRANSIT; // Default to walking
-  
-    // Display the route using the selected travel mode
-    this.displayRoute(travelMode, routePath);
+    // Show walking path from the last stop to the destination
+    this.displayWalkingPath(
+      { lat: nearestEndStop.latitude, lng: nearestEndStop.longitude },
+      this.destination
+    );
   }
 
-  displayRoute(travelMode: google.maps.TravelMode, routePath: any[]) {
+  displayWalkingPath(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral) {
     const request = {
-      origin: this.currentLocation,
-      destination: this.destination,
-      travelMode: travelMode,
+      origin: origin,
+      destination: destination,
+      travelMode: google.maps.TravelMode.WALKING,
     };
   
     this.directionsService.route(request, (result: any, status: any) => {
       if (status === google.maps.DirectionsStatus.OK) {
-        this.directionsRenderer.setDirections(result);
+        const walkingRenderer = new google.maps.DirectionsRenderer({
+          map: this.map,
+          polylineOptions: {
+            strokeColor: '#00CCCC', // Green color for walking path
+            strokeOpacity: 0, // Set opacity to 0 since icons will be used for dots
+            strokeWeight: 2, // Thickness of the path
+            icons: [
+              {
+                icon: {
+                  path: google.maps.SymbolPath.CIRCLE, // Small circle for dotted effect
+                  scale: 3, // Size of the dots
+                  fillColor: '#00CCCC', // Green color for the circles
+                  fillOpacity: 1, // Solid fill for the circles
+                  strokeOpacity: 1, // Full opacity for the dots
+                },
+                offset: '0', // Start from the beginning
+                repeat: '15px', // Distance between dots
+              },
+            ],
+          },
+        });
+        walkingRenderer.setDirections(result);
       } else {
-        console.error('Directions request failed due to ' + status);
+        console.error('Walking directions request failed due to ' + status);
       }
-    });
-  
-    // Optionally display the path of stops
-    const pathCoordinates = routePath.map((stop: any) => ({
-      lat: stop.latitude,
-      lng: stop.longitude,
-    }));
-  
-    const routePolyline = new google.maps.Polyline({
-      path: pathCoordinates,
-      geodesic: true,
-      strokeColor: '#FF0000',
-      strokeOpacity: 1.0,
-      strokeWeight: 2,
-    });
-  
-    routePolyline.setMap(this.map);
-  
-    // Add markers for each stop along the path
-    routePath.forEach((stop: any) => {
-      this.addMarker({ lat: stop.latitude, lng: stop.longitude }, stop.name);
     });
   }
 
@@ -301,5 +306,53 @@ export class AppComponent implements OnInit {
     return [];
   }
 
+  displayRoutePath(routePath: any[]) {
+    if (routePath.length < 2) {
+      console.error("Route path must have at least two stops to display a route.");
+      return;
+    }
+  
+    // Iterate through pairs of stops and request directions for each segment
+    for (let i = 0; i < routePath.length - 1; i++) {
+      const origin = {
+        lat: routePath[i].latitude,
+        lng: routePath[i].longitude,
+      };
+  
+      const destination = {
+        lat: routePath[i + 1].latitude,
+        lng: routePath[i + 1].longitude,
+      };
+  
+      const request = {
+        origin: origin,
+        destination: destination,
+        travelMode: google.maps.TravelMode.DRIVING, // Use TRANSIT for routes
+      };
+  
+      this.directionsService.route(request, (result: any, status: any) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          const segmentRenderer = new google.maps.DirectionsRenderer({
+            map: this.map,
+            suppressMarkers: true, // Prevent duplicate markers for stops
+            polylineOptions: {
+              strokeColor: '#1d58c6', // Red for the route path
+              strokeWeight: 8, // Thickness of the path
+            },
+          });
+  
+          segmentRenderer.setDirections(result);
+        } else {
+          console.error('Directions request failed for segment ' + i + ' due to ' + status);
+        }
+      });
+    }
+  
+    // Add markers for each stop along the path
+    routePath.forEach((stop: any) => {
+      this.addMarker({ lat: stop.latitude, lng: stop.longitude }, stop.name);
+    });
+  }
+  
 
 }
