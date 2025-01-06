@@ -15,6 +15,9 @@ export class AppComponent implements OnInit {
   directionsRenderer: any;
   currentLocation: google.maps.LatLngLiteral | null = null;
   destination: google.maps.LatLngLiteral | null = null;
+  jeepneyRoutes: any[] = [];
+  busRoutes: any[] = [];
+  filteredRoutes: any[] = [];
 
   // Coordinates for Clark's bounds
   private clarkBounds = new google.maps.LatLngBounds(
@@ -37,6 +40,18 @@ export class AppComponent implements OnInit {
     this.initAutocomplete();
     this.initCurrentLocationAutocomplete();
     this.initSearchLocationAutocomplete();
+    this.loadRoutes();
+  }
+
+  /*------------------------------------------
+  Load Routes from JSON
+  --------------------------------------------*/
+
+  loadRoutes() {
+    this.http.get('assets/routes.json').subscribe((data: any) => {
+      this.jeepneyRoutes = data.jeepneyRoutes;
+      this.busRoutes = data.busRoutes;
+    });
   }
 
   /*------------------------------------------
@@ -144,6 +159,7 @@ export class AppComponent implements OnInit {
   
             this.addMarker(this.destination, 'Destination');
             this.map.setCenter(this.destination);
+            this.findRoutes();
           }
         });
       }
@@ -273,26 +289,252 @@ export class AppComponent implements OnInit {
     });
   }
 
+  // addMarker(location: google.maps.LatLngLiteral, title: string) {
+  //   const marker = new google.maps.Marker({
+  //     position: location,
+  //     map: this.map,
+  //     title: title,
+  //     icon: {
+  //       path: google.maps.SymbolPath.CIRCLE, // Use a simple circle for minimalist design
+  //       scale: 6, // Adjust the size
+  //       fillColor: '#1d58c6', // Color of the circle
+  //       fillOpacity: 1, // Solid fill
+  //       strokeWeight: 0, // No border for a cleaner look
+  //     },
+  //   });
+  
+  //   // Optionally, add a tooltip or info window
+  //   const infoWindow = new google.maps.InfoWindow({
+  //     content: `<div style="font-size: 14px;">${title}</div>`,
+  //   });
+  
+  //   marker.addListener('click', () => {
+  //     infoWindow.open(this.map, marker);
+  //   });
+  // }
+
+  /*------------------------------------------
+  Find Routes Connecting Current Location and Destination
+  --------------------------------------------*/
+  findRoutes() {
+    if (!this.currentLocation || !this.destination) return;
+  
+    const routes = [...this.jeepneyRoutes, ...this.busRoutes];
+  
+    this.filteredRoutes = routes.filter((route) => {
+      const hasStartStop = route.stops.some((stop: any) => this.isNearby(this.currentLocation!, stop));
+      const hasEndStop = route.stops.some((stop: any) => this.isNearby(this.destination!, stop));
+      return hasStartStop && hasEndStop; // Only include routes connecting current and destination
+    });
+  
+    this.displayRoutes();
+  }
+  
+
+  /*------------------------------------------
+  IsNearby Function to Check if Location is Nearby
+  --------------------------------------------*/
+
+  isNearby(location: google.maps.LatLngLiteral, stop: any, threshold = 0.005): boolean {
+    const distance = Math.sqrt(
+      Math.pow(location.lat - stop.latitude, 2) + Math.pow(location.lng - stop.longitude, 2)
+    );
+    return distance <= threshold;
+  }
+
+  /*------------------------------------------
+  Display Routes on Map
+  --------------------------------------------*/
+
+  displayRoutes() {
+    this.filteredRoutes.forEach((route) => {
+      const filteredStops = route.stops.filter((stop: any) =>
+        this.isNearby(this.currentLocation!, stop) || this.isNearby(this.destination!, stop)
+      );
+  
+      // Add markers for only the relevant stops
+      filteredStops.forEach((stop: any) => {
+        this.addMarker({ lat: stop.latitude, lng: stop.longitude }, route.routeName);
+      });
+    });
+  }
+  
+
   /*------------------------------------------
   Navigate to Destination
   --------------------------------------------*/
   navigateToDestination() {
-    if (this.currentLocation && this.destination) {
-      const request = {
-        origin: this.currentLocation,
-        destination: this.destination,
-        travelMode: google.maps.TravelMode.DRIVING
-      };
+    if (!this.currentLocation || !this.destination) {
+      alert('Please set both current location and destination.');
+      return;
+    }
+  
+    const nearestStartStop = this.findNearestStop(this.currentLocation);
+    const nearestEndStop = this.findNearestStop(this.destination);
+  
+    if (!nearestStartStop || !nearestEndStop) {
+      alert('No nearby stops found for either current location or destination.');
+      return;
+    }
+  
+    // Show walking path to the nearest start stop
+    this.displayWalkingPath(this.currentLocation, {
+      lat: nearestStartStop.latitude,
+      lng: nearestStartStop.longitude,
+    });
+  
+    // Find and display transit route
+    const routePath = this.findRoutePath(nearestStartStop, nearestEndStop);
+    if (!routePath.length) {
+      alert('No route found connecting the selected stops.');
+      return;
+    }
+    this.displayRoutePath(routePath);
+  
+    // Show walking path from the last stop to the destination
+    this.displayWalkingPath(
+      { lat: nearestEndStop.latitude, lng: nearestEndStop.longitude },
+      this.destination
+    );
+  }
 
+  /*------------------------------------------
+  Display Walking Path on Map
+  --------------------------------------------*/
+
+  displayWalkingPath(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral) {
+    const request = {
+      origin: origin,
+      destination: destination,
+      travelMode: google.maps.TravelMode.WALKING,
+    };
+  
+    this.directionsService.route(request, (result: any, status: any) => {
+      if (status === google.maps.DirectionsStatus.OK) {
+        const walkingRenderer = new google.maps.DirectionsRenderer({
+          map: this.map,
+          polylineOptions: {
+            strokeColor: '#00CCCC', // Green color for walking path
+            strokeOpacity: 0, // Set opacity to 0 since icons will be used for dots
+            strokeWeight: 2, // Thickness of the path
+            icons: [
+              {
+                icon: {
+                  path: google.maps.SymbolPath.CIRCLE, // Small circle for dotted effect
+                  scale: 3, // Size of the dots
+                  fillColor: '#00CCCC', // Green color for the circles
+                  fillOpacity: 1, // Solid fill for the circles
+                  strokeOpacity: 1, // Full opacity for the dots
+                },
+                offset: '0', // Start from the beginning
+                repeat: '15px', // Distance between dots
+              },
+            ],
+          },
+        });
+        walkingRenderer.setDirections(result);
+      } else {
+        console.error('Walking directions request failed due to ' + status);
+      }
+    });
+  }
+
+  /*------------------------------------------
+  Find Nearest Stop
+  --------------------------------------------*/
+
+  findNearestStop(location: google.maps.LatLngLiteral): any | null {
+    const allStops = [...this.jeepneyRoutes, ...this.busRoutes]
+      .flatMap((route) => route.stops);
+
+    let nearestStop = null;
+    let minDistance = Infinity;
+
+    allStops.forEach((stop) => {
+      const distance = Math.sqrt(
+        Math.pow(location.lat - stop.latitude, 2) + Math.pow(location.lng - stop.longitude, 2)
+      );
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearestStop = stop;
+      }
+    });
+
+    return nearestStop;
+  }
+
+  /*------------------------------------------
+  Find Route Path
+  --------------------------------------------*/
+
+  findRoutePath(startStop: any, endStop: any): any[] {
+    for (const route of [...this.jeepneyRoutes, ...this.busRoutes]) {
+      const startIndex = route.stops.findIndex(
+        (stop: any) => stop.id === startStop.id
+      );
+      const endIndex = route.stops.findIndex(
+        (stop: any) => stop.id === endStop.id
+      );
+
+      // Check if both stops are on the same route and in the correct order
+      if (startIndex !== -1 && endIndex !== -1 && startIndex <= endIndex) {
+        return route.stops.slice(startIndex, endIndex + 1);
+      }
+    }
+
+    return [];
+  }
+
+  /*------------------------------------------
+  Get Route Information
+  --------------------------------------------*/
+
+  displayRoutePath(routePath: any[]) {
+    if (routePath.length < 2) {
+      console.error("Route path must have at least two stops to display a route.");
+      return;
+    }
+  
+    // Iterate through pairs of stops and request directions for each segment
+    for (let i = 0; i < routePath.length - 1; i++) {
+      const origin = {
+        lat: routePath[i].latitude,
+        lng: routePath[i].longitude,
+      };
+  
+      const destination = {
+        lat: routePath[i + 1].latitude,
+        lng: routePath[i + 1].longitude,
+      };
+  
+      const request = {
+        origin: origin,
+        destination: destination,
+        travelMode: google.maps.TravelMode.DRIVING, // Use TRANSIT for routes
+      };
+  
       this.directionsService.route(request, (result: any, status: any) => {
         if (status === google.maps.DirectionsStatus.OK) {
-          this.directionsRenderer.setDirections(result);
+          const segmentRenderer = new google.maps.DirectionsRenderer({
+            map: this.map,
+            suppressMarkers: true, // Prevent duplicate markers for stops
+            polylineOptions: {
+              strokeColor: '#1d58c6', // Red for the route path
+              strokeWeight: 8, // Thickness of the path
+            },
+          });
+  
+          segmentRenderer.setDirections(result);
         } else {
-          console.error('Directions request failed due to ' + status);
+          console.error('Directions request failed for segment ' + i + ' due to ' + status);
         }
       });
-    } else {
-      alert('Please set both current location and destination.');
     }
+  
+    // Add markers for each stop along the path
+    routePath.forEach((stop: any) => {
+      this.addMarker({ lat: stop.latitude, lng: stop.longitude }, stop.name);
+    });
   }
 }
