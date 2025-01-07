@@ -89,21 +89,30 @@ export class AppComponent implements OnInit {
   initMap(style: any) {
     const mapElement = document.getElementById('map');
     if (mapElement) {
-      this.map = new google.maps.Map(mapElement as HTMLElement, {
-        center: { lat: 15.187769063648858, lng: 120.55950164794922 },
-        zoom: 14,
-        mapTypeControl: false,  // Removes map type (satellite, terrain, etc.)
-        streetViewControl: false,  // Optional: Disables Street View control
-        fullscreenControl: false,  // Optional: Disables fullscreen control
-        zoomControl: false, //Optional: Disables zom control
-        styles: style  // Apply the loaded style here
-      });
-
-      this.directionsService = new google.maps.DirectionsService();
-      this.directionsRenderer = new google.maps.DirectionsRenderer({
-        map: this.map,
-        preserveViewport: true  // Prevents the DirectionsRenderer from changing the viewport
-      });
+      try {
+        this.map = new google.maps.Map(mapElement as HTMLElement, {
+          center: { lat: 15.187769063648858, lng: 120.55950164794922 },
+          zoom: 14,
+          minZoom: 14, // Limit zoom out to level 14
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: false,
+          zoomControl: false,
+          styles: style
+        });
+  
+        this.directionsService = new google.maps.DirectionsService();
+        this.directionsRenderer = new google.maps.DirectionsRenderer({
+          map: this.map,
+          preserveViewport: true
+        });
+  
+        // Create and display the Traffic Layer
+        const trafficLayer = new google.maps.TrafficLayer();
+        trafficLayer.setMap(this.map);
+      } catch (error) {
+        console.error('Error initializing map:', error);
+      }
     } else {
       console.error('Map element not found!');
     }
