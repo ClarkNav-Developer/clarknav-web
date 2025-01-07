@@ -18,17 +18,19 @@ export class AppComponent implements OnInit {
   jeepneyRoutes: any[] = [];
   busRoutes: any[] = [];
   filteredRoutes: any[] = [];
+  markers: google.maps.Marker[] = [];
+  routeRenderers: google.maps.DirectionsRenderer[] = [];
 
   // Coordinates for Clark's bounds
   private clarkBounds = new google.maps.LatLngBounds(
-    new google.maps.LatLng(15.167864949136394, 120.48439979553223),  // Southwest coordinates of Clark
-    new google.maps.LatLng(15.22415233433501, 120.58105440940092)   // Northeast coordinates of Clark
+    new google.maps.LatLng(15.15350883733786, 120.4702890088466),  // Southwest coordinates of Clark
+    new google.maps.LatLng(15.24182812878962, 120.5925078185926)   // Northeast coordinates of Clark
   );
 
   // Declare but do not initialize the observable
   isFloatingVisible: any;
 
-  constructor(public floatingWindowService: FloatingWindowService, private http: HttpClient) {}
+  constructor(public floatingWindowService: FloatingWindowService, private http: HttpClient) { }
 
   ngOnInit(): void {
     // Properly assign the observable in ngOnInit
@@ -60,7 +62,7 @@ export class AppComponent implements OnInit {
   openAccountComponent() {
     this.floatingWindowService.open('account');
   }
-  
+
   openPlannerComponent() {
     this.floatingWindowService.open('planner');
   }
@@ -68,11 +70,11 @@ export class AppComponent implements OnInit {
   openRouteComponent() {
     this.floatingWindowService.open('route');
   }
-  
+
   closeFloatingWindow() {
     this.floatingWindowService.close();
   }
-  
+
 
   /*------------------------------------------
   Load Retro Map Style
@@ -98,8 +100,10 @@ export class AppComponent implements OnInit {
       });
 
       this.directionsService = new google.maps.DirectionsService();
-      this.directionsRenderer = new google.maps.DirectionsRenderer();
-      this.directionsRenderer.setMap(this.map);
+      this.directionsRenderer = new google.maps.DirectionsRenderer({
+        map: this.map,
+        preserveViewport: true  // Prevents the DirectionsRenderer from changing the viewport
+      });
     } else {
       console.error('Map element not found!');
     }
@@ -140,7 +144,7 @@ export class AppComponent implements OnInit {
   initAutocomplete() {
     const desktopInput = document.getElementById('search-box') as HTMLInputElement;
     const mobileInput = document.getElementById('search-box-mobile') as HTMLInputElement;
-  
+
     [desktopInput, mobileInput].forEach((input) => {
       if (input) {
         const autocomplete = new google.maps.places.Autocomplete(input, {
@@ -148,7 +152,7 @@ export class AppComponent implements OnInit {
           bounds: this.clarkBounds, // Restrict to Clark bounds
           strictBounds: true,
         });
-  
+
         autocomplete.addListener('place_changed', () => {
           const place = autocomplete.getPlace();
           if (place.geometry) {
@@ -156,7 +160,7 @@ export class AppComponent implements OnInit {
               lat: place.geometry.location.lat(),
               lng: place.geometry.location.lng(),
             };
-  
+
             this.addMarker(this.destination, 'Destination');
             this.map.setCenter(this.destination);
             this.findRoutes();
@@ -165,7 +169,7 @@ export class AppComponent implements OnInit {
       }
     });
   }
-  
+
 
   /*------------------------------------------
   Initialize Autocomplete for Current Location
@@ -173,7 +177,7 @@ export class AppComponent implements OnInit {
   initCurrentLocationAutocomplete() {
     const desktopInput = document.getElementById('current-location-box') as HTMLInputElement;
     const mobileInput = document.getElementById('current-location-box-mobile') as HTMLInputElement;
-  
+
     [desktopInput, mobileInput].forEach((input) => {
       if (input) {
         const autocomplete = new google.maps.places.Autocomplete(input, {
@@ -181,7 +185,7 @@ export class AppComponent implements OnInit {
           bounds: this.clarkBounds, // Restrict to Clark bounds
           strictBounds: true,
         });
-  
+
         autocomplete.addListener('place_changed', () => {
           const place = autocomplete.getPlace();
           if (place.geometry) {
@@ -189,7 +193,7 @@ export class AppComponent implements OnInit {
               lat: place.geometry.location.lat(),
               lng: place.geometry.location.lng(),
             };
-  
+
             this.addMarker(this.currentLocation, 'Your Location');
             this.map.setCenter(this.currentLocation);
           }
@@ -197,7 +201,7 @@ export class AppComponent implements OnInit {
       }
     });
   }
-  
+
   /*------------------------------------------
   Reversing the Current Location and Destination
   --------------------------------------------*/
@@ -207,36 +211,36 @@ export class AppComponent implements OnInit {
       const temp = this.currentLocation;
       this.currentLocation = this.destination;
       this.destination = temp;
-  
+
       // Update the input fields
       const currentLocationInput = document.getElementById('current-location-box') as HTMLInputElement;
       const destinationInput = document.getElementById('search-box') as HTMLInputElement;
       const currentLocationInputMobile = document.getElementById('current-location-box-mobile') as HTMLInputElement;
       const destinationInputMobile = document.getElementById('search-box-mobile') as HTMLInputElement;
-  
+
       if (currentLocationInput) {
         currentLocationInput.value = `Lat: ${this.currentLocation.lat}, Lng: ${this.currentLocation.lng}`;
       }
-  
+
       if (destinationInput) {
         destinationInput.value = `Lat: ${this.destination.lat}, Lng: ${this.destination.lng}`;
       }
-  
+
       if (currentLocationInputMobile) {
         currentLocationInputMobile.value = `Lat: ${this.currentLocation.lat}, Lng: ${this.currentLocation.lng}`;
       }
-  
+
       if (destinationInputMobile) {
         destinationInputMobile.value = `Lat: ${this.destination.lat}, Lng: ${this.destination.lng}`;
       }
-  
+
       // Re-center the map
       this.map.setCenter(this.currentLocation);
     } else {
       alert('Both current location and destination must be set to reverse.');
     }
   }
-  
+
 
   /*------------------------------------------
   Use Device's Geolocation for Current Location
@@ -249,19 +253,19 @@ export class AppComponent implements OnInit {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           };
-  
+
           // Update input fields for both desktop and mobile views
           const desktopInput = document.getElementById('current-location-box') as HTMLInputElement;
           const mobileInput = document.getElementById('current-location-box-mobile') as HTMLInputElement;
-  
+
           if (desktopInput) {
             desktopInput.value = `Lat: ${this.currentLocation.lat}, Lng: ${this.currentLocation.lng}`;
           }
-  
+
           if (mobileInput) {
             mobileInput.value = `Lat: ${this.currentLocation.lat}, Lng: ${this.currentLocation.lng}`;
           }
-  
+
           // Add a marker and center the map on the current location
           this.addMarker(this.currentLocation, 'Your Location');
           this.map.setCenter(this.currentLocation);
@@ -276,17 +280,31 @@ export class AppComponent implements OnInit {
       alert('Geolocation is not supported by your browser.');
     }
   }
-  
+
+
+  /*------------------------------------------
+  Clear Map
+  --------------------------------------------*/
+  clearMap() {
+    // Remove all markers
+    this.markers.forEach(marker => marker.setMap(null));
+    this.markers = [];
+
+    // Remove all route renderers
+    this.routeRenderers.forEach(renderer => renderer.setMap(null));
+    this.routeRenderers = [];
+  }
 
   /*------------------------------------------
   Add Marker to Map
   --------------------------------------------*/
   addMarker(location: google.maps.LatLngLiteral, title: string) {
-    new google.maps.Marker({
+    const marker = new google.maps.Marker({
       position: location,
       map: this.map,
       title: title
     });
+    this.markers.push(marker);
   }
 
   // addMarker(location: google.maps.LatLngLiteral, title: string) {
@@ -302,12 +320,12 @@ export class AppComponent implements OnInit {
   //       strokeWeight: 0, // No border for a cleaner look
   //     },
   //   });
-  
+
   //   // Optionally, add a tooltip or info window
   //   const infoWindow = new google.maps.InfoWindow({
   //     content: `<div style="font-size: 14px;">${title}</div>`,
   //   });
-  
+
   //   marker.addListener('click', () => {
   //     infoWindow.open(this.map, marker);
   //   });
@@ -318,27 +336,41 @@ export class AppComponent implements OnInit {
   --------------------------------------------*/
   findRoutes() {
     if (!this.currentLocation || !this.destination) return;
-  
+
     const routes = [...this.jeepneyRoutes, ...this.busRoutes];
-  
+
     this.filteredRoutes = routes.filter((route) => {
       const hasStartStop = route.stops.some((stop: any) => this.isNearby(this.currentLocation!, stop));
       const hasEndStop = route.stops.some((stop: any) => this.isNearby(this.destination!, stop));
       return hasStartStop && hasEndStop; // Only include routes connecting current and destination
     });
-  
+
     this.displayRoutes();
   }
-  
+
 
   /*------------------------------------------
   IsNearby Function to Check if Location is Nearby
   --------------------------------------------*/
 
-  isNearby(location: google.maps.LatLngLiteral, stop: any, threshold = 0.005): boolean {
-    const distance = Math.sqrt(
-      Math.pow(location.lat - stop.latitude, 2) + Math.pow(location.lng - stop.longitude, 2)
-    );
+  isNearby(location: google.maps.LatLngLiteral, stop: any, threshold = 0.01): boolean {
+    const toRadians = (degrees: number) => degrees * (Math.PI / 180);
+
+    const lat1 = toRadians(location.lat);
+    const lng1 = toRadians(location.lng);
+    const lat2 = toRadians(stop.latitude);
+    const lng2 = toRadians(stop.longitude);
+
+    const dLat = lat2 - lat1;
+    const dLng = lng2 - lng1;
+
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1) * Math.cos(lat2) *
+      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = 6371 * c; // Radius of Earth in kilometers
+
     return distance <= threshold;
   }
 
@@ -351,23 +383,27 @@ export class AppComponent implements OnInit {
       const filteredStops = route.stops.filter((stop: any) =>
         this.isNearby(this.currentLocation!, stop) || this.isNearby(this.destination!, stop)
       );
-  
+
       // Add markers for only the relevant stops
       filteredStops.forEach((stop: any) => {
         this.addMarker({ lat: stop.latitude, lng: stop.longitude }, route.routeName);
       });
     });
   }
-  
 
-  /*------------------------------------------
+
+/*------------------------------------------
   Navigate to Destination
   --------------------------------------------*/
   navigateToDestination() {
+    console.log('Navigating to destination');
     if (!this.currentLocation || !this.destination) {
       alert('Please set both current location and destination.');
       return;
     }
+  
+    // Clear the map before displaying new routes
+    this.clearMap();
   
     const nearestStartStop = this.findNearestStop(this.currentLocation);
     const nearestEndStop = this.findNearestStop(this.destination);
@@ -396,7 +432,20 @@ export class AppComponent implements OnInit {
       { lat: nearestEndStop.latitude, lng: nearestEndStop.longitude },
       this.destination
     );
+  
+    // Zoom in on the destination first
+    console.log('Centering map on destination:', this.destination);
+    this.map.setCenter(this.destination);
+    this.map.setZoom(18); // Zoom in to level 18
+  
+    // After a few seconds, pan and zoom to the user's origin
+    setTimeout(() => {
+      console.log('Centering map on current location:', this.currentLocation);
+      this.map.panTo(this.currentLocation);
+      this.map.setZoom(18); // Zoom in to level 16
+    }, 3000); // 3-second delay
   }
+  
 
   /*------------------------------------------
   Display Walking Path on Map
@@ -408,11 +457,12 @@ export class AppComponent implements OnInit {
       destination: destination,
       travelMode: google.maps.TravelMode.WALKING,
     };
-  
+
     this.directionsService.route(request, (result: any, status: any) => {
       if (status === google.maps.DirectionsStatus.OK) {
         const walkingRenderer = new google.maps.DirectionsRenderer({
           map: this.map,
+          preserveViewport: true,
           polylineOptions: {
             strokeColor: '#00CCCC', // Green color for walking path
             strokeOpacity: 0, // Set opacity to 0 since icons will be used for dots
@@ -433,6 +483,7 @@ export class AppComponent implements OnInit {
           },
         });
         walkingRenderer.setDirections(result);
+        this.routeRenderers.push(walkingRenderer);
       } else {
         console.error('Walking directions request failed due to ' + status);
       }
@@ -469,6 +520,10 @@ export class AppComponent implements OnInit {
   --------------------------------------------*/
 
   findRoutePath(startStop: any, endStop: any): any[] {
+    // Determine if the user is northbound or southbound based on latitude comparison
+    const isNorthbound = startStop.latitude < endStop.latitude;  // Current location is south of destination, so traveling northbound
+    const isSouthbound = startStop.latitude > endStop.latitude;  // Current location is north of destination, so traveling southbound
+
     for (const route of [...this.jeepneyRoutes, ...this.busRoutes]) {
       const startIndex = route.stops.findIndex(
         (stop: any) => stop.id === startStop.id
@@ -477,14 +532,25 @@ export class AppComponent implements OnInit {
         (stop: any) => stop.id === endStop.id
       );
 
-      // Check if both stops are on the same route and in the correct order
-      if (startIndex !== -1 && endIndex !== -1 && startIndex <= endIndex) {
-        return route.stops.slice(startIndex, endIndex + 1);
+      // Check if both stops are on the same route
+      if (startIndex !== -1 && endIndex !== -1) {
+        if (isNorthbound) {
+          // For Northbound Routes: Start comes before End (startIndex <= endIndex)
+          if (startIndex <= endIndex) {
+            return route.stops.slice(startIndex, endIndex + 1); // Northbound route
+          }
+        } else if (isSouthbound) {
+          // For Southbound Routes: End comes before Start (startIndex > endIndex)
+          if (startIndex >= endIndex) {
+            return route.stops.slice(endIndex, startIndex + 1); // Southbound route (no reversal needed)
+          }
+        }
       }
     }
-
     return [];
   }
+
+
 
   /*------------------------------------------
   Get Route Information
@@ -495,43 +561,45 @@ export class AppComponent implements OnInit {
       console.error("Route path must have at least two stops to display a route.");
       return;
     }
-  
+
     // Iterate through pairs of stops and request directions for each segment
     for (let i = 0; i < routePath.length - 1; i++) {
       const origin = {
         lat: routePath[i].latitude,
         lng: routePath[i].longitude,
       };
-  
+
       const destination = {
         lat: routePath[i + 1].latitude,
         lng: routePath[i + 1].longitude,
       };
-  
+
       const request = {
         origin: origin,
         destination: destination,
         travelMode: google.maps.TravelMode.DRIVING, // Use TRANSIT for routes
       };
-  
+
       this.directionsService.route(request, (result: any, status: any) => {
         if (status === google.maps.DirectionsStatus.OK) {
           const segmentRenderer = new google.maps.DirectionsRenderer({
             map: this.map,
+            preserveViewport: true,
             suppressMarkers: true, // Prevent duplicate markers for stops
             polylineOptions: {
               strokeColor: '#1d58c6', // Red for the route path
-              strokeWeight: 8, // Thickness of the path
+              strokeWeight: 5, // Thickness of the path
             },
           });
-  
+
           segmentRenderer.setDirections(result);
+          this.routeRenderers.push(segmentRenderer);
         } else {
           console.error('Directions request failed for segment ' + i + ' due to ' + status);
         }
       });
     }
-  
+
     // Add markers for each stop along the path
     routePath.forEach((stop: any) => {
       this.addMarker({ lat: stop.latitude, lng: stop.longitude }, stop.name);
