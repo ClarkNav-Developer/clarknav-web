@@ -78,6 +78,20 @@
     .close-btn:hover {
       background: darkred;
     }
+
+    .jeepney-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .clark-loop-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin: 20px 0;
+    }
   }
   
   
