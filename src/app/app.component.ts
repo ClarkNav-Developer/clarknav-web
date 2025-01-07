@@ -451,42 +451,77 @@ export class AppComponent implements OnInit {
   --------------------------------------------*/
 
   displayWalkingPath(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral) {
-    const request = {
-      origin: origin,
-      destination: destination,
-      travelMode: google.maps.TravelMode.WALKING,
-    };
-
-    this.directionsService.route(request, (result: any, status: any) => {
-      if (status === google.maps.DirectionsStatus.OK) {
-        const walkingRenderer = new google.maps.DirectionsRenderer({
-          map: this.map,
-          preserveViewport: true,
-          polylineOptions: {
-            strokeColor: '#00CCCC', // Green color for walking path
-            strokeOpacity: 0, // Set opacity to 0 since icons will be used for dots
-            strokeWeight: 2, // Thickness of the path
-            icons: [
-              {
-                icon: {
-                  path: google.maps.SymbolPath.CIRCLE, // Small circle for dotted effect
-                  scale: 3, // Size of the dots
-                  fillColor: '#00CCCC', // Green color for the circles
-                  fillOpacity: 1, // Solid fill for the circles
-                  strokeOpacity: 1, // Full opacity for the dots
-                },
-                offset: '0', // Start from the beginning
-                repeat: '15px', // Distance between dots
-              },
-            ],
+    const distance = google.maps.geometry.spherical.computeDistanceBetween(
+      new google.maps.LatLng(origin.lat, origin.lng),
+      new google.maps.LatLng(destination.lat, destination.lng)
+    );
+  
+    const threshold = 50; // Distance in meters to switch between direct path and road-following path
+  
+    if (distance < threshold) {
+      // Draw a direct path
+      const walkingPath = new google.maps.Polyline({
+        path: [origin, destination],
+        geodesic: true,
+        strokeColor: '#00CCCC',
+        strokeOpacity: 0, // Set opacity to 0 since icons will be used for dots
+        strokeWeight: 2,
+        icons: [
+          {
+            icon: {
+              path: google.maps.SymbolPath.CIRCLE, // Small circle for dotted effect
+              scale: 3, // Size of the dots
+              fillColor: '#00CCCC', // Green color for the circles
+              fillOpacity: 1, // Solid fill for the circles
+              strokeOpacity: 1, // Full opacity for the dots
+            },
+            offset: '0', // Start from the beginning
+            repeat: '15px', // Distance between dots
           },
-        });
-        walkingRenderer.setDirections(result);
-        this.routeRenderers.push(walkingRenderer);
-      } else {
-        console.error('Walking directions request failed due to ' + status);
-      }
-    });
+        ],
+      });
+  
+      walkingPath.setMap(this.map);
+      this.routeRenderers.push(walkingPath);
+    } else {
+      // Follow the road
+      const request = {
+        origin: origin,
+        destination: destination,
+        travelMode: google.maps.TravelMode.WALKING,
+      };
+  
+      this.directionsService.route(request, (result: any, status: any) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          const walkingRenderer = new google.maps.DirectionsRenderer({
+            map: this.map,
+            preserveViewport: true,
+            polylineOptions: {
+              strokeColor: '#00CCCC', // Green color for walking path
+              strokeOpacity: 0, // Set opacity to 0 since icons will be used for dots
+              strokeWeight: 2, // Thickness of the path
+              icons: [
+                {
+                  icon: {
+                    path: google.maps.SymbolPath.CIRCLE, // Small circle for dotted effect
+                    scale: 3, // Size of the dots
+                    fillColor: '#00CCCC', // Green color for the circles
+                    fillOpacity: 1, // Solid fill for the circles
+                    strokeOpacity: 1, // Full opacity for the dots
+                  },
+                  offset: '0', // Start from the beginning
+                  repeat: '15px', // Distance between dots
+                },
+              ],
+            },
+          });
+          walkingRenderer.setDirections(result);
+          this.routeRenderers.push(walkingRenderer);
+        } else {
+          console.error('Walking directions request failed due to ' + status);
+        }
+      });
+    }
   }
 
   /*------------------------------------------
