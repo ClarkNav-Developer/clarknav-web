@@ -1,115 +1,86 @@
 {
-  "jeepneyRoutes": [
-    {
-      "routeName": "Route 1",
-      "stops": [
-        { "name": "Stop 1", "latitude": 15.1234, "longitude": 120.9876 },
-        { "name": "Stop 2", "latitude": 15.2345, "longitude": 120.8765 }
-      ]
-    },
-    {
-      "routeName": "Route 2",
-      "stops": [
-        { "name": "Stop 1", "latitude": 15.3456, "longitude": 120.7654 },
-        { "name": "Stop 2", "latitude": 15.4567, "longitude": 120.6543 }
-      ]
-    },
-    {
-      "routeName": "Route 3",
-      "stops": [
-        { "name": "Stop 1", "latitude": 15.3456, "longitude": 120.7654 },
-        { "name": "Stop 2", "latitude": 15.4567, "longitude": 120.6543 }
-      ]
-    },
-    {
-      "routeName": "Route 4",
-      "stops": [
-        { "name": "Stop 1", "latitude": 15.3456, "longitude": 120.7654 },
-        { "name": "Stop 2", "latitude": 15.4567, "longitude": 120.6543 }
-      ]
-    },
-    {
-      "routeName": "Route 5",
-      "stops": [
-        { "name": "Stop 1", "latitude": 15.3456, "longitude": 120.7654 },
-        { "name": "Stop 2", "latitude": 15.4567, "longitude": 120.6543 }
-      ]
-    },
-    {
-      "routeName": "Route 6",
-      "stops": [
-        { "name": "Stop 1", "latitude": 15.3456, "longitude": 120.7654 },
-        { "name": "Stop 2", "latitude": 15.4567, "longitude": 120.6543 }
-      ]
-    }
-  ],
-  "busRoutes": [
-    {
-      "routeName": "Bus Loop Northbound",
-      "direction": "northbound",
-      "stops": [
-        { "id": 101, "name": "SM City Clark Gate 1", "latitude": 15.167777, "longitude": 120.582601},
-        { "id": 102, "name": "SM City Clark Flagpole Area", "latitude": 15.167017, "longitude": 120.580126 },
-        { "id": 103, "name": "Mercedes Benz", "latitude": 15.166849, "longitude": 120.570899},
-        { "id": 104, "name": "Aderans/Laus Group", "latitude": 15.167524, "longitude": 120.566492},
-        { "id": 105, "name": "Friendship Gate", "latitude": 15.164361, "longitude": 120.549854},
-        { "id": 106, "name": "Philexcel Gate", "latitude": 15.175374, "longitude": 120.534325 },
-        { "id": 107, "name": "Clark Center", "latitude": 15.176794, "longitude": 120.528240 },
-        { "id": 108, "name": "Bertaphil I", "latitude": 15.176438, "longitude": 120.525425 },
-        { "id": 109, "name": "Clark Electric", "latitude": 15.176318, "longitude": 120.524045 },
-        { "id": 110, "name": "Sapangbato/7-Eleven", "latitude": 15.176150, "longitude": 120.521944},
-        { "id": 111, "name": "Amertron", "latitude": 15.176592, "longitude": 120.519536 },
-        { "id": 112, "name": "Clark One Stop Government Center/D'Heights", "latitude": 15.183071, "longitude": 120.512133},
-        { "id": 113, "name": "CDC BOSS (2126)", "latitude": 15.178105, "longitude": 120.518072},
-        { "id": 114, "name": "CDC Corporate Office", "latitude": 15.178726, "longitude": 120.518738 },
-        { "id": 115, "name": "Parade Grounds/Children's Playground", "latitude": 15.180671, "longitude": 120.520006},
-        { "id": 116, "name": "Barn Houses/Quest Hotel", "latitude": 15.181632, "longitude": 120.522427},
-        { "id": 117, "name": "Clark Museum", "latitude": 15.182685, "longitude": 120.526142},
-        { "id": 118, "name": "Royce Hotel & Casino", "latitude": 15.18090, "longitude": 120.52916},
-        { "id": 119, "name": "Filinvest Mimosa Plus (Need to check)", "latitude": 15.18379, "longitude": 120.52752},
-        { "id": 120, "name": "Widus Hotel/Hann Casino Resort", "latitude": 15.189450, "longitude": 120.524808},
-        { "id": 121, "name": "St. Joseph the Worker", "latitude": 15.192365, "longitude": 120.525907 },
-        { "id": 122, "name": "Puregold Clark/UP Clark", "latitude": 15.193712, "longitude": 120.530572 },
-        { "id": 123, "name": "Centennial Road (Need to check)", "latitude": 15.195304, "longitude": 120.535778},
-        { "id": 124, "name": "Texas Instruments/El Kabayo", "latitude": 15.199211, "longitude": 120.541200 },
-        { "id": 125, "name": "Picnic Grounds/Dinosaur Island", "latitude": 15.205929, "longitude": 120.546710 },
-        { "id": 126, "name": "Mabalacat Gate", "latitude": 15.221119, "longitude": 120.571465},
-        { "id": 127, "name": "Clark Airport (Need to check)", "latitude": 15.196789, "longitude": 120.558721}
-      ]
-    },
-    {
-      "routeName": "Bus Loop Southbound",
-      "direction": "southbound",
-      "stops": [
-        { "id": 128, "name": "Clark Airport (Need to check)", "latitude": 15.197484, "longitude": 120.558911 },
-        { "id": 129, "name": "Mabalacat Gate", "latitude": 15.221119, "longitude": 120.571465},
-        { "id": 130, "name": "Picnic Grounds/Dinosaur Island", "latitude": 15.205933, "longitude": 120.546707},
-        { "id": 131, "name": "Texas Instruments/El Kabayo", "latitude": 15.200467, "longitude": 120.541536},
-        { "id": 132, "name": "Centennial Road (Need to check)", "latitude": 15.195335, "longitude": 120.536261},
-        { "id": 133, "name": "Puregold Clark/UP Clark", "latitude": 15.193985, "longitude": 120.531005},
-        { "id": 134, "name": "National Museum Clark", "latitude": 15.192494, "longitude": 120.526143},
-        { "id": 135, "name": "Midori Hotel/Hann Casino Resort", "latitude": 15.192480, "longitude": 120.524656},
-        { "id": 136, "name": "Filinvest Mimosa Plus (Need to check)", "latitude": 15.183835, "longitude": 120.527403},
-        { "id": 137, "name": "PLDT-Smart Clark", "latitude": 15.18167, "longitude": 120.52871},
-        { "id": 138, "name": "Clark Museum", "latitude": 15.182105, "longitude": 120.526459},
-        { "id": 139, "name": "Barn Houses/Quest Hotel", "latitude": 15.181682, "longitude": 120.522407},
-        { "id": 140, "name": "Parade Grounds/Children's Playground", "latitude": 15.180696, "longitude": 120.519975},
-        { "id": 141, "name": "CDC Corporate Office", "latitude": 15.179071, "longitude": 120.518564},
-        { "id": 142, "name": "CDC BOSS (2126)", "latitude": 15.178092, "longitude": 120.517972},
-        { "id": 143, "name": "Clark One Stop Government Center/D'Heights", "latitude": 15.183071, "longitude": 120.512133 },
-        { "id": 144, "name": "Amertron", "latitude": 15.1764676, "longitude": 120.5194710},
-        { "id": 145, "name": "Sapangbato/7-Eleven", "latitude": 15.175966, "longitude": 120.522035},
-        { "id": 146, "name": "Clark Electric", "latitude": 15.176183, "longitude": 120.524052},
-        { "id": 147, "name": "Bertaphil I", "latitude": 15.176310, "longitude": 120.525734},
-        { "id": 148, "name": "Clark Center", "latitude": 15.176630, "longitude": 120.528242},
-        { "id": 149, "name": "Philexcel Gate", "latitude": 15.17475, "longitude": 120.53445},
-        { "id": 150, "name": "Friendship Gate", "latitude": 15.163570, "longitude": 120.551080},
-        { "id": 151, "name": "Don Juico Gate", "latitude": 15.167140, "longitude": 120.564457},
-        { "id": 152, "name": "Clark Cityfront Steel Parking", "latitude": 15.166497, "longitude": 120.570884},
-        { "id": 153, "name": "Clark Cityfront Mall", "latitude": 15.166412, "longitude": 120.580047},
-        { "id": 154, "name": "SM City Clark Gate 1", "latitude": 15.167777, "longitude": 120.582601},
-        { "id": 155, "name": "SM City Clark Flagpole Area", "latitude": 15.167017, "longitude": 120.580126 }
-      ]
-    }
-  ]
+  "routes": {
+    "jeepney": [
+      {
+        "routeId": "J1",
+        "routeName": "Jeepney Route 1",
+        "origin": "15.12345,120.12345",
+        "destination": "15.54321,120.54321",
+        "waypoints": [
+          "15.12395,120.12395",
+          "15.12495,120.12495",
+          "15.12595,120.12595"
+        ]
+      }
+    ],
+    "bus": [
+      {
+        "routeId": "B1",
+        "routeName": "Clark Loop Northbound",
+        "origin": "15.167777,120.582601",
+        "destination": "15.196789,120.558721",
+        "waypoints": [
+          "15.167017,120.580126",
+          "15.166849,120.570899",
+          "15.167524,120.566492",
+          "15.164361,120.549854",
+          "15.175374,120.534325",
+          "15.176794,120.528240",
+          "15.176438,120.525425",
+          "15.176318,120.524045",
+          "15.176150,120.521944",
+          "15.176592,120.519536",
+          "15.183071,120.512133",
+          "15.178105,120.518072",
+          "15.178726,120.518738",
+          "15.180671,120.520006",
+          "15.181632,120.522427",
+          "15.182685,120.526142",
+          "15.180900,120.529160",
+          "15.183790,120.527520",
+          "15.189450,120.524808",
+          "15.192365,120.525907",
+          "15.193566256638016, 120.5301728601814",
+          "15.195304,120.535778",
+          "15.199211,120.541200",
+          "15.205929,120.546710",
+          "15.221119,120.571465",
+          "15.196789,120.558721"
+        ]
+      },
+      {
+        "routeId": "B2",
+        "routeName": "Clark Loop Southbound",
+        "origin": "15.197484,120.582601",
+        "destination": "15.167777,120.580126",
+        "waypoints": [
+          "15.221119,120.571465",
+          "15.205933,120.546707",
+          "15.200467,120.541536",
+          "15.195335,120.536261",
+          "15.193985,120.531005",
+          "15.192494,120.526143",
+          "15.192480,120.524656",
+          "15.183835,120.527403",
+          "15.181670,120.528710",
+          "15.182105,120.526459",
+          "15.181682,120.522407",
+          "15.180696,120.519975",
+          "15.179071,120.518564",
+          "15.178092,120.517972",
+          "15.183071,120.512133",
+          "15.1764676,120.5194710",
+          "15.175966,120.522035",
+          "15.176183,120.524052",
+          "15.176310,120.525734",
+          "15.176630,120.528242",
+          "15.174750,120.534450",
+          "15.163570,120.551080",
+          "15.167140,120.564457",
+          "15.166497,120.570884",
+          "15.166412,120.580047"
+        ]
+      }
+    ]
+  }
 }

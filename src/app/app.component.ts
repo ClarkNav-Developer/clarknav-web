@@ -51,8 +51,8 @@ export class AppComponent implements OnInit {
 
   loadRoutes() {
     this.http.get('assets/routes.json').subscribe((data: any) => {
-      this.jeepneyRoutes = data.jeepneyRoutes;
-      this.busRoutes = data.busRoutes;
+      this.jeepneyRoutes = data.routes.jeepney;
+      this.busRoutes = data.routes.bus;
     });
   }
 
@@ -340,37 +340,41 @@ export class AppComponent implements OnInit {
     const routes = [...this.jeepneyRoutes, ...this.busRoutes];
 
     this.filteredRoutes = routes.filter((route) => {
-      const hasStartStop = route.stops.some((stop: any) => this.isNearby(this.currentLocation!, stop));
-      const hasEndStop = route.stops.some((stop: any) => this.isNearby(this.destination!, stop));
-      return hasStartStop && hasEndStop; // Only include routes connecting current and destination
+      const hasStartWaypoint = route.waypoints.some((waypoint: string) => this.isNearby(this.currentLocation!, this.parseWaypoint(waypoint)));
+      const hasEndWaypoint = route.waypoints.some((waypoint: string) => this.isNearby(this.destination!, this.parseWaypoint(waypoint)));
+      return hasStartWaypoint && hasEndWaypoint; // Only include routes connecting current and destination
     });
 
     this.displayRoutes();
   }
 
+  parseWaypoint(waypoint: string): google.maps.LatLngLiteral {
+    const [lat, lng] = waypoint.split(',').map(coord => parseFloat(coord.trim()));
+    return { lat, lng };
+  }
 
   /*------------------------------------------
   IsNearby Function to Check if Location is Nearby
   --------------------------------------------*/
 
-  isNearby(location: google.maps.LatLngLiteral, stop: any, threshold = 0.01): boolean {
+  isNearby(location: google.maps.LatLngLiteral, waypoint: google.maps.LatLngLiteral, threshold = 0.05): boolean {
     const toRadians = (degrees: number) => degrees * (Math.PI / 180);
-
+  
     const lat1 = toRadians(location.lat);
     const lng1 = toRadians(location.lng);
-    const lat2 = toRadians(stop.latitude);
-    const lng2 = toRadians(stop.longitude);
-
+    const lat2 = toRadians(waypoint.lat);
+    const lng2 = toRadians(waypoint.lng);
+  
     const dLat = lat2 - lat1;
     const dLng = lng2 - lng1;
-
+  
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(lat1) * Math.cos(lat2) *
       Math.sin(dLng / 2) * Math.sin(dLng / 2);
-
+  
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = 6371 * c; // Radius of Earth in kilometers
-
+  
     return distance <= threshold;
   }
 
@@ -380,72 +384,67 @@ export class AppComponent implements OnInit {
 
   displayRoutes() {
     this.filteredRoutes.forEach((route) => {
-      const filteredStops = route.stops.filter((stop: any) =>
-        this.isNearby(this.currentLocation!, stop) || this.isNearby(this.destination!, stop)
+      const filteredWaypoints = route.waypoints.filter((waypoint: string) =>
+        this.isNearby(this.currentLocation!, this.parseWaypoint(waypoint)) || this.isNearby(this.destination!, this.parseWaypoint(waypoint))
       );
 
-      // Add markers for only the relevant stops
-      filteredStops.forEach((stop: any) => {
-        this.addMarker({ lat: stop.latitude, lng: stop.longitude }, route.routeName);
+      // Add markers for only the relevant waypoints
+      filteredWaypoints.forEach((waypoint: string) => {
+        const location = this.parseWaypoint(waypoint);
+        this.addMarker(location, route.routeName);
       });
     });
   }
 
 
-/*------------------------------------------
-  Navigate to Destination
-  --------------------------------------------*/
+  /*------------------------------------------
+    Navigate to Destination
+    --------------------------------------------*/
   navigateToDestination() {
     console.log('Navigating to destination');
     if (!this.currentLocation || !this.destination) {
       alert('Please set both current location and destination.');
       return;
     }
-  
+
     // Clear the map before displaying new routes
     this.clearMap();
-  
-    const nearestStartStop = this.findNearestStop(this.currentLocation);
-    const nearestEndStop = this.findNearestStop(this.destination);
-  
-    if (!nearestStartStop || !nearestEndStop) {
-      alert('No nearby stops found for either current location or destination.');
+
+    const nearestStartWaypoint = this.findNearestStop(this.currentLocation);
+    const nearestEndWaypoint = this.findNearestStop(this.destination);
+
+    if (!nearestStartWaypoint || !nearestEndWaypoint) {
+      alert('No nearby waypoints found for either current location or destination.');
       return;
     }
-  
-    // Show walking path to the nearest start stop
-    this.displayWalkingPath(this.currentLocation, {
-      lat: nearestStartStop.latitude,
-      lng: nearestStartStop.longitude,
-    });
-  
-    // Find and display transit route
-    const routePath = this.findRoutePath(nearestStartStop, nearestEndStop);
-    if (!routePath.length) {
+
+    // Show walking path to the nearest start waypoint
+    this.displayWalkingPath(this.currentLocation, nearestStartWaypoint);
+
+    // Find the route path between the nearest waypoints
+    const routePath = this.findRoutePath(nearestStartWaypoint, nearestEndWaypoint);
+    if (routePath.path.length === 0) {
       alert('No route found connecting the selected stops.');
       return;
     }
     this.displayRoutePath(routePath);
-  
-    // Show walking path from the last stop to the destination
-    this.displayWalkingPath(
-      { lat: nearestEndStop.latitude, lng: nearestEndStop.longitude },
-      this.destination
-    );
-  
-    // Zoom in on the destination first
-    console.log('Centering map on destination:', this.destination);
-    this.map.setCenter(this.destination);
-    this.map.setZoom(18); // Zoom in to level 18
-  
-    // After a few seconds, pan and zoom to the user's origin
-    setTimeout(() => {
-      console.log('Centering map on current location:', this.currentLocation);
-      this.map.panTo(this.currentLocation);
-      this.map.setZoom(18); // Zoom in to level 16
-    }, 3000); // 3-second delay
+
+    // Show walking path from the nearest end waypoint to the destination
+    this.displayWalkingPath(nearestEndWaypoint, this.destination);
+
+    // // Zoom in on the destination first
+    // console.log('Centering map on destination:', this.destination);
+    // this.map.setCenter(this.destination);
+    // this.map.setZoom(18); // Zoom in to level 18
+
+    // // After a few seconds, pan and zoom to the user's origin
+    // setTimeout(() => {
+    //   console.log('Centering map on current location:', this.currentLocation);
+    //   this.map.panTo(this.currentLocation);
+    //   this.map.setZoom(18); // Zoom in to level 16
+    // }, 3000); // 3-second delay
   }
-  
+
 
   /*------------------------------------------
   Display Walking Path on Map
@@ -494,104 +493,100 @@ export class AppComponent implements OnInit {
   Find Nearest Stop
   --------------------------------------------*/
 
-  findNearestStop(location: google.maps.LatLngLiteral): any | null {
-    const allStops = [...this.jeepneyRoutes, ...this.busRoutes]
-      .flatMap((route) => route.stops);
+  findNearestStop(location: google.maps.LatLngLiteral): google.maps.LatLngLiteral | null {
+    const allWaypoints = [...this.jeepneyRoutes, ...this.busRoutes]
+      .flatMap((route) => route.waypoints)
+      .map(this.parseWaypoint);
 
-    let nearestStop = null;
+    let nearestWaypoint = null;
     let minDistance = Infinity;
 
-    allStops.forEach((stop) => {
+    allWaypoints.forEach((waypoint) => {
       const distance = Math.sqrt(
-        Math.pow(location.lat - stop.latitude, 2) + Math.pow(location.lng - stop.longitude, 2)
+        Math.pow(location.lat - waypoint.lat, 2) + Math.pow(location.lng - waypoint.lng, 2)
       );
 
       if (distance < minDistance) {
         minDistance = distance;
-        nearestStop = stop;
+        nearestWaypoint = waypoint;
       }
     });
 
-    return nearestStop;
+    return nearestWaypoint;
   }
 
   /*------------------------------------------
   Find Route Path
   --------------------------------------------*/
 
-  findRoutePath(startStop: any, endStop: any): any[] {
-    // Determine if the user is northbound or southbound based on latitude comparison
-    const isNorthbound = startStop.latitude < endStop.latitude;  // Current location is south of destination, so traveling northbound
-    const isSouthbound = startStop.latitude > endStop.latitude;  // Current location is north of destination, so traveling southbound
-
+  findRoutePath(startWaypoint: google.maps.LatLngLiteral, endWaypoint: google.maps.LatLngLiteral): { path: google.maps.LatLngLiteral[], direction: string } {
+    const isNorthbound = startWaypoint.lat < endWaypoint.lat;  // Current location is south of destination, so traveling northbound
+    const isSouthbound = startWaypoint.lat > endWaypoint.lat;  // Current location is north of destination, so traveling southbound
+  
     for (const route of [...this.jeepneyRoutes, ...this.busRoutes]) {
-      const startIndex = route.stops.findIndex(
-        (stop: any) => stop.id === startStop.id
+      const startIndex = route.waypoints.findIndex(
+        (waypoint: string) => this.isNearby(this.parseWaypoint(waypoint), startWaypoint)
       );
-      const endIndex = route.stops.findIndex(
-        (stop: any) => stop.id === endStop.id
+      const endIndex = route.waypoints.findIndex(
+        (waypoint: string) => this.isNearby(this.parseWaypoint(waypoint), endWaypoint)
       );
-
-      // Check if both stops are on the same route
+  
+      // Check if both waypoints are on the same route
       if (startIndex !== -1 && endIndex !== -1) {
         if (isNorthbound) {
           // For Northbound Routes: Start comes before End (startIndex <= endIndex)
           if (startIndex <= endIndex) {
-            return route.stops.slice(startIndex, endIndex + 1); // Northbound route
+            console.log('Using Northbound data');
+            return { path: route.waypoints.slice(startIndex, endIndex + 1).map(this.parseWaypoint), direction: 'NB' }; // Northbound route
           }
         } else if (isSouthbound) {
           // For Southbound Routes: End comes before Start (startIndex > endIndex)
           if (startIndex >= endIndex) {
-            return route.stops.slice(endIndex, startIndex + 1); // Southbound route (no reversal needed)
+            console.log('Using Southbound data');
+            return { path: route.waypoints.slice(endIndex, startIndex + 1).map(this.parseWaypoint).reverse(), direction: 'SB' }; // Southbound route
           }
         }
       }
     }
-    return [];
+    return { path: [], direction: '' };
   }
-
 
 
   /*------------------------------------------
   Get Route Information
   --------------------------------------------*/
 
-  displayRoutePath(routePath: any[]) {
-    if (routePath.length < 2) {
-      console.error("Route path must have at least two stops to display a route.");
+  displayRoutePath(routePath: { path: google.maps.LatLngLiteral[], direction: string }) {
+    if (routePath.path.length < 2) {
+      console.error("Route path must have at least two waypoints to display a route.");
       return;
     }
-
-    // Iterate through pairs of stops and request directions for each segment
-    for (let i = 0; i < routePath.length - 1; i++) {
-      const origin = {
-        lat: routePath[i].latitude,
-        lng: routePath[i].longitude,
-      };
-
-      const destination = {
-        lat: routePath[i + 1].latitude,
-        lng: routePath[i + 1].longitude,
-      };
-
+  
+    const pathColor = routePath.direction === 'NB' ? '#1d58c6' : '#FF0000'; // Blue for NB, Red for SB
+  
+    // Iterate through pairs of waypoints and request directions for each segment
+    for (let i = 0; i < routePath.path.length - 1; i++) {
+      const origin = routePath.path[i];
+      const destination = routePath.path[i + 1];
+  
       const request = {
         origin: origin,
         destination: destination,
         travelMode: google.maps.TravelMode.DRIVING, // Use TRANSIT for routes
       };
-
+  
       this.directionsService.route(request, (result: any, status: any) => {
         if (status === google.maps.DirectionsStatus.OK) {
           const segmentRenderer = new google.maps.DirectionsRenderer({
             map: this.map,
             preserveViewport: true,
-            suppressMarkers: true, // Prevent duplicate markers for stops
+            suppressMarkers: true, // Prevent duplicate markers for waypoints
             polylineOptions: {
-              strokeColor: '#1d58c6', // Red for the route path
+              strokeColor: pathColor, // Color based on direction
               strokeWeight: 5, // Thickness of the path
             },
           });
-
+  
           segmentRenderer.setDirections(result);
           this.routeRenderers.push(segmentRenderer);
         } else {
@@ -599,10 +594,10 @@ export class AppComponent implements OnInit {
         }
       });
     }
-
-    // Add markers for each stop along the path
-    routePath.forEach((stop: any) => {
-      this.addMarker({ lat: stop.latitude, lng: stop.longitude }, stop.name);
+  
+    // Add markers for each waypoint along the path
+    routePath.path.forEach((waypoint: google.maps.LatLngLiteral) => {
+      this.addMarker(waypoint, 'Waypoint');
     });
   }
 }
