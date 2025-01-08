@@ -405,54 +405,60 @@ export class AppComponent implements OnInit {
     });
   }
 
+  /*------------------------------------------
+  Check if Location is within Clark Bounds
+  --------------------------------------------*/
+  isWithinClarkBounds(location: google.maps.LatLngLiteral): boolean {
+    return this.clarkBounds.contains(new google.maps.LatLng(location.lat, location.lng));
+  }
+
 
   /*------------------------------------------
     Navigate to Destination
     --------------------------------------------*/
-  navigateToDestination() {
-    console.log('Navigating to destination');
-    if (!this.currentLocation || !this.destination) {
-      alert('Please set both current location and destination.');
-      return;
+    navigateToDestination() {
+      console.log('Navigating to destination');
+      if (!this.currentLocation || !this.destination) {
+        alert('Please set both current location and destination.');
+        return;
+      }
+    
+      // Check if current location and destination are within Clark bounds
+      if (!this.isWithinClarkBounds(this.currentLocation)) {
+        alert('Your current location is not within Clark bounds.');
+        return;
+      }
+    
+      if (!this.isWithinClarkBounds(this.destination)) {
+        alert('Your destination is not within Clark bounds.');
+        return;
+      }
+    
+      // Clear the map before displaying new routes
+      this.clearMap();
+    
+      const nearestStartWaypoint = this.findNearestStop(this.currentLocation);
+      const nearestEndWaypoint = this.findNearestStop(this.destination);
+    
+      if (!nearestStartWaypoint || !nearestEndWaypoint) {
+        alert('No nearby waypoints found for either current location or destination.');
+        return;
+      }
+    
+      // Show walking path to the nearest start waypoint
+      this.displayWalkingPath(this.currentLocation, nearestStartWaypoint);
+    
+      // Find the route path between the nearest waypoints
+      const routePath = this.findRoutePath(nearestStartWaypoint, nearestEndWaypoint);
+      if (routePath.path.length === 0) {
+        alert('No route found connecting the selected stops.');
+        return;
+      }
+      this.displayRoutePath(routePath);
+    
+      // Show walking path from the nearest end waypoint to the destination
+      this.displayWalkingPath(nearestEndWaypoint, this.destination);
     }
-
-    // Clear the map before displaying new routes
-    this.clearMap();
-
-    const nearestStartWaypoint = this.findNearestStop(this.currentLocation);
-    const nearestEndWaypoint = this.findNearestStop(this.destination);
-
-    if (!nearestStartWaypoint || !nearestEndWaypoint) {
-      alert('No nearby waypoints found for either current location or destination.');
-      return;
-    }
-
-    // Show walking path to the nearest start waypoint
-    this.displayWalkingPath(this.currentLocation, nearestStartWaypoint);
-
-    // Find the route path between the nearest waypoints
-    const routePath = this.findRoutePath(nearestStartWaypoint, nearestEndWaypoint);
-    if (routePath.path.length === 0) {
-      alert('No route found connecting the selected stops.');
-      return;
-    }
-    this.displayRoutePath(routePath);
-
-    // Show walking path from the nearest end waypoint to the destination
-    this.displayWalkingPath(nearestEndWaypoint, this.destination);
-
-    // // Zoom in on the destination first
-    // console.log('Centering map on destination:', this.destination);
-    // this.map.setCenter(this.destination);
-    // this.map.setZoom(18); // Zoom in to level 18
-
-    // // After a few seconds, pan and zoom to the user's origin
-    // setTimeout(() => {
-    //   console.log('Centering map on current location:', this.currentLocation);
-    //   this.map.panTo(this.currentLocation);
-    //   this.map.setZoom(18); // Zoom in to level 16
-    // }, 3000); // 3-second delay
-  }
 
 
   /*------------------------------------------
