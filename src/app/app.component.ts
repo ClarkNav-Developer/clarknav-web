@@ -108,8 +108,8 @@ export class AppComponent implements OnInit {
         });
   
         // Create and display the Traffic Layer
-        const trafficLayer = new google.maps.TrafficLayer();
-        trafficLayer.setMap(this.map);
+        // const trafficLayer = new google.maps.TrafficLayer();
+        // trafficLayer.setMap(this.map);
       } catch (error) {
         console.error('Error initializing map:', error);
       }
