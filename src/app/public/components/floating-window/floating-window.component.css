@@ -1,0 +1,36 @@
+/* desktop view */
+@media screen and (min-width: 431px) {
+    .account-button {
+        z-index: 1000;
+        position: absolute;
+        right: 10px;
+    }
+
+    .account-button button {
+        padding: 30px;
+        border-radius: 200px;
+    }
+}
+
+/* mobile view */
+@media screen and (max-width: 430px) {
+    .nav-container {
+        position: absolute;
+        z-index: 1000;
+        bottom: 0;
+        width: 100%;
+        background-color: white;
+        padding: 15px 0;
+    }
+
+    .nav-container-box {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-evenly;
+    }
+
+    .menu-box button {
+        padding: 10px;
+    }
+}

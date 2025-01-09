@@ -1,0 +1,68 @@
+<!-- desktop view -->
+<div class="desktop-view">
+    <!-- Search bar for Current Location and Destination -->
+    <div class="display-searchbox">
+        <!-- Editable Current Location -->
+        <div>
+            <input type="text" id="current-location-box" class="form-control" placeholder="Enter your current location" />
+        </div>
+
+        <!-- Destination Search -->
+        <div>
+            <input type="text" id="search-box" class="form-control" placeholder="Search for a destination" />
+        </div>
+
+        <!-- Use Current Location Button -->
+        <div>
+            <button (click)="useMyLocation()">Use My Location</button>
+        </div>
+
+        <!-- Navigate Button -->
+        <div class="navigate-button">
+            <button (click)="navigateToDestination()">Navigate</button>
+        </div>
+
+        <!-- route list -->
+        <div class="route-list">
+
+        </div>
+    </div>
+</div>
+
+<!-- mobile view -->
+<div class="mobile-view">
+    <!-- search box for searching location -->
+    <div class="mobile-search-box-container">
+        <input type="text" id="search-location-box-mobile" class="form-control" placeholder="Enter your current location" style="width: 90%;" />
+    </div>
+
+    <!-- Search bar for Current Location and Destination -->
+    <div class="mobile-display-searchbox" id="mobileDisplaySearchbox">
+        <!-- Editable Current Location -->
+        <!-- Current Location -->
+        <div class="current-location">
+            <input type="text" id="current-location-box-mobile" class="form-control" placeholder="Enter your current location" style="width: 90%;" />
+            <button (click)="useMyLocation()">O</button>
+        </div>
+
+        <!-- Destination -->
+        <div class="destination">
+            <input type="text" id="search-box-mobile" class="form-control" placeholder="Search for a destination" style="width: 90%;" />
+            <button (click)="reverseLocation()">↕</button>
+        </div>
+
+        <!-- Navigate Button -->
+        <div class="navigate-button">
+            <button (click)="navigateToDestination()">Navigate</button>
+        </div>
+
+        <!-- route list -->
+        <div class="route-list">
+
+        </div>
+    </div>
+
+    <div class="navigation-button">
+        <button onclick="showSearchbox()">Navigate</button>
+    </div>
+</div>

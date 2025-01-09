@@ -1,0 +1,128 @@
+/* desktop view */
+@media screen and (min-width: 431px) {
+    .mobile-view {
+        display: none;
+    }
+
+    /* Search Box Styling */
+    .display-searchbox {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        width: 17%;
+        /* Adjusted width for better visibility */
+        background-color: white;
+        padding: 20px;
+        /* Added more padding for spacing */
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        z-index: 1000;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        /* Added subtle shadow for better visibility */
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        /* Space between inputs and buttons */
+    }
+
+    /* Input Fields */
+    .display-searchbox input {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        /* Ensure padding is included in width */
+    }
+
+    /* Button Styling */
+    .display-searchbox button {
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        width: 100%;
+        /* Ensures buttons take full width of the container */
+        box-sizing: border-box;
+    }
+
+    .display-searchbox button:hover {
+        background-color: #0056b3;
+        /* Darker shade on hover */
+    }
+
+    /* Navigate Button */
+    .navigate-button button {
+        background-color: #28a745;
+        /* Green background for the Navigate button */
+        color: white;
+    }
+
+    .navigate-button button:hover {
+        background-color: #218838;
+        /* Darker green on hover */
+    }
+}
+
+/* mobile view */
+@media screen and (max-width: 430px) {
+    .desktop-view {
+        display: none;
+    }
+
+    .mobile-search-box-container {
+        position: absolute;
+        z-index: 1000;
+        width: 90%;
+        padding: 10px;
+    }
+
+    .mobile-search-box-container input {
+        width: 100%;
+        padding: 10px 0;
+    }
+
+    .mobile-display-searchbox {
+        position: fixed;
+        width: calc(100% - 20px);
+        /* Subtracting the margin from the total width */
+        background-color: white;
+        padding: 10px;
+        margin: 10px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        z-index: 1000;
+        gap: 15px;
+        box-sizing: border-box;
+        /* Ensures padding and border are included in the width */
+    }
+
+    .mobile-display-searchbox button {
+        margin-left: 5px;
+        padding: 10px;
+    }
+
+    .current-location,
+    .destination {
+        display: flex;
+        justify-content: center;
+    }
+
+    .navigation-button {
+        z-index: 1000;
+        position: absolute;
+        bottom: 15%;
+        right: 10px;
+    }
+
+    .navigation-button button {
+        padding: 10px;
+    }
+}

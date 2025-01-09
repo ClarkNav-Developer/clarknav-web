@@ -12,6 +12,10 @@ import { AnnouncementComponent } from './announcement/announcement.component';
 import { PlannerComponent } from './planner/planner.component';
 import { RouteComponent } from './route/route.component';
 
+
+import { PublicModule } from './public/public.module';
+import { AdminModule } from './admin/admin.module';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,13 +24,15 @@ import { RouteComponent } from './route/route.component';
     BusRouteComponent,
     AnnouncementComponent,
     PlannerComponent,
-    RouteComponent,
+    RouteComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     GoogleMapsModule,
-    HttpClientModule // Add HttpClientModule here
+    HttpClientModule,
+    PublicModule,
+    AdminModule
   ],
   providers: [],
   bootstrap: [AppComponent]
