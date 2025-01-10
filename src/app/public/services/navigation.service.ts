@@ -67,7 +67,7 @@ export class NavigationService {
     }
 
     // Show walking path to the nearest start waypoint
-    this.mapService.displayWalkingPath(this.currentLocation, nearestStartWaypoint);
+    this.mapService.displayWalkingPath(this.currentLocation, nearestStartWaypoint, 'NB');
 
     // Find the route path between the nearest waypoints
     const routePath = this.findRoutePath(nearestStartWaypoint, nearestEndWaypoint);
@@ -78,7 +78,7 @@ export class NavigationService {
     this.mapService.displayRoutePath(routePath);
 
     // Show walking path from the nearest end waypoint to the destination
-    this.mapService.displayWalkingPath(nearestEndWaypoint, this.destination);
+    this.mapService.displayWalkingPath(nearestEndWaypoint, this.destination, routePath.direction);
   }
 
   isWithinClarkBounds(location: google.maps.LatLngLiteral): boolean {
@@ -108,33 +108,48 @@ export class NavigationService {
   }
 
   findRoutePath(startWaypoint: google.maps.LatLngLiteral, endWaypoint: google.maps.LatLngLiteral): { path: google.maps.LatLngLiteral[], direction: string } {
-    const isNorthbound = startWaypoint.lat < endWaypoint.lat;  // Current location is south of destination, so traveling northbound
-    const isSouthbound = startWaypoint.lat > endWaypoint.lat;  // Current location is north of destination, so traveling southbound
+    const routes = [...this.jeepneyRoutes, ...this.busRoutes];
+    let bestPath: google.maps.LatLngLiteral[] = [];
+    let bestDirection = '';
+    let minDistance = Infinity;
 
-    for (const route of [...this.jeepneyRoutes, ...this.busRoutes]) {
-      const startIndex = route.waypoints.findIndex(
-        (waypoint: string) => this.isNearby(this.parseWaypoint(waypoint), startWaypoint)
-      );
-      const endIndex = route.waypoints.findIndex(
-        (waypoint: string) => this.isNearby(this.parseWaypoint(waypoint), endWaypoint)
-      );
+    routes.forEach(route => {
+      const waypoints = route.waypoints.map(this.parseWaypoint);
+      const startIndex = waypoints.findIndex((waypoint: google.maps.LatLngLiteral) => this.isNearby(waypoint, startWaypoint));
+      const endIndex = waypoints.findIndex((waypoint: google.maps.LatLngLiteral) => this.isNearby(waypoint, endWaypoint));
 
-      // Check if both waypoints are on the same route
       if (startIndex !== -1 && endIndex !== -1) {
-        if (isNorthbound) {
-          // For Northbound Routes: Start comes before End (startIndex <= endIndex)
-          if (startIndex <= endIndex) {
-            return { path: route.waypoints.slice(startIndex, endIndex + 1).map(this.parseWaypoint), direction: 'NB' }; // Northbound route
-          }
-        } else if (isSouthbound) {
-          // For Southbound Routes: End comes before Start (startIndex > endIndex)
-          if (startIndex >= endIndex) {
-            return { path: route.waypoints.slice(endIndex, startIndex + 1).map(this.parseWaypoint).reverse(), direction: 'SB' }; // Southbound route
-          }
+        const path = this.findShortestPath(waypoints, startIndex, endIndex);
+        const distance = this.calculatePathDistance(path);
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          bestPath = path;
+          bestDirection = startIndex < endIndex ? 'NB' : 'SB';
         }
       }
+    });
+
+    return { path: bestPath, direction: bestDirection };
+  }
+
+  findShortestPath(waypoints: google.maps.LatLngLiteral[], startIndex: number, endIndex: number): google.maps.LatLngLiteral[] {
+    if (startIndex < endIndex) {
+      return waypoints.slice(startIndex, endIndex + 1);
+    } else {
+      return waypoints.slice(endIndex, startIndex + 1).reverse();
     }
-    return { path: [], direction: '' };
+  }
+
+  calculatePathDistance(path: google.maps.LatLngLiteral[]): number {
+    let distance = 0;
+    for (let i = 0; i < path.length - 1; i++) {
+      distance += google.maps.geometry.spherical.computeDistanceBetween(
+        new google.maps.LatLng(path[i].lat, path[i].lng),
+        new google.maps.LatLng(path[i + 1].lat, path[i + 1].lng)
+      );
+    }
+    return distance;
   }
 
   isNearby(location: google.maps.LatLngLiteral, waypoint: google.maps.LatLngLiteral, threshold = 0.05): boolean {
