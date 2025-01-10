@@ -1,30 +1,55 @@
 <!-- desktop view -->
 <div class="desktop-view">
-    <!-- Search bar for Current Location and Destination -->
-    <div class="display-searchbox">
-        <!-- Editable Current Location -->
-        <div>
-            <input type="text" id="current-location-box" class="form-control" placeholder="Enter your current location" />
-        </div>
-
-        <!-- Destination Search -->
-        <div>
-            <input type="text" id="search-box" class="form-control" placeholder="Search for a destination" />
-        </div>
-
-        <!-- Use Current Location Button -->
-        <div>
-            <button (click)="useMyLocation()">Use My Location</button>
-        </div>
-
-        <!-- Navigate Button -->
-        <div class="navigate-button">
-            <button (click)="navigateToDestination()">Navigate</button>
-        </div>
-
-        <!-- route list -->
-        <div class="route-list">
-
+    <div class="container">
+        <div class="search-panel">
+            <div class="header">
+                <div class="img-header">
+                    <img src="/public/circle-logo.png" alt="logo" />
+                </div>
+                <div class="icon-divider">
+                    <div class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="24px" fill="#1d58c6"><path d="M480.13-120q-74.67 0-140.41-28.34-65.73-28.34-114.36-76.92-48.63-48.58-76.99-114.26Q120-405.19 120-479.87q0-74.67 28.34-140.41 28.34-65.73 76.92-114.36 48.58-48.63 114.26-76.99Q405.19-840 479.87-840q74.67 0 140.41 28.34 65.73 28.34 114.36 76.92 48.63 48.58 76.99 114.26Q840-554.81 840-480.13q0 74.67-28.34 140.41-28.34 65.73-76.92 114.36-48.58 48.63-114.26 76.99Q554.81-120 480.13-120Z"/></svg>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="24px" fill="#CE0000"><path d="M480.18-494q24.82 0 42.32-17.68 17.5-17.67 17.5-42.5 0-24.82-17.68-42.32-17.67-17.5-42.5-17.5-24.82 0-42.32 17.68-17.5 17.67-17.5 42.5 0 24.82 17.68 42.32 17.67 17.5 42.5 17.5ZM480-131Q345-252 276-357t-69-190q0-120 78.5-200.5T480-828q116 0 194.5 80.5T753-547q0 85-69 190T480-131Z"/></svg>
+                    </div>
+                </div>
+                <div class="search-bar">
+                    <input type="text" id="current-location-box" class="input" placeholder="Origin" />
+                    <input type="text" id="search-box" class="input" placeholder="Destination" />
+                </div>
+                <div class="reverse-button">
+                    <button (click)="reverseLocation()"><svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="24px" fill="#ACACAC"><path d="M352.31-467.69v-295.46L228.54-639.38 200-667.69 372.31-840l172.31 172.31-28.54 28.31-123.77-123.77v295.46h-40ZM586.92-120l-172.3-172.31 28.53-28.31 123.77 123.77v-295.46h40v295.46l123.77-123.77 28.54 28.31L586.92-120Z"/></svg></button>
+                </div>
+            </div>
+            <div class="transport-options">
+                <button class="option active">All</button>
+                <button class="option">Jeepney</button>
+                <button class="option">Taxi</button>
+                <button class="option">Loop</button>
+            </div>
+            <div class="routes">
+                <div class="route">
+                    <p class="time"><strong>10:00 AM - 10:30 AM</strong> | <span class="fare">Estimated fare: ₱14</span></p>
+                    <p><span class="location">Clark Main Gate</span> ➡️ <span class="location">Clark Outsourcing</span></p>
+                    <p class="duration">30 mins</p>
+                </div>
+                <div class="route">
+                    <p class="time"><strong>10:00 AM - 10:35 AM</strong> | <span class="fare">Estimated fare: ₱30</span></p>
+                    <p><span class="location">Clark Main Gate</span> ➡️ <span class="location">CDC Park</span></p>
+                    <p class="duration">30 mins</p>
+                </div>
+                <div class="route">
+                    <p class="time"><strong>10:00 AM - 11:20 AM</strong> | <span class="fare">Estimated fare: ₱0</span></p>
+                    <p><span class="location">Clark Main Gate</span> ➡️ <span class="location">Clark Outsourcing</span></p>
+                    <p class="duration">1 hour 20 mins</p>
+                </div>
+            </div>
+            <div class="buttons">
+                <button (click)="useMyLocation()">Use My Location</button>
+                <button (click)="navigateToDestination()">Navigate</button>
+            </div>
         </div>
     </div>
 </div>
