@@ -12,8 +12,11 @@ declare var google: any;
 export class SearchComponent implements OnInit, AfterViewInit {
   currentLocation: google.maps.LatLngLiteral | null = null;
   destination: google.maps.LatLngLiteral | null = null;
+  geocoder: any;
 
-  constructor(private mapService: MapService, private navigationService: NavigationService) {}
+  constructor(private mapService: MapService, private navigationService: NavigationService) {
+    this.geocoder = new google.maps.Geocoder();
+  }
 
   ngOnInit(): void {
     this.initAutocomplete();
@@ -136,33 +139,57 @@ export class SearchComponent implements OnInit, AfterViewInit {
       this.currentLocation = this.destination;
       this.destination = temp;
 
-      // Update the input fields
-      const currentLocationInput = document.getElementById('current-location-box') as HTMLInputElement;
-      const destinationInput = document.getElementById('search-box') as HTMLInputElement;
-      const currentLocationInputMobile = document.getElementById('current-location-box-mobile') as HTMLInputElement;
-      const destinationInputMobile = document.getElementById('search-box-mobile') as HTMLInputElement;
+      // Update the input fields with addresses
+      this.geocodeLatLng(this.currentLocation, (address: string) => {
+        const currentLocationInput = document.getElementById('current-location-box') as HTMLInputElement;
+        const currentLocationInputMobile = document.getElementById('current-location-box-mobile') as HTMLInputElement;
 
-      if (currentLocationInput) {
-        currentLocationInput.value = `Lat: ${this.currentLocation.lat}, Lng: ${this.currentLocation.lng}`;
-      }
+        if (currentLocationInput) {
+          currentLocationInput.value = address;
+        }
 
-      if (destinationInput) {
-        destinationInput.value = `Lat: ${this.destination.lat}, Lng: ${this.destination.lng}`;
-      }
+        if (currentLocationInputMobile) {
+          currentLocationInputMobile.value = address;
+        }
+      });
 
-      if (currentLocationInputMobile) {
-        currentLocationInputMobile.value = `Lat: ${this.currentLocation.lat}, Lng: ${this.currentLocation.lng}`;
-      }
+      this.geocodeLatLng(this.destination, (address: string) => {
+        const destinationInput = document.getElementById('search-box') as HTMLInputElement;
+        const destinationInputMobile = document.getElementById('search-box-mobile') as HTMLInputElement;
 
-      if (destinationInputMobile) {
-        destinationInputMobile.value = `Lat: ${this.destination.lat}, Lng: ${this.destination.lng}`;
-      }
+        if (destinationInput) {
+          destinationInput.value = address;
+        }
+
+        if (destinationInputMobile) {
+          destinationInputMobile.value = address;
+        }
+      });
 
       // Re-center the map
       this.mapService.map.setCenter(this.currentLocation);
     } else {
       alert('Both current location and destination must be set to reverse.');
     }
+  }
+
+  /*------------------------------------------
+  Geocode LatLng to Address
+  --------------------------------------------*/
+  geocodeLatLng(latlng: google.maps.LatLngLiteral, callback: (address: string) => void) {
+    this.geocoder.geocode({ location: latlng }, (results: any, status: any) => {
+      if (status === 'OK') {
+        if (results[0]) {
+          callback(results[0].formatted_address);
+        } else {
+          console.error('No results found');
+          callback('Unknown location');
+        }
+      } else {
+        console.error('Geocoder failed due to: ' + status);
+        callback('Unknown location');
+      }
+    });
   }
 
   /*------------------------------------------
@@ -178,16 +205,18 @@ export class SearchComponent implements OnInit, AfterViewInit {
           };
 
           // Update input fields for both desktop and mobile views
-          const desktopInput = document.getElementById('current-location-box') as HTMLInputElement;
-          const mobileInput = document.getElementById('current-location-box-mobile') as HTMLInputElement;
+          this.geocodeLatLng(this.currentLocation, (address: string) => {
+            const desktopInput = document.getElementById('current-location-box') as HTMLInputElement;
+            const mobileInput = document.getElementById('current-location-box-mobile') as HTMLInputElement;
 
-          if (desktopInput) {
-            desktopInput.value = `Lat: ${this.currentLocation.lat}, Lng: ${this.currentLocation.lng}`;
-          }
+            if (desktopInput) {
+              desktopInput.value = address;
+            }
 
-          if (mobileInput) {
-            mobileInput.value = `Lat: ${this.currentLocation.lat}, Lng: ${this.currentLocation.lng}`;
-          }
+            if (mobileInput) {
+              mobileInput.value = address;
+            }
+          });
 
           // Add a marker and center the map on the current location
           this.mapService.addMarker(this.currentLocation, 'Your Location');
