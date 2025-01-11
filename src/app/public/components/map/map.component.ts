@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MapService } from '../../services/map.service';
+import { NavigationService } from '../../services/navigation.service';
 
 declare var google: any;
 
@@ -10,7 +11,7 @@ declare var google: any;
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit {
-  constructor(private http: HttpClient, private mapService: MapService) { }
+  constructor(private http: HttpClient, private mapService: MapService, private navigationService: NavigationService) { }
 
   ngOnInit(): void {
     this.loadMapStyle().subscribe(style => {
@@ -45,9 +46,13 @@ export class MapComponent implements OnInit {
 
         this.mapService.setMap(map);
 
-        // Create and display the Traffic Layer
+         // Create and display the Traffic Layer
         // const trafficLayer = new google.maps.TrafficLayer();
         // trafficLayer.setMap(this.map);
+
+        // Load routes and display all jeepney waypoints
+        this.navigationService.loadRoutes();
+        this.navigationService.displayAllJeepneyWaypoints();
       } catch (error) {
         console.error('Error initializing map:', error);
       }
