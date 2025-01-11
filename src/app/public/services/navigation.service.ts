@@ -99,41 +99,41 @@ export class NavigationService {
   findNearestStop(location: google.maps.LatLngLiteral): google.maps.LatLngLiteral | null {
     let nearestWaypoint = null;
     let minDistance = Infinity;
-  
+
     // Prioritize extension waypoints
     this.jeepneyRoutes.forEach(route => {
       route.extensions?.forEach((extension: any) => {
         const extensionStartPoint = this.parseWaypoint(extension.startPoint);
-        const distance = Math.sqrt(
-          Math.pow(location.lat - extensionStartPoint.lat, 2) +
-          Math.pow(location.lng - extensionStartPoint.lng, 2)
+        const distance = google.maps.geometry.spherical.computeDistanceBetween(
+          new google.maps.LatLng(location.lat, location.lng),
+          new google.maps.LatLng(extensionStartPoint.lat, extensionStartPoint.lng)
         );
-  
+
         if (distance < minDistance) {
           minDistance = distance;
           nearestWaypoint = extensionStartPoint;
         }
       });
     });
-  
+
     if (minDistance === 0) return nearestWaypoint; // Return immediately if an extension is nearby
-  
+
     // Check all waypoints
     const allWaypoints = [...this.jeepneyRoutes, ...this.busRoutes]
       .flatMap(route => route.waypoints)
       .map(this.parseWaypoint);
-  
+
     allWaypoints.forEach(waypoint => {
-      const distance = Math.sqrt(
-        Math.pow(location.lat - waypoint.lat, 2) +
-        Math.pow(location.lng - waypoint.lng, 2)
+      const distance = google.maps.geometry.spherical.computeDistanceBetween(
+        new google.maps.LatLng(location.lat, location.lng),
+        new google.maps.LatLng(waypoint.lat, waypoint.lng)
       );
       if (distance < minDistance) {
         minDistance = distance;
         nearestWaypoint = waypoint;
       }
     });
-  
+
     return nearestWaypoint;
   }
   
