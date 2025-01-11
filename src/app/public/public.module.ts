@@ -8,6 +8,7 @@ import { MapComponent } from './components/map/map.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
 import { SearchComponent } from './components/search/search.component';
 import { LayoutComponent } from './layout/layout.component';
+import { BottomNavigationComponent } from './components/bottom-navigation/bottom-navigation.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { LayoutComponent } from './layout/layout.component';
     NavigationComponent,
     FloatingWindowComponent,
     AboutComponent,
-    LayoutComponent
+    LayoutComponent,
+    BottomNavigationComponent
   ],
   imports: [
     CommonModule,
