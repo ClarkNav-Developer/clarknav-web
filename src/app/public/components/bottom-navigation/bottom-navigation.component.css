@@ -1,11 +1,12 @@
 @media screen and (max-width: 430px) {
     .container-mobile {
-    z-index: 1000;
-    position: absolute;
-    bottom: -1px;
-    width: 100%;
-    background-color: white;
-    padding: 20px 0;
+        z-index: 1000;
+        position: absolute;
+        bottom: -1px;
+        width: 100%;
+        background-color: rgb(255, 255, 255, 0.8);
+        padding: 10px 0;
+        backdrop-filter: blur(15px);
     }
 
     .bottom-nav-mobile {
