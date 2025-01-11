@@ -160,57 +160,6 @@
         display: none;
     }
 
-    /* .mobile-search-box-container {
-        position: absolute;
-        z-index: 1000;
-        width: 90%;
-        padding: 10px;
-    }
-
-    .mobile-search-box-container input {
-        width: 100%;
-        padding: 10px 0;
-    }
-
-    .mobile-display-searchbox {
-        position: fixed;
-        width: calc(100% - 20px);
-        background-color: white;
-        padding: 10px;
-        margin: 10px;
-        border: 2px solid #ccc;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-        z-index: 1000;
-        gap: 15px;
-        box-sizing: border-box;
-    }
-
-    .mobile-display-searchbox button {
-        margin-left: 5px;
-        padding: 10px;
-    }
-
-    .current-location,
-    .destination {
-        display: flex;
-        justify-content: center;
-    }
-
-    .navigation-button {
-        z-index: 1000;
-        position: absolute;
-        bottom: 15%;
-        right: 10px;
-    }
-
-    .navigation-button button {
-        padding: 10px;
-    }
-    */
-
     .mobile-container {
         position: absolute;
         z-index: 1000;
@@ -266,5 +215,44 @@
         border: none;
         background-color: white;
         cursor: pointer;
+    }
+
+    .side-nav-mobile {
+        z-index: 1000;
+        position: absolute;
+        bottom: 15%;
+        right: 10px;
+    }
+
+    .side-nav-container-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+
+    
+    .current-loc-button button {
+        border-radius: 50%;
+        width: 50px; /* Adjust the width and height to make it a perfect circle */
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0; /* Remove padding to ensure the content is centered */
+        background-color: white;
+        border: 1px solid #ACACAC;
+    }
+
+    .navigation-button button {
+        border-radius: 10px;
+        /* padding: 10px; */
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #007bff;
+        border: none;
     }
 }
