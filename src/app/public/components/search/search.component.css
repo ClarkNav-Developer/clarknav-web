@@ -160,7 +160,7 @@
         display: none;
     }
 
-    .mobile-search-box-container {
+    /* .mobile-search-box-container {
         position: absolute;
         z-index: 1000;
         width: 90%;
@@ -175,7 +175,6 @@
     .mobile-display-searchbox {
         position: fixed;
         width: calc(100% - 20px);
-        /* Subtracting the margin from the total width */
         background-color: white;
         padding: 10px;
         margin: 10px;
@@ -187,7 +186,6 @@
         z-index: 1000;
         gap: 15px;
         box-sizing: border-box;
-        /* Ensures padding and border are included in the width */
     }
 
     .mobile-display-searchbox button {
@@ -211,6 +209,7 @@
     .navigation-button button {
         padding: 10px;
     }
+    */
 
     .mobile-container {
         position: absolute;

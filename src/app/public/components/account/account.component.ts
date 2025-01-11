@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FloatingWindowService } from '../floating-window.service';
+import { FloatingWindowService } from '../../../floating-window.service';
 
 @Component({
   selector: 'app-account',
@@ -9,7 +9,8 @@ import { FloatingWindowService } from '../floating-window.service';
 export class AccountComponent {
   constructor(private floatingWindowService: FloatingWindowService) {}
 
-  closeWindow() {
+  closeWindow(event: Event) {
+    event.stopPropagation();
     this.floatingWindowService.close();
   }
 }

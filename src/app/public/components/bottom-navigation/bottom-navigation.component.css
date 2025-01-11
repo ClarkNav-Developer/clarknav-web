@@ -1,0 +1,28 @@
+@media screen and (max-width: 430px) {
+    .container-mobile {
+    z-index: 1000;
+    position: absolute;
+    bottom: -1px;
+    width: 100%;
+    background-color: white;
+    padding: 20px 0;
+    }
+
+    .bottom-nav-mobile {
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    .menu-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .menu-container button {
+        background-color: transparent;
+        border: none;
+        color: black;
+        /* font-size: 1.5rem; */
+    }
+}

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FloatingWindowService } from '../floating-window.service';
+import { FloatingWindowService } from '../../../floating-window.service';
 
 @Component({
   selector: 'app-route',
@@ -7,9 +7,10 @@ import { FloatingWindowService } from '../floating-window.service';
   styleUrl: './route.component.css'
 })
 export class RouteComponent {
-  constructor(private floatingWindowService: FloatingWindowService) {}
+  constructor(public floatingWindowService: FloatingWindowService) {}
 
-  closeWindow() {
+  closeWindow(event: Event) {
+    event.stopPropagation();
     this.floatingWindowService.close();
   }
 }

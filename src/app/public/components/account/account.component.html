@@ -2,16 +2,16 @@
   <div class="floating-window">
     <h2>Account Component</h2>
     <p>This is your account component in a floating window!</p>
-    <button (click)="closeWindow()">Close</button>
+    <button (click)="closeWindow($event)">Close</button>
   </div>
 </div>
 
 <div class="mobile-view">
-  <div class="floating-overlay" (click)="closeWindow()"></div>
+  <div class="floating-overlay" (click)="closeWindow($event)"></div>
   <div class="floating-window">
     <h2>Account Component</h2>
     <p>This is your account component in a floating window!</p>
-    <button class="close-btn" (click)="closeWindow()">Close</button>
+    <button class="close-btn" (click)="closeWindow($event)">Close</button>
     <div class="content">
       <h2>Account Component</h2>
       <h2>Account Component</h2>
