@@ -57,33 +57,56 @@
 <!-- mobile view -->
 <div class="mobile-view">
     <!-- search box for searching location -->
-    <div class="mobile-search-box-container">
+    <!-- <div class="mobile-search-box-container">
         <input type="text" id="search-location-box-mobile" class="form-control" placeholder="Enter your current location" style="width: 90%;" />
-    </div>
+    </div> -->
 
     <!-- Search bar for Current Location and Destination -->
-    <div class="mobile-display-searchbox" id="mobileDisplaySearchbox">
+    <!-- <div class="mobile-display-searchbox" id="mobileDisplaySearchbox"> -->
         <!-- Editable Current Location -->
         <!-- Current Location -->
-        <div class="current-location">
+        <!-- <div class="current-location">
             <input type="text" id="current-location-box-mobile" class="form-control" placeholder="Enter your current location" style="width: 90%;" />
             <button (click)="useMyLocation()">O</button>
-        </div>
+        </div> -->
 
         <!-- Destination -->
-        <div class="destination">
+        <!-- <div class="destination">
             <input type="text" id="search-box-mobile" class="form-control" placeholder="Search for a destination" style="width: 90%;" />
             <button (click)="reverseLocation()">↕</button>
-        </div>
+        </div> -->
 
         <!-- Navigate Button -->
-        <div class="navigate-button">
+        <!-- <div class="navigate-button">
             <button (click)="navigateToDestination()">Navigate</button>
-        </div>
+        </div> -->
 
         <!-- route list -->
-        <div class="route-list">
+        <!-- <div class="route-list">
 
+        </div>
+    </div> -->
+    <div class="mobile-container">
+        <div class="mobile-header">
+            <div class="mobile-logo">
+                <img src="/public/circle-logo.png" alt="logo" />
+            </div>
+            <div class="mobile-icon-divider">
+                <div class="mobile-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="24px" fill="#1d58c6"><path d="M480.13-120q-74.67 0-140.41-28.34-65.73-28.34-114.36-76.92-48.63-48.58-76.99-114.26Q120-405.19 120-479.87q0-74.67 28.34-140.41 28.34-65.73 76.92-114.36 48.58-48.63 114.26-76.99Q405.19-840 479.87-840q74.67 0 140.41 28.34 65.73 28.34 114.36 76.92 48.63 48.58 76.99 114.26Q840-554.81 840-480.13q0 74.67-28.34 140.41-28.34 65.73-76.92 114.36-48.58 48.63-114.26 76.99Q554.81-120 480.13-120Z"/></svg>
+                </div>
+                <div class="mobile-divider"></div>
+                <div class="mobile-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="24px" fill="#CE0000"><path d="M480.18-494q24.82 0 42.32-17.68 17.5-17.67 17.5-42.5 0-24.82-17.68-42.32-17.67-17.5-42.5-17.5-24.82 0-42.32 17.68-17.5 17.67-17.5 42.5 0 24.82 17.68 42.32 17.67 17.5 42.5 17.5ZM480-131Q345-252 276-357t-69-190q0-120 78.5-200.5T480-828q116 0 194.5 80.5T753-547q0 85-69 190T480-131Z"/></svg>
+                </div>
+            </div>
+            <div class="mobile-search-bar">
+                <input type="text" id="current-location-box-mobile" class="input" placeholder="Origin" />
+                <input type="text" id="search-box-mobile" class="input" placeholder="Destination" />
+            </div>
+            <div class="mobile-reverse-button">
+                <button onclick="reverseLocation()"><svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#ACACAC"><path d="M352.31-467.69v-295.46L228.54-639.38 200-667.69 372.31-840l172.31 172.31-28.54 28.31-123.77-123.77v295.46h-40ZM586.92-120l-172.3-172.31 28.53-28.31 123.77 123.77v-295.46h40v295.46l123.77-123.77 28.54 28.31L586.92-120Z"/></svg></button>
+            </div>
         </div>
     </div>
 

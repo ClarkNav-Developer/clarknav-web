@@ -211,4 +211,61 @@
     .navigation-button button {
         padding: 10px;
     }
+
+    .mobile-container {
+        position: absolute;
+        z-index: 1000;
+        padding: 10px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: calc(100% - 20px);
+        margin: 10px;
+    }
+
+    .mobile-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 16px;
+        padding: 16px 0;
+    }
+
+    .mobile-logo img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .mobile-icon-divider {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .mobile-divider {
+        width: 2px;
+        height: 32px;
+        background-color: #ddd;
+    }
+    
+    .mobile-search-bar {
+        display: flex;
+        flex: 1;
+        gap: 20px;
+        flex-direction: column;
+    }
+
+    .mobile-search-bar input{
+        padding: 10px;
+        border: 1px solid #ACACAC;
+        border-radius: 8px;
+    }
+
+    .mobile-reverse-button button {
+        padding: 5px;
+        border: none;
+        background-color: white;
+        cursor: pointer;
+    }
 }
