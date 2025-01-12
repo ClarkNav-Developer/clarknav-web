@@ -14,17 +14,29 @@
 <div class="mobile-view">
   <div class="floating-overlay" (click)="closeWindow($event)"></div>
   <div class="floating-window">
-    <h2>Account Component</h2>
-    <p>This is your account component in a floating window!</p>
-    <button class="close-btn" (click)="closeWindow($event)">Close</button>
-    <div class="content">
-      <h2>Account Component</h2>
-      <h2>Account Component</h2>
-      <h2>Account Component</h2>
-      <h2>Account Component</h2>
-      <h2>Account Component</h2>
-      <h2>Account Component</h2>
-      <h2>Account Component</h2>
+    <h2>Menu</h2>
+    <button class="close-btn" (click)="closeWindow($event)">X</button>
+    <div class="content-mobile">
+      <div class="menu-list-container-mobile">
+        <div class="menu-list-mobile">
+          <a href="">Account Settings</a>
+        </div>
+        <div class="menu-list-mobile">
+          <a href="">History</a>
+        </div>
+        <div class="menu-list-mobile">
+          <a href="">Report bugs</a>
+        </div>
+        <div class="menu-list-mobile">
+          <a href="">Feedback</a>
+        </div>
+        <div class="menu-list-mobile">
+          <a href="">FAQs</a>
+        </div>
+        <div class="menu-list-mobile">
+          <a href="" style="color: red;">Logout</a>
+        </div>
+      </div>
     </div>
   </div>
 </div>

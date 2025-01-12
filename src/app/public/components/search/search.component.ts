@@ -80,8 +80,11 @@ export class SearchComponent implements OnInit, AfterViewInit {
   initAutocomplete() {
     const desktopInput = document.getElementById('search-box') as HTMLInputElement;
     const mobileInput = document.getElementById('search-box-mobile') as HTMLInputElement;
+    const desktopInputSearch = document.getElementById('search-box-2') as HTMLInputElement;
+    const mobileInputSearch = document.getElementById('search-box-mobile-2') as HTMLInputElement;
 
-    [desktopInput, mobileInput].forEach((input) => {
+
+    [desktopInput, mobileInput, desktopInputSearch, mobileInputSearch].forEach((input) => {
       if (input) {
         const autocomplete = new google.maps.places.Autocomplete(input, {
           componentRestrictions: { country: 'PH' },
