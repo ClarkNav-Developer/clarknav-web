@@ -8,6 +8,11 @@ import { MapComponent } from './components/map/map.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
 import { SearchComponent } from './components/search/search.component';
 import { LayoutComponent } from './layout/layout.component';
+import { BottomNavigationComponent } from './components/bottom-navigation/bottom-navigation.component';
+import { FloatingWindowService } from '../floating-window.service';
+import { PlannerComponent } from './components/planner/planner.component';
+import { RouteComponent } from './components/route/route.component';
+import { AccountComponent } from './components/account/account.component';
 
 
 @NgModule({
@@ -17,17 +22,25 @@ import { LayoutComponent } from './layout/layout.component';
     NavigationComponent,
     FloatingWindowComponent,
     AboutComponent,
-    LayoutComponent
+    LayoutComponent,
+    BottomNavigationComponent,
+    PlannerComponent,
+    RouteComponent,
+    AccountComponent
   ],
   imports: [
     CommonModule,
     PublicRoutingModule
   ],
+  providers: [FloatingWindowService],
   exports: [
     MapComponent,
     SearchComponent,
     NavigationComponent,
-    FloatingWindowComponent
+    FloatingWindowComponent,
+    PlannerComponent,
+    RouteComponent,
+    AccountComponent
   ]
 })
 export class PublicModule { }

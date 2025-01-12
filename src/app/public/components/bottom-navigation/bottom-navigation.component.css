@@ -1,0 +1,105 @@
+@media screen and (min-width: 431px) {
+    .mobile-view {
+        display: none;
+    }
+    .container {
+        z-index: 1000;
+        position: absolute;
+        bottom: -1px;
+        width: 100%;
+    }
+
+    .container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: inherit;
+        backdrop-filter: blur(15px);
+        z-index: -1;
+    }
+
+    .footer {
+        display: flex;
+        justify-content: space-evenly;
+        background-color: rgba(255, 255, 255, 0.5);
+        padding: 5px 0;
+    }
+
+    .logo {
+        z-index: 1001;
+        position: absolute;
+        left: 3%;
+    }
+
+    .logo img {
+       height: 55px;
+    }
+
+    .bottom-nav {
+        display: flex;
+        justify-content: space-evenly;
+        width: 40%;
+    }
+
+    .menu-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .menu-container button {
+        background-color: transparent;
+        border: none;
+        color: black;
+    }
+
+
+}
+
+
+@media screen and (max-width: 430px) {
+    .desktop-view {
+        display: none;
+    }
+    .container-mobile {
+        z-index: 1000;
+        position: absolute;
+        bottom: -1px;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.5);
+        padding: 5px 0;
+        overflow: hidden;
+    }
+
+    .container-mobile::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: inherit;
+        backdrop-filter: blur(15px);
+        z-index: -1;
+    }
+
+    .bottom-nav-mobile {
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    .menu-container-mobile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .menu-container-mobile button {
+        background-color: transparent;
+        border: none;
+        color: black;
+    }
+}

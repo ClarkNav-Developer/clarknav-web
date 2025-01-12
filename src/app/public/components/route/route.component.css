@@ -1,0 +1,141 @@
+@media screen and (min-width: 431px) {
+    .mobile-view {
+        display: none;
+    }
+    .floating-window {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      z-index: 1000;
+  }
+
+  .floating-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+  }
+
+}
+
+@media screen and (max-width: 430px) {
+    .desktop-view {
+      display: none;
+    }
+  
+    .floating-window {
+      position: fixed;
+      bottom: 75px;
+      right: 10px;
+      left: 10px;
+      width: calc(100% - 20px);
+      max-height: 70vh; /* Limit height to prevent overflow */
+      overflow-y: auto; /* Enable scrolling for overflowing content */
+      padding: 20px;
+      background: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      z-index: 1000;
+    }
+  
+    .floating-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+  
+    .content {
+      display: flex;
+      flex-direction: column;
+      gap: 10px; /* Space between items */
+    }
+
+    .header-mobile {
+      padding-bottom: 10px;
+    }
+  
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  
+    .close-btn:hover {
+      background: darkred;
+    }
+
+    .route-list-mobile h3 {
+      padding-bottom: 5px;
+    }
+
+    .jeepney-container-mobile {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin: 20px 0;
+      justify-content: center;
+    }
+
+    .route-list-box-mobile {
+      display: flex;
+      gap: 10px;
+      padding: 10px 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      justify-content: space-evenly;
+    }
+  
+    .route-list-box-mobile a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 5px;
+    }
+
+    .clark-loop-container h3 {
+      padding: 5px 0;
+    }
+
+    .route-list-box-mobile button {
+      all: unset;
+    }
+
+    #northbound {
+      background: blue;
+      color: white;
+    }
+
+    #southbound {
+      background: orange;
+    }
+
+    .clark-loop-container-mobile {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin: 20px 0;
+    }
+  }
+  
+  
