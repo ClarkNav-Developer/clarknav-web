@@ -124,9 +124,9 @@
         </div> 
 
         <div *ngIf="!showRouteList" class="display-routes-info-container-mobile">
-            <p>Showing Route {{ currentRouteName }}</p>
+            <p>Showing {{ currentRouteType }} Route {{ currentRouteName }}</p>
             <button (click)="showRouteListAgain()">X</button>
-          </div>
+        </div>
     </div>
 </div>
   

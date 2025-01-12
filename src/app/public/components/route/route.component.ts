@@ -12,6 +12,7 @@ export class RouteComponent {
   showRouteList: boolean = true;
   showBackground: boolean = true;
   currentRouteName: string = '';
+  currentRouteType: string = '';
 
   constructor(
     public floatingWindowService: FloatingWindowService,
@@ -38,6 +39,7 @@ export class RouteComponent {
       });
 
       this.currentRouteName = route.routeName; // Update the current route name
+      this.currentRouteType = routeId.startsWith('J') ? 'Jeepney' : 'Bus'; // Determine the route type
       this.showRouteList = false; // Hide the route list
       this.showBackground = false; // Hide the background
     } else {
@@ -78,5 +80,6 @@ export class RouteComponent {
     this.showRouteList = true;
     this.showBackground = true; // Show the background
     this.currentRouteName = ''; // Clear the current route name
+    this.currentRouteType = ''; // Clear the current route type
   }
 }
