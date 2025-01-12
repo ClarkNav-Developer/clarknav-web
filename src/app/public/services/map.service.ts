@@ -19,6 +19,7 @@ export class MapService {
     J3: '#1d58c6',
     J5: '#CE0000',
     B1: '#F98100',
+    // Add other route colors here...
   };
   
 
@@ -50,17 +51,17 @@ export class MapService {
     this.markers.push(marker);
   }
 
-  displayWalkingPath(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, routeID: string) {
+  displayWalkingPath(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, color: string) {
     const distance = google.maps.geometry.spherical.computeDistanceBetween(
       new google.maps.LatLng(origin.lat, origin.lng),
       new google.maps.LatLng(destination.lat, destination.lng)
     );
-
+  
     const threshold = 50; // Distance in meters to switch between direct path and road-following path
-    const pathColor = this.routeColors[routeID] || '#000000'; // Default to black if routeID not found
-
+    const pathColor = color // Ensure color is passed correctly
+  
     if (distance < threshold) {
-      // Draw a direct path
+      // Draw a direct path with proper color
       const walkingPath = new google.maps.Polyline({
         path: [origin, destination],
         geodesic: true,
@@ -72,16 +73,16 @@ export class MapService {
             icon: {
               path: google.maps.SymbolPath.CIRCLE, // Small circle for dotted effect
               scale: 3, // Size of the dots
-              fillColor: pathColor, // Green color for the circles
+              fillColor: pathColor, // Use pathColor here
               fillOpacity: 1, // Solid fill for the circles
               strokeOpacity: 1, // Full opacity for the dots
             },
-            offset: '0', // Start from the beginning
-            repeat: '15px', // Distance between dots
+            offset: '0',
+            repeat: '15px',
           },
         ],
       });
-
+  
       walkingPath.setMap(this.map);
       this.routeRenderers.push(walkingPath);
     } else {
@@ -91,27 +92,27 @@ export class MapService {
         destination: destination,
         travelMode: google.maps.TravelMode.WALKING,
       };
-
+  
       this.directionsService.route(request, (result: any, status: any) => {
         if (status === google.maps.DirectionsStatus.OK) {
           const walkingRenderer = new google.maps.DirectionsRenderer({
             map: this.map,
             preserveViewport: true,
             polylineOptions: {
-              strokeColor: pathColor, // Color based on direction
+              strokeColor: pathColor, // Ensure the path color is set for the walking path
               strokeOpacity: 0, // Set opacity to 0 since icons will be used for dots
-              strokeWeight: 2, // Thickness of the path
+              strokeWeight: 2,
               icons: [
                 {
                   icon: {
                     path: google.maps.SymbolPath.CIRCLE, // Small circle for dotted effect
-                    scale: 3, // Size of the dots
-                    fillColor: pathColor, // Green color for the circles
-                    fillOpacity: 1, // Solid fill for the circles
-                    strokeOpacity: 1, // Full opacity for the dots
+                    scale: 3,
+                    fillColor: pathColor, // Use pathColor here
+                    fillOpacity: 1,
+                    strokeOpacity: 1,
                   },
-                  offset: '0', // Start from the beginning
-                  repeat: '15px', // Distance between dots
+                  offset: '0',
+                  repeat: '15px',
                 },
               ],
             },
@@ -124,14 +125,15 @@ export class MapService {
       });
     }
   }
+  
 
-  displayRoutePath(routePath: { path: google.maps.LatLngLiteral[], direction: string }) {
+  displayRoutePath(routePath: { path: google.maps.LatLngLiteral[], color: string }) {
     if (routePath.path.length < 2) {
       console.error("Route path must have at least two waypoints to display a route.");
       return;
     }
 
-    const pathColor = routePath.direction === 'NB' ? '#1d58c6' : '#f98100'; // Blue for NB, Red for SB
+    const pathColor = routePath.color; // Blue for NB, Red for SB
 
     // Iterate through pairs of waypoints and request directions for each segment
     for (let i = 0; i < routePath.path.length - 1; i++) {
