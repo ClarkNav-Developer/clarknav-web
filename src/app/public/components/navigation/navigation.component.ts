@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationService } from '../../services/navigation.service';
+import { RoutesService } from '../../services/routes.service';
 
 declare var google: any;
 
@@ -10,10 +11,10 @@ declare var google: any;
 })
 export class NavigationComponent implements OnInit {
 
-  constructor(private navigationService: NavigationService) {}
+  constructor(private navigationService: NavigationService, private routesService: RoutesService) {}
 
   ngOnInit(): void {
-    this.navigationService.loadRoutes();
+    this.routesService.loadRoutes();
   }
 
   navigateToDestination() {

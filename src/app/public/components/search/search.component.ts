@@ -138,34 +138,34 @@ export class SearchComponent implements OnInit, AfterViewInit {
       const temp = this.currentLocation;
       this.currentLocation = this.destination;
       this.destination = temp;
-
+  
       // Update the input fields with addresses
       this.geocodeLatLng(this.currentLocation, (address: string) => {
         const currentLocationInput = document.getElementById('current-location-box') as HTMLInputElement;
         const currentLocationInputMobile = document.getElementById('current-location-box-mobile') as HTMLInputElement;
-
+  
         if (currentLocationInput) {
           currentLocationInput.value = address;
         }
-
+  
         if (currentLocationInputMobile) {
           currentLocationInputMobile.value = address;
         }
       });
-
+  
       this.geocodeLatLng(this.destination, (address: string) => {
         const destinationInput = document.getElementById('search-box') as HTMLInputElement;
         const destinationInputMobile = document.getElementById('search-box-mobile') as HTMLInputElement;
-
+  
         if (destinationInput) {
           destinationInput.value = address;
         }
-
+  
         if (destinationInputMobile) {
           destinationInputMobile.value = address;
         }
       });
-
+  
       // Re-center the map
       this.mapService.map.setCenter(this.currentLocation);
     } else {

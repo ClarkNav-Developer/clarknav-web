@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { RoutesService } from './routes.service';
 import { BehaviorSubject } from 'rxjs';
 
 declare var google: any;
@@ -12,6 +13,12 @@ export class MapService {
   private directionsRenderer: any;
   private markers: google.maps.Marker[] = [];
   private routeRenderers: google.maps.DirectionsRenderer[] = [];
+  private filteredRoutes: any[] = [];
+  private jeepneyRoutes: any[] = [];
+  private busRoutes: any[] = [];
+
+  currentLocation: google.maps.LatLngLiteral | null = null;
+  destination: google.maps.LatLngLiteral | null = null;
 
   private routeColors: { [key: string]: string } = {
     J1: '#228B22',
@@ -19,10 +26,10 @@ export class MapService {
     J3: '#1d58c6',
     J5: '#CE0000',
     B1: '#F98100',
-    // Add other route colors here...
   };
-  
 
+  constructor(private routesService: RoutesService) {}
+  
   setMap(map: any) {
     this.map = map;
     this.directionsService = new google.maps.DirectionsService();
@@ -170,5 +177,100 @@ export class MapService {
     routePath.path.forEach((waypoint: google.maps.LatLngLiteral) => {
       this.addMarker(waypoint, 'Waypoint');
     });
+  }
+
+  /*------------------------------------------
+  Walking Path Integration
+  --------------------------------------------*/
+  // displayWalkingPath(
+  //   start: google.maps.LatLngLiteral,
+  //   end: google.maps.LatLngLiteral,
+  //   direction: string
+  // ) {
+  //   this.mapService.displayWalkingPath(start, end, direction);
+  // }
+
+  /*------------------------------------------
+  Route Display
+  --------------------------------------------*/
+  displayRoutes() {
+    this.filteredRoutes.forEach((route) => {
+      const filteredWaypoints = route.waypoints.filter((waypoint: string) =>
+        this.routesService.isNearby(this.currentLocation!, this.routesService.parseWaypoint(waypoint)) ||
+        this.routesService.isNearby(this.destination!, this.routesService.parseWaypoint(waypoint))
+      );
+
+      filteredWaypoints.forEach((waypoint: string) => {
+        const location = this.routesService.parseWaypoint(waypoint);
+        this.addMarker(location, route.routeName);
+      });
+    });
+  }
+
+  displayAllJeepneyWaypoints() {
+    const baseRouteColor = '#1d58c6';
+    const extensionColors = ['#FF0000', '#FFA500', '#008000', '#800080'];
+
+    this.jeepneyRoutes.forEach((route, routeIndex) => {
+      const mainRouteWaypoints = route.waypoints.map(this.routesService.parseWaypoint);
+      this.displayRouteUsingDirectionsAPI(mainRouteWaypoints, baseRouteColor);
+
+      mainRouteWaypoints.forEach((waypoint: google.maps.LatLngLiteral, index: number) => {
+        this.addMarker(
+          waypoint,
+          `Route ${route.routeName} - Main Waypoint ${index + 1}`
+        );
+      });
+
+      route.extensions?.forEach((extension: any, extensionIndex: number) => {
+        const extensionWaypoints = extension.waypoints.map(this.routesService.parseWaypoint);
+        const extensionColor = extensionColors[extensionIndex % extensionColors.length];
+        this.displayRouteUsingDirectionsAPI(extensionWaypoints, extensionColor);
+
+        extensionWaypoints.forEach((waypoint: google.maps.LatLngLiteral, index: number) => {
+          this.addMarker(
+            waypoint,
+            `Route ${route.routeName} - Extension ${extension.extensionId} Waypoint ${index + 1}`
+          );
+        });
+      });
+    });
+  }
+
+  /*------------------------------------------
+  Display Route Using Directions API
+  --------------------------------------------*/
+  displayRouteUsingDirectionsAPI(waypoints: google.maps.LatLngLiteral[], color: string) {
+    if (waypoints.length < 2) return;
+
+    for (let i = 0; i < waypoints.length - 1; i++) {
+      const origin = waypoints[i];
+      const destination = waypoints[i + 1];
+
+      const request = {
+        origin: origin,
+        destination: destination,
+        travelMode: google.maps.TravelMode.DRIVING,
+      };
+
+      const directionsService = new google.maps.DirectionsService();
+      directionsService.route(request, (result: any, status: any) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          const directionsRenderer = new google.maps.DirectionsRenderer({
+            map: this.map,
+            preserveViewport: true,
+            suppressMarkers: true,
+            polylineOptions: {
+              strokeColor: color,
+              strokeOpacity: 1.0,
+              strokeWeight: 3,
+            },
+          });
+          directionsRenderer.setDirections(result);
+        } else {
+          console.error('Directions request failed due to ' + status);
+        }
+      });
+    }
   }
 }

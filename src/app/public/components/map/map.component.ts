@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MapService } from '../../services/map.service';
 import { NavigationService } from '../../services/navigation.service';
+import { RoutesService } from '../../services/routes.service';
 
 declare var google: any;
 
@@ -11,7 +12,7 @@ declare var google: any;
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit {
-  constructor(private http: HttpClient, private mapService: MapService, private navigationService: NavigationService) { }
+  constructor(private http: HttpClient, private mapService: MapService, private navigationService: NavigationService, private routesService: RoutesService) { }
 
   ngOnInit(): void {
     this.loadMapStyle().subscribe(style => {
@@ -46,8 +47,8 @@ export class MapComponent implements OnInit {
 
         this.mapService.setMap(map);
 
-        this.navigationService.loadRoutes();
-        this.navigationService.displayAllJeepneyWaypoints();
+        this.routesService.loadRoutes();
+        this.mapService.displayAllJeepneyWaypoints();
       } catch (error) {
         console.error('Error initializing map:', error);
       }
