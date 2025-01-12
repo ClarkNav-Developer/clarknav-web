@@ -31,6 +31,10 @@ export class RoutesService {
     return { lat, lng };
   }
 
+  getRouteById(routeId: string) {
+    return [...this.jeepneyRoutes, ...this.busRoutes].find(route => route.routeId === routeId);
+  }
+
   findNearestStop(location: google.maps.LatLngLiteral): google.maps.LatLngLiteral | null {
     let nearestWaypoint = null;
     let minDistance = Infinity;
