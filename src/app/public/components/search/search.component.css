@@ -269,21 +269,26 @@
     .mobile-container {
         position: absolute;
         z-index: 1000;
-        padding: 40px;
+        padding: 10px;
         background-color: white;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         width: calc(100% - 20px);
         margin: 10px;
-        display: none;
+        top: -100%; /* Start above the screen */
+        transition: top 0.5s ease-in-out; /* Animation for drop down */
     }
+
+    .mobile-container.show {
+        top: 30px; /* Adjust to the position you want it to drop to */
+    }    
 
     .mobile-header {
         display: flex;
         align-items: center;
         gap: 8px;
         margin-bottom: 16px;
-        padding: 16px 0;
+        padding: 10px 0;
     }
 
     .mobile-logo img {
@@ -315,6 +320,7 @@
         padding: 10px;
         border: 1px solid #ACACAC;
         border-radius: 8px;
+        width: 100%;
     }
 
     .mobile-reverse-button button {

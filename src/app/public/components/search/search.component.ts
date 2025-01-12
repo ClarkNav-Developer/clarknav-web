@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Renderer2 } from '@angular/core';
 import { MapService } from '../../services/map.service';
 import { NavigationService } from '../../services/navigation.service';
 
@@ -13,9 +13,17 @@ export class SearchComponent implements OnInit, AfterViewInit {
   currentLocation: google.maps.LatLngLiteral | null = null;
   destination: google.maps.LatLngLiteral | null = null;
   geocoder: any;
+  showNavigationWindow = false; // Controls the navigation window
 
-  constructor(private mapService: MapService, private navigationService: NavigationService) {
+  constructor(private mapService: MapService, private navigationService: NavigationService, private renderer: Renderer2) {
     this.geocoder = new google.maps.Geocoder();
+  }
+
+  toggleMobileContainer() {
+    const mobileContainer = document.querySelector('.mobile-container');
+    if (mobileContainer) {
+      mobileContainer.classList.toggle('show'); // Add or remove the 'show' class
+    }
   }
 
   ngOnInit(): void {

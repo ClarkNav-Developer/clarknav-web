@@ -13,7 +13,8 @@ import { FloatingWindowService } from '../floating-window.service';
 import { PlannerComponent } from './components/planner/planner.component';
 import { RouteComponent } from './components/route/route.component';
 import { AccountComponent } from './components/account/account.component';
-
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { BottomSheetComponent } from './components/bottom-sheet/bottom-sheet.component';
 
 @NgModule({
   declarations: [
@@ -26,11 +27,13 @@ import { AccountComponent } from './components/account/account.component';
     BottomNavigationComponent,
     PlannerComponent,
     RouteComponent,
-    AccountComponent
+    AccountComponent,
+    BottomSheetComponent,
   ],
   imports: [
     CommonModule,
-    PublicRoutingModule
+    PublicRoutingModule,
+    MatBottomSheetModule
   ],
   providers: [FloatingWindowService],
   exports: [
@@ -40,7 +43,8 @@ import { AccountComponent } from './components/account/account.component';
     FloatingWindowComponent,
     PlannerComponent,
     RouteComponent,
-    AccountComponent
+    AccountComponent,
+    BottomSheetComponent
   ]
 })
 export class PublicModule { }
