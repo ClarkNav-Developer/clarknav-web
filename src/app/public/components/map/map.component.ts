@@ -15,7 +15,7 @@ export class MapComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadMapStyle().subscribe(style => {
-      this.initMap(style);  // Pass the style to the initMap function
+      this.initMap(style);
     });
   }
 
@@ -36,7 +36,7 @@ export class MapComponent implements OnInit {
         const map = new google.maps.Map(mapElement as HTMLElement, {
           center: { lat: 15.187769063648858, lng: 120.55950164794922 },
           zoom: 14,
-          minZoom: 14, // Limit zoom out to level 14
+          minZoom: 14,
           mapTypeControl: false,
           streetViewControl: false,
           fullscreenControl: false,
@@ -46,11 +46,6 @@ export class MapComponent implements OnInit {
 
         this.mapService.setMap(map);
 
-         // Create and display the Traffic Layer
-        // const trafficLayer = new google.maps.TrafficLayer();
-        // trafficLayer.setMap(this.map);
-
-        // Load routes and display all jeepney waypoints
         this.navigationService.loadRoutes();
         this.navigationService.displayAllJeepneyWaypoints();
       } catch (error) {

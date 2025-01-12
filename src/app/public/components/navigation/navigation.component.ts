@@ -19,8 +19,4 @@ export class NavigationComponent implements OnInit {
   navigateToDestination() {
     this.navigationService.navigateToDestination();
   }
-
-  findRoutes() {
-    this.navigationService.findRoutes();
-  }
 }

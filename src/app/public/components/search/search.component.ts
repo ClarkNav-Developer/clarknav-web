@@ -91,7 +91,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
             this.mapService.addMarker(this.destination, 'Destination');
             this.mapService.map.setCenter(this.destination);
-            this.navigationService.findRoutes();
+            // this.navigationService.findRoutes();
           }
         });
       }
