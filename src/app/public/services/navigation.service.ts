@@ -44,7 +44,7 @@ export class NavigationService {
         console.log('Routes loaded:', data);
         this.jeepneyRoutes = data.routes.jeepney;
         this.busRoutes = data.routes.bus;
-        this.displayAllJeepneyWaypoints();
+        // this.displayAllJeepneyWaypoints();
       },
       (error) => {
         console.error('Error loading routes:', error);
@@ -92,10 +92,10 @@ export class NavigationService {
       return;
     }
 
-    this.mapService.displayRoutePath(routePath);
+    this.mapService.displayRoutePath({ path: routePath.path, color: routePath.color });
 
     if (!this.isNearby(this.destination!, routePath.path[routePath.path.length - 1])) {
-      this.mapService.displayWalkingPath(nearestEndWaypoint, this.destination!, routePath.direction);
+      this.mapService.displayWalkingPath(nearestEndWaypoint, this.destination!, routePath.color);
     }
   }
 
@@ -161,10 +161,11 @@ export class NavigationService {
   private findRoutePath(
     startWaypoint: google.maps.LatLngLiteral,
     endWaypoint: google.maps.LatLngLiteral
-  ): { path: google.maps.LatLngLiteral[]; direction: string } {
+  ): { path: google.maps.LatLngLiteral[]; color: string } {
     const routes = [...this.jeepneyRoutes, ...this.busRoutes];
     let bestPath: google.maps.LatLngLiteral[] = [];
     let bestDirection = '';
+    let bestColor = '';
     let minDistance = Infinity;
   
     routes.forEach(route => {
@@ -215,12 +216,13 @@ export class NavigationService {
         if (distance < minDistance) {
           minDistance = distance;
           bestPath = path;
-          bestDirection = startIndex < endIndex ? 'NB' : 'SB';
+          // bestDirection = startIndex < endIndex ? 'NB' : 'SB';
+          bestColor = route.color; // Dynamically assign color
         }
       }
     });
   
-    return { path: bestPath, direction: bestDirection };
+    return { path: bestPath, color: bestColor };
   }
   
 
