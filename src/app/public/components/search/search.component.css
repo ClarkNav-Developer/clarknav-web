@@ -7,6 +7,43 @@
         display: none;
     }
 
+    .search-container {
+        z-index: 1000;
+        position: absolute;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        top: 30px;
+    }
+
+    .search-bar-container {
+        width: 25%;
+        display: flex;
+        align-items: center;
+        border-radius: 15px;
+        background-color: white;
+        padding: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-bar-container img {
+        height: 35px;
+        padding: 0 5px;
+    }
+
+    .search-bar-container input {
+        width: 80%;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+    }
+
+    .search-bar-container input:focus {
+        outline: none; /* Remove the default outline */
+        border: none; /* Remove the border */
+        box-shadow: none; /* Remove any box shadow */
+    }
+
     .container {
         width: 400px;
         background-color: white;
@@ -160,15 +197,53 @@
         display: none;
     }
 
+    .search-container-mobile {
+        z-index: 1000;
+        position: absolute;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        top: 40px;
+    }
+
+    .search-bar-container-mobile {
+        width: 90%;
+        display: flex;
+        align-items: center;
+        border-radius: 15px;
+        background-color: white;
+        padding: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-bar-container-mobile img {
+        height: 35px;
+        padding: 0 5px;
+    }
+
+    .search-bar-container-mobile input {
+        width: 75%;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+    }
+
+    .search-bar-container-mobile input:focus {
+        outline: none; /* Remove the default outline */
+        border: none; /* Remove the border */
+        box-shadow: none; /* Remove any box shadow */
+    }
+
     .mobile-container {
         position: absolute;
         z-index: 1000;
-        padding: 10px;
+        padding: 40px;
         background-color: white;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         width: calc(100% - 20px);
         margin: 10px;
+        display: none;
     }
 
     .mobile-header {
