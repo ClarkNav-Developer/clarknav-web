@@ -1,13 +1,143 @@
 @media screen and (min-width: 431px) {
-    .mobile-view {
-        display: none;
-    }
-    .floating-window {
+  .mobile-view {
+      display: none;
+  }
+  .floating-window {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 400px;
+      width: 600px;
+      padding: 20px;
+      background: white;
+      box-shadow: 0px 2px 4px 3px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      z-index: 1000;
+      transition: top 0.3s, transform 0.3s;
+  }
+
+  .floating-window.bottom-position {
+      top: auto;
+      bottom: 75px;
+      transform: translate(-50%, 0);
+  }
+
+  .floating-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      /* background: rgba(0, 0, 0, 0.5); */
+      z-index: 999;
+  }
+
+  .header {
+      padding-bottom: 10px;
+  }
+
+  .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+  }
+
+  .close-btn:hover {
+      background: darkred;
+  }
+
+  .route-list h3 {
+      padding-bottom: 5px;
+  }
+
+  .jeepney-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 5px 0;
+      padding: 10px;
+      justify-content: center;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+  }
+
+  .route-list-box {
+      display: flex;
+      gap: 10px;
+      padding: 10px 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      justify-content: space-evenly;
+      flex-wrap: wrap;
+  }
+
+  .route-list-box a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 5px;
+      width: 100%;
+      height: 100%;
+  }
+
+  .clark-loop-container h3 {
+      padding: 5px 0;
+  }
+
+  .route-list-box button {
+      all: unset;
+  }
+
+  #northbound {
+      background: #1d58c6;
+      color: white;
+  }
+
+  #southbound {
+      background: #F98100;
+  }
+
+  .clark-loop-container {
+      margin: 20px 0;
+  }
+
+  .display-routes-info-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+  }
+
+  .display-routes-info-container button {
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+  }
+}
+
+@media screen and (max-width: 430px) {
+  .desktop-view {
+      display: none;
+  }
+
+  .floating-window {
+      position: fixed;
+      bottom: 75px;
+      right: 10px;
+      left: 10px;
+      width: calc(100% - 20px);
+      max-height: 70vh; /* Limit height to prevent overflow */
+      overflow-y: auto; /* Enable scrolling for overflowing content */
       padding: 20px;
       background: white;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -25,49 +155,11 @@
       z-index: 999;
   }
 
-}
-
-@media screen and (max-width: 430px) {
-    .desktop-view {
-      display: none;
-    }
-  
-    .floating-window {
-      position: fixed;
-      bottom: 75px;
-      right: 10px;
-      left: 10px;
-      width: calc(100% - 20px);
-      max-height: 70vh; /* Limit height to prevent overflow */
-      overflow-y: auto; /* Enable scrolling for overflowing content */
-      padding: 20px;
-      background: white;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      z-index: 1000;
-    }
-  
-    .floating-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-    }
-  
-    .content {
-      display: flex;
-      flex-direction: column;
-      gap: 10px; /* Space between items */
-    }
-  
-    .header-mobile {
+  .header-mobile {
       padding-bottom: 10px;
-    }
-  
-    .close-btn {
+  }
+
+  .close-btn {
       position: absolute;
       top: 10px;
       right: 10px;
@@ -77,17 +169,17 @@
       border-radius: 5px;
       padding: 5px 10px;
       cursor: pointer;
-    }
-  
-    .close-btn:hover {
+  }
+
+  .close-btn:hover {
       background: darkred;
-    }
+  }
 
-    .route-list-mobile h3 {
+  .route-list-mobile h3 {
       padding-bottom: 5px;
-    }
+  }
 
-    .jeepney-container-mobile {
+  .jeepney-container-mobile {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
@@ -96,9 +188,9 @@
       justify-content: center;
       border: 1px solid #ccc;
       border-radius: 5px;
-    }
+  }
 
-    .route-list-box-mobile {
+  .route-list-box-mobile {
       display: flex;
       gap: 10px;
       padding: 10px 20px;
@@ -106,9 +198,9 @@
       border-radius: 5px;
       justify-content: space-evenly;
       flex-wrap: wrap;
-    }
-  
-    .route-list-box-mobile a {
+  }
+
+  .route-list-box-mobile a {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -117,46 +209,41 @@
       gap: 5px;
       width: 100%;
       height: 100%;
-    }
+  }
 
-    .clark-loop-container h3 {
+  .clark-loop-container-mobile h3 {
       padding: 5px 0;
-    }
+  }
 
-    .route-list-box-mobile button {
+  .route-list-box-mobile button {
       all: unset;
-    }
+  }
 
-    #northbound {
+  #northbound {
       background: #1d58c6;
       color: white;
-    }
+  }
 
-    #southbound {
+  #southbound {
       background: #F98100;
-    }
+  }
 
-    .clark-loop-container-mobile {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
+  .clark-loop-container-mobile {
       margin: 20px 0;
-    }
+  }
 
-    .display-routes-info-container-mobile {
+  .display-routes-info-container-mobile {
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-
-    .display-routes-info-container-mobile button {
-        background: red;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 5px 10px;
-        cursor: pointer;
-    }
   }
-  
-  
+
+  .display-routes-info-container-mobile button {
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+  }
+}

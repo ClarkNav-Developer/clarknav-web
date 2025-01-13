@@ -1,8 +1,44 @@
 <div class="desktop-view">
+    <div class="floating-overlay" (click)="closeWindow($event)"></div>
     <div class="floating-window">
-      <h2>Account Component</h2>
-      <p>This is your planner component in a floating window!</p>
-      <button (click)="closeWindow($event)">Close</button>
+      <button class="close-btn" (click)="closeWindow($event)">X</button>
+
+      <div class="header">
+        <img src="public\circle-logo.png" alt="ClarkNav Logo" />
+        <h1>Route <br>Planner</h1>
+    </div>
+    <div class="content">
+        <div class="list-planner-container">
+            <div class="list-planner">
+                <div class="routes">
+                    <h3>Route 1</h3>
+                    <div class="route">
+                        <p class="time"><strong>10:00 AM - 10:30 AM</strong> | <span class="fare">Estimated fare: ₱14</span></p>
+                        <p><span class="location">Clark Main Gate</span> ➡️ <span class="location">Clark Outsourcing</span></p>
+                        <p class="duration">30 mins</p>
+                    </div>
+                </div>
+
+                <div class="routes">
+                    <h3>Route 2</h3>
+                    <div class="route">
+                        <p class="time"><strong>10:00 AM - 10:30 AM</strong> | <span class="fare">Estimated fare: ₱14</span></p>
+                        <p><span class="location">Clark Main Gate</span> ➡️ <span class="location">Clark Outsourcing</span></p>
+                        <p class="duration">30 mins</p>
+                    </div>
+                </div>
+
+                <div class="routes">
+                    <h3>Route 3</h3>
+                    <div class="route">
+                        <p class="time"><strong>10:00 AM - 10:30 AM</strong> | <span class="fare">Estimated fare: ₱14</span></p>
+                        <p><span class="location">Clark Main Gate</span> ➡️ <span class="location">Clark Outsourcing</span></p>
+                        <p class="duration">30 mins</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
 </div>
   
@@ -10,11 +46,12 @@
     <div class="floating-overlay" (click)="closeWindow($event)"></div>
     <div class="floating-window">
         <button class="close-btn" (click)="closeWindow($event)">Close</button>
+
         <div class="header-mobile">
             <img src="public\circle-logo.png" alt="ClarkNav Logo" />
             <h1>Route <br>Planner</h1>
         </div>
-        <div class="content">
+        <div class="content-mobile">
             <div class="list-planner-container-mobile">
                 <div class="list-planner-mobile">
                     <div class="routes-mobile">

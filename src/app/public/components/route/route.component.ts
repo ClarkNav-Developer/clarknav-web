@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Renderer2 } from '@angular/core';
 import { FloatingWindowService } from '../../../floating-window.service';
 import { MapService } from '../../services/map.service';
 import { RoutesService } from '../../services/routes.service';
@@ -17,7 +17,8 @@ export class RouteComponent {
   constructor(
     public floatingWindowService: FloatingWindowService,
     private mapService: MapService,
-    private routesService: RoutesService
+    private routesService: RoutesService,
+    private renderer: Renderer2
   ) {}
 
   closeWindow(event: Event) {
@@ -42,6 +43,12 @@ export class RouteComponent {
       this.currentRouteType = routeId.startsWith('J') ? 'Jeepney' : 'Bus'; // Determine the route type
       this.showRouteList = false; // Hide the route list
       this.showBackground = false; // Hide the background
+
+      // Add class to move the floating window to the bottom
+      const floatingWindow = document.querySelector('.floating-window');
+      if (floatingWindow) {
+        this.renderer.addClass(floatingWindow, 'bottom-position');
+      }
     } else {
       console.error(`Route ${routeId} not found`);
     }
@@ -81,5 +88,11 @@ export class RouteComponent {
     this.showBackground = true; // Show the background
     this.currentRouteName = ''; // Clear the current route name
     this.currentRouteType = ''; // Clear the current route type
+  
+    // Remove class to move the floating window back to the center
+    const floatingWindow = document.querySelector('.floating-window');
+    if (floatingWindow) {
+      this.renderer.removeClass(floatingWindow, 'bottom-position');
+    }
   }
 }
