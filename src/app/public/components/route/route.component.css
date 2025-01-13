@@ -62,7 +62,7 @@
       flex-direction: column;
       gap: 10px; /* Space between items */
     }
-
+  
     .header-mobile {
       padding-bottom: 10px;
     }
@@ -92,7 +92,10 @@
       flex-wrap: wrap;
       gap: 10px;
       margin: 5px 0;
+      padding: 10px 0;
       justify-content: center;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
 
     .route-list-box-mobile {
@@ -112,6 +115,8 @@
       justify-content: center;
       text-align: center;
       gap: 5px;
+      width: 100%;
+      height: 100%;
     }
 
     .clark-loop-container h3 {
@@ -136,6 +141,21 @@
       flex-wrap: wrap;
       gap: 20px;
       margin: 20px 0;
+    }
+
+    .display-routes-info-container-mobile {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .display-routes-info-container-mobile button {
+        background: red;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
     }
   }
   
