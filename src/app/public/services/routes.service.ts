@@ -182,7 +182,7 @@ export class RoutesService {
   isNearby(
     location: google.maps.LatLngLiteral,
     waypoint: google.maps.LatLngLiteral,
-    threshold = 0.02
+    threshold = 0.05
   ): boolean {
     const distance = google.maps.geometry.spherical.computeDistanceBetween(
       new google.maps.LatLng(location.lat, location.lng),
