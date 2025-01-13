@@ -180,17 +180,6 @@ export class MapService {
   }
 
   /*------------------------------------------
-  Walking Path Integration
-  --------------------------------------------*/
-  // displayWalkingPath(
-  //   start: google.maps.LatLngLiteral,
-  //   end: google.maps.LatLngLiteral,
-  //   direction: string
-  // ) {
-  //   this.mapService.displayWalkingPath(start, end, direction);
-  // }
-
-  /*------------------------------------------
   Route Display
   --------------------------------------------*/
   displayRoutes() {

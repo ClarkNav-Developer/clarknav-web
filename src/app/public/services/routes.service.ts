@@ -9,6 +9,7 @@ export class RoutesService {
   // Route Data
   private jeepneyRoutes: any[] = [];
   private busRoutes: any[] = [];
+  
   constructor(private http: HttpClient) { }
 
   loadRoutes() {
@@ -194,4 +195,73 @@ export class RoutesService {
     );
     return distance <= threshold * 1000; // Convert threshold to meters
   }
+
+  suggestMultimodalRoutes(
+    start: google.maps.LatLngLiteral,
+    end: google.maps.LatLngLiteral
+  ): any[] {
+    const suggestedRoutes: any[] = [];
+    const nearestStartStop = this.findNearestStop(start);
+    const nearestEndStop = this.findNearestStop(end);
+  
+    if (!nearestStartStop || !nearestEndStop) {
+      console.warn('No nearby stops found for the given start or end location.');
+      return [];
+    }
+  
+    // Step 1: Find direct routes (Jeepney or Bus) from start to end
+    [...this.jeepneyRoutes, ...this.busRoutes].forEach((route) => {
+      const waypoints = route.waypoints.map(this.parseWaypoint);
+      const startIndex = waypoints.findIndex((wp: google.maps.LatLngLiteral) => this.isNearby(wp, nearestStartStop));
+      const endIndex = waypoints.findIndex((wp: google.maps.LatLngLiteral) => this.isNearby(wp, nearestEndStop));
+  
+      if (startIndex !== -1 && endIndex !== -1 && startIndex < endIndex) {
+        suggestedRoutes.push({
+          mode: route.type, // Jeepney or Bus
+          color: route.color,
+          waypoints: waypoints.slice(startIndex, endIndex + 1),
+          distance: this.calculatePathDistance(waypoints.slice(startIndex, endIndex + 1))
+        });
+      }
+    });
+  
+    // Step 2: Find multimodal routes (Jeepney + Bus)
+    this.jeepneyRoutes.forEach((jeepneyRoute) => {
+      const jeepneyWaypoints = jeepneyRoute.waypoints.map(this.parseWaypoint);
+      const jeepneyStartIndex = jeepneyWaypoints.findIndex((wp: google.maps.LatLngLiteral) => this.isNearby(wp, nearestStartStop));
+  
+      if (jeepneyStartIndex !== -1) {
+        this.busRoutes.forEach((busRoute) => {
+          const busWaypoints = busRoute.waypoints.map(this.parseWaypoint);
+          const jeepneyEndStop = jeepneyWaypoints[jeepneyStartIndex + 1]; // Next stop after start
+          const busStartIndex = busWaypoints.findIndex((wp: google.maps.LatLngLiteral) => this.isNearby(wp, jeepneyEndStop));
+          const busEndIndex = busWaypoints.findIndex((wp: google.maps.LatLngLiteral) => this.isNearby(wp, nearestEndStop));
+  
+          if (busStartIndex !== -1 && busEndIndex !== -1 && busStartIndex < busEndIndex) {
+            suggestedRoutes.push({
+              mode: 'Multimodal (Jeepney + Bus)',
+              segments: [
+                {
+                  mode: 'Jeepney',
+                  color: jeepneyRoute.color,
+                  waypoints: jeepneyWaypoints.slice(jeepneyStartIndex)
+                },
+                {
+                  mode: 'Bus',
+                  color: busRoute.color,
+                  waypoints: busWaypoints.slice(busStartIndex, busEndIndex + 1)
+                }
+              ],
+              totalDistance:
+                this.calculatePathDistance(jeepneyWaypoints.slice(jeepneyStartIndex)) +
+                this.calculatePathDistance(busWaypoints.slice(busStartIndex, busEndIndex + 1))
+            });
+          }
+        });
+      }
+    });
+  
+    return suggestedRoutes.sort((a, b) => a.totalDistance - b.totalDistance); // Sort by shortest distance
+  }
+  
 }

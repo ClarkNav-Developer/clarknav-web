@@ -1,13 +1,13 @@
 <div class="desktop-view">
     <div class="floating-window">
-      <h2>Account Component</h2>
-      <p>This is your planner component in a floating window!</p>
-      <button (click)="closeWindow($event)">Close</button>
-      <h2>Routes</h2>
+        <h2>Account Component</h2>
+        <p>This is your planner component in a floating window!</p>
+        <button (click)="closeWindow($event)">Close</button>
+        <h2>Routes</h2>
         <p>This is your route component in a floating window!</p>
-        
+
         <button class="close-btn" (click)="closeWindow($event)">Close</button>
-        
+
         <div class="route-list">
             <h3>Jeepney</h3>
             <div class="route-list-box">
@@ -39,7 +39,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <hr>
 
             <div class="clark-loop-container">
@@ -55,10 +55,10 @@
                     </a>
                 </div>
             </div>
-        </div> 
+        </div>
     </div>
 </div>
-  
+
 <div class="mobile-view">
     <div *ngIf="showBackground" class="floating-overlay" (click)="closeWindow($event)"></div>
     <div class="floating-window">
@@ -66,62 +66,80 @@
             <h2>Routes</h2>
             <button class="close-btn" (click)="closeWindow($event)">X</button>
         </div>
-        
+
         <div class="route-list-mobile">
             <div *ngIf="showRouteList" class="route-list-box">
                 <h3>Jeepney</h3>
                 <div class="jeepney-container-mobile">
                     <div class="route-list-box-mobile">
                         <a>
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#00FF00">
-                                <path d="M480.13-120q-74.67 0-140.41-28.34-65.73-28.34-114.36-76.92-48.63-48.58-76.99-114.26Q120-405.19 120-479.87q0-74.67 28.34-140.41 28.34-65.73 76.92-114.36 48.58-48.63 114.26-76.99Q405.19-840 479.87-840q74.67 0 140.41 28.34 65.73 28.34 114.36 76.92 48.63 48.58 76.99 114.26Q840-554.81 840-480.13q0 74.67-28.34 140.41-28.34 65.73-76.92 114.36-48.58 48.63-114.26 76.99Q554.81-120 480.13-120Z"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                                fill="#228B22">
+                                <path
+                                    d="M480.13-120q-74.67 0-140.41-28.34-65.73-28.34-114.36-76.92-48.63-48.58-76.99-114.26Q120-405.19 120-479.87q0-74.67 28.34-140.41 28.34-65.73 76.92-114.36 48.58-48.63 114.26-76.99Q405.19-840 479.87-840q74.67 0 140.41 28.34 65.73 28.34 114.36 76.92 48.63 48.58 76.99 114.26Q840-554.81 840-480.13q0 74.67-28.34 140.41-28.34 65.73-76.92 114.36-48.58 48.63-114.26 76.99Q554.81-120 480.13-120Z" />
                             </svg>
                             <button (click)="renderRoute1()">Route 1</button>
                         </a>
                     </div>
                     <div class="route-list-box-mobile">
                         <a>
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#F5F5DC"><path d="M480.13-120q-74.67 0-140.41-28.34-65.73-28.34-114.36-76.92-48.63-48.58-76.99-114.26Q120-405.19 120-479.87q0-74.67 28.34-140.41 28.34-65.73 76.92-114.36 48.58-48.63 114.26-76.99Q405.19-840 479.87-840q74.67 0 140.41 28.34 65.73 28.34 114.36 76.92 48.63 48.58 76.99 114.26Q840-554.81 840-480.13q0 74.67-28.34 140.41-28.34 65.73-76.92 114.36-48.58 48.63-114.26 76.99Q554.81-120 480.13-120Z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                                fill="#D4B895">
+                                <path
+                                    d="M480.13-120q-74.67 0-140.41-28.34-65.73-28.34-114.36-76.92-48.63-48.58-76.99-114.26Q120-405.19 120-479.87q0-74.67 28.34-140.41 28.34-65.73 76.92-114.36 48.58-48.63 114.26-76.99Q405.19-840 479.87-840q74.67 0 140.41 28.34 65.73 28.34 114.36 76.92 48.63 48.58 76.99 114.26Q840-554.81 840-480.13q0 74.67-28.34 140.41-28.34 65.73-76.92 114.36-48.58 48.63-114.26 76.99Q554.81-120 480.13-120Z" />
+                            </svg>
                             <button (click)="renderRoute2()">Route 2</button>
                         </a>
                     </div>
                     <div class="route-list-box-mobile">
                         <a>
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#0000FF"><path d="M480.13-120q-74.67 0-140.41-28.34-65.73-28.34-114.36-76.92-48.63-48.58-76.99-114.26Q120-405.19 120-479.87q0-74.67 28.34-140.41 28.34-65.73 76.92-114.36 48.58-48.63 114.26-76.99Q405.19-840 479.87-840q74.67 0 140.41 28.34 65.73 28.34 114.36 76.92 48.63 48.58 76.99 114.26Q840-554.81 840-480.13q0 74.67-28.34 140.41-28.34 65.73-76.92 114.36-48.58 48.63-114.26 76.99Q554.81-120 480.13-120Z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                                fill="#1d58c6">
+                                <path
+                                    d="M480.13-120q-74.67 0-140.41-28.34-65.73-28.34-114.36-76.92-48.63-48.58-76.99-114.26Q120-405.19 120-479.87q0-74.67 28.34-140.41 28.34-65.73 76.92-114.36 48.58-48.63 114.26-76.99Q405.19-840 479.87-840q74.67 0 140.41 28.34 65.73 28.34 114.36 76.92 48.63 48.58 76.99 114.26Q840-554.81 840-480.13q0 74.67-28.34 140.41-28.34 65.73-76.92 114.36-48.58 48.63-114.26 76.99Q554.81-120 480.13-120Z" />
+                            </svg>
                             <button (click)="renderRoute3()">Route 3</button>
                         </a>
                     </div>
                     <div class="route-list-box-mobile">
                         <a>
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FF0000"><path d="M480.13-120q-74.67 0-140.41-28.34-65.73-28.34-114.36-76.92-48.63-48.58-76.99-114.26Q120-405.19 120-479.87q0-74.67 28.34-140.41 28.34-65.73 76.92-114.36 48.58-48.63 114.26-76.99Q405.19-840 479.87-840q74.67 0 140.41 28.34 65.73 28.34 114.36 76.92 48.63 48.58 76.99 114.26Q840-554.81 840-480.13q0 74.67-28.34 140.41-28.34 65.73-76.92 114.36-48.58 48.63-114.26 76.99Q554.81-120 480.13-120Z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                                fill="#CE0000">
+                                <path
+                                    d="M480.13-120q-74.67 0-140.41-28.34-65.73-28.34-114.36-76.92-48.63-48.58-76.99-114.26Q120-405.19 120-479.87q0-74.67 28.34-140.41 28.34-65.73 76.92-114.36 48.58-48.63 114.26-76.99Q405.19-840 479.87-840q74.67 0 140.41 28.34 65.73 28.34 114.36 76.92 48.63 48.58 76.99 114.26Q840-554.81 840-480.13q0 74.67-28.34 140.41-28.34 65.73-76.92 114.36-48.58 48.63-114.26 76.99Q554.81-120 480.13-120Z" />
+                            </svg>
                             <button (click)="renderRoute5()">Route 5</button>
                         </a>
                     </div>
                     <div class="route-list-box-mobile">
                         <a>
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFF00"><path d="M480.13-120q-74.67 0-140.41-28.34-65.73-28.34-114.36-76.92-48.63-48.58-76.99-114.26Q120-405.19 120-479.87q0-74.67 28.34-140.41 28.34-65.73 76.92-114.36 48.58-48.63 114.26-76.99Q405.19-840 479.87-840q74.67 0 140.41 28.34 65.73 28.34 114.36 76.92 48.63 48.58 76.99 114.26Q840-554.81 840-480.13q0 74.67-28.34 140.41-28.34 65.73-76.92 114.36-48.58 48.63-114.26 76.99Q554.81-120 480.13-120Z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                                fill="#FFDE21">
+                                <path
+                                    d="M480.13-120q-74.67 0-140.41-28.34-65.73-28.34-114.36-76.92-48.63-48.58-76.99-114.26Q120-405.19 120-479.87q0-74.67 28.34-140.41 28.34-65.73 76.92-114.36 48.58-48.63 114.26-76.99Q405.19-840 479.87-840q74.67 0 140.41 28.34 65.73 28.34 114.36 76.92 48.63 48.58 76.99 114.26Q840-554.81 840-480.13q0 74.67-28.34 140.41-28.34 65.73-76.92 114.36-48.58 48.63-114.26 76.99Q554.81-120 480.13-120Z" />
+                            </svg>
                             <button (click)="renderRoute6()">Route 6</button>
                         </a>
                     </div>
                 </div>
-                
+
                 <div *ngIf="showRouteList" class="clark-loop-container">
-                <h3>Clark Loop</h3>
-                <div class="route-list-box-mobile">
-                    <div class="route-list-box-mobile" id="northbound">
-                        <a>
-                            <button (click)="renderRoute7()">Northbound</button>
-                        </a>
-                    </div>
-                    <div class="route-list-box-mobile" id="southbound">
-                        <a>
-                            <button (click)="renderRoute8()">Southbound</button>
-                        </a>
+                    <h3>Clark Loop</h3>
+                    <div class="route-list-box-mobile">
+                        <div class="route-list-box-mobile" id="northbound">
+                            <a>
+                                <button (click)="renderRoute7()">Northbound</button>
+                            </a>
+                        </div>
+                        <div class="route-list-box-mobile" id="southbound">
+                            <a>
+                                <button (click)="renderRoute8()">Southbound</button>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-            </div>
-        </div> 
+        </div>
 
         <div *ngIf="!showRouteList" class="display-routes-info-container-mobile">
             <p>Showing {{ currentRouteType }} Route {{ currentRouteName }}</p>
@@ -129,5 +147,3 @@
         </div>
     </div>
 </div>
-  
-    

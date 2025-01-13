@@ -128,12 +128,12 @@
     }
 
     #northbound {
-      background: blue;
+      background: #1d58c6;
       color: white;
     }
 
     #southbound {
-      background: orange;
+      background: #F98100;
     }
 
     .clark-loop-container-mobile {

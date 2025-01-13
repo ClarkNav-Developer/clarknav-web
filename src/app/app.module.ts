@@ -8,8 +8,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { JeepneyRouteComponent } from './jeepney-route/jeepney-route.component';
 import { BusRouteComponent } from './bus-route/bus-route.component';
 import { AnnouncementComponent } from './announcement/announcement.component';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+
 
 
 import { PublicModule } from './public/public.module';
@@ -29,8 +28,6 @@ import { AdminModule } from './admin/admin.module';
     HttpClientModule,
     PublicModule,
     AdminModule,
-    BrowserAnimationsModule,
-    MatBottomSheetModule
   ],
   providers: [],
   bootstrap: [AppComponent]
