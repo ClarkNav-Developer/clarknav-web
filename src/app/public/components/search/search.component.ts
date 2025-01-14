@@ -1,7 +1,6 @@
 import { Component, OnInit, AfterViewInit, Renderer2 } from '@angular/core';
 import { MapService } from '../../services/map.service';
 import { NavigationService } from '../../services/navigation.service';
-import { RoutesService } from '../../services/routes.service';
 
 declare var google: any;
 
@@ -14,10 +13,9 @@ export class SearchComponent implements OnInit, AfterViewInit {
   currentLocation: google.maps.LatLngLiteral | null = null;
   destination: google.maps.LatLngLiteral | null = null;
   geocoder: any;
-  suggestedRoutes: any[] = [];
   showNavigationWindow = false; // Controls the navigation window
 
-  constructor(private mapService: MapService, private navigationService: NavigationService, private renderer: Renderer2, private routesService: RoutesService) {
+  constructor(private mapService: MapService, private navigationService: NavigationService, private renderer: Renderer2) {
     this.geocoder = new google.maps.Geocoder();
   }
 
@@ -151,34 +149,34 @@ export class SearchComponent implements OnInit, AfterViewInit {
       const temp = this.currentLocation;
       this.currentLocation = this.destination;
       this.destination = temp;
-
+  
       // Update the input fields with addresses
       this.geocodeLatLng(this.currentLocation, (address: string) => {
         const currentLocationInput = document.getElementById('current-location-box') as HTMLInputElement;
         const currentLocationInputMobile = document.getElementById('current-location-box-mobile') as HTMLInputElement;
-
+  
         if (currentLocationInput) {
           currentLocationInput.value = address;
         }
-
+  
         if (currentLocationInputMobile) {
           currentLocationInputMobile.value = address;
         }
       });
-
+  
       this.geocodeLatLng(this.destination, (address: string) => {
         const destinationInput = document.getElementById('search-box') as HTMLInputElement;
         const destinationInputMobile = document.getElementById('search-box-mobile') as HTMLInputElement;
-
+  
         if (destinationInput) {
           destinationInput.value = address;
         }
-
+  
         if (destinationInputMobile) {
           destinationInputMobile.value = address;
         }
       });
-
+  
       // Re-center the map
       this.mapService.map.setCenter(this.currentLocation);
     } else {
@@ -244,46 +242,5 @@ export class SearchComponent implements OnInit, AfterViewInit {
       console.error('Geolocation is not supported by this browser.');
       alert('Geolocation is not supported by your browser.');
     }
-  }
-
-  fetchAndDisplayRoutes() {
-    if (this.currentLocation && this.destination) {
-      this.suggestedRoutes = this.routesService
-        .suggestMultimodalRoutes(this.currentLocation, this.destination);
-      this.updateRouteSuggestionsUI();
-    } else {
-      console.warn('Current location or destination is missing.');
-    }
-  }
-
-  updateRouteSuggestionsUI() {
-    const routesContainer = document.querySelector('.routes');
-    if (!routesContainer) {
-      console.error('Routes container not found in the UI.');
-      return;
-    }
-
-    routesContainer.innerHTML = '<h3>Suggested Routes</h3>'; // Clear previous routes
-    this.suggestedRoutes.forEach((route, index) => {
-      const routeElement = document.createElement('div');
-      routeElement.classList.add('route');
-
-      if (route.mode === 'Multimodal (Jeepney + Bus)') {
-        routeElement.innerHTML = `
-          <p><strong>Route ${index + 1} (Multimodal):</strong></p>
-          <p>Jeepney Segment: <span>${route.segments[0].waypoints.length} waypoints</span></p>
-          <p>Bus Segment: <span>${route.segments[1].waypoints.length} waypoints</span></p>
-          <p>Total Distance: <span>${(route.totalDistance / 1000).toFixed(2)} km</span></p>
-        `;
-      } else {
-        routeElement.innerHTML = `
-          <p><strong>Route ${index + 1} (${route.mode}):</strong></p>
-          <p>Waypoints: <span>${route.waypoints.length}</span></p>
-          <p>Distance: <span>${(route.distance / 1000).toFixed(2)} km</span></p>
-        `;
-      }
-
-      routesContainer.appendChild(routeElement);
-    });
   }
 }

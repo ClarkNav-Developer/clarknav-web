@@ -35,34 +35,37 @@ export class NavigationService {
   --------------------------------------------*/
   navigateToDestination() {
     if (!this.validateLocations()) return;
-
+  
     this.mapService.clearMap();
-
+  
     const nearestStartWaypoint = this.routesService.findNearestStop(this.currentLocation!);
     const nearestEndWaypoint = this.routesService.findNearestStop(this.destination!);
-
+  
     if (!nearestStartWaypoint || !nearestEndWaypoint) {
       alert('No nearby waypoints found for either current location or destination.');
       return;
     }
-
+  
     console.log('Nearest start waypoint:', nearestStartWaypoint);
     console.log('Nearest end waypoint:', nearestEndWaypoint);
-
+  
     this.mapService.displayWalkingPath(this.currentLocation!, nearestStartWaypoint, 'NB');
-
+  
     const routePath = this.routesService.findRoutePath(nearestStartWaypoint, nearestEndWaypoint);
-
+  
     if (routePath.path.length === 0) {
       alert('No route found connecting the selected stops.');
       return;
     }
-
+  
     this.mapService.displayRoutePath({ path: routePath.path, color: routePath.color });
-
-    if (!this.routesService.isNearby(this.destination!, routePath.path[routePath.path.length - 1])) {
-      this.mapService.displayWalkingPath(nearestEndWaypoint, this.destination!, routePath.color);
-    }
+  
+    // Allow stopping anywhere along the jeepney route
+    const finalDestination = this.routesService.isNearby(this.destination!, routePath.path[routePath.path.length - 1])
+      ? this.destination!
+      : routePath.path[routePath.path.length - 1];
+  
+    this.mapService.displayWalkingPath(finalDestination, this.destination!, routePath.color);
   }
 
   private validateLocations(): boolean {

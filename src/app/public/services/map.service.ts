@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { RoutesService } from './routes.service';
-import { BehaviorSubject } from 'rxjs';
 
 declare var google: any;
 
@@ -8,18 +7,23 @@ declare var google: any;
   providedIn: 'root',
 })
 export class MapService {
+  // Google Maps instances
   public map: any;
   private directionsService: any;
   private directionsRenderer: any;
+
+  // Data storage
   private markers: google.maps.Marker[] = [];
   private routeRenderers: google.maps.DirectionsRenderer[] = [];
   private filteredRoutes: any[] = [];
   private jeepneyRoutes: any[] = [];
   private busRoutes: any[] = [];
 
+  // Locations
   currentLocation: google.maps.LatLngLiteral | null = null;
   destination: google.maps.LatLngLiteral | null = null;
 
+  // Route color mapping
   private routeColors: { [key: string]: string } = {
     J1: '#228B22',
     J2: '#D4B895',
@@ -28,8 +32,11 @@ export class MapService {
     B1: '#F98100',
   };
 
-  constructor(private routesService: RoutesService) {}
-  
+  constructor(private routesService: RoutesService) { }
+
+  /*------------------------------------------
+  Initialization
+  --------------------------------------------*/
   setMap(map: any) {
     this.map = map;
     this.directionsService = new google.maps.DirectionsService();
@@ -39,12 +46,13 @@ export class MapService {
     });
   }
 
+  /*------------------------------------------
+  Map Utilities
+  --------------------------------------------*/
   clearMap() {
-    // Remove all markers
     this.markers.forEach(marker => marker.setMap(null));
     this.markers = [];
 
-    // Remove all route renderers
     this.routeRenderers.forEach(renderer => renderer.setMap(null));
     this.routeRenderers = [];
   }
@@ -56,127 +64,6 @@ export class MapService {
       title: title,
     });
     this.markers.push(marker);
-  }
-
-  displayWalkingPath(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, color: string) {
-    const distance = google.maps.geometry.spherical.computeDistanceBetween(
-      new google.maps.LatLng(origin.lat, origin.lng),
-      new google.maps.LatLng(destination.lat, destination.lng)
-    );
-  
-    const threshold = 50; // Distance in meters to switch between direct path and road-following path
-    const pathColor = color // Ensure color is passed correctly
-  
-    if (distance < threshold) {
-      // Draw a direct path with proper color
-      const walkingPath = new google.maps.Polyline({
-        path: [origin, destination],
-        geodesic: true,
-        strokeColor: pathColor,
-        strokeOpacity: 0, // Set opacity to 0 since icons will be used for dots
-        strokeWeight: 2,
-        icons: [
-          {
-            icon: {
-              path: google.maps.SymbolPath.CIRCLE, // Small circle for dotted effect
-              scale: 3, // Size of the dots
-              fillColor: pathColor, // Use pathColor here
-              fillOpacity: 1, // Solid fill for the circles
-              strokeOpacity: 1, // Full opacity for the dots
-            },
-            offset: '0',
-            repeat: '15px',
-          },
-        ],
-      });
-  
-      walkingPath.setMap(this.map);
-      this.routeRenderers.push(walkingPath);
-    } else {
-      // Follow the road
-      const request = {
-        origin: origin,
-        destination: destination,
-        travelMode: google.maps.TravelMode.WALKING,
-      };
-  
-      this.directionsService.route(request, (result: any, status: any) => {
-        if (status === google.maps.DirectionsStatus.OK) {
-          const walkingRenderer = new google.maps.DirectionsRenderer({
-            map: this.map,
-            preserveViewport: true,
-            polylineOptions: {
-              strokeColor: pathColor, // Ensure the path color is set for the walking path
-              strokeOpacity: 0, // Set opacity to 0 since icons will be used for dots
-              strokeWeight: 2,
-              icons: [
-                {
-                  icon: {
-                    path: google.maps.SymbolPath.CIRCLE, // Small circle for dotted effect
-                    scale: 3,
-                    fillColor: pathColor, // Use pathColor here
-                    fillOpacity: 1,
-                    strokeOpacity: 1,
-                  },
-                  offset: '0',
-                  repeat: '15px',
-                },
-              ],
-            },
-          });
-          walkingRenderer.setDirections(result);
-          this.routeRenderers.push(walkingRenderer);
-        } else {
-          console.error('Walking directions request failed due to ' + status);
-        }
-      });
-    }
-  }
-  
-
-  displayRoutePath(routePath: { path: google.maps.LatLngLiteral[], color: string }) {
-    if (routePath.path.length < 2) {
-      console.error("Route path must have at least two waypoints to display a route.");
-      return;
-    }
-
-    const pathColor = routePath.color; // Blue for NB, Red for SB
-
-    // Iterate through pairs of waypoints and request directions for each segment
-    for (let i = 0; i < routePath.path.length - 1; i++) {
-      const origin = routePath.path[i];
-      const destination = routePath.path[i + 1];
-
-      const request = {
-        origin: origin,
-        destination: destination,
-        travelMode: google.maps.TravelMode.DRIVING, // Use TRANSIT for routes
-      };
-
-      this.directionsService.route(request, (result: any, status: any) => {
-        if (status === google.maps.DirectionsStatus.OK) {
-          const segmentRenderer = new google.maps.DirectionsRenderer({
-            map: this.map,
-            preserveViewport: true,
-            suppressMarkers: true, // Prevent duplicate markers for waypoints
-            polylineOptions: {
-              strokeColor: pathColor, // Color based on direction
-              strokeWeight: 5, // Thickness of the path
-            },
-          });
-
-          segmentRenderer.setDirections(result);
-          this.routeRenderers.push(segmentRenderer);
-        } else {
-          console.error('Directions request failed for segment ' + i + ' due to ' + status);
-        }
-      });
-    }
-
-    // Add markers for each waypoint along the path
-    routePath.path.forEach((waypoint: google.maps.LatLngLiteral) => {
-      this.addMarker(waypoint, 'Waypoint');
-    });
   }
 
   /*------------------------------------------
@@ -226,9 +113,6 @@ export class MapService {
     });
   }
 
-  /*------------------------------------------
-  Display Route Using Directions API
-  --------------------------------------------*/
   displayRouteUsingDirectionsAPI(waypoints: google.maps.LatLngLiteral[], color: string) {
     if (waypoints.length < 2) return;
 
@@ -258,6 +142,120 @@ export class MapService {
           directionsRenderer.setDirections(result);
         } else {
           console.error('Directions request failed due to ' + status);
+        }
+      });
+    }
+  }
+
+  displayRoutePath(routePath: { path: google.maps.LatLngLiteral[], color: string }) {
+    if (routePath.path.length < 2) {
+      console.error("Route path must have at least two waypoints to display a route.");
+      return;
+    }
+
+    const pathColor = routePath.color;
+
+    for (let i = 0; i < routePath.path.length - 1; i++) {
+      const origin = routePath.path[i];
+      const destination = routePath.path[i + 1];
+
+      const request = {
+        origin: origin,
+        destination: destination,
+        travelMode: google.maps.TravelMode.DRIVING,
+      };
+
+      this.directionsService.route(request, (result: any, status: any) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          const segmentRenderer = new google.maps.DirectionsRenderer({
+            map: this.map,
+            preserveViewport: true,
+            suppressMarkers: true,
+            polylineOptions: {
+              strokeColor: pathColor,
+              strokeWeight: 5,
+            },
+          });
+
+          segmentRenderer.setDirections(result);
+          this.routeRenderers.push(segmentRenderer);
+        } else {
+          console.error('Directions request failed for segment ' + i + ' due to ' + status);
+        }
+      });
+    }
+
+    routePath.path.forEach((waypoint: google.maps.LatLngLiteral) => {
+      this.addMarker(waypoint, 'Waypoint');
+    });
+  }
+
+  /*------------------------------------------
+  Walking Path Display
+  --------------------------------------------*/
+  displayWalkingPath(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, color: string) {
+    const distance = google.maps.geometry.spherical.computeDistanceBetween(
+      new google.maps.LatLng(origin.lat, origin.lng),
+      new google.maps.LatLng(destination.lat, destination.lng)
+    );
+
+    const threshold = 50;
+
+    if (distance < threshold) {
+      const walkingPath = new google.maps.Polyline({
+        path: [origin, destination],
+        geodesic: true,
+        strokeOpacity: 0,
+        strokeWeight: 0,
+        icons: [
+          {
+            icon: {
+              path: 'M 0,-1 0,1',
+              strokeOpacity: 1,
+              scale: 3,
+              strokeColor: color,
+              strokeWeight: 5,
+            },
+            offset: '0',
+            repeat: '15px',
+          },
+        ],
+      });
+      walkingPath.setMap(this.map);
+      this.routeRenderers.push(walkingPath);
+    } else {
+      const request = {
+        origin: origin,
+        destination: destination,
+        travelMode: google.maps.TravelMode.WALKING,
+      };
+
+      this.directionsService.route(request, (result: any, status: any) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          const walkingRenderer = new google.maps.DirectionsRenderer({
+            map: this.map,
+            preserveViewport: true,
+            polylineOptions: {
+              strokeOpacity: 0,
+              strokeWeight: 0,
+              icons: [
+                {
+                  icon: {
+                    path: 'M 0,-1 0,1',
+                    strokeOpacity: 1,
+                    scale: 3,
+                    strokeColor: color,
+                  },
+                  offset: '0',
+                  repeat: '15px',
+                },
+              ],
+            },
+          });
+          walkingRenderer.setDirections(result);
+          this.routeRenderers.push(walkingRenderer);
+        } else {
+          console.error('Walking directions request failed due to ' + status);
         }
       });
     }
