@@ -1,3 +1,4 @@
+// src/app/public/services/navigation.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MapService } from './map.service';
@@ -66,6 +67,22 @@ export class NavigationService {
       : routePath.path[routePath.path.length - 1];
   
     this.mapService.displayWalkingPath(finalDestination, this.destination!, routePath.color);
+  }
+
+  navigateToDestinationWithRoute(route: any) {
+    this.mapService.clearMap();
+
+    const waypoints = route.waypoints.map((waypoint: string) => this.routesService.parseWaypoint(waypoint));
+    const routeColor = route.color;
+
+    this.mapService.displayRoutePath({ path: waypoints, color: routeColor });
+
+    // Allow stopping anywhere along the jeepney route
+    const finalDestination = this.routesService.isNearby(this.destination!, waypoints[waypoints.length - 1])
+      ? this.destination!
+      : waypoints[waypoints.length - 1];
+
+    this.mapService.displayWalkingPath(finalDestination, this.destination!, routeColor);
   }
 
   private validateLocations(): boolean {

@@ -13,7 +13,7 @@ import { FloatingWindowService } from '../floating-window.service';
 import { PlannerComponent } from './components/planner/planner.component';
 import { RouteComponent } from './components/route/route.component';
 import { AccountComponent } from './components/account/account.component';
-import { FormsModule } from '@angular/forms';
+// import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -32,7 +32,7 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     PublicRoutingModule,
-    FormsModule,
+    // FormsModule,
   ],
   providers: [FloatingWindowService],
   exports: [

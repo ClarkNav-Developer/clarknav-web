@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, Renderer2 } from '@angular/core';
 import { MapService } from '../../services/map.service';
 import { NavigationService } from '../../services/navigation.service';
+import { SuggestedRoutesService } from '../../services/suggested-routes.service';
 
 declare var google: any;
 
@@ -14,8 +15,14 @@ export class SearchComponent implements OnInit, AfterViewInit {
   destination: google.maps.LatLngLiteral | null = null;
   geocoder: any;
   showNavigationWindow = false; // Controls the navigation window
+  suggestedRoutes: any[] = []; // Store suggested routes
 
-  constructor(private mapService: MapService, private navigationService: NavigationService, private renderer: Renderer2) {
+  constructor(
+    private mapService: MapService,
+    private navigationService: NavigationService,
+    private suggestedRoutesService: SuggestedRoutesService,
+    private renderer: Renderer2
+  ) {
     this.geocoder = new google.maps.Geocoder();
   }
 
@@ -40,9 +47,21 @@ export class SearchComponent implements OnInit, AfterViewInit {
   }
 
   navigateToDestination() {
+    console.log('Navigate button clicked'); // Debugging statement
     this.navigationService.currentLocation = this.currentLocation;
     this.navigationService.destination = this.destination;
-    this.navigationService.navigateToDestination();
+
+    if (this.destination) {
+      // Fetch and display suggested routes
+      this.suggestedRoutesService.getRoutesForDestination(this.destination).subscribe((routes: any[]) => {
+        console.log('Fetched routes:', routes); // Debugging statement
+        this.suggestedRoutes = routes;
+      });
+    }
+  }
+
+  selectRoute(route: any) {
+    this.navigationService.navigateToDestinationWithRoute(route);
   }
 
   /*------------------------------------------
@@ -82,7 +101,6 @@ export class SearchComponent implements OnInit, AfterViewInit {
     const mobileInput = document.getElementById('search-box-mobile') as HTMLInputElement;
     const desktopInputSearch = document.getElementById('search-box-2') as HTMLInputElement;
     const mobileInputSearch = document.getElementById('search-box-mobile-2') as HTMLInputElement;
-
 
     [desktopInput, mobileInput, desktopInputSearch, mobileInputSearch].forEach((input) => {
       if (input) {
@@ -149,34 +167,34 @@ export class SearchComponent implements OnInit, AfterViewInit {
       const temp = this.currentLocation;
       this.currentLocation = this.destination;
       this.destination = temp;
-  
+
       // Update the input fields with addresses
       this.geocodeLatLng(this.currentLocation, (address: string) => {
         const currentLocationInput = document.getElementById('current-location-box') as HTMLInputElement;
         const currentLocationInputMobile = document.getElementById('current-location-box-mobile') as HTMLInputElement;
-  
+
         if (currentLocationInput) {
           currentLocationInput.value = address;
         }
-  
+
         if (currentLocationInputMobile) {
           currentLocationInputMobile.value = address;
         }
       });
-  
+
       this.geocodeLatLng(this.destination, (address: string) => {
         const destinationInput = document.getElementById('search-box') as HTMLInputElement;
         const destinationInputMobile = document.getElementById('search-box-mobile') as HTMLInputElement;
-  
+
         if (destinationInput) {
           destinationInput.value = address;
         }
-  
+
         if (destinationInputMobile) {
           destinationInputMobile.value = address;
         }
       });
-  
+
       // Re-center the map
       this.mapService.map.setCenter(this.currentLocation);
     } else {
