@@ -1,28 +1,88 @@
 @media screen and (min-width: 431px) {
-    .mobile-view {
-        display: none;
-    }
-    .floating-window {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 400px;
-      padding: 20px;
-      background: white;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      z-index: 1000;
+  .mobile-view {
+      display: none;
+  }
+  .floating-window {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    padding: 20px;
+    background: white;
+    box-shadow: 0px 2px 4px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    z-index: 1000;
   }
 
   .floating-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* background: rgba(0, 0, 0, 0.5); */
+    z-index: 999;
+  }
+
+  .close-btn[_ngcontent-ng-c3847724257] {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between items */
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  .close-btn:hover {
+    background: darkred;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .header img{
+    height: 90px;
+    margin-right: 10px;
+  }
+  
+  .header h1{
+    margin-left: 10px;
+  }
+
+  .routes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #f1f1f1;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
   }
 
 }
@@ -57,7 +117,7 @@
       z-index: 999;
     }
   
-    .content {
+    .content-mobile {
       display: flex;
       flex-direction: column;
       gap: 10px; /* Space between items */

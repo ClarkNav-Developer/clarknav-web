@@ -7,10 +7,16 @@ import { FloatingWindowService } from '../../../floating-window.service';
   styleUrls: ['./account.component.css'],
 })
 export class AccountComponent {
+  selectedMenuItem: string = 'account-settings';
+
   constructor(private floatingWindowService: FloatingWindowService) {}
 
   closeWindow(event: Event) {
     event.stopPropagation();
     this.floatingWindowService.close();
+  }
+
+  selectMenuItem(menuItem: string) {
+    this.selectedMenuItem = menuItem;
   }
 }

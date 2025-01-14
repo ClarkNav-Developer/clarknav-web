@@ -1,13 +1,106 @@
 <div class="desktop-view">
+  <div class="floating-overlay" (click)="closeWindow($event)"></div>
   <div class="floating-window">
-    <h2>Account Component</h2>
-    <p>This is your account component in a floating window!</p>
-    <p>This is your account component in a floating window!</p>
-    <p>This is your account component in a floating window!</p>
-    <p>This is your account component in a floating window!</p>
-    <p>This is your account component in a floating window!</p>
-    <p>This is your account component in a floating window!</p>
-    <button (click)="closeWindow($event)">Close</button>
+    <button class="close-btn" (click)="closeWindow($event)">X</button>
+    <div class="content">
+      <div class="menu-list-container">
+        <h2>Menu</h2>
+        <div class="menu-list">
+          <a href="" (click)="selectMenuItem('account-settings'); $event.preventDefault()">Account Settings</a>
+        </div>
+        <div class="menu-list">
+          <a href="" (click)="selectMenuItem('history'); $event.preventDefault()">History</a>
+        </div>
+        <div class="menu-list">
+          <a href="" (click)="selectMenuItem('report-bugs'); $event.preventDefault()">Report bugs</a>
+        </div>
+        <div class="menu-list">
+          <a href="" (click)="selectMenuItem('feedback'); $event.preventDefault()">Feedback</a>
+        </div>
+        <div class="menu-list">
+          <a href="" (click)="selectMenuItem('faqs'); $event.preventDefault()">FAQs</a>
+        </div>
+        <div class="menu-list">
+          <span>Dark Mode</span>
+          <label class="toggle-switch">
+            <input type="checkbox">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="menu-list">
+          <a href="" style="color: red;">Logout</a>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="menu-info-container">
+        <div *ngIf="selectedMenuItem === 'account-settings'" class="account-info-container">
+          <div class="header-info">
+            <h2>ACCOUNT SETTINGS</h2>
+          </div>
+          <div class="content-info">
+            <div class="info">
+              <p>FIRST NAME</p>
+              <input type="text" placeholder="First Name" />
+              <p>LAST NAME</p>
+              <input type="text" placeholder="Last Name" />
+              <p>EMAIL</p>
+              <input type="text" placeholder="Your email" />
+              <p>CHANGE PASSWORD</p>
+              <input type="text" placeholder="Old Password" />
+              <input type="text" placeholder="New Password" />
+              <button>Delete Account</button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="selectedMenuItem === 'history'" class="account-history-container">
+           <div class="header-info">
+            <h2>HISTORY</h2>
+          </div>
+          <div class="content-info">
+            <div class="info">
+              <h5></h5>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="selectedMenuItem === 'report-bugs'" class="report-bugs-container">
+          <div class="header-info">
+            <h2>REPORT BUGS</h2>
+          </div>
+          <div class="content-info">
+            <div class="info">
+              <p>Put Content here</p>
+            </div>
+          </div>
+        </div>
+
+       <div *ngIf="selectedMenuItem === 'feedback'" class="feedback-container">
+        <div class="header-info">
+          <h2>FEEDBACK</h2>
+        </div>
+        <div class="content-info">
+          <div class="info">
+            <p>Put Content here</p>
+          </div>
+        </div>
+       </div>
+
+       <div *ngIf="selectedMenuItem === 'faqs'" class="faqs-container">
+        <div class="header-info">
+          <h2>FAQs</h2>
+        </div>
+        <div class="content-info">
+          <div class="info">
+            <p>Put Content here</p>
+          </div>
+        </div>
+       </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -38,6 +131,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
