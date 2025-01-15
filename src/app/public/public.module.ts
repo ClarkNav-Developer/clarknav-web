@@ -13,6 +13,7 @@ import { FloatingWindowService } from '../floating-window.service';
 import { PlannerComponent } from './components/planner/planner.component';
 import { RouteComponent } from './components/route/route.component';
 import { AccountComponent } from './components/account/account.component';
+import { InformationComponent } from './components/information/information.component';
 // import { FormsModule } from '@angular/forms';
 
 
@@ -28,6 +29,7 @@ import { AccountComponent } from './components/account/account.component';
     PlannerComponent,
     RouteComponent,
     AccountComponent,
+    InformationComponent,
   ],
   imports: [
     CommonModule,

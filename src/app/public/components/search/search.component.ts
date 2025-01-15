@@ -16,6 +16,8 @@ export class SearchComponent implements OnInit, AfterViewInit {
   geocoder: any;
   showNavigationWindow = false; // Controls the navigation window
   suggestedRoutes: any[] = []; // Store suggested routes
+  selectedRoute: any; // Store the selected route
+  showAllRoutes: boolean = true;
 
   constructor(
     private mapService: MapService,
@@ -46,23 +48,29 @@ export class SearchComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // File: search.component.ts
   navigateToDestination() {
-    console.log('Navigate button clicked'); // Debugging statement
+    if (!this.currentLocation || !this.destination) {
+      alert('Please set both your current location and destination.');
+      return;
+    }
+
+    // Fetch and display suggested routes
+    const routes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
+    if (routes.length > 0) {
+      this.suggestedRoutes = routes;
+      this.showAllRoutes = true;
+      console.log('Suggested Routes:', this.suggestedRoutes);
+    } else {
+      alert('No suggested routes found.');
+    }
+
+    // Navigate logic
     this.navigationService.currentLocation = this.currentLocation;
     this.navigationService.destination = this.destination;
-
-    if (this.destination) {
-      // Fetch and display suggested routes
-      this.suggestedRoutesService.getRoutesForDestination(this.destination).subscribe((routes: any[]) => {
-        console.log('Fetched routes:', routes); // Debugging statement
-        this.suggestedRoutes = routes;
-      });
-    }
+    this.navigationService.navigateToDestination();
   }
 
-  selectRoute(route: any) {
-    this.navigationService.navigateToDestinationWithRoute(route);
-  }
 
   /*------------------------------------------
   Initialize Autocomplete for Searching Locations
@@ -88,10 +96,40 @@ export class SearchComponent implements OnInit, AfterViewInit {
           this.destination = location;
           this.mapService.addMarker(location, 'Searched Location');
           this.mapService.map.setCenter(location);
+
+          // Fetch suggested routes
+          this.fetchSuggestedRoutes();
         }
       });
     }
   }
+
+  fetchSuggestedRoutes() {
+    if (this.currentLocation && this.destination) {
+      const routes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
+      console.log('Raw Suggested Routes:', routes);
+  
+      if (routes.length > 0) {
+        // Flatten the array if it contains nested arrays
+        this.suggestedRoutes = routes.flat();
+        console.log('Flattened Suggested Routes:', this.suggestedRoutes);
+      } else {
+        console.error('No suggested routes found.');
+      }
+    } else {
+      console.error('Current location or destination not set.');
+    }
+  }
+  
+  // Highlight the selected route on the map
+  selectRoute(route: any): void {
+    this.selectedRoute = route;
+    this.showAllRoutes = false; // Hide unselected routes
+    this.mapService.clearMap();
+    this.mapService.displayRoutePath({ path: route.path, color: route.color });
+    console.log('Selected Route:', route);
+  }
+
 
   /*------------------------------------------
   Initialize Autocomplete for Destination

@@ -7,9 +7,9 @@ import { HttpClient } from '@angular/common/http';
 export class RoutesService {
 
   // Route Data
-  private jeepneyRoutes: any[] = [];
-  private busRoutes: any[] = [];
-  
+  jeepneyRoutes: any[] = [];
+  busRoutes: any[] = [];
+
   constructor(private http: HttpClient) { }
 
   loadRoutes() {
@@ -75,83 +75,69 @@ export class RoutesService {
     return nearestWaypoint;
   }
 
-  findRoutePath(
+  findAllRoutePaths(
     startWaypoint: google.maps.LatLngLiteral,
     endWaypoint: google.maps.LatLngLiteral
-  ): { path: google.maps.LatLngLiteral[]; color: string } {
+  ): { path: google.maps.LatLngLiteral[]; color: string }[] {
     const routes = [...this.jeepneyRoutes, ...this.busRoutes];
-    let bestPath: google.maps.LatLngLiteral[] = [];
-    let bestColor = '';
-    let minDistance = Infinity;
-  
+    const allPaths: { path: google.maps.LatLngLiteral[]; color: string }[] = [];
+
     routes.forEach(route => {
       let waypoints = route.waypoints.map(this.parseWaypoint);
-  
-      // Filter and prioritize extensions based on proximity
+
+      // Include extensions using truncate and bidirectional logic
       const relevantExtensions = (route.extensions || [])
-        .filter((extension: any) => {
-          const extensionStartPoint = this.parseWaypoint(extension.startPoint);
-          return (
-            this.isNearby(startWaypoint, extensionStartPoint) ||
-            this.isNearby(endWaypoint, extensionStartPoint) ||
-            extension.waypoints.some((extWaypoint: string) =>
-              this.isNearby(startWaypoint, this.parseWaypoint(extWaypoint)) ||
-              this.isNearby(endWaypoint, this.parseWaypoint(extWaypoint))
-            )
-          );
-        })
-        .sort((a: any, b: any) => {
-          const aDistance = this.calculateDistance(endWaypoint, this.parseWaypoint(a.startPoint));
-          const bDistance = this.calculateDistance(endWaypoint, this.parseWaypoint(b.startPoint));
-          return aDistance - bDistance;
-        });
-  
-      // Process extensions bidirectionally
+        .filter((extension: any) => this.isRelevantExtension(extension, startWaypoint, endWaypoint))
+        .map((extension: any) => extension.waypoints.map(this.parseWaypoint));
+
       let processedWaypoints = [...waypoints];
-  
-      relevantExtensions.forEach((extension: any) => {
-        const extensionStartPoint = this.parseWaypoint(extension.startPoint);
-  
-        // Check if start is on the extension
-        if (this.isNearby(startWaypoint, extensionStartPoint)) {
-          processedWaypoints = [
-            ...extension.waypoints.map(this.parseWaypoint),
-            ...processedWaypoints
-          ];
-        }
-  
-        // Truncate the main route if end is on the extension
-        const mainRouteCutoffIndex = processedWaypoints.findIndex(wp =>
-          this.isNearby(wp, extensionStartPoint)
-        );
-  
-        if (mainRouteCutoffIndex !== -1) {
-          processedWaypoints = [
-            ...processedWaypoints.slice(0, mainRouteCutoffIndex + 1),
-            ...extension.waypoints.map(this.parseWaypoint),
-            ...processedWaypoints.slice(mainRouteCutoffIndex + 1)
-          ];
-        }
+      relevantExtensions.forEach((extensionWaypoints: google.maps.LatLngLiteral[]) => {
+        processedWaypoints = this.truncateAndIntegrateRoute(processedWaypoints, extensionWaypoints);
       });
-  
-      // Find shortest path between start and end waypoints
+
+      // Find paths between start and end points
       const startIndex = processedWaypoints.findIndex(wp => this.isNearby(wp, startWaypoint));
       const endIndex = processedWaypoints.findIndex(wp => this.isNearby(wp, endWaypoint));
-  
+
       if (startIndex !== -1 && endIndex !== -1) {
         const path = this.findShortestPath(processedWaypoints, startIndex, endIndex);
-        const distance = this.calculatePathDistance(path);
-  
-        if (distance < minDistance) {
-          minDistance = distance;
-          bestPath = path;
-          bestColor = route.color;
-        }
+        allPaths.push({ path, color: route.color });
       }
     });
-  
-    return { path: bestPath, color: bestColor };
+
+    return allPaths;
   }
+
+  private truncateAndIntegrateRoute(
+    mainWaypoints: google.maps.LatLngLiteral[],
+    extensionWaypoints: google.maps.LatLngLiteral[]
+  ): google.maps.LatLngLiteral[] {
+    const extensionStart = extensionWaypoints[0];
+    const mainRouteIndex = mainWaypoints.findIndex(wp => this.isNearby(wp, extensionStart));
+
+    if (mainRouteIndex !== -1) {
+      return [
+        ...mainWaypoints.slice(0, mainRouteIndex + 1),
+        ...extensionWaypoints,
+        ...mainWaypoints.slice(mainRouteIndex + 1),
+      ];
+    }
+
+    return [...mainWaypoints, ...extensionWaypoints];
+  }
+
+  private isRelevantExtension(extension: any, startWaypoint: google.maps.LatLngLiteral, endWaypoint: google.maps.LatLngLiteral): boolean {
+    const extensionStartPoint = this.parseWaypoint(extension.startPoint);
+    return (
+      this.isNearby(startWaypoint, extensionStartPoint) ||
+      this.isNearby(endWaypoint, extensionStartPoint) ||
+      extension.waypoints.some((extWaypoint: string) =>
+        this.isNearby(this.parseWaypoint(extWaypoint), startWaypoint) ||
+        this.isNearby(this.parseWaypoint(extWaypoint), endWaypoint)
+      )
+    );
+  }
+
 
 
   calculateDistance(pointA: google.maps.LatLngLiteral, pointB: google.maps.LatLngLiteral): number {
