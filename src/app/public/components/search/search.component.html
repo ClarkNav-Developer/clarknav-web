@@ -139,6 +139,36 @@
                     </svg></button>
             </div>
         </div>
+        <div class="buttons-mobile">
+            <button (click)="navigateToDestination()">Navigate</button>
+          </div>
+    </div>
+
+    <div id="bottomSheet" class="bottom-sheet-mobile" [class.visible]="isBottomSheetVisible">
+        <div class="drag-handle"></div>
+        <div class="transport-options-mobile">
+            <button class="option-mobile active">All</button>
+            <button class="option-mobile">Jeepney</button>
+            <button class="option-mobile">Taxi</button>
+            <button class="option-mobile">Loop</button>
+        </div>
+        <div class="content">
+            <h3>Suggested Routes</h3>
+            <div class="routes-container-mobile">
+                <div *ngFor="let route of suggestedRoutes" class="route-mobile">
+                    <p>
+                        <strong>{{ route.startTime }} - {{ route.endTime }}</strong> |
+                        <span class="fare">Estimated fare: ₱{{ route.estimatedFare }}</span>
+                    </p>
+                    <p>
+                        <span class="location">{{ route.startLocation }}</span> ➡️
+                        <span class="location">{{ route.endLocation }}</span>
+                    </p>
+                    <p class="duration">{{ route.duration }} mins</p>
+                </div>
+            </div>
+            <button (click)="hideBottomSheet()">Close</button>
+        </div>
     </div>
 
     <div class="side-nav-mobile">

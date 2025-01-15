@@ -18,6 +18,11 @@ export class SearchComponent implements OnInit, AfterViewInit {
   suggestedRoutes: any[] = []; // Store suggested routes
   selectedRoute: any; // Store the selected route
   showAllRoutes: boolean = true;
+  private isDragging = false;
+  private startY = 0;
+  private startBottom = 0;
+  private startHeight = 0;
+  isBottomSheetVisible = false; // Controls the visibility of the bottom sheet
 
   constructor(
     private mapService: MapService,
@@ -39,7 +44,68 @@ export class SearchComponent implements OnInit, AfterViewInit {
     this.initAutocomplete();
     this.initCurrentLocationAutocomplete();
     this.initSearchLocationAutocomplete();
+  
+    const bottomSheet = document.getElementById('bottomSheet');
+    const handle = bottomSheet?.querySelector('.drag-handle');
+  
+    if (handle && bottomSheet) {
+      // Mouse events
+      this.renderer.listen(handle, 'mousedown', (event: MouseEvent) => this.onDragStart(event, bottomSheet));
+      this.renderer.listen(document, 'mousemove', (event: MouseEvent) => this.onDrag(event, bottomSheet));
+      this.renderer.listen(document, 'mouseup', () => this.onDragEnd());
+  
+      // Touch events
+      this.renderer.listen(handle, 'touchstart', (event: TouchEvent) => this.onTouchStart(event, bottomSheet));
+      this.renderer.listen(document, 'touchmove', (event: TouchEvent) => this.onTouchMove(event, bottomSheet));
+      this.renderer.listen(document, 'touchend', () => this.onDragEnd());
+    }
   }
+  
+  private onDragStart(event: MouseEvent | TouchEvent, bottomSheet: HTMLElement): void {
+    this.isDragging = true;
+    this.startY = this.getClientY(event);
+    this.startHeight = bottomSheet.offsetHeight;
+  }
+  
+  private onDrag(event: MouseEvent, bottomSheet: HTMLElement | null): void {
+    if (this.isDragging && bottomSheet) {
+      const deltaY = this.startY - event.clientY;
+      const newHeight = Math.min(window.innerHeight, Math.max(100, this.startBottom + deltaY));
+  
+      // Set the height of the bottom sheet itself
+      bottomSheet.style.height = `${newHeight}px`;
+  
+      // Make sure the content inside the bottom sheet is scrollable if needed
+      const routesContainer = bottomSheet.querySelector('.routes-container-mobile') as HTMLElement;
+      if (routesContainer) {
+        const availableHeight = newHeight - 100; // Adjust for padding, headers, etc.
+        routesContainer.style.maxHeight = `${availableHeight}px`; // Allow routes container to be scrollable within the available height
+      }
+    }
+  }
+  
+  private onTouchStart(event: TouchEvent, bottomSheet: HTMLElement): void {
+    this.isDragging = true;
+    this.startY = this.getClientY(event);
+    this.startHeight = bottomSheet.offsetHeight;
+  }
+  
+  private onTouchMove(event: TouchEvent, bottomSheet: HTMLElement): void {
+    if (this.isDragging) {
+      const deltaY = this.startY - event.touches[0].clientY;
+      const newHeight = Math.max(150, Math.min(this.startHeight + deltaY, window.innerHeight - 100)); // Limit height
+      bottomSheet.style.height = `${newHeight}px`;
+    }
+  }
+  
+  private onDragEnd(): void {
+    this.isDragging = false;
+  }
+  
+  private getClientY(event: MouseEvent | TouchEvent): number {
+    return event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+  }
+  
 
   ngAfterViewInit(): void {
     // Ensure mapService is available after view initialization
@@ -68,9 +134,13 @@ export class SearchComponent implements OnInit, AfterViewInit {
     // Navigate logic
     this.navigationService.currentLocation = this.currentLocation;
     this.navigationService.destination = this.destination;
+    this.isBottomSheetVisible = true;
     this.navigationService.navigateToDestination();
   }
 
+  hideBottomSheet(): void {
+    this.isBottomSheetVisible = false; // Hide the bottom sheet
+  }
 
   /*------------------------------------------
   Initialize Autocomplete for Searching Locations

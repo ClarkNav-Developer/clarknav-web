@@ -1,6 +1,7 @@
-*{
+* {
     font-family: 'Montserrat', sans-serif;
 }
+
 /* desktop view */
 @media screen and (min-width: 431px) {
     .mobile-view {
@@ -24,10 +25,12 @@
         background-color: rgb(255, 255, 255, 0.5);
         padding: 5px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        position: relative; /* Ensure the pseudo-element is positioned relative to this container */
-        overflow: hidden; /* Prevent content from overflowing */
+        position: relative;
+        /* Ensure the pseudo-element is positioned relative to this container */
+        overflow: hidden;
+        /* Prevent content from overflowing */
     }
-    
+
     .search-bar-container::before {
         content: '';
         position: absolute;
@@ -38,7 +41,8 @@
         background-color: inherit;
         backdrop-filter: blur(15px);
         z-index: -1;
-        box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+        box-sizing: border-box;
+        /* Ensure padding and border are included in the element's total width and height */
     }
 
     .search-bar-container img {
@@ -51,13 +55,16 @@
         padding: 10px;
         border: none;
         border-radius: 8px;
-        background-color: rgb(0,0,0,0);
+        background-color: rgb(0, 0, 0, 0);
     }
 
     .search-bar-container input:focus {
-        outline: none; /* Remove the default outline */
-        border: none; /* Remove the border */
-        box-shadow: none; /* Remove any box shadow */
+        outline: none;
+        /* Remove the default outline */
+        border: none;
+        /* Remove the border */
+        box-shadow: none;
+        /* Remove any box shadow */
     }
 
     .container {
@@ -156,7 +163,7 @@
         flex-direction: column;
         gap: 12px;
         overflow-y: auto;
-        max-height: 50vh;
+        max-height: 30vh;
     }
 
     .route {
@@ -239,10 +246,12 @@
         background-color: rgb(255, 255, 255, 0.5);
         padding: 5px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        position: relative; /* Ensure the pseudo-element is positioned relative to this container */
-        overflow: hidden; /* Prevent content from overflowing */
+        position: relative;
+        /* Ensure the pseudo-element is positioned relative to this container */
+        overflow: hidden;
+        /* Prevent content from overflowing */
     }
-    
+
     .search-bar-container-mobile::before {
         content: '';
         position: absolute;
@@ -253,7 +262,8 @@
         background-color: inherit;
         backdrop-filter: blur(15px);
         z-index: -1;
-        box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+        box-sizing: border-box;
+        /* Ensure padding and border are included in the element's total width and height */
     }
 
     .search-bar-container-mobile img {
@@ -266,13 +276,16 @@
         padding: 10px;
         border: none;
         border-radius: 8px;
-        background-color: rgb(0,0,0,0);
+        background-color: rgb(0, 0, 0, 0);
     }
 
     .search-bar-container-mobile input:focus {
-        outline: none; /* Remove the default outline */
-        border: none; /* Remove the border */
-        box-shadow: none; /* Remove any box shadow */
+        outline: none;
+        /* Remove the default outline */
+        border: none;
+        /* Remove the border */
+        box-shadow: none;
+        /* Remove any box shadow */
     }
 
     .mobile-container {
@@ -284,19 +297,22 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         width: calc(100% - 20px);
         margin: 10px;
-        top: -100%; /* Start above the screen */
-        transition: top 0.5s ease-in-out; /* Animation for drop down */
+        top: -100%;
+        /* Start above the screen */
+        transition: top 0.5s ease-in-out;
+        /* Animation for drop down */
     }
 
     .mobile-container.show {
-        top: 30px; /* Adjust to the position you want it to drop to */
-    }    
+        top: 30px;
+        /* Adjust to the position you want it to drop to */
+    }
 
     .mobile-header {
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-bottom: 16px;
+        margin-bottom: 10px;
         padding: 10px 0;
     }
 
@@ -317,7 +333,7 @@
         height: 32px;
         background-color: #ddd;
     }
-    
+
     .mobile-search-bar {
         display: flex;
         flex: 1;
@@ -325,7 +341,7 @@
         flex-direction: column;
     }
 
-    .mobile-search-bar input{
+    .mobile-search-bar input {
         padding: 10px;
         border: 1px solid #ACACAC;
         border-radius: 8px;
@@ -339,6 +355,109 @@
         cursor: pointer;
     }
 
+    .buttons-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        align-items: center;
+        padding-bottom: 5px;
+    }
+
+    .buttons-mobile button {
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        width: 75%;
+        box-sizing: border-box;
+    }
+
+    .buttons-mobile button:hover {
+        background-color: #0056b3;
+    }
+
+    /* bottom sheet style */
+    .bottom-sheet-mobile {
+        position: absolute;
+        z-index: 1001;
+        bottom: -100%; /* Initially hidden */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 95%;
+        background-color: white;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0px -4px 8px 4px rgba(0, 0, 0, 0.1);
+        transition: bottom 0.3s ease; /* Smooth slide-up effect */
+        min-height: 15vh;
+        max-height: 45vh;
+        padding: 20px;
+        overflow: hidden; /* Prevent overflowing content */
+      }
+
+    .bottom-sheet-mobile.visible {
+        bottom: 0; /* Slide up into view */
+      }
+
+      .drag-handle {
+        width: 50px;
+        height: 6px;
+        background-color: #ccc;
+        border-radius: 3px;
+        margin: 0 auto 10px auto;
+        cursor: grab;
+      }
+
+    .drag-handle:active {
+        cursor: grabbing;
+    }
+
+    .transport-options-mobile {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 16px;
+    }
+
+    .option-mobile {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        background-color: #ddd;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .option-mobile.active {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .routes-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        overflow-x: auto;
+    }
+
+    .routes-container-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        overflow-y: auto;
+        transition: max-height 0.3s ease; /* Smooth adjustment effect */
+        max-height: 60vh; /* Limit the height of the container */
+      }
+
+      .route-mobile {
+        padding: 12px;
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+    /* side nav */
     .side-nav-mobile {
         z-index: 1000;
         position: absolute;
@@ -353,15 +472,17 @@
         align-items: center;
     }
 
-    
+
     .current-loc-button button {
         border-radius: 50%;
-        width: 50px; /* Adjust the width and height to make it a perfect circle */
+        width: 50px;
+        /* Adjust the width and height to make it a perfect circle */
         height: 50px;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 0; /* Remove padding to ensure the content is centered */
+        padding: 0;
+        /* Remove padding to ensure the content is centered */
         background-color: white;
         border: 1px solid #ACACAC;
     }
