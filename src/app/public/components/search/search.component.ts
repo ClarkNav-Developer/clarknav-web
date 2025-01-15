@@ -13,10 +13,13 @@ declare var google: any;
 export class SearchComponent implements OnInit, AfterViewInit {
   currentLocation: google.maps.LatLngLiteral | null = null;
   destination: google.maps.LatLngLiteral | null = null;
+  currentLocationAddress: string = 'Loading...';
+  destinationAddress: string = 'Loading...';
   geocoder: any;
   showNavigationWindow = false; // Controls the navigation window
   suggestedRoutes: any[] = []; // Store suggested routes
   selectedRoute: any; // Store the selected route
+  highlightedRoute: any = null;
   showAllRoutes: boolean = true;
   private isDragging = false;
   private startY = 0;
@@ -44,37 +47,37 @@ export class SearchComponent implements OnInit, AfterViewInit {
     this.initAutocomplete();
     this.initCurrentLocationAutocomplete();
     this.initSearchLocationAutocomplete();
-  
+
     const bottomSheet = document.getElementById('bottomSheet');
     const handle = bottomSheet?.querySelector('.drag-handle');
-  
+
     if (handle && bottomSheet) {
       // Mouse events
       this.renderer.listen(handle, 'mousedown', (event: MouseEvent) => this.onDragStart(event, bottomSheet));
       this.renderer.listen(document, 'mousemove', (event: MouseEvent) => this.onDrag(event, bottomSheet));
       this.renderer.listen(document, 'mouseup', () => this.onDragEnd());
-  
+
       // Touch events
       this.renderer.listen(handle, 'touchstart', (event: TouchEvent) => this.onTouchStart(event, bottomSheet));
       this.renderer.listen(document, 'touchmove', (event: TouchEvent) => this.onTouchMove(event, bottomSheet));
       this.renderer.listen(document, 'touchend', () => this.onDragEnd());
     }
   }
-  
+
   private onDragStart(event: MouseEvent | TouchEvent, bottomSheet: HTMLElement): void {
     this.isDragging = true;
     this.startY = this.getClientY(event);
     this.startHeight = bottomSheet.offsetHeight;
   }
-  
+
   private onDrag(event: MouseEvent, bottomSheet: HTMLElement | null): void {
     if (this.isDragging && bottomSheet) {
       const deltaY = this.startY - event.clientY;
       const newHeight = Math.min(window.innerHeight, Math.max(100, this.startBottom + deltaY));
-  
+
       // Set the height of the bottom sheet itself
       bottomSheet.style.height = `${newHeight}px`;
-  
+
       // Make sure the content inside the bottom sheet is scrollable if needed
       const routesContainer = bottomSheet.querySelector('.routes-container-mobile') as HTMLElement;
       if (routesContainer) {
@@ -83,13 +86,13 @@ export class SearchComponent implements OnInit, AfterViewInit {
       }
     }
   }
-  
+
   private onTouchStart(event: TouchEvent, bottomSheet: HTMLElement): void {
     this.isDragging = true;
     this.startY = this.getClientY(event);
     this.startHeight = bottomSheet.offsetHeight;
   }
-  
+
   private onTouchMove(event: TouchEvent, bottomSheet: HTMLElement): void {
     if (this.isDragging) {
       const deltaY = this.startY - event.touches[0].clientY;
@@ -97,15 +100,15 @@ export class SearchComponent implements OnInit, AfterViewInit {
       bottomSheet.style.height = `${newHeight}px`;
     }
   }
-  
+
   private onDragEnd(): void {
     this.isDragging = false;
   }
-  
+
   private getClientY(event: MouseEvent | TouchEvent): number {
     return event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
   }
-  
+
 
   ngAfterViewInit(): void {
     // Ensure mapService is available after view initialization
@@ -115,18 +118,36 @@ export class SearchComponent implements OnInit, AfterViewInit {
   }
 
   // File: search.component.ts
-  navigateToDestination() {
+  navigateToDestination(): void {
     if (!this.currentLocation || !this.destination) {
       alert('Please set both your current location and destination.');
       return;
     }
 
-    // Fetch and display suggested routes
+    // Fetch addresses for currentLocation and destination
+    this.geocodeLatLng(this.currentLocation, (address) => {
+      this.currentLocationAddress = address;
+    });
+
+    this.geocodeLatLng(this.destination, (address) => {
+      this.destinationAddress = address;
+    });
+
+    // Fetch suggested routes
     const routes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
     if (routes.length > 0) {
-      this.suggestedRoutes = routes;
+      this.suggestedRoutes = routes.map(route => ({
+        ...route,
+        start: this.currentLocation,
+        end: this.destination,
+      }));
       this.showAllRoutes = true;
-      console.log('Suggested Routes:', this.suggestedRoutes);
+
+      // Render all routes on the map
+      this.suggestedRoutes.forEach(route => {
+        this.mapService.displayRoutePath({ path: route.path, color: route.color });
+      });
+      console.log('Suggested Routes with updated start and end:', this.suggestedRoutes);
     } else {
       alert('No suggested routes found.');
     }
@@ -137,6 +158,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
     this.isBottomSheetVisible = true;
     this.navigationService.navigateToDestination();
   }
+
 
   hideBottomSheet(): void {
     this.isBottomSheetVisible = false; // Hide the bottom sheet
@@ -178,7 +200,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
     if (this.currentLocation && this.destination) {
       const routes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
       console.log('Raw Suggested Routes:', routes);
-  
+
       if (routes.length > 0) {
         // Flatten the array if it contains nested arrays
         this.suggestedRoutes = routes.flat();
@@ -190,14 +212,29 @@ export class SearchComponent implements OnInit, AfterViewInit {
       console.error('Current location or destination not set.');
     }
   }
-  
-  // Highlight the selected route on the map
-  selectRoute(route: any): void {
-    this.selectedRoute = route;
-    this.showAllRoutes = false; // Hide unselected routes
+
+  highlightRoute(route: any): void {
+    this.highlightedRoute = route;
     this.mapService.clearMap();
     this.mapService.displayRoutePath({ path: route.path, color: route.color });
-    console.log('Selected Route:', route);
+  }
+
+  clearHighlight(): void {
+    this.highlightedRoute = null;
+    if (this.showAllRoutes) {
+      this.suggestedRoutes.forEach(route => {
+        this.mapService.displayRoutePath({ path: route.path, color: route.color });
+      });
+    }
+  }
+
+  selectRoute(route: any): void {
+    this.selectedRoute = route;
+    this.showAllRoutes = false;
+
+    // Clear map and render only the selected route
+    this.mapService.clearMap();
+    this.mapService.displayRoutePath({ path: route.path, color: route.color });
   }
 
 

@@ -56,12 +56,13 @@
                 <h3>Suggested Routes</h3>
                 <div *ngIf="suggestedRoutes.length > 0" class="routes-container">
                     <div *ngFor="let route of suggestedRoutes" class="route-item" (click)="selectRoute(route)"
+                        (mouseover)="highlightRoute(route)" (mouseleave)="clearHighlight()"
                         [class.selected]="route === selectedRoute"
-                        [class.hidden]="!showAllRoutes && route !== selectedRoute">
+                        [class.opacity]="highlightedRoute && route !== highlightedRoute">
                         <p>
-                            <strong>Start:</strong> {{ route.start?.lat }}, {{ route.start?.lng }}
+                            <strong>Start:</strong> {{ currentLocationAddress }}
                             ➡️
-                            <strong>End:</strong> {{ route.end?.lat }}, {{ route.end?.lng }}
+                            <strong>End:</strong> {{ destinationAddress }}
                         </p>
                         <div [style.backgroundColor]="route?.color" class="route-color"></div>
                     </div>
@@ -70,6 +71,9 @@
                     <p>No suggested routes found. Please check your input.</p>
                 </div>
             </div>
+
+
+
 
 
             <!-- <div class="routes-container">
@@ -141,7 +145,7 @@
         </div>
         <div class="buttons-mobile">
             <button (click)="navigateToDestination()">Navigate</button>
-          </div>
+        </div>
     </div>
 
     <div id="bottomSheet" class="bottom-sheet-mobile" [class.visible]="isBottomSheetVisible">
