@@ -196,21 +196,43 @@ export class SearchComponent implements OnInit, AfterViewInit {
     }
   }
 
-  fetchSuggestedRoutes() {
-    if (this.currentLocation && this.destination) {
-      const routes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
-      console.log('Raw Suggested Routes:', routes);
-
-      if (routes.length > 0) {
-        // Flatten the array if it contains nested arrays
-        this.suggestedRoutes = routes.flat();
-        console.log('Flattened Suggested Routes:', this.suggestedRoutes);
-      } else {
-        console.error('No suggested routes found.');
-      }
+fetchSuggestedRoutes() {
+  if (this.currentLocation && this.destination) {
+    const routes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
+    if (routes.length > 0) {
+      this.suggestedRoutes = routes.map(route => ({
+        ...route,
+        start: this.currentLocation,
+        end: this.destination,
+        fare: this.calculateFare(route), // Calculate fare
+        duration: this.calculateDuration(route), // Calculate duration
+        time: this.calculateTime(route) // Calculate time
+      }));
+      
+      // Debugging statement to check processed suggestedRoutes
+      console.log('Processed Suggested Routes:', this.suggestedRoutes);
     } else {
-      console.error('Current location or destination not set.');
+      console.error('No suggested routes found.');
     }
+  } else {
+    console.error('Current location or destination not set.');
+  }
+}
+
+
+  calculateFare(route: any): number {
+    // Placeholder logic for fare calculation
+    return 14; // Example static fare
+  }
+
+  calculateDuration(route: any): string {
+    // Placeholder logic for duration calculation
+    return '30 mins'; // Example static duration
+  }
+
+  calculateTime(route: any): string {
+    // Placeholder logic for time calculation
+    return '10:00 AM - 10:30 AM'; // Example static time
   }
 
   highlightRoute(route: any): void {
