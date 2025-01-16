@@ -94,12 +94,6 @@ export class MapService {
     });
   }
 
-  private displayRoute(route: any, color: string) {
-    const waypoints = route.waypoints.map(this.routesService.parseWaypoint);
-    this.displayRouteUsingDirectionsAPI(waypoints, color);
-    this.addMarkersForRoute(waypoints, route.routeName);
-  }
-
   displayRouteUsingDirectionsAPI(waypoints: google.maps.LatLngLiteral[], color: string) {
     if (waypoints.length < 2) return;
 
@@ -132,7 +126,7 @@ export class MapService {
       map: this.map,
       preserveViewport: true,
       suppressMarkers: true,
-      polylineOptions: { strokeColor: color, strokeWeight: 3 },
+      polylineOptions: { strokeColor: color, strokeWeight: 5 },
     });
     renderer.setDirections(result);
     this.routeRenderers.push(renderer);
