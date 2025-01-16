@@ -446,21 +446,41 @@ export class SearchComponent implements OnInit, AfterViewInit {
   /*------------------------------------------
   Geocode LatLng to Address
   --------------------------------------------*/
-  geocodeLatLng(latlng: google.maps.LatLngLiteral, callback: (address: string) => void) {
-    this.geocoder.geocode({ location: latlng }, (results: any, status: any) => {
-      if (status === 'OK') {
-        if (results[0]) {
-          callback(results[0].formatted_address);
-        } else {
-          console.error('No results found');
-          callback('Unknown location');
+  private geocodeLatLng(latLng: google.maps.LatLngLiteral, callback: (address: string) => void): void {
+    this.geocoder.geocode({ location: latLng }, (results: google.maps.GeocoderResult[], status: google.maps.GeocoderStatus) => {
+      if (status === 'OK' && results[0]) {
+        let placeName = '';
+  
+        // Try to find a specific name for the origin (e.g., "Bayanihan Jeepney Terminal")
+        for (const component of results[0].address_components) {
+          if (component.types.includes('point_of_interest') || component.types.includes('establishment')) {
+            placeName = component.long_name;
+            break;
+          }
         }
+  
+        // Fallback to locality or sublocality if no specific name is found
+        if (!placeName) {
+          for (const component of results[0].address_components) {
+            if (component.types.includes('locality') || component.types.includes('sublocality')) {
+              placeName = component.long_name;
+              break;
+            }
+          }
+        }
+  
+        // Default to formatted address if no specific place is found
+        if (!placeName) {
+          placeName = results[0].formatted_address;
+        }
+  
+        callback(placeName);  // Return the resolved name
       } else {
         console.error('Geocoder failed due to: ' + status);
-        callback('Unknown location');
+        callback('Address not found');
       }
     });
-  }
+  }  
 
   /*------------------------------------------
   Use Device's Geolocation for Current Location
