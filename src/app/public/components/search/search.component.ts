@@ -1,9 +1,15 @@
 import { Component, OnInit, AfterViewInit, Renderer2 } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { MapService } from '../../services/map.service';
 import { NavigationService } from '../../services/navigation.service';
 import { SuggestedRoutesService } from '../../services/suggested-routes.service';
-
-declare var google: any;
+import { environment } from '../../../../environments/environment';
+import * as mapboxgl from 'mapbox-gl';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import MapboxDirections from '@mapbox/mapbox-sdk/services/directions';
+import MapboxGeocoding from '@mapbox/mapbox-sdk/services/geocoding';
+import { Observable } from 'rxjs';
+import { MapboxSearchService } from '../../services/mapbox-search.service';
 
 @Component({
   selector: 'app-search',
@@ -12,11 +18,10 @@ declare var google: any;
 })
 export class SearchComponent implements OnInit, AfterViewInit {
   // Locations and addresses
-  currentLocation: google.maps.LatLngLiteral | null = null;
-  destination: google.maps.LatLngLiteral | null = null;
+  currentLocation: mapboxgl.LngLatLike | null = null;
+  destination: mapboxgl.LngLatLike | null = null;
   currentLocationAddress = 'Loading...';
   destinationAddress = 'Loading...';
-  geocoder = new google.maps.Geocoder();
 
   // UI state
   showNavigationWindow = false;
@@ -28,30 +33,59 @@ export class SearchComponent implements OnInit, AfterViewInit {
   selectedRoute: any;
   highlightedRoute: any = null;
 
+  searchQuery: string = '';
+  results: any[] = [];
+
+  // SearchBox API URL for search
+  private apiUrl = 'https://api.mapbox.com/geocoding/v5/mapbox.places/{searchQuery}.json';
+
+
   // Dragging state for the bottom sheet
   private isDragging = false;
   private startY = 0;
   private startHeight = 0;
 
+  private directionsClient = MapboxDirections({ accessToken: environment.mapboxApiKey });
+  private geocodingClient = MapboxGeocoding({ accessToken: environment.mapboxApiKey });
+
   constructor(
     private mapService: MapService,
     private navigationService: NavigationService,
     private suggestedRoutesService: SuggestedRoutesService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private http: HttpClient
   ) { }
 
   /*------------------------------------------
   Lifecycle Hooks
   --------------------------------------------*/
   ngOnInit(): void {
-    this.initializeAutocomplete();
-    this.setupBottomSheetDragging();
+    // Initialize Mapbox map
+    this.mapService.setMap(new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [120.55950164794922, 15.187769063648858],
+      zoom: 14,
+      accessToken: environment.mapboxApiKey
+    }));
+
+    // Add Mapbox Geocoder
+    const geocoder = new MapboxGeocoder({
+      accessToken: environment.mapboxApiKey,
+      mapboxgl: mapboxgl
+    });
+
+    const geocoderElement = document.getElementById('geocoder');
+    if (geocoderElement) {
+      geocoderElement.appendChild(geocoder.onAdd(this.mapService.map));
+    } else {
+      console.error('Geocoder element not found.');
+    }
   }
 
   ngAfterViewInit(): void {
-    if (!this.mapService) {
-      console.error('MapService is not available.');
-    }
+    this.setupBottomSheetDragging();
+    this.initializeSearchBox();
   }
 
   /*------------------------------------------
@@ -140,8 +174,6 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
     this.resolveAddresses();
     this.fetchSuggestedRoutes();
-    this.navigationService.currentLocation = this.currentLocation;
-    this.navigationService.destination = this.destination;
     this.navigationService.navigateToDestination();
 
     this.isBottomSheetVisible = true;
@@ -149,7 +181,9 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
   fetchSuggestedRoutes(): void {
     if (this.currentLocation && this.destination) {
-      const routes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
+      const currentLocationLiteral = { lat: (this.currentLocation as mapboxgl.LngLat).lat, lng: (this.currentLocation as mapboxgl.LngLat).lng };
+      const destinationLiteral = { lat: (this.destination as mapboxgl.LngLat).lat, lng: (this.destination as mapboxgl.LngLat).lng };
+      const routes = this.suggestedRoutesService.getSuggestedRoutes(currentLocationLiteral, destinationLiteral);
 
       if (routes.length > 0) {
         this.suggestedRoutes = routes.map(route => ({
@@ -205,7 +239,6 @@ export class SearchComponent implements OnInit, AfterViewInit {
     this.renderRoutesOnMap(route);
   }
 
-
   /*------------------------------------------
   Location Utilities
   --------------------------------------------*/
@@ -223,11 +256,10 @@ export class SearchComponent implements OnInit, AfterViewInit {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
         this.currentLocation = {
-          lat: position.coords.latitude,
           lng: position.coords.longitude,
+          lat: position.coords.latitude,
         };
         this.resolveAddresses();
-        this.mapService.addMarker(this.currentLocation, 'Your Location');
         this.mapService.map.setCenter(this.currentLocation);
       }, error => {
         console.error('Error fetching location', error);
@@ -256,43 +288,22 @@ export class SearchComponent implements OnInit, AfterViewInit {
     }
   }
 
-
-  private geocodeLatLng(latLng: google.maps.LatLngLiteral, callback: (address: string) => void): void {
-    this.geocoder.geocode({ location: latLng }, (results: google.maps.GeocoderResult[], status: google.maps.GeocoderStatus) => {
-      if (status === 'OK' && results[0]) {
-        let placeName = '';
-
-        // Try to find a specific name for the origin (e.g., "Bayanihan Jeepney Terminal")
-        for (const component of results[0].address_components) {
-          if (component.types.includes('point_of_interest') || component.types.includes('establishment')) {
-            placeName = component.long_name;
-            break;
-          }
-        }
-
-        // Fallback to locality or sublocality if no specific name is found
-        if (!placeName) {
-          for (const component of results[0].address_components) {
-            if (component.types.includes('locality') || component.types.includes('sublocality')) {
-              placeName = component.long_name;
-              break;
-            }
-          }
-        }
-
-        // Default to formatted address if no specific place is found
-        if (!placeName) {
-          placeName = results[0].formatted_address;
-        }
-
-        callback(placeName);  // Return the resolved name
+  private geocodeLatLng(latLng: mapboxgl.LngLatLike, callback: (address: string) => void): void {
+    this.geocodingClient.reverseGeocode({
+      query: latLng,
+      limit: 1
+    }).send().then((response: any) => {
+      const result = response.body.features[0];
+      if (result) {
+        callback(result.place_name);
       } else {
-        console.error('Geocoder failed due to: ' + status);
         callback('Address not found');
       }
+    }).catch((error: any) => {
+      console.error('Geocoder failed due to:', error);
+      callback('Address not found');
     });
   }
-
 
   /*------------------------------------------
   Fare and Distance Calculations
@@ -303,70 +314,81 @@ export class SearchComponent implements OnInit, AfterViewInit {
     route.fare = Math.round((baseFare + additionalFare) * 4) / 4;
   }
 
-  private calculateDistance(start: google.maps.LatLngLiteral, end: google.maps.LatLngLiteral): number {
-    const startLatLng = new google.maps.LatLng(start.lat, start.lng);
-    const endLatLng = new google.maps.LatLng(end.lat, end.lng);
-    return google.maps.geometry.spherical.computeDistanceBetween(startLatLng, endLatLng) / 1000;
+  private calculateDistance(start: mapboxgl.LngLatLike, end: mapboxgl.LngLatLike): number {
+    const startLatLng = Array.isArray(start) ? new mapboxgl.LngLat(start[0], start[1]) : new mapboxgl.LngLat('lng' in start ? start.lng : start.lon, start.lat);
+    const endLatLng = Array.isArray(end) ? new mapboxgl.LngLat(end[0], end[1]) : new mapboxgl.LngLat('lng' in end ? end.lng : end.lon, end.lat);
+    return startLatLng.distanceTo(endLatLng) / 1000;
   }
 
   private calculateDuration(route: any): void {
-    const service = new google.maps.DistanceMatrixService();
-    service.getDistanceMatrix(
-      {
-        origins: [this.currentLocation],
-        destinations: [this.destination],
-        travelMode: google.maps.TravelMode.DRIVING,
-      },
-      (response: google.maps.DistanceMatrixResponse, status: google.maps.DistanceMatrixStatus) => {
-        if (status === 'OK' && response.rows[0].elements[0].status === 'OK') {
-          route.duration = response.rows[0].elements[0].duration.text;
-        } else {
-          console.error('Error fetching duration: ', status);
-        }
-      }
-    );
+    if (this.currentLocation && this.destination) {
+      this.directionsClient.getDirections({
+        profile: 'driving',
+        waypoints: [
+          { coordinates: (this.currentLocation as mapboxgl.LngLat).toArray() },
+          { coordinates: (this.destination as mapboxgl.LngLat).toArray() }
+        ]
+      }).send().then((response: any) => {
+        const duration = response.body.routes[0].duration;
+        route.duration = `${Math.round(duration / 60)} mins`;
+      }).catch((error: any) => {
+        console.error('Error fetching duration:', error);
+      });
+    } else {
+      console.error('Current location or destination is null.');
+    }
   }
 
   /*------------------------------------------
   Autocomplete Initialization
   --------------------------------------------*/
-  private initializeAutocomplete(): void {
-    const inputs = [
-      'search-box',
-      'search-box-mobile',
-      'current-location-box',
-      'current-location-box-mobile',
-    ].map(id => document.getElementById(id) as HTMLInputElement);
 
-    inputs.forEach(input => {
-      if (input) {
-        const autocomplete = new google.maps.places.Autocomplete(input, {
-          componentRestrictions: { country: 'PH' },
-          bounds: this.navigationService.clarkBounds,
-          strictBounds: true,
-        });
+  // Method to perform location search using Mapbox API
+  search(query: string): Observable<any> {
+    const proximityCoordinates = [120.55950164794922, 15.187769063648858]; // Your specified location
+    
+    const params = {
+      q: query,
+      access_token: environment.mapboxApiKey,
+      limit: '5', // Limit the results
+      proximity: proximityCoordinates.join(','), // Proximity bias parameter
+    };
+    
+    // Perform the search with proximity bias
+    return this.http.get(this.apiUrl.replace("{searchQuery}", query), { params });
+  }
+  
 
-        autocomplete.addListener('place_changed', () => {
-          const place = autocomplete.getPlace();
-          if (place.geometry) {
-            const location = {
-              lat: place.geometry.location.lat(),
-              lng: place.geometry.location.lng(),
-            };
+  // Initialize SearchBox autocomplete logic
+  private initializeSearchBox(): void {
+    const searchInput = document.getElementById('search-box-2') as HTMLInputElement;
+    if (searchInput) {
+      searchInput.addEventListener('input', (event: Event) => {
+        const searchQuery = (event.target as HTMLInputElement).value;
+        if (searchQuery) {
+          this.search(searchQuery).subscribe(results => {
+            // Handle the results from Mapbox Search API
+            this.results = results['features'] || [];
+            console.log('Search results:', this.results);
+            // Optionally: Render results or auto-select locations based on user clicks
+          });
+        }
+      });
+    }
+  }
 
-            if (input.id.includes('current')) {
-              this.currentLocation = location;
-            } else {
-              this.destination = location;
-            }
+  // You can add a method to handle location selection from the search result
+  selectLocation(location: any): void {
+    // For example, if the user selects a location, center the map and show the address
+    const [longitude, latitude] = location.center;
+    this.mapService.map.flyTo({ center: [longitude, latitude], zoom: 14 });
+    this.resolveLocationAddress(location);
+  }
 
-            this.resolveAddresses(); // Ensure address is resolved after location selection
-            this.mapService.addMarker(location, input.id.includes('current') ? 'Your Location' : 'Destination');
-            this.mapService.map.setCenter(location);
-            this.fetchSuggestedRoutes();
-          }
-        });
-      }
+  // Resolve and display the address for the selected location
+  private resolveLocationAddress(location: any): void {
+    this.geocodeLatLng(location.center, (address: string) => {
+      this.destinationAddress = address || 'Unable to resolve address';
     });
   }
 }

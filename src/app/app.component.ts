@@ -10,14 +10,15 @@ export class AppComponent implements OnInit {
   title = 'ClarkNav';
 
   ngOnInit() {
-    this.loadGoogleMapsApi();
+    this.loadMapboxApi();
   }
 
-  loadGoogleMapsApi() {
+  loadMapboxApi() {
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&libraries=places`;
+    script.src = `https://api.mapbox.com/mapbox-gl-js/v2.8.0/mapbox-gl.js`;
     script.async = true;
     script.defer = true;
     document.head.appendChild(script);
+
   }
 }

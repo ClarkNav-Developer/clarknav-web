@@ -1,41 +1,38 @@
-// src/app/public/services/navigation.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MapService } from './map.service';
 import { RoutesService } from './routes.service';
-
-declare var google: any;
+import * as mapboxgl from 'mapbox-gl';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NavigationService {
-  
   /*------------------------------------------
   Constants and Bounds
   --------------------------------------------*/
 
-  // Define bounds for Clark
-  public clarkBounds = new google.maps.LatLngBounds(
-    new google.maps.LatLng(15.15350883733786, 120.4702890088466),
-    new google.maps.LatLng(15.24182812878962, 120.5925078185926)
-  );
+  // Define bounds for Clark using Mapbox's LngLatLike
+  public clarkBounds = {
+    southWest: [120.4702890088466, 15.15350883733786] as mapboxgl.LngLatLike,
+    northEast: [120.5925078185926, 15.24182812878962] as mapboxgl.LngLatLike,
+  };
 
   // Route Colors
   private routes = {
-    J1: { color: "#228B22" },
-    J2: { color: "#D4B895" },
-    J3: { color: "#1d58c6" },
-    J5: { color: "#CE0000" },
-    B1: { color: "#F98100" },
+    J1: { color: '#228B22' },
+    J2: { color: '#D4B895' },
+    J3: { color: '#1d58c6' },
+    J5: { color: '#CE0000' },
+    B1: { color: '#F98100' },
   };
 
   /*------------------------------------------
   User-defined Locations
   --------------------------------------------*/
 
-  currentLocation: google.maps.LatLngLiteral | null = null;
-  destination: google.maps.LatLngLiteral | null = null;
+  currentLocation: mapboxgl.LngLat | null = null;
+  destination: mapboxgl.LngLat | null = null;
 
   constructor(
     private mapService: MapService,
@@ -50,7 +47,7 @@ export class NavigationService {
   /**
    * Main function to navigate to the destination.
    */
-  navigateToDestination(): void {
+  async navigateToDestination(): Promise<void> {
     if (!this.validateLocations()) return;
 
     this.mapService.clearMap();
@@ -66,26 +63,39 @@ export class NavigationService {
     console.log('Nearest start waypoint:', nearestStartWaypoint);
     console.log('Nearest end waypoint:', nearestEndWaypoint);
 
-    this.mapService.displayWalkingPath(this.currentLocation!, nearestStartWaypoint, 'NB');
+    // Display walking path from current location to nearest start waypoint
+    this.mapService.displayWalkingPath(this.currentLocation!, new mapboxgl.LngLat(nearestStartWaypoint.lng, nearestStartWaypoint.lat), 'NB');
 
-    const routePaths = this.routesService.findAllRoutePaths(nearestStartWaypoint, nearestEndWaypoint);
-    const routePath = routePaths.length > 0 ? routePaths[0] : { path: [], color: '' };
+    try {
+      // Fetch route paths asynchronously
+      const routePaths = await this.routesService.findAllRoutePaths(
+        { lat: nearestStartWaypoint.lat, lng: nearestStartWaypoint.lng },
+        { lat: nearestEndWaypoint.lat, lng: nearestEndWaypoint.lng }
+      );
 
-    if (routePath.path.length === 0) {
-      alert('No route found connecting the selected stops.');
-      return;
+      if (!routePaths || routePaths.length === 0) {
+        alert('No route found connecting the selected stops.');
+        return;
+      }
+
+      const routePath = routePaths[0];
+      const convertedPath = routePath.path.map(point => new mapboxgl.LngLat(point.lng, point.lat));
+      this.mapService.displayRouteSegments({ path: convertedPath, color: routePath.color });
+
+      // Determine the final destination
+      const finalDestination = this.routesService.isNearby(
+        this.destination!,
+        routePath.path[routePath.path.length - 1]
+      )
+        ? this.destination!
+        : routePath.path[routePath.path.length - 1];
+
+      // Display walking path from final destination to user-defined destination
+      this.mapService.displayWalkingPath(new mapboxgl.LngLat(finalDestination.lng, finalDestination.lat), this.destination!, routePath.color);
+    } catch (error) {
+      console.error('Error navigating to destination:', error);
+      alert('An error occurred while navigating to the destination. Please try again.');
     }
-
-    this.mapService.displayRouteSegments({ path: routePath.path, color: routePath.color });
-
-    const finalDestination = this.routesService.isNearby(
-      this.destination!,
-      routePath.path[routePath.path.length - 1]
-    )
-      ? this.destination!
-      : routePath.path[routePath.path.length - 1];
-
-    this.mapService.displayWalkingPath(finalDestination, this.destination!, routePath.color);
   }
 
   /*------------------------------------------
@@ -116,7 +126,16 @@ export class NavigationService {
    * @param location - The location to check.
    * @returns True if within bounds, false otherwise.
    */
-  private isWithinClarkBounds(location: google.maps.LatLngLiteral): boolean {
-    return this.clarkBounds.contains(new google.maps.LatLng(location.lat, location.lng));
+  private isWithinClarkBounds(location: mapboxgl.LngLat): boolean {
+    const [lng, lat] = [location.lng, location.lat];
+    const [southWestLng, southWestLat] = this.clarkBounds.southWest as [number, number];
+    const [northEastLng, northEastLat] = this.clarkBounds.northEast as [number, number];
+
+    return (
+      lng >= southWestLng &&
+      lng <= northEastLng &&
+      lat >= southWestLat &&
+      lat <= northEastLat
+    );
   }
 }

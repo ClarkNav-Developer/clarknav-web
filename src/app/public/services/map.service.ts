@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import { RoutesService } from './routes.service';
-
-declare var google: any;
+import * as mapboxgl from 'mapbox-gl';
+import MapboxDirections from '@mapbox/mapbox-sdk/services/directions';
+import { environment } from '../../../environments/environment';
+import { GeoJsonProperties } from 'geojson';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MapService {
-  public map: any;
-  private directionsService: any;
-  private directionsRenderer: any;
+  public map!: mapboxgl.Map;
+  private directionsClient: any;
 
-  private markers: google.maps.Marker[] = [];
-  private routeRenderers: google.maps.DirectionsRenderer[] = [];
-  private directionsCache = new Map<string, any>();
+  private markers: mapboxgl.Marker[] = [];
+  private routeLayers: string[] = [];
 
   private routeColors = {
     J1: '#228B22',
@@ -26,21 +26,18 @@ export class MapService {
   private jeepneyRoutes: any[] = [];
   private filteredRoutes: any[] = [];
 
-  currentLocation: google.maps.LatLngLiteral | null = null;
-  destination: google.maps.LatLngLiteral | null = null;
+  currentLocation: mapboxgl.LngLat | null = null;
+  destination: mapboxgl.LngLat | null = null;
 
-  constructor(private routesService: RoutesService) { }
+  constructor(private routesService: RoutesService) {
+    this.directionsClient = MapboxDirections({ accessToken: environment.mapboxApiKey });
+  }
 
   /*------------------------------------------
   Initialization
   --------------------------------------------*/
-  setMap(map: any) {
+  setMap(map: mapboxgl.Map) {
     this.map = map;
-    this.directionsService = new google.maps.DirectionsService();
-    this.directionsRenderer = new google.maps.DirectionsRenderer({
-      map: this.map,
-      preserveViewport: true,
-    });
   }
 
   /*------------------------------------------
@@ -48,25 +45,28 @@ export class MapService {
   --------------------------------------------*/
   clearMap() {
     this.clearMarkers();
-    this.clearRenderers();
+    this.clearRouteLayers();
   }
 
   private clearMarkers() {
-    this.markers.forEach(marker => marker.setMap(null));
+    this.markers.forEach(marker => marker.remove());
     this.markers = [];
   }
 
-  private clearRenderers() {
-    this.routeRenderers.forEach(renderer => renderer.setMap(null));
-    this.routeRenderers = [];
+  private clearRouteLayers() {
+    this.routeLayers.forEach(layerId => {
+      if (this.map.getLayer(layerId)) this.map.removeLayer(layerId);
+      if (this.map.getSource(layerId)) this.map.removeSource(layerId);
+    });
+    this.routeLayers = [];
   }
 
-  addMarker(location: google.maps.LatLngLiteral, title: string) {
-    const marker = new google.maps.Marker({
-      position: location,
-      map: this.map,
-      title,
-    });
+  addMarker(location: mapboxgl.LngLat, title: string) {
+    const marker = new mapboxgl.Marker()
+      .setLngLat(location)
+      .setPopup(new mapboxgl.Popup().setText(title))
+      .addTo(this.map);
+
     this.markers.push(marker);
   }
 
@@ -89,160 +89,137 @@ export class MapService {
 
   private addMarkersForRoute(waypoints: string[], routeName: string) {
     waypoints.forEach(waypoint => {
-      const location = this.routesService.parseWaypoint(waypoint);
+      const location = this.routesService.parseWaypoint(waypoint) as mapboxgl.LngLat;
       this.addMarker(location, routeName);
     });
   }
 
-displayRouteUsingDirectionsAPI(waypoints: google.maps.LatLngLiteral[], color: string) {
-  if (waypoints.length < 2) return;
+  displayRouteUsingDirectionsAPI(waypoints: mapboxgl.LngLat[], color: string) {
+    if (waypoints.length < 2) return;
 
-  const waypointsForApi = waypoints.slice(1, waypoints.length - 1).map(waypoint => ({ location: waypoint }));
+    this.directionsClient
+      .getDirections({
+        profile: 'driving',
+        waypoints: waypoints.map(coord => ({ coordinates: [coord.lng, coord.lat] })),
+        geometries: 'geojson',
+      })
+      .send()
+      .then((response: any) => {
+        const route = response.body.routes[0];
+        const routeId = `route-${Date.now()}`;
+        this.addRouteLayer(route.geometry, color, routeId);
+      })
+      .catch((error: any) => {
+        console.error('Error fetching route directions:', error);
+      });
+  }
 
-  const request = {
-    origin: waypoints[0],
-    destination: waypoints[waypoints.length - 1],
-    waypoints: waypointsForApi,
-    travelMode: google.maps.TravelMode.DRIVING,
-  };
-
-  this.directionsService.route(request, (result: any, status: any) => {
-    if (status === google.maps.DirectionsStatus.OK) {
-      const directionsRenderer = new google.maps.DirectionsRenderer({
-        map: this.map,
-        preserveViewport: true,
-        suppressMarkers: true,
-        polylineOptions: {
-          strokeColor: color,
-          strokeOpacity: 1.0,
-          strokeWeight: 3,
+  private addRouteLayer(geometry: any, color: string, id: string) {
+    if (!this.map.getSource(id)) {
+      this.map.addSource(id, {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry,
+          properties: {},
         },
       });
-      directionsRenderer.setDirections(result);
-      this.routeRenderers.push(directionsRenderer);
-    } else {
-      console.error('Directions request failed due to ' + status);
-    }
-  });
-}
 
-  private renderDirections(result: any, color: string) {
-    const renderer = new google.maps.DirectionsRenderer({
-      map: this.map,
-      preserveViewport: true,
-      suppressMarkers: true,
-      polylineOptions: { strokeColor: color, strokeWeight: 5 },
-    });
-    renderer.setDirections(result);
-    this.routeRenderers.push(renderer);
+      this.map.addLayer({
+        id,
+        type: 'line',
+        source: id,
+        paint: {
+          'line-color': color,
+          'line-width': 4,
+        },
+      });
+
+      this.routeLayers.push(id);
+    }
   }
 
   /*------------------------------------------
-Route Segment Display (Replacement for displayRoutePath)
---------------------------------------------*/
-  displayRouteSegments(routePath: { path: google.maps.LatLngLiteral[], color: string }) {
+  Route Segment Display (Replacement for displayRoutePath)
+  --------------------------------------------*/
+  displayRouteSegments(routePath: { path: mapboxgl.LngLat[], color: string }) {
     if (routePath.path.length < 2) {
-      console.error("Route path must have at least two waypoints to display a route.");
+      console.error('Route path must have at least two waypoints to display a route.');
       return;
     }
 
     const { path, color } = routePath;
 
-    // Display each segment using Directions API
-    for (let i = 0; i < path.length - 1; i++) {
-      const segment = { origin: path[i], destination: path[i + 1], color };
-      this.displayRouteSegment(segment);
-    }
+    this.displayRouteUsingDirectionsAPI(path, color);
 
-    // Add markers for each waypoint
     path.forEach(waypoint => {
       this.addMarker(waypoint, 'Waypoint');
     });
   }
 
-  private displayRouteSegment({ origin, destination, color }: { origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, color: string }) {
-    const request = {
-      origin,
-      destination,
-      travelMode: google.maps.TravelMode.DRIVING,
-    };
-
-    this.directionsService.route(request, (result: any, status: any) => {
-      if (status === google.maps.DirectionsStatus.OK) {
-        this.renderDirections(result, color);
-      } else {
-        console.error('Directions request failed for segment due to ' + status);
-      }
-    });
-  }
-
-
   /*------------------------------------------
   Walking Path Display
   --------------------------------------------*/
-  displayWalkingPath(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, color: string) {
-    const distance = google.maps.geometry.spherical.computeDistanceBetween(
-      new google.maps.LatLng(origin.lat, origin.lng),
-      new google.maps.LatLng(destination.lat, destination.lng)
-    );
+  displayWalkingPath(origin: mapboxgl.LngLat, destination: mapboxgl.LngLat, color: string) {
+    const distance = this.calculateDistance(origin, destination);
 
     if (distance < 50) {
       this.renderStaticWalkingPath(origin, destination, color);
     } else {
-      this.requestWalkingDirections(origin, destination, color);
+      this.displayRouteUsingDirectionsAPI([origin, destination], color);
     }
   }
 
-  private renderStaticWalkingPath(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, color: string) {
-    const path = new google.maps.Polyline({
-      path: [origin, destination],
-      geodesic: true,
-      strokeColor: 'transparent', // Disable the default line
-      strokeWeight: 0, // Set the weight to 0 to avoid rendering the default line
-      icons: [{ icon: this.getWalkingIcon(color), offset: '0', repeat: '15px' }],
-    });
-    path.setMap(this.map);
-    this.routeRenderers.push(path);
-  }
-  
-
-  private requestWalkingDirections(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, color: string) {
-    const request = {
-      origin,
-      destination,
-      travelMode: google.maps.TravelMode.WALKING,
-    };
-
-    this.directionsService.route(request, (result: any, status: any) => {
-      if (status === google.maps.DirectionsStatus.OK) {
-        this.renderWalkingDirections(result, color);
-      } else {
-        console.error('Walking directions request failed: ', status);
-      }
-    });
-  }
-
-  private renderWalkingDirections(result: any, color: string) {
-    const renderer = new google.maps.DirectionsRenderer({
-      map: this.map,
-      preserveViewport: true,
-      polylineOptions: {
-        strokeColor: 'transparent', // Disable the default line
-        strokeWeight: 0, // Set the weight to 0 to avoid rendering the default line
-        icons: [{ icon: this.getWalkingIcon(color), offset: '0', repeat: '15px' }],
+  private renderStaticWalkingPath(origin: mapboxgl.LngLat, destination: mapboxgl.LngLat, color: string) {
+    const walkingPathId = `walking-path-${Date.now()}`;
+    const pathData: GeoJSON.Feature<GeoJSON.Geometry, GeoJsonProperties> = {
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: [
+          [origin.lng, origin.lat],
+          [destination.lng, destination.lat],
+        ],
       },
-    });
-    renderer.setDirections(result);
-    this.routeRenderers.push(renderer);
-  }
-  
-
-  private getWalkingIcon(color: string) {
-    return {
-      path: 'M 0,-1 0,1',
-      strokeOpacity: 1,
-      scale: 3,
-      strokeColor: color,
+      properties: {},
     };
+
+    if (!this.map.getSource(walkingPathId)) {
+      this.map.addSource(walkingPathId, {
+        type: 'geojson',
+        data: pathData,
+      });
+
+      this.map.addLayer({
+        id: walkingPathId,
+        type: 'line',
+        source: walkingPathId,
+        paint: {
+          'line-color': color,
+          'line-width': 3,
+          'line-dasharray': [2, 2],
+        },
+      });
+
+      this.routeLayers.push(walkingPathId);
+    }
+  }
+
+  /*------------------------------------------
+  Helper Methods
+  --------------------------------------------*/
+  private calculateDistance(pointA: mapboxgl.LngLat, pointB: mapboxgl.LngLat): number {
+    const R = 6371e3; // Earth radius in meters
+    const φ1 = (pointA.lat * Math.PI) / 180;
+    const φ2 = (pointB.lat * Math.PI) / 180;
+    const Δφ = ((pointB.lat - pointA.lat) * Math.PI) / 180;
+    const Δλ = ((pointB.lng - pointA.lng) * Math.PI) / 180;
+
+    const a =
+      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
   }
 }
