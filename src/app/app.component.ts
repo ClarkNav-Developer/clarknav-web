@@ -1,4 +1,3 @@
-// filepath: /c:/Users/kenji/Documents/clarknav-web/src/app/app.component.ts
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../environments/environment';
 

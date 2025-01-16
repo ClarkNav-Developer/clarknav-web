@@ -48,7 +48,6 @@ export class MapComponent implements OnInit {
         this.mapService.setMap(map);
 
         this.routesService.loadRoutes();
-        this.mapService.displayAllJeepneyWaypoints();
       } catch (error) {
         console.error('Error initializing map:', error);
       }
