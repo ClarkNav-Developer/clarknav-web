@@ -18,6 +18,7 @@ export class MapService {
   private filteredRoutes: any[] = [];
   private jeepneyRoutes: any[] = [];
   private busRoutes: any[] = [];
+  private directionsCache: Map<string, any> = new Map();
 
   // Locations
   currentLocation: google.maps.LatLngLiteral | null = null;
@@ -116,35 +117,45 @@ export class MapService {
   displayRouteUsingDirectionsAPI(waypoints: google.maps.LatLngLiteral[], color: string) {
     if (waypoints.length < 2) return;
 
-    for (let i = 0; i < waypoints.length - 1; i++) {
-      const origin = waypoints[i];
-      const destination = waypoints[i + 1];
-
-      const request = {
-        origin: origin,
-        destination: destination,
-        travelMode: google.maps.TravelMode.DRIVING,
-      };
-
-      const directionsService = new google.maps.DirectionsService();
-      directionsService.route(request, (result: any, status: any) => {
-        if (status === google.maps.DirectionsStatus.OK) {
-          const directionsRenderer = new google.maps.DirectionsRenderer({
-            map: this.map,
-            preserveViewport: true,
-            suppressMarkers: true,
-            polylineOptions: {
-              strokeColor: color,
-              strokeOpacity: 1.0,
-              strokeWeight: 3,
-            },
-          });
-          directionsRenderer.setDirections(result);
-        } else {
-          console.error('Directions request failed due to ' + status);
-        }
-      });
+    const cacheKey = JSON.stringify(waypoints);
+    if (this.directionsCache.has(cacheKey)) {
+      const cachedResult = this.directionsCache.get(cacheKey);
+      this.renderDirections(cachedResult, color);
+      return;
     }
+
+    const waypointsForApi = waypoints.slice(1, waypoints.length - 1).map(waypoint => ({ location: waypoint }));
+
+    const request = {
+      origin: waypoints[0],
+      destination: waypoints[waypoints.length - 1],
+      waypoints: waypointsForApi,
+      travelMode: google.maps.TravelMode.DRIVING,
+    };
+
+    this.directionsService.route(request, (result: any, status: any) => {
+      if (status === google.maps.DirectionsStatus.OK) {
+        this.directionsCache.set(cacheKey, result);
+        this.renderDirections(result, color);
+      } else {
+        console.error('Directions request failed due to ' + status);
+      }
+    });
+  }
+
+  private renderDirections(result: any, color: string) {
+    const directionsRenderer = new google.maps.DirectionsRenderer({
+      map: this.map,
+      preserveViewport: true,
+      suppressMarkers: true,
+      polylineOptions: {
+        strokeColor: color,
+        strokeOpacity: 1.0,
+        strokeWeight: 3,
+      },
+    });
+    directionsRenderer.setDirections(result);
+    this.routeRenderers.push(directionsRenderer);
   }
 
   displayRoutePath(routePath: { path: google.maps.LatLngLiteral[], color: string }) {
@@ -198,9 +209,9 @@ export class MapService {
       new google.maps.LatLng(origin.lat, origin.lng),
       new google.maps.LatLng(destination.lat, destination.lng)
     );
-  
+
     const threshold = 50;
-  
+
     if (distance < threshold) {
       const walkingPath = new google.maps.Polyline({
         path: [origin, destination],
@@ -229,7 +240,7 @@ export class MapService {
         destination: destination,
         travelMode: google.maps.TravelMode.WALKING,
       };
-  
+
       this.directionsService.route(request, (result: any, status: any) => {
         if (status === google.maps.DirectionsStatus.OK) {
           const walkingRenderer = new google.maps.DirectionsRenderer({
