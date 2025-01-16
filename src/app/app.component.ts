@@ -1,15 +1,24 @@
-import { Component } from '@angular/core';
+// filepath: /c:/Users/kenji/Documents/clarknav-web/src/app/app.component.ts
+import { Component, OnInit } from '@angular/core';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent {
-  constructor() {
-    // Initialize Google Maps API
-    const script = document.createElement('script');
+export class AppComponent implements OnInit {
+  title = 'ClarkNav';
+
+  ngOnInit() {
+    this.loadGoogleMapsApi();
   }
 
-  title = 'ClarkNav';
+  loadGoogleMapsApi() {
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&libraries=places`;
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+  }
 }
