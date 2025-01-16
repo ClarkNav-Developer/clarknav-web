@@ -207,11 +207,15 @@ export class SearchComponent implements OnInit, AfterViewInit {
           ...route,
           start: this.currentLocation,
           end: this.destination,
-          fare: this.calculateFare(route),
-          duration: null, // Initialize with null
+          distanceInKm: this.calculateDistance(route.start, route.end), // Set the distance here
+          fare: null,
+          studentFare: null,
+          duration: null,
         }));
   
         this.suggestedRoutes.forEach(route => {
+          console.log('Route details before calculating fare:', route);
+          this.calculateFare(route);
           this.calculateDuration(route);
         });
       } else {
@@ -222,10 +226,52 @@ export class SearchComponent implements OnInit, AfterViewInit {
     }
   }
   
+  
+  
   calculateFare(route: any): number {
-    // Placeholder logic for fare calculation
-    return 14; // Example static fare
+    console.log('Calculating fare for route with distance:', route.distanceInKm); // Debugging line
+  
+    if (!route.distanceInKm || route.distanceInKm <= 0) {
+      console.error('Invalid distanceInKm:', route.distanceInKm);
+      return 0; // Handle invalid distance
+    }
+  
+    let fare = 13; // Regular fare for first 4 km
+    const additionalDistance = route.distanceInKm - 4;
+  
+    if (additionalDistance > 0) {
+      fare += additionalDistance * 1.8; // Succeeding fare
+    }
+  
+    fare = Math.round(fare * 4) / 4; // Round to nearest 0.25
+  
+    // Student fare
+    let studentFare = 10.4; // Student fare for first 4 km
+    const additionalStudentDistance = route.distanceInKm - 4;
+    if (additionalStudentDistance > 0) {
+      studentFare += additionalStudentDistance * 1.44; // Student additional fare
+    }
+  
+    studentFare = Math.round(studentFare * 4) / 4; // Round to nearest 0.25
+  
+    route.fare = fare;
+    route.studentFare = studentFare;
+  
+    return fare;
   }
+  
+  
+  calculateDistance(start: any, end: any): number {
+    const startLatLng = new google.maps.LatLng(start.lat, start.lng);
+    const endLatLng = new google.maps.LatLng(end.lat, end.lng);
+  
+    // Calculate the distance in meters
+    const distanceInMeters = google.maps.geometry.spherical.computeDistanceBetween(startLatLng, endLatLng);
+  
+    // Convert distance to kilometers
+    return distanceInMeters / 1000;
+  }
+   
 
   calculateDuration(route: any): void {
     if (!this.currentLocation || !this.destination) {
@@ -261,11 +307,6 @@ export class SearchComponent implements OnInit, AfterViewInit {
         }
       }
     );
-  }
-
-  calculateTime(route: any): string {
-    // Placeholder logic for time calculation
-    return '10:00 AM - 10:30 AM'; // Example static time
   }
 
   highlightRoute(route: any): void {
@@ -405,21 +446,41 @@ export class SearchComponent implements OnInit, AfterViewInit {
   /*------------------------------------------
   Geocode LatLng to Address
   --------------------------------------------*/
-  geocodeLatLng(latlng: google.maps.LatLngLiteral, callback: (address: string) => void) {
-    this.geocoder.geocode({ location: latlng }, (results: any, status: any) => {
-      if (status === 'OK') {
-        if (results[0]) {
-          callback(results[0].formatted_address);
-        } else {
-          console.error('No results found');
-          callback('Unknown location');
+  private geocodeLatLng(latLng: google.maps.LatLngLiteral, callback: (address: string) => void): void {
+    this.geocoder.geocode({ location: latLng }, (results: google.maps.GeocoderResult[], status: google.maps.GeocoderStatus) => {
+      if (status === 'OK' && results[0]) {
+        let placeName = '';
+  
+        // Try to find a specific name for the origin (e.g., "Bayanihan Jeepney Terminal")
+        for (const component of results[0].address_components) {
+          if (component.types.includes('point_of_interest') || component.types.includes('establishment')) {
+            placeName = component.long_name;
+            break;
+          }
         }
+  
+        // Fallback to locality or sublocality if no specific name is found
+        if (!placeName) {
+          for (const component of results[0].address_components) {
+            if (component.types.includes('locality') || component.types.includes('sublocality')) {
+              placeName = component.long_name;
+              break;
+            }
+          }
+        }
+  
+        // Default to formatted address if no specific place is found
+        if (!placeName) {
+          placeName = results[0].formatted_address;
+        }
+  
+        callback(placeName);  // Return the resolved name
       } else {
         console.error('Geocoder failed due to: ' + status);
-        callback('Unknown location');
+        callback('Address not found');
       }
     });
-  }
+  }  
 
   /*------------------------------------------
   Use Device's Geolocation for Current Location
