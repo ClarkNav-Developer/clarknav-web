@@ -103,7 +103,9 @@
                         [class.opacity]="highlightedRoute && route !== highlightedRoute">
                         <div class="route-heading">
                             <div class="time">
-                                {{ route.startTime }} - {{ route.endTime }}
+                                Estimated time: 
+                                <span *ngIf="route.duration; else calculating">{{ route.duration }}</span>
+                                <ng-template #calculating>Calculating...</ng-template>
                             </div>
                             <div>
                                 Estimated fare: <span class="fare">₱{{ route.fare }}</span>

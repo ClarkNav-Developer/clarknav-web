@@ -157,6 +157,9 @@ export class SearchComponent implements OnInit, AfterViewInit {
     this.navigationService.destination = this.destination;
     this.isBottomSheetVisible = true;
     this.navigationService.navigateToDestination();
+    // Fetch suggested routes
+    console.log('Debug: Fetching suggested routes...');
+    this.fetchSuggestedRoutes();
   }
 
 
@@ -196,38 +199,68 @@ export class SearchComponent implements OnInit, AfterViewInit {
     }
   }
 
-fetchSuggestedRoutes() {
-  if (this.currentLocation && this.destination) {
-    const routes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
-    if (routes.length > 0) {
-      this.suggestedRoutes = routes.map(route => ({
-        ...route,
-        start: this.currentLocation,
-        end: this.destination,
-        fare: this.calculateFare(route), // Calculate fare
-        duration: this.calculateDuration(route), // Calculate duration
-        time: this.calculateTime(route) // Calculate time
-      }));
-      
-      // Debugging statement to check processed suggestedRoutes
-      console.log('Processed Suggested Routes:', this.suggestedRoutes);
+  fetchSuggestedRoutes(): void {
+    if (this.currentLocation && this.destination) {
+      const routes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
+      if (routes.length > 0) {
+        this.suggestedRoutes = routes.map(route => ({
+          ...route,
+          start: this.currentLocation,
+          end: this.destination,
+          fare: this.calculateFare(route),
+          duration: null, // Initialize with null
+        }));
+  
+        this.suggestedRoutes.forEach(route => {
+          this.calculateDuration(route);
+        });
+      } else {
+        console.error('No suggested routes found.');
+      }
     } else {
-      console.error('No suggested routes found.');
+      console.error('Current location or destination not set.');
     }
-  } else {
-    console.error('Current location or destination not set.');
   }
-}
-
-
+  
   calculateFare(route: any): number {
     // Placeholder logic for fare calculation
     return 14; // Example static fare
   }
 
-  calculateDuration(route: any): string {
-    // Placeholder logic for duration calculation
-    return '30 mins'; // Example static duration
+  calculateDuration(route: any): void {
+    if (!this.currentLocation || !this.destination) {
+      console.error('Debug: Missing current location or destination for duration calculation.');
+      route.duration = 'Error calculating time'; // Fallback for UI
+      return;
+    }
+  
+    console.log('Debug: Starting duration calculation for route:', route);
+    const service = new google.maps.DistanceMatrixService();
+    service.getDistanceMatrix(
+      {
+        origins: [this.currentLocation],
+        destinations: [this.destination],
+        travelMode: google.maps.TravelMode.DRIVING,
+        unitSystem: google.maps.UnitSystem.METRIC,
+      },
+      (response: google.maps.DistanceMatrixResponse, status: google.maps.DistanceMatrixStatus) => {
+        console.log('Debug: Distance Matrix API status:', status);
+        if (status === google.maps.DistanceMatrixStatus.OK) {
+          console.log('Debug: API Response:', response);
+          const result = response.rows[0].elements[0];
+          if (result.status === 'OK') {
+            route.duration = result.duration.text;
+            console.log('Debug: Duration successfully calculated:', result.duration.text);
+          } else {
+            console.warn('Debug: Duration calculation failed:', result.status);
+            route.duration = 'Unable to calculate time';
+          }
+        } else {
+          console.error('Debug: API Error:', status);
+          route.duration = 'Error connecting to API';
+        }
+      }
+    );
   }
 
   calculateTime(route: any): string {
