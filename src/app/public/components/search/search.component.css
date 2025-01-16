@@ -163,7 +163,6 @@
     .routes-container {
         display: flex;
         flex-direction: column;
-        gap: 12px;
         overflow-y: auto;
         max-height: 30vh;
     }
@@ -178,7 +177,7 @@
 
     /* Loading of routes style */
     .route-item {
-        padding: 16px 5px;
+        padding: 10px;
         border: 1px solid #ddd;
         border-radius: 4px;
         background-color: #fafafa;
@@ -186,26 +185,108 @@
         display: flex;
         flex-direction: column;
         gap: 16px;
-        margin: 10px 0;
-    }
-
-    .route-item hr {
-        border: none;
-        border-top: 1px solid #ddd;
-        margin: 5px 0;
-    }
-
-    .route-heading {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
+        margin: 8px 0;
     }
 
     .route-details {
         display: flex;
         align-items: center;
         gap: 8px;
+        width: 100%;
+        justify-content: space-evenly;
     }
+
+    .origin-info {
+        min-width: 20%;
+        max-width: 40%;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .origin-info svg {
+        height: 30px;
+    }
+
+    .origin-info span{
+        width: 100%;
+    }
+
+    .destination-info {
+        min-width: 20%;
+        max-width: 40%;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .destination-info svg {
+        height: 30px;
+    }
+
+    .destination-info span{
+        width: 100%;
+    }
+
+    .route-footer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .fare-info {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .fare {
+        background-color: #32AA00;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        width: auto;
+        display: flex;
+        justify-content: center;
+        padding: 3px 10px;
+        font-size: small;
+        gap: 5px;
+    }
+
+    .fare svg {
+        height: 10px;
+    }
+    
+    .footer-extra-info {
+        right: 0;
+    }
+
+    .disclaimer-info {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .disclaimer-info p {
+        font-size: 10px;
+    }
+
+    .disclaimer-info .fare {
+        font-size: 10px;
+    }
+
+    /* .fare {
+        display: flex;
+        flex-direction: column;
+        color: #32AA00;
+        font-size: 14px;
+    } */
 
     .route-details img,
     .route-details svg {
@@ -216,14 +297,6 @@
     .route-details span {
         font-size: 16px;
         font-weight: normal;
-    }
-
-    .fare {
-        display: flex;
-        /* align-items: center; */
-        flex-direction: column;
-        color: #32AA00;
-        font-size: 14px;
     }
 
     .duration {
