@@ -14,7 +14,7 @@ export class NavigationComponent implements OnInit {
   constructor(private navigationService: NavigationService, private routesService: RoutesService) {}
 
   ngOnInit(): void {
-    this.routesService.loadRoutes();
+    // this.routesService.loadRoutes();
   }
 
   navigateToDestination() {

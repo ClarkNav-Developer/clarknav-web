@@ -94,32 +94,37 @@ export class MapService {
     });
   }
 
-  displayRouteUsingDirectionsAPI(waypoints: google.maps.LatLngLiteral[], color: string) {
-    if (waypoints.length < 2) return;
+displayRouteUsingDirectionsAPI(waypoints: google.maps.LatLngLiteral[], color: string) {
+  if (waypoints.length < 2) return;
 
-    const cacheKey = JSON.stringify(waypoints);
-    if (this.directionsCache.has(cacheKey)) {
-      this.renderDirections(this.directionsCache.get(cacheKey), color);
-      return;
+  const waypointsForApi = waypoints.slice(1, waypoints.length - 1).map(waypoint => ({ location: waypoint }));
+
+  const request = {
+    origin: waypoints[0],
+    destination: waypoints[waypoints.length - 1],
+    waypoints: waypointsForApi,
+    travelMode: google.maps.TravelMode.DRIVING,
+  };
+
+  this.directionsService.route(request, (result: any, status: any) => {
+    if (status === google.maps.DirectionsStatus.OK) {
+      const directionsRenderer = new google.maps.DirectionsRenderer({
+        map: this.map,
+        preserveViewport: true,
+        suppressMarkers: true,
+        polylineOptions: {
+          strokeColor: color,
+          strokeOpacity: 1.0,
+          strokeWeight: 3,
+        },
+      });
+      directionsRenderer.setDirections(result);
+      this.routeRenderers.push(directionsRenderer);
+    } else {
+      console.error('Directions request failed due to ' + status);
     }
-
-    const waypointsForApi = waypoints.slice(1, -1).map(wp => ({ location: wp }));
-    const request = {
-      origin: waypoints[0],
-      destination: waypoints[waypoints.length - 1],
-      waypoints: waypointsForApi,
-      travelMode: google.maps.TravelMode.DRIVING,
-    };
-
-    this.directionsService.route(request, (result: any, status: any) => {
-      if (status === google.maps.DirectionsStatus.OK) {
-        this.directionsCache.set(cacheKey, result);
-        this.renderDirections(result, color);
-      } else {
-        console.error('Directions request failed: ', status);
-      }
-    });
-  }
+  });
+}
 
   private renderDirections(result: any, color: string) {
     const renderer = new google.maps.DirectionsRenderer({
@@ -192,11 +197,14 @@ Route Segment Display (Replacement for displayRoutePath)
     const path = new google.maps.Polyline({
       path: [origin, destination],
       geodesic: true,
+      strokeColor: 'transparent', // Disable the default line
+      strokeWeight: 0, // Set the weight to 0 to avoid rendering the default line
       icons: [{ icon: this.getWalkingIcon(color), offset: '0', repeat: '15px' }],
     });
     path.setMap(this.map);
     this.routeRenderers.push(path);
   }
+  
 
   private requestWalkingDirections(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, color: string) {
     const request = {
@@ -219,12 +227,15 @@ Route Segment Display (Replacement for displayRoutePath)
       map: this.map,
       preserveViewport: true,
       polylineOptions: {
+        strokeColor: 'transparent', // Disable the default line
+        strokeWeight: 0, // Set the weight to 0 to avoid rendering the default line
         icons: [{ icon: this.getWalkingIcon(color), offset: '0', repeat: '15px' }],
       },
     });
     renderer.setDirections(result);
     this.routeRenderers.push(renderer);
   }
+  
 
   private getWalkingIcon(color: string) {
     return {
