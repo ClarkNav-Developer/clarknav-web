@@ -145,7 +145,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
       // Render all routes on the map
       this.suggestedRoutes.forEach(route => {
-        this.mapService.displayRoutePath({ path: route.path, color: route.color });
+        this.mapService.displayRouteSegments({ path: route.path, color: route.color });
       });
       console.log('Suggested Routes with updated start and end:', this.suggestedRoutes);
     } else {
@@ -271,14 +271,14 @@ export class SearchComponent implements OnInit, AfterViewInit {
   highlightRoute(route: any): void {
     this.highlightedRoute = route;
     this.mapService.clearMap();
-    this.mapService.displayRoutePath({ path: route.path, color: route.color });
+    this.mapService.displayRouteSegments({ path: route.path, color: route.color });
   }
 
   clearHighlight(): void {
     this.highlightedRoute = null;
     if (this.showAllRoutes) {
       this.suggestedRoutes.forEach(route => {
-        this.mapService.displayRoutePath({ path: route.path, color: route.color });
+        this.mapService.displayRouteSegments({ path: route.path, color: route.color });
       });
     }
   }
@@ -289,7 +289,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
     // Clear map and render only the selected route
     this.mapService.clearMap();
-    this.mapService.displayRoutePath({ path: route.path, color: route.color });
+    this.mapService.displayRouteSegments({ path: route.path, color: route.color });
   }
 
 

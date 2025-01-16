@@ -31,12 +31,12 @@ export class RouteComponent {
     if (route) {
       const mainWaypoints = route.waypoints.map(this.routesService.parseWaypoint);
       const routeColor = route.color;
-      this.mapService.displayRoutePath({ path: mainWaypoints, color: routeColor });
+      this.mapService.displayRouteSegments({ path: mainWaypoints, color: routeColor });
 
       // Display extension routes
       route.extensions?.forEach((extension: any) => {
         const extensionWaypoints = extension.waypoints.map(this.routesService.parseWaypoint);
-        this.mapService.displayRoutePath({ path: extensionWaypoints, color: routeColor });
+        this.mapService.displayRouteSegments({ path: extensionWaypoints, color: routeColor });
       });
 
       this.currentRouteName = route.routeName; // Update the current route name

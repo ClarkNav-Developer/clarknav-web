@@ -6,12 +6,23 @@ import { HttpClient } from '@angular/common/http';
 })
 export class RoutesService {
 
+  // ================================
+  // Data Storage
+  // ================================
+
   // Route Data
   jeepneyRoutes: any[] = [];
   busRoutes: any[] = [];
 
   constructor(private http: HttpClient) { }
 
+  // ================================
+  // Route Loading Methods
+  // ================================
+
+  /**
+   * Load route data from a JSON file.
+   */
   loadRoutes() {
     console.log('Loading routes from JSON...');
     this.http.get('assets/routes.json').subscribe(
@@ -19,7 +30,6 @@ export class RoutesService {
         console.log('Routes loaded:', data);
         this.jeepneyRoutes = data.routes.jeepney;
         this.busRoutes = data.routes.bus;
-        // this.displayAllJeepneyWaypoints();
       },
       (error) => {
         console.error('Error loading routes:', error);
@@ -27,15 +37,32 @@ export class RoutesService {
     );
   }
 
+  // ================================
+  // Route Retrieval and Parsing Methods
+  // ================================
+
+  /**
+   * Parse a waypoint string into a LatLngLiteral object.
+   */
   parseWaypoint(waypoint: string): google.maps.LatLngLiteral {
     const [lat, lng] = waypoint.split(',').map(coord => parseFloat(coord.trim()));
     return { lat, lng };
   }
 
+  /**
+   * Get a route by its unique ID.
+   */
   getRouteById(routeId: string) {
     return [...this.jeepneyRoutes, ...this.busRoutes].find(route => route.routeId === routeId);
   }
 
+  // ================================
+  // Nearest Stop and Pathfinding Methods
+  // ================================
+
+  /**
+   * Find the nearest stop to a given location.
+   */
   findNearestStop(location: google.maps.LatLngLiteral): google.maps.LatLngLiteral | null {
     let nearestWaypoint = null;
     let minDistance = Infinity;
@@ -44,10 +71,7 @@ export class RoutesService {
     this.jeepneyRoutes.forEach(route => {
       route.extensions?.forEach((extension: any) => {
         extension.waypoints.map(this.parseWaypoint).forEach((extensionWaypoint: google.maps.LatLngLiteral) => {
-          const distance = google.maps.geometry.spherical.computeDistanceBetween(
-            new google.maps.LatLng(location.lat, location.lng),
-            new google.maps.LatLng(extensionWaypoint.lat, extensionWaypoint.lng)
-          );
+          const distance = this.calculateDistance(location, extensionWaypoint);
           if (distance < minDistance) {
             minDistance = distance;
             nearestWaypoint = extensionWaypoint;
@@ -62,10 +86,7 @@ export class RoutesService {
       .map(this.parseWaypoint);
 
     allWaypoints.forEach(waypoint => {
-      const distance = google.maps.geometry.spherical.computeDistanceBetween(
-        new google.maps.LatLng(location.lat, location.lng),
-        new google.maps.LatLng(waypoint.lat, waypoint.lng)
-      );
+      const distance = this.calculateDistance(location, waypoint);
       if (distance < minDistance) {
         minDistance = distance;
         nearestWaypoint = waypoint;
@@ -75,6 +96,9 @@ export class RoutesService {
     return nearestWaypoint;
   }
 
+  /**
+   * Find all possible route paths between two waypoints.
+   */
   findAllRoutePaths(
     startWaypoint: google.maps.LatLngLiteral,
     endWaypoint: google.maps.LatLngLiteral
@@ -108,6 +132,13 @@ export class RoutesService {
     return allPaths;
   }
 
+  // ================================
+  // Helper Methods
+  // ================================
+
+  /**
+   * Truncate and integrate route extensions into the main waypoints.
+   */
   private truncateAndIntegrateRoute(
     mainWaypoints: google.maps.LatLngLiteral[],
     extensionWaypoints: google.maps.LatLngLiteral[]
@@ -126,6 +157,9 @@ export class RoutesService {
     return [...mainWaypoints, ...extensionWaypoints];
   }
 
+  /**
+   * Determine if an extension is relevant based on its waypoints.
+   */
   private isRelevantExtension(extension: any, startWaypoint: google.maps.LatLngLiteral, endWaypoint: google.maps.LatLngLiteral): boolean {
     const extensionStartPoint = this.parseWaypoint(extension.startPoint);
     return (
@@ -138,8 +172,9 @@ export class RoutesService {
     );
   }
 
-
-
+  /**
+   * Calculate the distance between two points.
+   */
   calculateDistance(pointA: google.maps.LatLngLiteral, pointB: google.maps.LatLngLiteral): number {
     return google.maps.geometry.spherical.computeDistanceBetween(
       new google.maps.LatLng(pointA.lat, pointA.lng),
@@ -147,6 +182,9 @@ export class RoutesService {
     );
   }
 
+  /**
+   * Find the shortest path between two indices in an array of waypoints.
+   */
   private findShortestPath(
     waypoints: google.maps.LatLngLiteral[],
     startIndex: number,
@@ -159,27 +197,15 @@ export class RoutesService {
     }
   }
 
-  private calculatePathDistance(path: google.maps.LatLngLiteral[]): number {
-    let distance = 0;
-    for (let i = 0; i < path.length - 1; i++) {
-      distance += google.maps.geometry.spherical.computeDistanceBetween(
-        new google.maps.LatLng(path[i].lat, path[i].lng),
-        new google.maps.LatLng(path[i + 1].lat, path[i + 1].lng)
-      );
-    }
-    return distance;
-  }
-
+  /**
+   * Check if a waypoint is nearby a location within a threshold.
+   */
   isNearby(
     location: google.maps.LatLngLiteral,
     waypoint: google.maps.LatLngLiteral,
-    threshold = 0.09 // Increase the threshold to 1.0 (1000 meters)
+    threshold = 0.09
   ): boolean {
-    const distance = google.maps.geometry.spherical.computeDistanceBetween(
-      new google.maps.LatLng(location.lat, location.lng),
-      new google.maps.LatLng(waypoint.lat, waypoint.lng)
-    );
+    const distance = this.calculateDistance(location, waypoint);
     return distance <= threshold * 1000; // Convert threshold to meters
   }
-
 }
