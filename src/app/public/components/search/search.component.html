@@ -13,11 +13,11 @@
             </div>
             <div class="search-result">
                 <ul *ngIf="results.length">
-                    <li *ngFor="let result of results" (click)="selectLocation(result)">
-                        {{ result.place_name }}
-                    </li>
+                  <li *ngFor="let result of results" (click)="selectLocation(result)">
+                    {{ result.name }}
+                  </li>
                 </ul>
-            </div>
+              </div>
         </div>
     </div>
 

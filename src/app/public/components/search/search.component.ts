@@ -85,7 +85,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.setupBottomSheetDragging();
-    this.initializeSearchBox();
+    // this.initializeSearchBox();
   }
 
   /*------------------------------------------
@@ -364,39 +364,58 @@ export class SearchComponent implements OnInit, AfterViewInit {
         console.log('API response:', response);
         this.results = response.suggestions || [];
         console.log('Search results:', this.results);
+        if (this.results.length > 0) {
+          console.log('First result structure:', this.results[0]);
+        }
       }, error => {
         console.error('Search error:', error);
       });
     } else {
+      console.log('Query is empty, clearing results');
       this.results = [];
     }
   }
 
   // Initialize SearchBox autocomplete logic
-  private initializeSearchBox(): void {
-    const searchInput = document.getElementById('search-box-2') as HTMLInputElement;
-    if (searchInput) {
-      searchInput.addEventListener('input', (event: Event) => {
-        const searchQuery = (event.target as HTMLInputElement).value;
-        if (searchQuery) {
-          this.mapboxSearchService.search(searchQuery).subscribe(results => {
-            this.results = results['features'] || [];
-            console.log('Search results:', this.results);
-          });
-        }
-      });
-    }
-  }
+  // private initializeSearchBox(): void {
+  //   const searchInput = document.getElementById('search-box-2') as HTMLInputElement;
+  //   if (searchInput) {
+  //     searchInput.addEventListener('input', (event: Event) => {
+  //       const searchQuery = (event.target as HTMLInputElement).value;
+  //       console.log('SearchBox input event:', searchQuery);
+  //       if (searchQuery) {
+  //         this.mapboxSearchService.search(searchQuery).subscribe(results => {
+  //           this.results = results['features'] || [];
+  //           console.log('SearchBox results:', this.results);
+  //         });
+  //       } else {
+  //         console.log('SearchBox query is empty, clearing results');
+  //         this.results = [];
+  //       }
+  //     });
+  //   }
+  // }
 
   // You can add a method to handle location selection from the search result
   selectLocation(result: any) {
+    console.log('Selected location:', result);
     this.searchQuery = result.name;
     this.results = [];
-    this.destination = result.coordinates;
-    if (this.destination) {
-      this.mapService.map.setCenter(this.destination);
+    
+    // Log the result object to understand its structure
+    console.log('Result object:', result);
+  
+    // Adjust the property access based on the actual structure
+    if (result.geometry && result.geometry.coordinates) {
+      const [longitude, latitude] = result.geometry.coordinates;
+      this.destination = [longitude, latitude];
+      if (this.destination) {
+        this.mapService.map.setCenter(this.destination);
+      }
+      this.resolveLocationAddress(result);
+    } else {
+      console.error('Coordinates are missing or invalid in the result object');
     }
-    this.resolveLocationAddress(result);
   }
 
   navigateToLocation(location: any) {
@@ -406,9 +425,9 @@ export class SearchComponent implements OnInit, AfterViewInit {
   }
 
   // Resolve and display the address for the selected location
-  private resolveLocationAddress(location: any): void {
-    this.geocodeLatLng(location.center, (address: string) => {
-      this.destinationAddress = address || 'Unable to resolve address';
-    });
+  resolveLocationAddress(result: any) {
+    // Placeholder implementation
+    console.log('Resolving address for:', result);
+    this.destinationAddress = result.full_address || 'Unknown address';
   }
 }
