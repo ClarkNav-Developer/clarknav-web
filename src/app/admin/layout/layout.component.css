@@ -1,0 +1,44 @@
+.main-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+    /* background-color: #252954; */
+    position: relative; /* Keep content positioned relative for the blobs */
+}
+
+.body {
+    z-index: 0;
+    position: relative;
+    top: 0;
+    transition: all 0.5s ease;
+    padding: 1rem 2rem;
+    position: relative; /* Ensures it can handle pseudo-elements */
+}
+
+.body::before {
+    content: "";
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    width: 605px; 
+    height: 444px; 
+    background-image: url('/public/bg-nav-300.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.08; 
+    z-index: -1; 
+}
+
+.body-trimmed {
+    width: calc(100% - 16.5625rem);
+    margin-left: 16.5625rem;
+}
+
+.body-md-screen {
+    width: calc(100% - 5rem);
+    margin-left: 5rem;
+}

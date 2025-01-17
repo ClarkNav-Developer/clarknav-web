@@ -10,8 +10,6 @@ import { BusRouteComponent } from './bus-route/bus-route.component';
 import { AnnouncementComponent } from './announcement/announcement.component';
 // import { FormsModule } from '@angular/forms';
 
-
-
 import { PublicModule } from './public/public.module';
 import { AdminModule } from './admin/admin.module';
 
