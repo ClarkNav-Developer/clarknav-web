@@ -7,19 +7,29 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class MapboxSearchService {
-  private apiUrl = 'https://api.mapbox.com/geocoding/v5/mapbox.places/{searchQuery}.json';
+  private apiUrl = 'https://api.mapbox.com/search/searchbox/v1/suggest?q={searchQuery}.JSON';
+  sessionToken: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    this.sessionToken = this.generateSessionToken();
+  }
 
-  search(query: string): Observable<any> {
-    const proximityCoordinates = [120.55950164794922, 15.187769063648858]; // Your specified location
-    
-    const params = {
+  private generateSessionToken(): string {
+    return Math.random().toString(36).substring(2);
+  }
+
+  search(query: string, proximity?: [number, number]): Observable<any> {
+    const params: any = {
       access_token: environment.mapboxApiKey,
       limit: '5', // Limit the results
-      proximity: proximityCoordinates.join(','), // Proximity bias parameter
+      session_token: this.sessionToken,
     };
-    
+
+    if (proximity) {
+      params.proximity = proximity.join(',');
+    }
+
+    console.log('Making API request with params:', params);
     return this.http.get(this.apiUrl.replace("{searchQuery}", query), { params });
   }
 }

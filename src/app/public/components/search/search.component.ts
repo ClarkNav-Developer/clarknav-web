@@ -37,8 +37,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
   results: any[] = [];
 
   // SearchBox API URL for search
-  private apiUrl = 'https://api.mapbox.com/geocoding/v5/mapbox.places/{searchQuery}.json';
-
+  private apiUrl = 'https://api.mapbox.com/search/searchbox/v1/suggest?q={searchQuery}';
 
   // Dragging state for the bottom sheet
   private isDragging = false;
@@ -346,33 +345,32 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
   // Method to perform location search using Mapbox API
   search(query: string): Observable<any> {
-    const proximityCoordinates = [120.55950164794922, 15.187769063648858]; // Your specified location
-    
     const params = {
       q: query,
       access_token: environment.mapboxApiKey,
       limit: '5', // Limit the results
-      proximity: proximityCoordinates.join(','), // Proximity bias parameter
+      session_token: this.mapboxSearchService.sessionToken,
     };
     
-    // Perform the search with proximity bias
     return this.http.get(this.apiUrl.replace("{searchQuery}", query), { params });
   }
 
   onSearch(event: any) {
     const query = event.target.value;
     if (query) {
-      this.mapboxSearchService.search(query).subscribe(results => {
-        this.results = results.features || [];
+      console.log('Searching for:', query);
+      const proximity: [number, number] | undefined = this.currentLocation ? [(this.currentLocation as mapboxgl.LngLat).lng, (this.currentLocation as mapboxgl.LngLat).lat] as [number, number] : undefined;
+      this.mapboxSearchService.search(query, proximity).subscribe(response => {
+        console.log('API response:', response);
+        this.results = response.suggestions || [];
+        console.log('Search results:', this.results);
+      }, error => {
+        console.error('Search error:', error);
       });
     } else {
       this.results = [];
     }
   }
-
-
-
-  
 
   // Initialize SearchBox autocomplete logic
   private initializeSearchBox(): void {
@@ -392,9 +390,9 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
   // You can add a method to handle location selection from the search result
   selectLocation(result: any) {
-    this.searchQuery = result.place_name;
+    this.searchQuery = result.name;
     this.results = [];
-    this.destination = result.center;
+    this.destination = result.coordinates;
     if (this.destination) {
       this.mapService.map.setCenter(this.destination);
     }
