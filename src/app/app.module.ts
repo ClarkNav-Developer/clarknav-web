@@ -8,7 +8,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { JeepneyRouteComponent } from './jeepney-route/jeepney-route.component';
 import { BusRouteComponent } from './bus-route/bus-route.component';
 import { AnnouncementComponent } from './announcement/announcement.component';
-// import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -27,7 +27,7 @@ import { AdminModule } from './admin/admin.module';
     AppRoutingModule,
     GoogleMapsModule,
     HttpClientModule,
-    // FormsModule,
+    FormsModule,
     PublicModule,
     AdminModule,
   ],

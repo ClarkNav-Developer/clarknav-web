@@ -14,7 +14,7 @@ import { PlannerComponent } from './components/planner/planner.component';
 import { RouteComponent } from './components/route/route.component';
 import { AccountComponent } from './components/account/account.component';
 import { InformationComponent } from './components/information/information.component';
-// import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -34,7 +34,7 @@ import { InformationComponent } from './components/information/information.compo
   imports: [
     CommonModule,
     PublicRoutingModule,
-    // FormsModule,
+    FormsModule,
   ],
   providers: [FloatingWindowService],
   exports: [

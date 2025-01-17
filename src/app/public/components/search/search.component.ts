@@ -53,7 +53,8 @@ export class SearchComponent implements OnInit, AfterViewInit {
     private navigationService: NavigationService,
     private suggestedRoutesService: SuggestedRoutesService,
     private renderer: Renderer2,
-    private http: HttpClient
+    private http: HttpClient,
+    private mapboxSearchService: MapboxSearchService // Ensure this service is injected
   ) { }
 
   /*------------------------------------------
@@ -357,6 +358,20 @@ export class SearchComponent implements OnInit, AfterViewInit {
     // Perform the search with proximity bias
     return this.http.get(this.apiUrl.replace("{searchQuery}", query), { params });
   }
+
+  onSearch(event: any) {
+    const query = event.target.value;
+    if (query) {
+      this.mapboxSearchService.search(query).subscribe(results => {
+        this.results = results.features || [];
+      });
+    } else {
+      this.results = [];
+    }
+  }
+
+
+
   
 
   // Initialize SearchBox autocomplete logic
@@ -366,11 +381,9 @@ export class SearchComponent implements OnInit, AfterViewInit {
       searchInput.addEventListener('input', (event: Event) => {
         const searchQuery = (event.target as HTMLInputElement).value;
         if (searchQuery) {
-          this.search(searchQuery).subscribe(results => {
-            // Handle the results from Mapbox Search API
+          this.mapboxSearchService.search(searchQuery).subscribe(results => {
             this.results = results['features'] || [];
             console.log('Search results:', this.results);
-            // Optionally: Render results or auto-select locations based on user clicks
           });
         }
       });
@@ -378,11 +391,20 @@ export class SearchComponent implements OnInit, AfterViewInit {
   }
 
   // You can add a method to handle location selection from the search result
-  selectLocation(location: any): void {
-    // For example, if the user selects a location, center the map and show the address
-    const [longitude, latitude] = location.center;
-    this.mapService.map.flyTo({ center: [longitude, latitude], zoom: 14 });
-    this.resolveLocationAddress(location);
+  selectLocation(result: any) {
+    this.searchQuery = result.place_name;
+    this.results = [];
+    this.destination = result.center;
+    if (this.destination) {
+      this.mapService.map.setCenter(this.destination);
+    }
+    this.resolveLocationAddress(result);
+  }
+
+  navigateToLocation(location: any) {
+    // Implement your logic to navigate to the location on the map
+    // For example:
+    // this.mapService.setView(location.coordinates);
   }
 
   // Resolve and display the address for the selected location
