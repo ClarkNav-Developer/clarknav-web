@@ -1,4 +1,3 @@
-// src/app/public/services/navigation.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MapService } from './map.service';
@@ -30,6 +29,9 @@ export class NavigationService {
     B1: { color: "#F98100" },
   };
 
+  // Caching for route paths
+  private directionsCache = new Map<string, any>();
+
   /*------------------------------------------
   User-defined Locations
   --------------------------------------------*/
@@ -47,10 +49,45 @@ export class NavigationService {
   Route Navigation
   --------------------------------------------*/
 
+  // Caching for route paths avoiding multiple API calls
+  private getCacheKey(request: any): string {
+    return JSON.stringify(request);
+  }
+
+  private cacheResponse(request: any, response: any) {
+    const key = this.getCacheKey(request);
+    localStorage.setItem(key, JSON.stringify(response));
+  }
+
+  private getCachedResponse(request: any): any | null {
+    const key = this.getCacheKey(request);
+    const cachedResponse = localStorage.getItem(key);
+    if (cachedResponse) {
+      console.log('Navigation route loaded from cache');
+      return JSON.parse(cachedResponse);
+    }
+    return null;
+  }
+
   /**
    * Main function to navigate to the destination.
    */
   navigateToDestination(): void {
+    const request = {
+      origin: this.currentLocation,
+      destination: this.destination,
+      travelMode: google.maps.TravelMode.DRIVING,
+    };
+
+    const cachedResponse = this.getCachedResponse(request);
+    if (cachedResponse) {
+      this.mapService.displayRouteUsingDirectionsAPI(cachedResponse, 'blue');
+      return;
+    }
+
+    if (this.currentLocation && this.destination) {
+      this.mapService.displayRouteUsingDirectionsAPI([this.currentLocation, this.destination], 'blue');
+    }
     if (!this.validateLocations()) return;
 
     this.mapService.clearMap();

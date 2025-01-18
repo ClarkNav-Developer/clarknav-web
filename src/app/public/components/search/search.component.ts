@@ -147,29 +147,18 @@ export class SearchComponent implements OnInit, AfterViewInit {
     this.isBottomSheetVisible = true;
   }
 
-  fetchSuggestedRoutes(): void {
+  fetchSuggestedRoutes() {
     if (this.currentLocation && this.destination) {
-      const routes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
-
-      if (routes.length > 0) {
-        this.suggestedRoutes = routes.map(route => ({
-          ...route,
-          start: this.currentLocation,
-          end: this.destination,
-          distanceInKm: this.calculateDistance(route.start, route.end),
-        }));
-
-        this.suggestedRoutes.forEach(route => {
-          this.calculateFare(route);
-          this.calculateDuration(route);
-        });
-
-        this.renderRoutesOnMap();
-      } else {
-        console.error('No suggested routes found.');
+      const key = JSON.stringify({ currentLocation: this.currentLocation, destination: this.destination });
+      const cachedRoutes = localStorage.getItem(key);
+      if (cachedRoutes) {
+        this.suggestedRoutes = JSON.parse(cachedRoutes);
+        console.log('Suggested routes loaded from cache');
+        return;
       }
-    } else {
-      console.error('Current location or destination not set.');
+
+      this.suggestedRoutes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
+      localStorage.setItem(key, JSON.stringify(this.suggestedRoutes));
     }
   }
 
@@ -333,6 +322,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
   private initializeAutocomplete(): void {
     const inputs = [
       'search-box',
+      'search-box-2',
       'search-box-mobile',
       'current-location-box',
       'current-location-box-mobile',

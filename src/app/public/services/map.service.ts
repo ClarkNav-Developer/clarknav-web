@@ -31,6 +31,26 @@ export class MapService {
 
   constructor(private routesService: RoutesService) { }
 
+  // Caching the directions results
+  private getCacheKey(request: any): string {
+    return JSON.stringify(request);
+  }
+
+  private cacheResponse(request: any, response: any) {
+    const key = this.getCacheKey(request);
+    localStorage.setItem(key, JSON.stringify(response));
+  }
+
+  private getCachedResponse(request: any): any | null {
+    const key = this.getCacheKey(request);
+    const cachedResponse = localStorage.getItem(key);
+    if (cachedResponse) {
+      console.log('Directions loaded from cache');
+      return JSON.parse(cachedResponse);
+    }
+    return null;
+  }
+
   /*------------------------------------------
   Initialization
   --------------------------------------------*/
@@ -94,52 +114,52 @@ export class MapService {
     });
   }
 
-displayRouteUsingDirectionsAPI(waypoints: google.maps.LatLngLiteral[], color: string) {
-  if (waypoints.length < 2) return;
+  displayRouteUsingDirectionsAPI(waypoints: google.maps.LatLngLiteral[], color: string) {
+    if (waypoints.length < 2) return;
 
-  const waypointsForApi = waypoints.slice(1, waypoints.length - 1).map(waypoint => ({ location: waypoint }));
+    const waypointsForApi = waypoints.slice(1, waypoints.length - 1).map(waypoint => ({ location: waypoint }));
 
-  const request = {
-    origin: waypoints[0],
-    destination: waypoints[waypoints.length - 1],
-    waypoints: waypointsForApi,
-    travelMode: google.maps.TravelMode.DRIVING,
-  };
+    const request = {
+      origin: waypoints[0],
+      destination: waypoints[waypoints.length - 1],
+      waypoints: waypointsForApi,
+      travelMode: google.maps.TravelMode.DRIVING,
+    };
 
-  this.directionsService.route(request, (result: any, status: any) => {
-    if (status === google.maps.DirectionsStatus.OK) {
-      const directionsRenderer = new google.maps.DirectionsRenderer({
-        map: this.map,
-        preserveViewport: true,
-        suppressMarkers: true,
-        polylineOptions: {
-          strokeColor: color,
-          strokeOpacity: 1.0,
-          strokeWeight: 3,
-        },
-      });
-      directionsRenderer.setDirections(result);
-      this.routeRenderers.push(directionsRenderer);
-    } else {
-      console.error('Directions request failed due to ' + status);
+    const cachedResponse = this.getCachedResponse(request);
+    if (cachedResponse) {
+      this.renderDirections(cachedResponse, color);
+      return;
     }
-  });
-}
+
+    this.directionsService.route(request, (result: any, status: any) => {
+      if (status === google.maps.DirectionsStatus.OK) {
+        this.cacheResponse(request, result);
+        this.renderDirections(result, color);
+      } else {
+        console.error('Directions request failed due to ' + status);
+      }
+    });
+  }
 
   private renderDirections(result: any, color: string) {
-    const renderer = new google.maps.DirectionsRenderer({
+    const directionsRenderer = new google.maps.DirectionsRenderer({
       map: this.map,
       preserveViewport: true,
       suppressMarkers: true,
-      polylineOptions: { strokeColor: color, strokeWeight: 5 },
+      polylineOptions: {
+        strokeColor: color,
+        strokeOpacity: 1.0,
+        strokeWeight: 3,
+      },
     });
-    renderer.setDirections(result);
-    this.routeRenderers.push(renderer);
+    directionsRenderer.setDirections(result);
+    this.routeRenderers.push(directionsRenderer);
   }
 
   /*------------------------------------------
-Route Segment Display (Replacement for displayRoutePath)
---------------------------------------------*/
+  Route Segment Display (Replacement for displayRoutePath)
+  --------------------------------------------*/
   displayRouteSegments(routePath: { path: google.maps.LatLngLiteral[], color: string }) {
     if (routePath.path.length < 2) {
       console.error("Route path must have at least two waypoints to display a route.");
@@ -176,7 +196,6 @@ Route Segment Display (Replacement for displayRoutePath)
     });
   }
 
-
   /*------------------------------------------
   Walking Path Display
   --------------------------------------------*/
@@ -204,7 +223,6 @@ Route Segment Display (Replacement for displayRoutePath)
     path.setMap(this.map);
     this.routeRenderers.push(path);
   }
-  
 
   private requestWalkingDirections(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, color: string) {
     const request = {
@@ -235,7 +253,6 @@ Route Segment Display (Replacement for displayRoutePath)
     renderer.setDirections(result);
     this.routeRenderers.push(renderer);
   }
-  
 
   private getWalkingIcon(color: string) {
     return {

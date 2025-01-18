@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,15 @@ export class RoutesService {
   jeepneyRoutes: any[] = [];
   busRoutes: any[] = [];
 
-  constructor(private http: HttpClient) { }
+  //checking for routes version
+  private readonly routesUrl = 'assets/routes.json';
+  private readonly cacheKey = 'routes';
+  private readonly versionKey = 'routesVersion';
+  private routesLoadedSubject = new BehaviorSubject<boolean>(false);
+
+  constructor(private http: HttpClient) {
+    this.loadRoutes();
+  }
 
   // ================================
   // Route Loading Methods
@@ -23,18 +32,32 @@ export class RoutesService {
   /**
    * Load route data from a JSON file.
    */
+
+  get routesLoaded$(): Observable<boolean> {
+    return this.routesLoadedSubject.asObservable();
+  }
+
   loadRoutes() {
-    console.log('Loading routes from JSON...');
-    this.http.get('assets/routes.json').subscribe(
-      (data: any) => {
-        console.log('Routes loaded:', data);
-        this.jeepneyRoutes = data.routes.jeepney;
-        this.busRoutes = data.routes.bus;
-      },
-      (error) => {
-        console.error('Error loading routes:', error);
+    const cachedVersion = localStorage.getItem(this.versionKey);
+    const cachedRoutes = localStorage.getItem(this.cacheKey);
+
+    this.http.get<any>(this.routesUrl).subscribe(data => {
+      const serverVersion = data.version;
+
+      if (cachedVersion !== serverVersion || !cachedRoutes) {
+        this.jeepneyRoutes = data.routes.jeepney || [];
+        this.busRoutes = data.routes.bus || [];
+        localStorage.setItem(this.cacheKey, JSON.stringify(data));
+        localStorage.setItem(this.versionKey, serverVersion);
+        console.log('Routes loaded from server:', data);
+      } else {
+        const cachedData = JSON.parse(cachedRoutes);
+        this.jeepneyRoutes = cachedData.routes.jeepney || [];
+        this.busRoutes = cachedData.routes.bus || [];
+        console.log('Routes loaded from cache:', cachedData);
       }
-    );
+      this.routesLoadedSubject.next(true); // Notify that routes are loaded
+    });
   }
 
   // ================================
@@ -55,7 +78,6 @@ export class RoutesService {
   getRouteById(routeId: string) {
     return [...this.jeepneyRoutes, ...this.busRoutes].find(route => route.routeId === routeId);
   }
-
   // ================================
   // Nearest Stop and Pathfinding Methods
   // ================================
@@ -67,7 +89,6 @@ export class RoutesService {
     let nearestWaypoint = null;
     let minDistance = Infinity;
 
-    // Include extension waypoints
     this.jeepneyRoutes.forEach(route => {
       route.extensions?.forEach((extension: any) => {
         extension.waypoints.map(this.parseWaypoint).forEach((extensionWaypoint: google.maps.LatLngLiteral) => {
@@ -80,7 +101,6 @@ export class RoutesService {
       });
     });
 
-    // Include main route waypoints
     const allWaypoints = [...this.jeepneyRoutes, ...this.busRoutes]
       .flatMap(route => route.waypoints)
       .map(this.parseWaypoint);
