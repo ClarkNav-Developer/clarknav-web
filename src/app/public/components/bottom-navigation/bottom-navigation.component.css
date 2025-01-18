@@ -1,12 +1,14 @@
 @media screen and (min-width: 431px) {
     .mobile-view {
-        display: none;
+        display: none
     }
+
     .container {
         z-index: 1000;
         position: absolute;
         bottom: -1px;
         width: 100%;
+        overflow: hidden
     }
 
     .container::before {
@@ -18,52 +20,50 @@
         bottom: 0;
         background-color: inherit;
         backdrop-filter: blur(15px);
-        z-index: -1;
+        z-index: -1
     }
 
     .footer {
         display: flex;
         justify-content: space-evenly;
         background-color: rgba(255, 255, 255, 0.5);
-        padding: 5px 0;
+        padding: 5px 0
     }
 
     .logo {
         z-index: 1001;
         position: absolute;
-        left: 3%;
+        left: 3%
     }
 
     .logo img {
-       height: 55px;
+        height: 55px
     }
 
     .bottom-nav {
         display: flex;
         justify-content: space-evenly;
-        width: 40%;
+        width: 40%
     }
 
     .menu-container {
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: center
     }
 
     .menu-container button {
         background-color: transparent;
         border: none;
-        color: black;
+        color: black
     }
-
-
 }
-
 
 @media screen and (max-width: 430px) {
     .desktop-view {
-        display: none;
+        display: none
     }
+
     .container-mobile {
         z-index: 1000;
         position: absolute;
@@ -71,7 +71,7 @@
         width: 100%;
         background-color: rgba(255, 255, 255, 0.5);
         padding: 5px 0;
-        overflow: hidden;
+        overflow: hidden
     }
 
     .container-mobile::before {
@@ -83,23 +83,23 @@
         bottom: 0;
         background-color: inherit;
         backdrop-filter: blur(15px);
-        z-index: -1;
+        z-index: -1
     }
 
     .bottom-nav-mobile {
         display: flex;
-        justify-content: space-evenly;
+        justify-content: space-evenly
     }
 
     .menu-container-mobile {
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: center
     }
 
     .menu-container-mobile button {
         background-color: transparent;
         border: none;
-        color: black;
+        color: black
     }
 }

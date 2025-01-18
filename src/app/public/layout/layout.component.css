@@ -1,0 +1,42 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* Prevent overflow on the body */
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow: hidden; /* Prevent overflow on the main container */
+}
+
+.main-content {
+    flex: 1;
+    position: relative;
+    overflow: hidden; /* Prevent overflow on the main content */
+}
+
+.body {
+    z-index: 0;
+    position: relative;
+    top: 0;
+    transition: all 0.5s ease;
+    padding: 1rem 2rem;
+    overflow: auto; /* Allow scrolling within the body if necessary */
+}
+
+/* .body::before {
+    content: "";
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    width: 605px; 
+    height: 444px; 
+    background-image: url('/public/bg-nav-300.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.08; 
+    z-index: -1; 
+} */

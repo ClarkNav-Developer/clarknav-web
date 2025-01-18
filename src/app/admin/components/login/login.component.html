@@ -11,16 +11,20 @@
                 <form *ngIf="isLoginForm" (ngSubmit)="onLoginSubmit($event)">
                     <div class="form-group">
                         <label for="email">EMAIL</label>
-                        <input type="email" id="email" name="email" placeholder="juandelacruz@gmail.com" required (keydown.enter)="onLoginSubmit($event)">
+                        <input type="email" id="email" name="email" [(ngModel)]="email" placeholder="juandelacruz@gmail.com" required (keydown.enter)="onLoginSubmit($event)">
                     </div>
                     <div class="form-group password-eye">
                         <label for="password">PASSWORD</label>
-                        <input type="password" id="password" name="password" placeholder="••••••••" required (keydown.enter)="onLoginSubmit($event)">
+                        <input type="password" id="password" name="password" [(ngModel)]="password" placeholder="••••••••" required (keydown.enter)="onLoginSubmit($event)">
                         <span class="material-icons" (click)="togglePassword()">visibility</span>
                     </div>
                     <div class="form-group">
                         <a>Forgot Password?</a>
                     </div>
+                    <div class="form-group">
+                        <span class="error-message">{{ errorMessage }}</span>
+                    </div>
+                    <!-- <button type="submit" class="login-create-button">Login</button> -->
                 </form>
 
                 <form *ngIf="!isLoginForm" (ngSubmit)="onRegisterSubmit($event)">
