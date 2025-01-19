@@ -15,7 +15,8 @@ import { RouteComponent } from './components/route/route.component';
 import { AccountComponent } from './components/account/account.component';
 import { InformationComponent } from './components/information/information.component';
 import { FormsModule } from '@angular/forms';
-
+import { MapStyleService } from './services/map-style.service';
+import { MapInstanceService } from './services/map-instance.service';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,7 @@ import { FormsModule } from '@angular/forms';
     PublicRoutingModule,
     FormsModule,
   ],
-  providers: [FloatingWindowService],
+  providers: [FloatingWindowService, MapStyleService, MapInstanceService],
   exports: [
     MapComponent,
     SearchComponent,
