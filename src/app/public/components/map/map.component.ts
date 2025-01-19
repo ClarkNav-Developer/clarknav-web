@@ -45,7 +45,7 @@ export class MapComponent implements OnInit {
           styles: style
         });
 
-        this.mapService.setMap(map);
+        this.mapService.initializeMap(map);
 
         this.routesService.loadRoutes();
       } catch (error) {

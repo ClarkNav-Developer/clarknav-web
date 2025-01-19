@@ -54,7 +54,7 @@ export class MapService {
   /*------------------------------------------
   Initialization
   --------------------------------------------*/
-  setMap(map: any) {
+  initializeMap(map: any) {
     this.map = map;
     this.directionsService = new google.maps.DirectionsService();
     this.directionsRenderer = new google.maps.DirectionsRenderer({
@@ -68,7 +68,7 @@ export class MapService {
   --------------------------------------------*/
   clearMap() {
     this.clearMarkers();
-    this.clearRenderers();
+    this.clearRouteRenderers();
   }
 
   private clearMarkers() {
@@ -76,16 +76,17 @@ export class MapService {
     this.markers = [];
   }
 
-  private clearRenderers() {
+  private clearRouteRenderers() {
     this.routeRenderers.forEach(renderer => renderer.setMap(null));
     this.routeRenderers = [];
   }
 
-  addMarker(location: google.maps.LatLngLiteral, title: string) {
+  addMarker(location: google.maps.LatLngLiteral, title: string, iconUrl?: string) {
     const marker = new google.maps.Marker({
       position: location,
       map: this.map,
       title,
+      icon: iconUrl ? { url: iconUrl, scaledSize: new google.maps.Size(30, 30) } : undefined,
     });
     this.markers.push(marker);
   }
@@ -93,7 +94,7 @@ export class MapService {
   /*------------------------------------------
   Route Display
   --------------------------------------------*/
-  displayRoutes() {
+  displayFilteredRoutes() {
     this.filteredRoutes.forEach(route => {
       const relevantWaypoints = this.getRelevantWaypoints(route.waypoints);
       this.addMarkersForRoute(relevantWaypoints, route.routeName);
@@ -114,7 +115,7 @@ export class MapService {
     });
   }
 
-  displayRouteUsingDirectionsAPI(waypoints: google.maps.LatLngLiteral[], color: string) {
+  displayRouteWithDirectionsAPI(waypoints: google.maps.LatLngLiteral[], color: string) {
     if (waypoints.length < 2) return;
 
     const waypointsForApi = waypoints.slice(1, waypoints.length - 1).map(waypoint => ({ location: waypoint }));
@@ -158,7 +159,7 @@ export class MapService {
   }
 
   /*------------------------------------------
-  Route Segment Display (Replacement for displayRoutePath)
+  Route Segment Display
   --------------------------------------------*/
   displayRouteSegments(routePath: { path: google.maps.LatLngLiteral[], color: string }) {
     if (routePath.path.length < 2) {
@@ -187,8 +188,15 @@ export class MapService {
       travelMode: google.maps.TravelMode.DRIVING,
     };
 
+    const cachedResponse = this.getCachedResponse(request);
+    if (cachedResponse) {
+      this.renderDirections(cachedResponse, color);
+      return;
+    }
+
     this.directionsService.route(request, (result: any, status: any) => {
       if (status === google.maps.DirectionsStatus.OK) {
+        this.cacheResponse(request, result);
         this.renderDirections(result, color);
       } else {
         console.error('Directions request failed for segment due to ' + status);
@@ -205,6 +213,18 @@ export class MapService {
       new google.maps.LatLng(destination.lat, destination.lng)
     );
 
+    const request = {
+      origin,
+      destination,
+      travelMode: google.maps.TravelMode.WALKING,
+    };
+
+    const cachedResponse = this.getCachedResponse(request);
+    if (cachedResponse) {
+      this.renderWalkingDirections(cachedResponse, color);
+      return;
+    }
+
     if (distance < 50) {
       this.renderStaticWalkingPath(origin, destination, color);
     } else {
@@ -212,17 +232,23 @@ export class MapService {
     }
   }
 
+
   private renderStaticWalkingPath(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, color: string) {
     const path = new google.maps.Polyline({
       path: [origin, destination],
       geodesic: true,
-      strokeColor: 'transparent', // Disable the default line
-      strokeWeight: 0, // Set the weight to 0 to avoid rendering the default line
+      strokeColor: 'transparent', // No solid line, walking icons only
+      strokeWeight: 0,
       icons: [{ icon: this.getWalkingIcon(color), offset: '0', repeat: '15px' }],
     });
     path.setMap(this.map);
     this.routeRenderers.push(path);
+
+    // Add markers specific to walking path endpoints
+    this.addWalkingPathMarker(origin, 'Start', color);
+    this.addWalkingPathMarker(destination, 'End', color);
   }
+
 
   private requestWalkingDirections(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, color: string) {
     const request = {
@@ -231,8 +257,15 @@ export class MapService {
       travelMode: google.maps.TravelMode.WALKING,
     };
 
+    const cachedResponse = this.getCachedResponse(request);
+    if (cachedResponse) {
+      this.renderWalkingDirections(cachedResponse, color);
+      return;
+    }
+
     this.directionsService.route(request, (result: any, status: any) => {
       if (status === google.maps.DirectionsStatus.OK) {
+        this.cacheResponse(request, result);
         this.renderWalkingDirections(result, color);
       } else {
         console.error('Walking directions request failed: ', status);
@@ -244,16 +277,48 @@ export class MapService {
     const renderer = new google.maps.DirectionsRenderer({
       map: this.map,
       preserveViewport: true,
+      suppressMarkers: true, // Disable default markers
       polylineOptions: {
-        strokeColor: 'transparent', // Disable the default line
-        strokeWeight: 0, // Set the weight to 0 to avoid rendering the default line
+        strokeColor: 'transparent', // No solid line, walking icons only
+        strokeWeight: 0,
         icons: [{ icon: this.getWalkingIcon(color), offset: '0', repeat: '15px' }],
       },
     });
     renderer.setDirections(result);
     this.routeRenderers.push(renderer);
+
+    // Add markers for the walking path endpoints
+    const route = result.routes[0].legs[0];
+    this.addWalkingPathMarker(route.start_location, 'Start', color);
+    this.addWalkingPathMarker(route.end_location, 'End', color);
   }
 
+  private addWalkingPathMarker(location: google.maps.LatLngLiteral, label: string, color: string) {
+    const svgIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" height="50" width="50" viewBox="0 0 100 100">
+        <!-- Outer Circle -->
+        <circle cx="50" cy="50" r="48" fill="${color}" />
+        <!-- Inner Icon -->
+        <path d="m28 90 11.2-56.4-7.2 2.8v13.6h-8v-18.8l20.2-8.6q1.4-.6 2.95-.7t2.95.4q1.4.5 2.65 1.4t2.05 2.3l4 6.4q2.6 4.2 7.05 6.9T76 48v8q-7 0-12.5-2.9t-9.4-7.4l-2.5 12.3 8.4 8v30h-8v-26l-8.4-6.4-7.2 32.4h-8.4Zm26-70q-3.3 0-5.65-2.35T46 18q0-3.3 2.35-5.65T54 10q3.3 0 5.65 2.35T62 18q0 3.3-2.35 5.65T54 20Z" 
+          fill="white" 
+          transform="translate(10, 10) scale(0.8)" />
+      </svg>
+    `)}`;
+  
+    const marker = new google.maps.Marker({
+      position: location,
+      map: this.map,
+      icon: {
+        url: svgIcon,
+        scaledSize: new google.maps.Size(30, 30), // Marker size
+        anchor: new google.maps.Point(15, 15), // Center anchor point at (15,15) for a 30x30 icon
+      },
+      title: label,
+    });
+  
+    this.markers.push(marker);
+  }
+  
   private getWalkingIcon(color: string) {
     return {
       path: 'M 0,-1 0,1',

@@ -81,12 +81,12 @@ export class NavigationService {
 
     const cachedResponse = this.getCachedResponse(request);
     if (cachedResponse) {
-      this.mapService.displayRouteUsingDirectionsAPI(cachedResponse, 'blue');
+      this.mapService.displayRouteWithDirectionsAPI(cachedResponse, 'blue');
       return;
     }
 
     if (this.currentLocation && this.destination) {
-      this.mapService.displayRouteUsingDirectionsAPI([this.currentLocation, this.destination], 'blue');
+      this.mapService.displayRouteWithDirectionsAPI([this.currentLocation, this.destination], 'blue');
     }
     if (!this.validateLocations()) return;
 
@@ -103,8 +103,7 @@ export class NavigationService {
     console.log('Nearest start waypoint:', nearestStartWaypoint);
     console.log('Nearest end waypoint:', nearestEndWaypoint);
 
-    this.mapService.displayWalkingPath(this.currentLocation!, nearestStartWaypoint, 'NB');
-
+    // Use route color for walking path
     const routePaths = this.routesService.findAllRoutePaths(nearestStartWaypoint, nearestEndWaypoint);
     const routePath = routePaths.length > 0 ? routePaths[0] : { path: [], color: '' };
 
@@ -112,6 +111,9 @@ export class NavigationService {
       alert('No route found connecting the selected stops.');
       return;
     }
+
+    // Display walking path from current location to the nearest start waypoint
+    this.mapService.displayWalkingPath(this.currentLocation!, nearestStartWaypoint, routePath.color);
 
     this.mapService.displayRouteSegments({ path: routePath.path, color: routePath.color });
 
@@ -122,6 +124,7 @@ export class NavigationService {
       ? this.destination!
       : routePath.path[routePath.path.length - 1];
 
+    // Display walking path from the end of the route path to the destination
     this.mapService.displayWalkingPath(finalDestination, this.destination!, routePath.color);
   }
 

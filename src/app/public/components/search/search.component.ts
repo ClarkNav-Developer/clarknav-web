@@ -163,21 +163,36 @@ export class SearchComponent implements OnInit, AfterViewInit {
   }
 
   highlightRoute(route: any): void {
-    this.highlightedRoute = route;
-    this.renderRoutesOnMap(route);
+    if (this.highlightedRoute !== route) {
+      this.highlightedRoute = route;
+      this.renderRoutesOnMap(route, false); // Pass false to indicate it's a hover action
+    }
   }
 
   clearHighlight(): void {
-    this.highlightedRoute = null;
-    this.renderRoutesOnMap();
+    if (this.highlightedRoute && this.highlightedRoute !== this.selectedRoute) {
+      this.highlightedRoute = null;
+      this.renderRoutesOnMap(this.selectedRoute, true); // Keep the selected route rendered
+    }
   }
 
-  private renderRoutesOnMap(route?: any): void {
+  private renderRoutesOnMap(route?: any, isSelection: boolean = false): void {
     this.mapService.clearMap();
 
     if (route) {
       // Render only the provided route
       this.mapService.displayRouteSegments({ path: route.path, color: route.color });
+
+      // Ensure walking paths are displayed for the selected route
+      const startWaypoint = route.start;
+      const endWaypoint = route.end;
+      this.mapService.displayWalkingPath(this.currentLocation!, startWaypoint, route.color);
+      this.mapService.displayWalkingPath(endWaypoint, this.destination!, route.color);
+
+      // If it's a selection, keep the route highlighted
+      if (isSelection) {
+        this.highlightedRoute = route;
+      }
     } else if (this.showAllRoutes) {
       // Render all suggested routes
       this.suggestedRoutes.forEach(route => {
@@ -189,9 +204,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
   selectRoute(route: any): void {
     this.selectedRoute = route;
     this.showAllRoutes = false;
-
-    // Render only the selected route
-    this.renderRoutesOnMap(route);
+    this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
   }
 
 
@@ -200,14 +213,27 @@ export class SearchComponent implements OnInit, AfterViewInit {
   --------------------------------------------*/
   reverseLocation(): void {
     if (this.currentLocation && this.destination) {
+      // Reverse the currentLocation and destination
       [this.currentLocation, this.destination] = [this.destination, this.currentLocation];
+  
+      // Reverse the input values in the search boxes
+      const currentLocationInput = document.getElementById('current-location-box') as HTMLInputElement;
+      const destinationInput = document.getElementById('search-box') as HTMLInputElement;
+  
+      if (currentLocationInput && destinationInput) {
+        const tempValue = currentLocationInput.value;
+        currentLocationInput.value = destinationInput.value;
+        destinationInput.value = tempValue;
+      }
+  
+      // Resolve addresses and update the map
       this.resolveAddresses();
       this.mapService.map.setCenter(this.currentLocation);
+      this.fetchSuggestedRoutes();
     } else {
       alert('Both current location and destination must be set to reverse.');
     }
   }
-
   useMyLocation(): void {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
