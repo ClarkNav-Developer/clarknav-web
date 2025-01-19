@@ -398,6 +398,12 @@ export class SearchComponent implements OnInit, AfterViewInit {
               lng: place.geometry.location.lng(),
             };
   
+            // Extract the place name
+            const placeName = place.name || 'Unknown Place';
+  
+            // Set the input value to the place name
+            input.value = placeName;
+  
             if (input.id.includes('current')) {
               this.currentLocation = location;
             } else {
