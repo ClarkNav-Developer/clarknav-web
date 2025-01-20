@@ -118,30 +118,37 @@ export class MapService {
   displayRouteWithDirectionsAPI(waypoints: google.maps.LatLngLiteral[], color: string) {
     if (waypoints.length < 2) return;
 
-    const waypointsForApi = waypoints.slice(1, waypoints.length - 1).map(waypoint => ({ location: waypoint }));
+    const waypointBatches = this.routesService.batchWaypoints(waypoints);
 
-    const request = {
-      origin: waypoints[0],
-      destination: waypoints[waypoints.length - 1],
-      waypoints: waypointsForApi,
-      travelMode: google.maps.TravelMode.DRIVING,
-    };
+    waypointBatches.forEach((batch, index) => {
+      const origin = batch[0];
+      const destination = batch[batch.length - 1];
+      const waypointsForApi = batch.slice(1, batch.length - 1).map(waypoint => ({ location: waypoint }));
 
-    const cachedResponse = this.getCachedResponse(request);
-    if (cachedResponse) {
-      this.renderDirections(cachedResponse, color);
-      return;
-    }
+      const request = {
+        origin,
+        destination,
+        waypoints: waypointsForApi,
+        travelMode: google.maps.TravelMode.DRIVING,
+      };
 
-    this.directionsService.route(request, (result: any, status: any) => {
-      if (status === google.maps.DirectionsStatus.OK) {
-        this.cacheResponse(request, result);
-        this.renderDirections(result, color);
-      } else {
-        console.error('Directions request failed due to ' + status);
+      const cachedResponse = this.getCachedResponse(request);
+      if (cachedResponse) {
+        this.renderDirections(cachedResponse, color);
+        return;
       }
+
+      this.directionsService.route(request, (result: any, status: any) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          this.cacheResponse(request, result);
+          this.renderDirections(result, color);
+        } else {
+          console.error('Directions request failed due to ' + status);
+        }
+      });
     });
   }
+
 
   private renderDirections(result: any, color: string) {
     const directionsRenderer = new google.maps.DirectionsRenderer({
@@ -277,7 +284,7 @@ export class MapService {
     const renderer = new google.maps.DirectionsRenderer({
       map: this.map,
       preserveViewport: true,
-      suppressMarkers: true, // Disable default markers
+      suppressMarkers: true, // Disable default markers 
       polylineOptions: {
         strokeColor: 'transparent', // No solid line, walking icons only
         strokeWeight: 0,

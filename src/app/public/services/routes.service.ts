@@ -228,4 +228,15 @@ export class RoutesService {
     const distance = this.calculateDistance(location, waypoint);
     return distance <= threshold * 1000; // Convert threshold to meters
   }
+
+  /**
+ * Batch waypoints into groups of 25 or fewer.
+ */
+  batchWaypoints(waypoints: google.maps.LatLngLiteral[]): google.maps.LatLngLiteral[][] {
+    const batches: google.maps.LatLngLiteral[][] = [];
+    for (let i = 0; i < waypoints.length; i += 25) {
+      batches.push(waypoints.slice(i, i + 25));
+    }
+    return batches;
+  }
 }
