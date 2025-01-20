@@ -2,20 +2,20 @@ html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden; /* Prevent overflow on the body */
+    overflow: hidden;
 }
 
 .main-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    overflow: hidden; /* Prevent overflow on the main container */
+    overflow: hidden;
 }
 
 .main-content {
     flex: 1;
     position: relative;
-    overflow: hidden; /* Prevent overflow on the main content */
+    overflow: hidden; 
 }
 
 .body {

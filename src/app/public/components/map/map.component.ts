@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+// filepath: /workspaces/clarknav-web/src/app/public/components/map/map.component.ts
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MapService } from '../../services/map.service';
 import { NavigationService } from '../../services/navigation.service';
 import { RoutesService } from '../../services/routes.service';
@@ -12,7 +13,7 @@ declare var google: any;
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit, AfterViewInit {
   constructor(
     private mapService: MapService,
     private navigationService: NavigationService,
@@ -22,6 +23,14 @@ export class MapComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const savedMode = localStorage.getItem('darkMode');
+    const styleUrl = savedMode === 'true' ? 'assets/darkmap.json' : 'assets/retro.json';
+    this.mapStyleService.loadMapStyle(styleUrl).subscribe(style => {
+      this.initMap(style);
+    });
+  }
+
+  ngAfterViewInit(): void {
     const savedMode = localStorage.getItem('darkMode');
     const styleUrl = savedMode === 'true' ? 'assets/darkmap.json' : 'assets/retro.json';
     this.mapStyleService.loadMapStyle(styleUrl).subscribe(style => {
