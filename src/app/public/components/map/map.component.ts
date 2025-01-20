@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+// filepath: /workspaces/clarknav-web/src/app/public/components/map/map.component.ts
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MapService } from '../../services/map.service';
 import { NavigationService } from '../../services/navigation.service';
 import { RoutesService } from '../../services/routes.service';
+import { MapStyleService } from '../../services/map-style.service';
+import { MapInstanceService } from '../../services/map-instance.service';
 
 declare var google: any;
 
@@ -11,25 +13,31 @@ declare var google: any;
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent implements OnInit {
-  constructor(private http: HttpClient, private mapService: MapService, private navigationService: NavigationService, private routesService: RoutesService) { }
+export class MapComponent implements OnInit, AfterViewInit {
+  constructor(
+    private mapService: MapService,
+    private navigationService: NavigationService,
+    private routesService: RoutesService,
+    private mapStyleService: MapStyleService,
+    private mapInstanceService: MapInstanceService
+  ) { }
 
   ngOnInit(): void {
-    this.loadMapStyle().subscribe(style => {
+    const savedMode = localStorage.getItem('darkMode');
+    const styleUrl = savedMode === 'true' ? 'assets/darkmap.json' : 'assets/retro.json';
+    this.mapStyleService.loadMapStyle(styleUrl).subscribe(style => {
       this.initMap(style);
     });
   }
 
-  /*------------------------------------------
-  Load Retro Map Style
-  --------------------------------------------*/
-  loadMapStyle() {
-    return this.http.get<any>('assets/retro.json');
+  ngAfterViewInit(): void {
+    const savedMode = localStorage.getItem('darkMode');
+    const styleUrl = savedMode === 'true' ? 'assets/darkmap.json' : 'assets/retro.json';
+    this.mapStyleService.loadMapStyle(styleUrl).subscribe(style => {
+      this.initMap(style);
+    });
   }
 
-  /*------------------------------------------
-  Initialize Map
-  --------------------------------------------*/
   initMap(style: any) {
     const mapElement = document.getElementById('map');
     if (mapElement) {
@@ -45,8 +53,8 @@ export class MapComponent implements OnInit {
           styles: style
         });
 
+        this.mapInstanceService.setMap(map);
         this.mapService.initializeMap(map);
-
         this.routesService.loadRoutes();
       } catch (error) {
         console.error('Error initializing map:', error);

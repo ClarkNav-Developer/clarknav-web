@@ -20,7 +20,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
   // UI state
   showNavigationWindow = false;
-  isBottomSheetVisible = false;
+  isBottomSheetVisible = false; // Make it false to hide the bottom sheet by default after testing
   showAllRoutes = true;
 
   // Route data
@@ -154,11 +154,20 @@ export class SearchComponent implements OnInit, AfterViewInit {
       if (cachedRoutes) {
         this.suggestedRoutes = JSON.parse(cachedRoutes);
         console.log('Suggested routes loaded from cache');
-        return;
+      } else {
+        this.suggestedRoutes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
+        localStorage.setItem(key, JSON.stringify(this.suggestedRoutes));
       }
-
-      this.suggestedRoutes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
-      localStorage.setItem(key, JSON.stringify(this.suggestedRoutes));
+  
+      // Calculate distance, duration, and fare for each route
+      this.suggestedRoutes.forEach(route => {
+        route.distanceInKm = this.calculateDistance(route);
+        console.log(`Distance for route: ${route.distanceInKm} km`);
+        this.calculateDuration(route);
+        this.calculateFare(route);
+        console.log(`Fare for route: ₱${route.fare}`);
+        console.log(`Student Fare for route: ₱${route.studentFare}`);
+      });
     }
   }
 
@@ -315,13 +324,29 @@ export class SearchComponent implements OnInit, AfterViewInit {
   private calculateFare(route: any): void {
     const baseFare = 13;
     const additionalFare = Math.max(0, route.distanceInKm - 4) * 1.8;
-    route.fare = Math.round((baseFare + additionalFare) * 4) / 4;
+    const totalFare = baseFare + additionalFare;
+    
+    // Round up to the nearest whole number
+    route.fare = Math.ceil(totalFare);
+    console.log(`Total fare before: ₱${totalFare}, Total fare after: ₱${route.fare}`);
+    
+    // Calculate student fare with 20% discount and round up to the nearest whole number
+    route.studentFare = Math.ceil(totalFare * 0.8);
+    console.log(`Total fare before: ₱${totalFare * 0.8}, Total fare after: ₱${route.studentFare}`);
+
   }
 
-  private calculateDistance(start: google.maps.LatLngLiteral, end: google.maps.LatLngLiteral): number {
-    const startLatLng = new google.maps.LatLng(start.lat, start.lng);
-    const endLatLng = new google.maps.LatLng(end.lat, end.lng);
-    return google.maps.geometry.spherical.computeDistanceBetween(startLatLng, endLatLng) / 1000;
+  private calculateDistance(route: any): number {
+    let totalDistance = 0;
+    const path = route.path || [];
+  
+    for (let i = 0; i < path.length - 1; i++) {
+      const startLatLng = new google.maps.LatLng(path[i].lat, path[i].lng);
+      const endLatLng = new google.maps.LatLng(path[i + 1].lat, path[i + 1].lng);
+      totalDistance += google.maps.geometry.spherical.computeDistanceBetween(startLatLng, endLatLng);
+    }
+  
+    return totalDistance / 1000; // Convert to kilometers
   }
 
   private calculateDuration(route: any): void {
@@ -334,7 +359,10 @@ export class SearchComponent implements OnInit, AfterViewInit {
       },
       (response: google.maps.DistanceMatrixResponse, status: google.maps.DistanceMatrixStatus) => {
         if (status === 'OK' && response.rows[0].elements[0].status === 'OK') {
-          route.duration = response.rows[0].elements[0].duration.text;
+          let durationText = response.rows[0].elements[0].duration.text;
+          // Convert duration to a shorter format
+          durationText = durationText.replace(' mins', 'm').replace(' min', 'm');
+          route.duration = durationText;
         } else {
           console.error('Error fetching duration: ', status);
         }
@@ -353,7 +381,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
       'current-location-box',
       'current-location-box-mobile',
     ].map(id => document.getElementById(id) as HTMLInputElement);
-
+  
     inputs.forEach(input => {
       if (input) {
         const autocomplete = new google.maps.places.Autocomplete(input, {
@@ -361,7 +389,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
           bounds: this.navigationService.clarkBounds,
           strictBounds: true,
         });
-
+  
         autocomplete.addListener('place_changed', () => {
           const place = autocomplete.getPlace();
           if (place.geometry) {
@@ -369,16 +397,24 @@ export class SearchComponent implements OnInit, AfterViewInit {
               lat: place.geometry.location.lat(),
               lng: place.geometry.location.lng(),
             };
-
+  
+            // Extract the place name
+            const placeName = place.name || 'Unknown Place';
+  
+            // Set the input value to the place name
+            input.value = placeName;
+  
             if (input.id.includes('current')) {
               this.currentLocation = location;
             } else {
               this.destination = location;
             }
-
+  
             this.resolveAddresses(); // Ensure address is resolved after location selection
             this.mapService.addMarker(location, input.id.includes('current') ? 'Your Location' : 'Destination');
             this.mapService.map.setCenter(location);
+  
+            // Fetch suggested routes immediately after setting the locations
             this.fetchSuggestedRoutes();
           }
         });

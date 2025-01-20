@@ -6,24 +6,24 @@
       <div class="menu-list-container">
         <h2>Menu</h2>
         <div class="menu-list">
-          <a href="" (click)="selectMenuItem('account-settings'); $event.preventDefault()">Account Settings</a>
+          <a href="" class="menu-list-button" (click)="selectMenuItem('account-settings'); $event.preventDefault()">Account Settings</a>
         </div>
         <div class="menu-list">
-          <a href="" (click)="selectMenuItem('history'); $event.preventDefault()">History</a>
+          <a href="" class="menu-list-button" (click)="selectMenuItem('history'); $event.preventDefault()">History</a>
         </div>
         <div class="menu-list">
-          <a href="" (click)="selectMenuItem('report-bugs'); $event.preventDefault()">Report bugs</a>
+          <a href="" class="menu-list-button" (click)="selectMenuItem('report-bugs'); $event.preventDefault()">Report bugs</a>
         </div>
         <div class="menu-list">
-          <a href="" (click)="selectMenuItem('feedback'); $event.preventDefault()">Feedback</a>
+          <a href="" class="menu-list-button" (click)="selectMenuItem('feedback'); $event.preventDefault()">Feedback</a>
         </div>
         <div class="menu-list">
-          <a href="" (click)="selectMenuItem('faqs'); $event.preventDefault()">FAQs</a>
+          <a href="" class="menu-list-button" (click)="selectMenuItem('faqs'); $event.preventDefault()">FAQs</a>
         </div>
         <div class="menu-list">
           <span>Dark Mode</span>
           <label class="toggle-switch">
-            <input type="checkbox">
+            <input type="checkbox" (change)="toggleDarkMode($event)" [checked]="darkMode">
             <span class="slider"></span>
           </label>
         </div>
@@ -112,19 +112,26 @@
     <div class="content-mobile">
       <div class="menu-list-container-mobile">
         <div class="menu-list-mobile">
-          <a href="">Account Settings</a>
+          <a href="" class="menu-list-button">Account Settings</a>
         </div>
         <div class="menu-list-mobile">
-          <a href="">History</a>
+          <a href="" class="menu-list-button">History</a>
         </div>
         <div class="menu-list-mobile">
-          <a href="">Report bugs</a>
+          <a href="" class="menu-list-button">Report bugs</a>
         </div>
         <div class="menu-list-mobile">
-          <a href="">Feedback</a>
+          <a href="" class="menu-list-button">Feedback</a>
         </div>
         <div class="menu-list-mobile">
-          <a href="">FAQs</a>
+          <a href="" class="menu-list-button">FAQs</a>
+        </div>
+        <div class="menu-list-mobile">
+          <span>Dark Mode</span>
+          <label class="toggle-switch">
+            <input type="checkbox" (change)="toggleDarkMode($event)" [checked]="darkMode">
+            <span class="slider"></span>
+          </label>
         </div>
         <div class="menu-list-mobile">
           <a href="" style="color: red;">Logout</a>

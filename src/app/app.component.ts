@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../environments/environment';
+import { MapInstanceService } from './public/services/map-instance.service';
+import { MapStyleService } from './public/services/map-style.service';
 
 @Component({
   selector: 'app-root',
@@ -7,10 +9,20 @@ import { environment } from '../environments/environment';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  title = 'ClarkNav';
+  constructor(
+    private mapInstanceService: MapInstanceService,
+    private mapStyleService: MapStyleService
+  ) {}
 
   ngOnInit() {
     this.loadGoogleMapsApi();
+    const savedMode = localStorage.getItem('darkMode');
+    if (savedMode === 'true') {
+      document.body.classList.add('dark-mode');
+      this.setInitialMapStyle('assets/darkmap.json');
+    } else {
+      this.setInitialMapStyle('assets/retro.json');
+    }
   }
 
   loadGoogleMapsApi() {
@@ -18,6 +30,24 @@ export class AppComponent implements OnInit {
     script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&libraries=places`;
     script.async = true;
     script.defer = true;
+    script.onload = () => {
+      this.initializeMap();
+    };
     document.head.appendChild(script);
+  }
+
+  initializeMap() {
+    const savedMode = localStorage.getItem('darkMode');
+    if (savedMode === 'true') {
+      this.setInitialMapStyle('assets/darkmap.json');
+    } else {
+      this.setInitialMapStyle('assets/retro.json');
+    }
+  }
+
+  setInitialMapStyle(styleUrl: string) {
+    this.mapStyleService.loadMapStyle(styleUrl).subscribe(style => {
+      this.mapInstanceService.setMapStyle(style);
+    });
   }
 }
