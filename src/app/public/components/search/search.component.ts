@@ -20,7 +20,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
   // UI state
   showNavigationWindow = false;
-  isBottomSheetVisible = true; // Make it false to hide the bottom sheet by default after testing
+  isBottomSheetVisible = false; // Make it false to hide the bottom sheet by default after testing
   showAllRoutes = true;
 
   // Route data

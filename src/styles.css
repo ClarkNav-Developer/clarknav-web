@@ -6,7 +6,6 @@
   box-sizing: border-box;
   font-family: 'Montserrat', sans-serif;
 }
-
 body {
   background-color: #ffffff;
   color: #000000;
@@ -47,36 +46,44 @@ body .menu-list a:hover {
 body.dark-mode {
   background-color: #121212;
   color: #ffffff;
+  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
 }
 
 body.dark-mode .floating-window {
   background-color: #1e1e1e7c;
   color: #ffffff;
+  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
 }
 
 body.dark-mode .floating-window::before {
   background-color: inherit;
+  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
 }
 
 body.dark-mode .menu-list a.menu-list-button {
   color: #ffffff;
+  transition: color 0.1s ease-in-out;
 }
 
 body.dark-mode .menu-list a:hover {
   color: #90caf9;
+  transition: color 0.1s ease-in-out;
 }
 
 body.dark-mode .search-bar-container {
   background-color: #1e1e1e7c;
+  transition: background-color 0.1s ease-in-out;
 }
 
 body.dark-mode .search-bar-container input {
   background-color: #1e1e1e7c;
   color: #dfdfdf;
+  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
 }
 
 body.dark-mode .container {
   background-color: #1e1e1e7c;
+  transition: background-color 0.1s ease-in-out;
 }
 
 body.dark-mode .container::before {
@@ -97,34 +104,127 @@ body.dark-mode .container::before {
 body.dark-mode .container input {
   background-color: #1e1e1e7c;
   color: #dfdfdf;
+  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
 }
 
-body.dark-mode .container .reverse-button button{
+body.dark-mode .container .reverse-button button {
   background-color: rgb(0,0,0,0);
+  transition: background-color 0.1s ease-in-out;
 }
 
-body.dark-mode .transport-options svg{
+body.dark-mode .transport-options svg {
   fill: #e6e6e6;
+  transition: fill 0.1s ease-in-out;
 }
 
-body.dark-mode .transport-options button{
+body.dark-mode .transport-options button {
   color: #e6e6e6;
+  transition: color 0.1s ease-in-out;
 }
 
 /* route card style */
 body.dark-mode .route-item {
   background-color: #4d4d4d;
+  transition: background-color 0.1s ease-in-out;
 }
 
 body.dark-mode .route-item .duration {
   color: #e6e6e6;
+  transition: color 0.1s ease-in-out;
 }
 
 /* bottom-navigation style */
-body.dark-mode .menu-container svg{
+body.dark-mode .bottom-nav .menu-container svg.menu-container-svg {
   fill: white;
+  transition: fill 0.1s ease-in-out;
 }
 
-body.dark-mode .menu-container[_ngcontent-ng-c2033211746] button[_ngcontent-ng-c2033211746] {
+body.dark-mode .menu-container button.menu-container-button {
   color: white;
+  transition: color 0.1s ease-in-out;
 }
+
+/* dark mode mobile style */
+
+/* search bar mobile */
+body.dark-mode .search-bar-container-mobile {
+  background-color: #1e1e1e7c;
+  transition: background-color 0.1s ease-in-out;
+}
+
+body.dark-mode .search-bar-container-mobile input {
+  background-color: #1e1e1e7c;
+  color: #dfdfdf;
+  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+}
+
+/* bottom navigation bar mobile */
+body.dark-mode .container-mobile {
+  background-color: #1e1e1e7c;
+  transition: background-color 0.1s ease-in-out;
+}
+
+body.dark-mode .bottom-nav-mobile .menu-container-mobile svg.menu-container-mobile-svg {
+  fill: white;
+  transition: fill 0.1s ease-in-out;
+}
+
+body.dark-mode .bottom-nav-mobile .menu-container-mobile button.menu-container-button {
+  color: white;
+  transition: color 0.1s ease-in-out;
+}
+
+body.dark-mode .menu-container-mobile[_ngcontent-ng-c2033211746] button[_ngcontent-ng-c2033211746] {
+  color: white;
+  transition: color 0.1s ease-in-out;
+}
+
+/* menu list style for mobile */
+body.dark-mode .menu-list-mobile a {
+  color: #ffffff;
+  transition: color 0.1s ease-in-out;
+}
+
+body.dark-mode .menu-list-mobile a.menu-list-button {
+  color: #ffffff;
+  transition: color 0.1s ease-in-out;
+}
+
+body.dark-mode .menu-list-mobile a:hover {
+  color: #90caf9;
+  transition: color 0.1s ease-in-out;
+}
+
+/* mobile navigation bar style */
+body.dark-mode .mobile-container {
+  background-color: #1e1e1e7c;
+  transition: background-color 0.1s ease-in-out;
+}
+
+body.dark-mode .mobile-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: inherit;
+  backdrop-filter: blur(15px);
+  border-radius: inherit;
+  z-index: -1;
+  box-sizing: border-box;
+  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+}
+
+body.dark-mode .mobile-container input {
+  background-color: #1e1e1e7c;
+  color: #dfdfdf;
+  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+}
+
+body.dark-mode .mobile-container .mobile-reverse-button button {
+  background-color: rgb(0,0,0,0);
+  transition: background-color 0.1s ease-in-out;
+}
+
+

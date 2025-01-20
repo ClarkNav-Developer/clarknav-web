@@ -112,19 +112,26 @@
     <div class="content-mobile">
       <div class="menu-list-container-mobile">
         <div class="menu-list-mobile">
-          <a href="">Account Settings</a>
+          <a href="" class="menu-list-button">Account Settings</a>
         </div>
         <div class="menu-list-mobile">
-          <a href="">History</a>
+          <a href="" class="menu-list-button">History</a>
         </div>
         <div class="menu-list-mobile">
-          <a href="">Report bugs</a>
+          <a href="" class="menu-list-button">Report bugs</a>
         </div>
         <div class="menu-list-mobile">
-          <a href="">Feedback</a>
+          <a href="" class="menu-list-button">Feedback</a>
         </div>
         <div class="menu-list-mobile">
-          <a href="">FAQs</a>
+          <a href="" class="menu-list-button">FAQs</a>
+        </div>
+        <div class="menu-list-mobile">
+          <span>Dark Mode</span>
+          <label class="toggle-switch">
+            <input type="checkbox" (change)="toggleDarkMode($event)" [checked]="darkMode">
+            <span class="slider"></span>
+          </label>
         </div>
         <div class="menu-list-mobile">
           <a href="" style="color: red;">Logout</a>
