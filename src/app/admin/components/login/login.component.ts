@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { Inject } from '@angular/core';
+import { AuthService } from '../../../auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -10,9 +12,11 @@ export class LoginComponent {
   isLoginForm = true;
   email = '';
   password = '';
+  firstName = '';
+  lastName = '';
   errorMessage = '';
 
-  constructor(private router: Router) {}
+  constructor(@Inject(AuthService) private authService: AuthService, private router: Router) {}
 
   togglePassword() {
     const passwordInput = document.getElementById('password') as HTMLInputElement;
@@ -36,19 +40,31 @@ export class LoginComponent {
 
   onLoginSubmit(event: Event) {
     event.preventDefault();
-    // Static login logic
-    if (this.email === 'admin@example.com' && this.password === 'admin') {
-      this.router.navigate(['/admin/admin-dashboard']);
-    } else if (this.email === 'user@example.com' && this.password === 'user') {
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.errorMessage = 'Invalid email or password';
-    }
+    this.authService.login({ email: this.email, password: this.password })
+      .subscribe(
+        (response: any) => {
+          this.router.navigate(['/dashboard']);
+        },
+        (error) => {
+          this.errorMessage = 'Invalid email or password';
+        }
+      );
   }
 
   onRegisterSubmit(event: Event) {
     event.preventDefault();
-    // Handle registration form submission
-    console.log('Registration form submitted');
+    this.authService.register({
+      first_name: this.firstName,
+      last_name: this.lastName,
+      email: this.email,
+      password: this.password
+    }).subscribe(
+      (response: any) => {
+        this.isLoginForm = true;
+      },
+      (error) => {
+        this.errorMessage = 'Registration failed';
+      }
+    );
   }
 }

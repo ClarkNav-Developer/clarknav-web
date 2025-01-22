@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FloatingWindowService } from '../../../floating-window.service';
 import { MapStyleService } from '../../services/map-style.service';
 import { MapInstanceService } from '../../services/map-instance.service';
+import { AuthService } from '../../../auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-account',
@@ -13,6 +15,8 @@ export class AccountComponent implements OnInit {
   darkMode: boolean = false;
 
   constructor(
+    private authService: AuthService,
+    private router: Router,
     private floatingWindowService: FloatingWindowService,
     private mapStyleService: MapStyleService,
     private mapInstanceService: MapInstanceService
@@ -56,5 +60,17 @@ export class AccountComponent implements OnInit {
         this.mapInstanceService.setMapStyle(style);
       });
     }
+  }
+
+  logout() {
+    this.authService.logout().subscribe(
+      response => {
+        console.log('Logged out successfully');
+        this.router.navigate(['/login']);
+      },
+      error => {
+        console.error('Logout error:', error);
+      }
+    );
   }
 }

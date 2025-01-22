@@ -106,7 +106,8 @@
     }
 
     .divider-horizontal {
-        border-top: 2px solid #ddd;  /* Change the thickness (3px) and color (#ccc) as needed */
+        border-top: 2px solid #ddd;
+        /* Change the thickness (3px) and color (#ccc) as needed */
         /* margin: 20px 0;   */
     }
 
@@ -160,13 +161,27 @@
         color: white;
     } */
 
+    .suggested-routes {
+        padding: 15px;
+        font-size: 14px;
+    }
+
     .routes-container {
         display: flex;
         flex-direction: column;
         overflow-y: auto;
         max-height: 30vh;
+        overflow-y: auto;
+        /* Allow scrolling within the routes container */
+        scrollbar-width: none;
+        /* Hide scrollbar in Firefox */
     }
-    
+
+    .routes-container::-webkit-scrollbar {
+        display: none;
+        /* Hide scrollbar in WebKit browsers */
+    }
+
 
     .route {
         padding: 12px;
@@ -177,6 +192,7 @@
 
     /* Loading of routes style */
     .route-item {
+        margin: 0 15px;
         padding: 10px;
         border: 1px solid #ddd;
         border-radius: 4px;
@@ -185,7 +201,7 @@
         display: flex;
         flex-direction: column;
         gap: 16px;
-        margin: 8px 0;
+        margin-bottom: 10px;
     }
 
     .route-item.hidden {
@@ -219,7 +235,7 @@
         height: 30px;
     }
 
-    .origin-info span{
+    .origin-info span {
         width: 100%;
     }
 
@@ -236,7 +252,7 @@
         height: 30px;
     }
 
-    .destination-info span{
+    .destination-info span {
         width: 100%;
     }
 
@@ -270,7 +286,7 @@
     .fare svg {
         height: 10px;
     }
-    
+
     .footer-extra-info {
         right: 0;
     }
@@ -315,6 +331,8 @@
     }
 
     .no-routes {
+        padding: 20px;
+        margin: 20px;
         text-align: center;
         color: #777;
         font-size: 14px;
@@ -333,6 +351,7 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
+        margin: 15px;
     }
 
     .buttons button {
@@ -526,7 +545,8 @@
     .bottom-sheet-mobile {
         position: absolute;
         z-index: 1001;
-        bottom: -100%; /* change back to -100% after testing */
+        bottom: -100%;
+        /* change back to -100% after testing */
         /* Initially hidden */
         left: 50%;
         transform: translateX(-50%);

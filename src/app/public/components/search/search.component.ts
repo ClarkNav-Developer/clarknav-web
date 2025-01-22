@@ -33,6 +33,9 @@ export class SearchComponent implements OnInit, AfterViewInit {
   private startY = 0;
   private startHeight = 0;
 
+  // Add a flag to check if a search has been performed
+  searchPerformed = false;
+
   constructor(
     private mapService: MapService,
     private navigationService: NavigationService,
@@ -145,6 +148,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
     this.navigationService.navigateToDestination();
 
     this.isBottomSheetVisible = true;
+    this.searchPerformed = true;
   }
 
   fetchSuggestedRoutes() {
@@ -373,7 +377,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
   /*------------------------------------------
   Autocomplete Initialization
   --------------------------------------------*/
-  private initializeAutocomplete(): void {
+    private initializeAutocomplete(): void {
     const inputs = [
       'search-box',
       'search-box-2',
@@ -416,7 +420,15 @@ export class SearchComponent implements OnInit, AfterViewInit {
   
             // Fetch suggested routes immediately after setting the locations
             this.fetchSuggestedRoutes();
+  
+            // Update the searchPerformed flag
+            this.searchPerformed = !!this.currentLocation && !!this.destination;
           }
+        });
+  
+        // Add event listener to update searchPerformed flag when input changes
+        input.addEventListener('input', () => {
+          this.searchPerformed = !!this.currentLocation && !!this.destination;
         });
       }
     });
