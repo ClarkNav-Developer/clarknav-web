@@ -184,7 +184,7 @@
     padding: 20px 40px;
     background: white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    border-radius: 20px;
     z-index: 1000;
   }
 
@@ -200,8 +200,8 @@
 
   .close-btn {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 20px;
+    right: 20px;
     background: red;
     color: white;
     border: none;
@@ -210,8 +210,17 @@
     cursor: pointer;
   }
 
-  .close-btn:hover {
-    background: darkred;
+  .back-btn-menu-mobile{
+    border: none;
+    background-color: rgba(0, 0, 0, 0);
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    cursor: pointer;
+  }
+
+  .back-btn-menu-mobile:hover{
+    color: darkred;
   }
 
   .content-mobile {
@@ -278,5 +287,99 @@
   
   .toggle-switch input:checked + .slider:before {
     transform: translateX(20px); /* Adjusted translateX */
+  }
+
+   /* Account Settings Style for Mobile */
+   .account-info-container-mobile {
+    padding-top: 30px;
+  }
+
+   .account-info-container-mobile .header-info {
+    margin-bottom: 20px;
+  }
+
+  .account-info-container-mobile .content-info-mobile p{
+    margin: 5px 0 0 5px;
+    font-size: 0.8em;
+  }
+
+  .account-info-container-mobile .content-info-mobile input{
+    padding: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 15px;
+    background-color: #f3f3f3;
+    margin: 5px 0;
+  }
+
+  .account-info-container-mobile .content-info-mobile button{
+    background-color: rgb(207, 0, 0);
+    border: none;
+    margin: 15px 0 0 5px;
+    padding: 5px 10px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+  }
+
+  .account-info-container-mobile .content-info-mobile button:hover{
+    background-color: rgb(172, 0, 0);
+  }
+
+  /* History Style for Mobile */
+  .account-history-container-mobile {
+    padding-top: 30px;
+  }
+
+   .account-history-container-mobile .header-info {
+    margin-bottom: 20px;
+  }
+
+  .account-history-container-mobile .content-info-mobile p{
+    margin: 5px 0 0 5px;
+    font-size: 0.8em;
+  }
+
+  /* Report Bugs Style for Mobile */
+  .report-bugs-container-mobile {
+    padding-top: 30px;
+  }
+
+   .report-bugs-container-mobile .header-info {
+    margin-bottom: 20px;
+  }
+
+  .report-bugs-container-mobile .content-info-mobile p{
+    margin: 5px 0 0 5px;
+    font-size: 0.8em;
+  }
+
+  /* Feedback Style for Mobile */
+  .feedback-container-mobile {
+    padding-top: 30px;
+  }
+
+   .feedback-container-mobile .header-info {
+    margin-bottom: 20px;
+  }
+
+  .feedback-container-mobile .content-info-mobile p{
+    margin: 5px 0 0 5px;
+    font-size: 0.8em;
+  }
+
+  /* FAQs Style for Mobile */
+  .faqs-container-mobile {
+    padding-top: 30px;
+  }
+
+   .faqs-container-mobile .header-info {
+    margin-bottom: 20px;
+  }
+
+  .faqs-container-mobile .content-info-mobile p{
+    margin: 5px 0 0 5px;
+    font-size: 0.8em;
   }
 }

@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 export class AccountComponent implements OnInit {
   selectedMenuItem: string = 'account-settings';
   darkMode: boolean = false;
+  showMenuContent: boolean = true; // New state to track menu content visibility
 
   constructor(
     private authService: AuthService,
@@ -43,6 +44,7 @@ export class AccountComponent implements OnInit {
 
   selectMenuItem(menuItem: string) {
     this.selectedMenuItem = menuItem;
+    this.showMenuContent = false; // Hide menu content when a menu item is selected
   }
 
   toggleDarkMode(event: Event) {
@@ -60,6 +62,11 @@ export class AccountComponent implements OnInit {
         this.mapInstanceService.setMapStyle(style);
       });
     }
+  }
+
+  // New method to handle back button click
+  showMenu() {
+    this.showMenuContent = true;
   }
 
   logout() {

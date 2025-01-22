@@ -65,8 +65,23 @@ export class SearchComponent implements OnInit, AfterViewInit {
     mobileContainer?.classList.toggle('show');
   }
 
+  toggleBottomSheet(): void {
+    const mobileBottomSheet = document.querySelector('.bottom-sheet-mobile');
+    if (mobileBottomSheet) {
+      if (mobileBottomSheet.classList.contains('hide')) {
+        mobileBottomSheet.classList.remove('hide');
+      }
+      mobileBottomSheet.classList.toggle('show');
+    }
+  }
+  
   hideBottomSheet(): void {
-    this.isBottomSheetVisible = false;
+    const mobileBottomSheet = document.querySelector('.bottom-sheet-mobile');
+    if (mobileBottomSheet) {
+      mobileBottomSheet.classList.add('hide');
+      mobileBottomSheet.classList.remove('show');
+    }
+    this.mapService.clearMap();
   }
 
   /*------------------------------------------

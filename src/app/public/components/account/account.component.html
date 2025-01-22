@@ -107,24 +107,24 @@
 <div class="mobile-view">
   <div class="floating-overlay" (click)="closeWindow($event)"></div>
   <div class="floating-window">
-    <h2>Menu</h2>
+    <h2 *ngIf="showMenuContent">Menu</h2>
     <button class="close-btn" (click)="closeWindow($event)">X</button>
-    <div class="content-mobile">
+    <div class="content-mobile" *ngIf="showMenuContent">
       <div class="menu-list-container-mobile">
         <div class="menu-list-mobile">
-          <a href="" class="menu-list-button">Account Settings</a>
+          <a href="" class="menu-list-button" (click)="selectMenuItem('account-settings-mobile'); $event.preventDefault()">Account Settings</a>
         </div>
         <div class="menu-list-mobile">
-          <a href="" class="menu-list-button">History</a>
+          <a href="" class="menu-list-button" (click)="selectMenuItem('history-mobile'); $event.preventDefault()">History</a>
         </div>
         <div class="menu-list-mobile">
-          <a href="" class="menu-list-button">Report bugs</a>
+          <a href="" class="menu-list-button" (click)="selectMenuItem('report-bugs-mobile'); $event.preventDefault()">Report bugs</a>
         </div>
         <div class="menu-list-mobile">
-          <a href="" class="menu-list-button">Feedback</a>
+          <a href="" class="menu-list-button" (click)="selectMenuItem('feedback-mobile'); $event.preventDefault()">Feedback</a>
         </div>
         <div class="menu-list-mobile">
-          <a href="" class="menu-list-button">FAQs</a>
+          <a href="" class="menu-list-button" (click)="selectMenuItem('faqs-mobile'); $event.preventDefault()">FAQs</a>
         </div>
         <div class="menu-list-mobile">
           <span>Dark Mode</span>
@@ -139,7 +139,76 @@
       </div>
     </div>
 
+    <div class="menu-info-container-mobile" *ngIf="!showMenuContent">
+      <div *ngIf="selectedMenuItem === 'account-settings-mobile'" class="account-info-container-mobile">
+        <div class="header-info">
+          <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg></button>
+          <h2>ACCOUNT SETTINGS</h2>
+        </div>
+        <div class="content-info-mobile">
+          <div class="info-mobile">
+            <p>FIRST NAME</p>
+            <input type="text" placeholder="First Name" />
+            <p>LAST NAME</p>
+            <input type="text" placeholder="Last Name" />
+            <p>EMAIL</p>
+            <input type="text" placeholder="Your email" />
+            <p>CHANGE PASSWORD</p>
+            <input type="text" placeholder="Old Password" />
+            <input type="text" placeholder="New Password" />
+            <button>Delete Account</button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="selectedMenuItem === 'history-mobile'" class="account-history-container-mobile">
+         <div class="header-info">
+          <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg></button>
+          <h2>HISTORY</h2>
+        </div>
+        <div class="content-info">
+          <div class="info">
+            <h5></h5>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="selectedMenuItem === 'report-bugs-mobile'" class="report-bugs-container-mobile">
+        <div class="header-info">
+          <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg></button>
+          <h2>REPORT BUGS</h2>
+        </div>
+        <div class="content-info">
+          <div class="info">
+            <p>Put Content here</p>
+          </div>
+        </div>
+      </div>
+
+     <div *ngIf="selectedMenuItem === 'feedback-mobile'" class="feedback-container-mobile">
+      <div class="header-info">
+        <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg></button>
+        <h2>FEEDBACK</h2>
+      </div>
+      <div class="content-info">
+        <div class="info">
+          <p>Put Content here</p>
+        </div>
+      </div>
+     </div>
+
+     <div *ngIf="selectedMenuItem === 'faqs-mobile'" class="faqs-container-mobile">
+      <div class="header-info">
+        <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg></button>
+        <h2>FAQs</h2>
+      </div>
+      <div class="content-info">
+        <div class="info">
+          <p>Put Content here</p>
+        </div>
+      </div>
+     </div>
+    </div>
   </div>
 </div>
-
   
