@@ -237,7 +237,7 @@
                     (mouseover)="highlightRoute(route)" (mouseleave)="clearHighlight()"
                     [class.selected]="route === selectedRoute"
                     [class.opacity]="highlightedRoute && route !== highlightedRoute">
-
+            
                     <div class="route-details-mobile">
                         <div class="origin-info-mobile">
                             <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"
@@ -268,12 +268,9 @@
                             <div class="duration">{{ route.duration }}</div>
                         </div>
                     </div>
-
+            
                     <div class="route-footer-mobile">
                         <div class="estimated-time-mobile">
-                            <!-- Estimated time:
-                                    <span *ngIf="route.duration; else calculating">{{ route.duration }}</span>
-                                    <ng-template #calculating>Calculating...</ng-template> -->
                             <span>10:00 AM - 12:00 PM</span>
                         </div>
                         <div class="fare-info">

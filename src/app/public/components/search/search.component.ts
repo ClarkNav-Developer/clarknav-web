@@ -139,13 +139,17 @@ export class SearchComponent implements OnInit, AfterViewInit {
   }
 
   private updateBottomSheetHeight(bottomSheet: HTMLElement, height: number): void {
-    bottomSheet.style.height = `${height}px`;
+    const minHeight = 150; // Set a minimum height for the bottom sheet
+    const maxHeight = window.innerHeight - 50; // Ensure the bottom sheet does not exceed the screen height
+    const adjustedHeight = Math.max(minHeight, Math.min(height, maxHeight));
+    bottomSheet.style.height = `${adjustedHeight}px`;
 
     const routesContainer = bottomSheet.querySelector('.routes-container-mobile') as HTMLElement;
     if (routesContainer) {
-      routesContainer.style.maxHeight = `${height - 100}px`;
+        routesContainer.style.maxHeight = `${adjustedHeight - 100}px`;
+        routesContainer.style.overflowY = 'auto'; // Ensure overflow is set to auto
     }
-  }
+}
 
   /*------------------------------------------
   Route and Navigation Logic

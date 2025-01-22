@@ -397,7 +397,7 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        top: 40px;
+        top: 20px;
     }
 
     .search-bar-container-mobile {
@@ -466,7 +466,7 @@
     }
 
     .mobile-container.show {
-        top: 30px;
+        top: 10px;
         /* Adjust to the position you want it to drop to */
     }
 
@@ -545,29 +545,28 @@
     .bottom-sheet-mobile {
         position: absolute;
         z-index: 1001;
-        bottom: -100%;
-        /* Initially hidden */
+        bottom: 0;
         width: calc(100% - 20px);
         margin: 0 10px;
         background-color: white;
         border-radius: 20px 20px 0 0;
         box-shadow: 0px -4px 8px 4px rgba(0, 0, 0, 0.1);
-        transition: bottom ease-in-out 0.5s;
-        /* Smooth slide-up effect with delay */
+        transition: transform 0.3s ease-in-out;
         min-height: 15vh;
         max-height: 45vh;
         padding: 20px;
+        transform: translateY(100%);
+        will-change: transform;
     }
 
     .bottom-sheet-mobile.show {
         bottom: 0;
-        display: block;
-        /* Slide up into view */
+        transform: translateY(0);
     }
 
     .bottom-sheet-mobile.hide {
         bottom: -100%;
-        /* Slide down out of view */
+        transform: translateY(100%);
     }
 
     .mobile-container {
@@ -583,11 +582,6 @@
         /* Start above the screen */
         transition: top 0.5s ease-in-out;
         /* Animation for drop down */
-    }
-
-    .mobile-container.show {
-        top: 30px;
-        /* Adjust to the position you want it to drop to */
     }
 
     .drag-handle {
@@ -644,37 +638,48 @@
         overflow-x: auto;
     }
 
+    .content {
+        min-height: 8vh;
+        max-height: 35vh;
+        overflow-y: auto;
+        scrollbar-width: none; /* Hide scrollbar in Firefox */
+    }
+
+    .content::-webkit-scrollbar {
+        display: none; /* Hide scrollbar in WebKit browsers */
+    }
+
     .routes-container-mobile {
         display: flex;
         flex-direction: column;
         gap: 12px;
-        overflow-y: auto;
-        transition: max-height 0.3s ease;
-        /* Smooth adjustment effect */
-        max-height: 60vh;
-        /* Limit the height of the container */
+        overflow-y: auto; /* Allow vertical scrolling */
+        max-height: calc(100vh - 150px); /* Ensure content fits within the screen */
+        padding-bottom: 10px; /* Optional padding for better spacing */
+        box-sizing: border-box; /* Include padding in the height calculation */
+        scroll-behavior: smooth; /* Smooth scrolling for better UX */
+        scrollbar-width: none; /* Hide scrollbar in Firefox */
     }
 
-    /* .route-mobile {
-        padding: 12px;
-        background-color: #f5f5f5;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    } */
-
-    /* Route box styles */
+    .routes-container-mobile::-webkit-scrollbar {
+        display: none; /* Hide scrollbar in WebKit browsers */
+    }
+    
+    
     .route-item-mobile {
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background-color: #fafafa;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        margin: 8px 0;
-    }
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fafafa;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 8px 0;
+    box-sizing: border-box; /* Prevent unexpected overflows */
+}
 
+    
     .route-item-mobile.hidden {
         display: none;
     }
