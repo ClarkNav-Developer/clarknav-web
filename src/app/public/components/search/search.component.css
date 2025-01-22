@@ -557,6 +557,7 @@
         padding: 20px;
         transform: translateY(100%);
         will-change: transform;
+        touch-action: none; /* Prevent default touch actions */
     }
 
     .bottom-sheet-mobile.show {
@@ -591,10 +592,18 @@
         border-radius: 3px;
         margin: 0 auto 15px auto;
         cursor: grab;
+        touch-action: none; /* Prevent default touch actions */
     }
 
     .drag-handle:active {
         cursor: grabbing;
+    }
+
+    /* Touch screen specific styles */
+    @media (pointer: coarse) {
+        .drag-handle {
+            touch-action: pan-y; /* Allow vertical scrolling */
+        }
     }
 
     .close-btn {
@@ -644,6 +653,7 @@
         overflow-y: scroll; /* Allow vertical scrolling */
         scroll-behavior: smooth; /* Smooth scrolling for better UX */
         scrollbar-width: none; /* Hide scrollbar in Firefox */
+        -webkit-overflow-scrolling: touch; /* Enable smooth scrolling on mobile devices */
     }
 
     .content::-webkit-scrollbar {
