@@ -269,6 +269,24 @@ export class SearchComponent implements OnInit, AfterViewInit {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
+        console.log('Current Location:', this.currentLocation);
+        
+        // Update the input fields with the current location address
+        const currentLocationInput = document.getElementById('current-location-box') as HTMLInputElement;
+        const currentLocationInputMobile = document.getElementById('current-location-box-mobile') as HTMLInputElement;
+        
+        if (currentLocationInput || currentLocationInputMobile) {
+          this.geocodeLatLng(this.currentLocation, (address: string) => {
+            if (currentLocationInput) {
+              currentLocationInput.value = address;
+            }
+            if (currentLocationInputMobile) {
+              currentLocationInputMobile.value = address;
+            }
+            this.currentLocationAddress = address;
+          });
+        }
+
         this.resolveAddresses();
         this.mapService.addMarker(this.currentLocation, 'Your Location');
         this.mapService.map.setCenter(this.currentLocation);
@@ -397,6 +415,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
       'search-box',
       'search-box-2',
       'search-box-mobile',
+      'search-box-mobile-2',
       'current-location-box',
       'current-location-box-mobile',
     ].map(id => document.getElementById(id) as HTMLInputElement);

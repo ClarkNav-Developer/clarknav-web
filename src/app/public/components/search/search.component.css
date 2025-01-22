@@ -545,13 +545,15 @@
     .bottom-sheet-mobile {
         position: absolute;
         z-index: 1001;
-        bottom: -100%; /* Initially hidden */
+        bottom: -100%;
+        /* Initially hidden */
         width: calc(100% - 20px);
         margin: 0 10px;
         background-color: white;
         border-radius: 20px 20px 0 0;
         box-shadow: 0px -4px 8px 4px rgba(0, 0, 0, 0.1);
-        transition: bottom ease-in-out 0.5s; /* Smooth slide-up effect with delay */
+        transition: bottom ease-in-out 0.5s;
+        /* Smooth slide-up effect with delay */
         min-height: 15vh;
         max-height: 45vh;
         padding: 20px;
@@ -720,6 +722,61 @@
         font-size: 10px;
     }
 
+    .route-footer-mobile {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .estimated-time {
+        font-size: 10px;
+    }
+
+    .fare-info {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .fare {
+        background-color: #32AA00;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        width: auto;
+        display: flex;
+        justify-content: center;
+        padding: 3px 10px;
+        font-size: small;
+        gap: 5px;
+    }
+
+    .fare svg {
+        height: 10px;
+    }
+
+    .footer-extra-info-mobile {
+        right: 0;
+    }
+
+    .disclaimer-info-mobile {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .disclaimer-info-mobile p {
+        font-size: 10px;
+    }
+
+    .disclaimer-info-mobile .fare {
+        font-size: 10px;
+    }
+
     /* side nav */
     .side-nav-mobile {
         z-index: 1000;
@@ -739,20 +796,18 @@
     .current-loc-button button {
         border-radius: 50%;
         width: 50px;
-        /* Adjust the width and height to make it a perfect circle */
         height: 50px;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 0;
-        /* Remove padding to ensure the content is centered */
         background-color: white;
         border: 1px solid #ACACAC;
+        box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, 0.1);
     }
 
     .navigation-button button {
         border-radius: 10px;
-        /* padding: 10px; */
         width: 50px;
         height: 50px;
         display: flex;
@@ -760,5 +815,6 @@
         justify-content: center;
         background-color: #007bff;
         border: none;
+        box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, 0.1);
     }
 }
