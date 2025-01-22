@@ -234,7 +234,7 @@
             <h3>Suggested Routes</h3>
             <div class="routes-container-mobile">
                 <div *ngFor="let route of suggestedRoutes" class="route-item-mobile" (click)="selectRoute(route)"
-                    (mouseover)="highlightRoute(route)" (mouseleave)="clearHighlight()"
+                    (mouseover)="highlightRoute(route)" (mouseleave)="clearHighlight()" (click)="minimizeBottomSheet()"
                     [class.selected]="route === selectedRoute"
                     [class.opacity]="highlightedRoute && route !== highlightedRoute">
             

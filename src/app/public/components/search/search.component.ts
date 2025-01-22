@@ -33,6 +33,9 @@ export class SearchComponent implements OnInit, AfterViewInit {
   private startY = 0;
   private startHeight = 0;
   private startTime = 0;
+  private dragStartTime: number = 0; // Tracks the drag start time
+  private lastY: number = 0; // Tracks the last Y position for velocity calculation
+  private velocity: number = 0; // Dragging velocity
 
   // Add a flag to check if a search has been performed
   searchPerformed = false;
@@ -91,73 +94,82 @@ export class SearchComponent implements OnInit, AfterViewInit {
   private setupBottomSheetDragging(): void {
     const bottomSheet = document.getElementById('bottomSheet');
     const handle = bottomSheet?.querySelector('.drag-handle');
-
+  
     if (handle && bottomSheet) {
-      this.renderer.listen(handle, 'mousedown', (event: MouseEvent) => this.onDragStart(event, bottomSheet));
-      this.renderer.listen(document, 'mousemove', (event: MouseEvent) => this.onDrag(event, bottomSheet));
-      this.renderer.listen(document, 'mouseup', () => this.onDragEnd(bottomSheet));
-
-      this.renderer.listen(handle, 'touchstart', (event: TouchEvent) => this.onTouchStart(event, bottomSheet));
-      this.renderer.listen(document, 'touchmove', (event: TouchEvent) => this.onTouchMove(event, bottomSheet));
-      this.renderer.listen(document, 'touchend', () => this.onDragEnd(bottomSheet));
+      this.renderer.listen(handle, 'mousedown', (event: MouseEvent) => this.initiateDrag(event, bottomSheet));
+      this.renderer.listen(handle, 'touchstart', (event: TouchEvent) => this.initiateDrag(event, bottomSheet));
     }
   }
-
-  private onDragStart(event: MouseEvent | TouchEvent, bottomSheet: HTMLElement): void {
+  
+  private initiateDrag(event: MouseEvent | TouchEvent, bottomSheet: HTMLElement): void {
+    event.preventDefault();
     this.isDragging = true;
     this.startY = this.getClientY(event);
     this.startHeight = bottomSheet.offsetHeight;
-    this.startTime = new Date().getTime();
+  
+    const moveHandler = (moveEvent: MouseEvent | TouchEvent) => this.performDrag(moveEvent, bottomSheet);
+    const endHandler = () => {
+      this.endDrag(bottomSheet);
+      document.removeEventListener('mousemove', moveHandler);
+      document.removeEventListener('mouseup', endHandler);
+      document.removeEventListener('touchmove', moveHandler);
+      document.removeEventListener('touchend', endHandler);
+    };
+  
+    document.addEventListener('mousemove', moveHandler);
+    document.addEventListener('mouseup', endHandler);
+    document.addEventListener('touchmove', moveHandler, { passive: false });
+    document.addEventListener('touchend', endHandler);
   }
-
-  private onDrag(event: MouseEvent, bottomSheet: HTMLElement | null): void {
-    if (this.isDragging && bottomSheet) {
-      const deltaY = this.startY - event.clientY;
-      const newHeight = Math.max(150, Math.min(this.startHeight + deltaY, window.innerHeight));
-      this.updateBottomSheetHeight(bottomSheet, newHeight);
-    }
+  
+  private performDrag(event: MouseEvent | TouchEvent, bottomSheet: HTMLElement): void {
+    if (!this.isDragging) return;
+    
+    const currentY = this.getClientY(event);
+    const deltaY = this.startY - currentY;
+    const newHeight = Math.min(window.innerHeight, Math.max(300, this.startHeight + deltaY));
+    this.updateBottomSheetHeight(bottomSheet, newHeight);
   }
-
-  private onTouchStart(event: TouchEvent, bottomSheet: HTMLElement): void {
-    this.isDragging = true;
-    this.startY = this.getClientY(event);
-    this.startHeight = bottomSheet.offsetHeight;
-    this.startTime = new Date().getTime();
-  }
-
-  private onTouchMove(event: TouchEvent, bottomSheet: HTMLElement): void {
-    if (this.isDragging) {
-      const deltaY = this.startY - event.touches[0].clientY;
-      const newHeight = Math.max(150, Math.min(this.startHeight + deltaY, window.innerHeight));
-      this.updateBottomSheetHeight(bottomSheet, newHeight);
-    }
-  }
-
-  private onDragEnd(bottomSheet: HTMLElement): void {
+  
+  private endDrag(bottomSheet: HTMLElement): void {
     this.isDragging = false;
-    const endTime = new Date().getTime();
-    const deltaY = this.startY - this.getClientY(event as MouseEvent | TouchEvent);
-    const dragSpeed = deltaY / (endTime - this.startTime);
-
-    if (dragSpeed > 0.5 || deltaY > 100) {
-      bottomSheet.style.height = '100vh'; // Snap to max height
-    } else if (dragSpeed < -0.5 || deltaY < -100) {
-      bottomSheet.style.height = '50px'; // Snap to min height
+  
+    const finalHeight = parseInt(bottomSheet.style.height || '0', 10);
+    const threshold = window.innerHeight / 2;
+  
+    // Snap logic: either fully expand, minimize, or half-expand
+    if (finalHeight > threshold) {
+      this.snapToHeight(bottomSheet, '50vh');
+    } else if (finalHeight < 200) {
+      this.snapToHeight(bottomSheet, '50px');
+    } else {
+      this.snapToHeight(bottomSheet, '50vh');
     }
   }
-
-  private getClientY(event: MouseEvent | TouchEvent): number {
-    return event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+  
+  private snapToHeight(bottomSheet: HTMLElement, height: string): void {
+    bottomSheet.style.transition = 'height 0.3s ease';
+    bottomSheet.style.height = height;
+    setTimeout(() => bottomSheet.style.transition = '', 300);
   }
-
+  
+  private getClientY(event: MouseEvent | TouchEvent): number {
+    return event instanceof MouseEvent ? event.clientY : event.touches[0]?.clientY || 0;
+  }
+  
   private updateBottomSheetHeight(bottomSheet: HTMLElement, height: number): void {
     bottomSheet.style.height = `${height}px`;
+  }
 
-    const routesContainer = bottomSheet.querySelector('.routes-container-mobile') as HTMLElement;
-    if (routesContainer) {
-      routesContainer.style.maxHeight = `${height - 50}px`;
+  minimizeBottomSheet(): void {
+    const bottomSheet = document.getElementById('bottomSheet');
+    if (bottomSheet) {
+      bottomSheet.style.height = '150px'; // Adjust this height to your minimum state
+      bottomSheet.classList.add('minimized'); // Optional: Add a class for more control via CSS
     }
   }
+  
+  
 
   /*------------------------------------------
   Route and Navigation Logic
