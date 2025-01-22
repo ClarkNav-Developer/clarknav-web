@@ -526,26 +526,47 @@
     .bottom-sheet-mobile {
         position: absolute;
         z-index: 1001;
-        bottom: -100%; /* change back to -100% after testing */
-        /* Initially hidden */
-        left: 50%;
-        transform: translateX(-50%);
-        width: 95%;
+        bottom: -100%; /* Initially hidden */
+        width: calc(100% - 20px);
+        margin: 0 10px;
         background-color: white;
         border-radius: 20px 20px 0 0;
         box-shadow: 0px -4px 8px 4px rgba(0, 0, 0, 0.1);
-        transition: bottom 0.3s ease;
-        /* Smooth slide-up effect */
+        transition: bottom ease-in-out 0.5s; /* Smooth slide-up effect with delay */
         min-height: 15vh;
         max-height: 45vh;
         padding: 20px;
-        overflow: hidden;
-        /* Prevent overflowing content */
     }
 
-    .bottom-sheet-mobile.visible {
+    .bottom-sheet-mobile.show {
         bottom: 0;
+        display: block;
         /* Slide up into view */
+    }
+
+    .bottom-sheet-mobile.hide {
+        bottom: -100%;
+        /* Slide down out of view */
+    }
+
+    .mobile-container {
+        position: absolute;
+        z-index: 1000;
+        padding: 10px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: calc(100% - 20px);
+        margin: 10px;
+        top: -100%;
+        /* Start above the screen */
+        transition: top 0.5s ease-in-out;
+        /* Animation for drop down */
+    }
+
+    .mobile-container.show {
+        top: 30px;
+        /* Adjust to the position you want it to drop to */
     }
 
     .drag-handle {
@@ -553,12 +574,24 @@
         height: 6px;
         background-color: #ccc;
         border-radius: 3px;
-        margin: 0 auto 10px auto;
+        margin: 0 auto 15px auto;
         cursor: grab;
     }
 
     .drag-handle:active {
         cursor: grabbing;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
+
+    .close-btn button {
+        border: none;
+        background-color: transparent;
     }
 
     .transport-options-mobile {

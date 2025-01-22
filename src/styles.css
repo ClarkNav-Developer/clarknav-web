@@ -10,6 +10,7 @@ body {
   background-color: #ffffff;
   color: #000000;
   transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+  overflow: hidden;
 }
 
 body .floating-window {
