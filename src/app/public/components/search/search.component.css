@@ -641,7 +641,8 @@
     .content {
         min-height: 8vh;
         max-height: 35vh;
-        overflow-y: auto;
+        overflow-y: scroll; /* Allow vertical scrolling */
+        scroll-behavior: smooth; /* Smooth scrolling for better UX */
         scrollbar-width: none; /* Hide scrollbar in Firefox */
     }
 
@@ -657,8 +658,6 @@
         max-height: calc(100vh - 150px); /* Ensure content fits within the screen */
         padding-bottom: 10px; /* Optional padding for better spacing */
         box-sizing: border-box; /* Include padding in the height calculation */
-        scroll-behavior: smooth; /* Smooth scrolling for better UX */
-        scrollbar-width: none; /* Hide scrollbar in Firefox */
     }
     
     .routes-container-mobile::-webkit-scrollbar {

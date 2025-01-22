@@ -32,6 +32,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
   private isDragging = false;
   private startY = 0;
   private startHeight = 0;
+  private startTime = 0;
 
   // Add a flag to check if a search has been performed
   searchPerformed = false;
@@ -94,11 +95,11 @@ export class SearchComponent implements OnInit, AfterViewInit {
     if (handle && bottomSheet) {
       this.renderer.listen(handle, 'mousedown', (event: MouseEvent) => this.onDragStart(event, bottomSheet));
       this.renderer.listen(document, 'mousemove', (event: MouseEvent) => this.onDrag(event, bottomSheet));
-      this.renderer.listen(document, 'mouseup', () => this.onDragEnd());
+      this.renderer.listen(document, 'mouseup', () => this.onDragEnd(bottomSheet));
 
       this.renderer.listen(handle, 'touchstart', (event: TouchEvent) => this.onTouchStart(event, bottomSheet));
       this.renderer.listen(document, 'touchmove', (event: TouchEvent) => this.onTouchMove(event, bottomSheet));
-      this.renderer.listen(document, 'touchend', () => this.onDragEnd());
+      this.renderer.listen(document, 'touchend', () => this.onDragEnd(bottomSheet));
     }
   }
 
@@ -106,6 +107,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
     this.isDragging = true;
     this.startY = this.getClientY(event);
     this.startHeight = bottomSheet.offsetHeight;
+    this.startTime = new Date().getTime();
   }
 
   private onDrag(event: MouseEvent, bottomSheet: HTMLElement | null): void {
@@ -120,6 +122,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
     this.isDragging = true;
     this.startY = this.getClientY(event);
     this.startHeight = bottomSheet.offsetHeight;
+    this.startTime = new Date().getTime();
   }
 
   private onTouchMove(event: TouchEvent, bottomSheet: HTMLElement): void {
@@ -130,8 +133,17 @@ export class SearchComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private onDragEnd(): void {
+  private onDragEnd(bottomSheet: HTMLElement): void {
     this.isDragging = false;
+    const endTime = new Date().getTime();
+    const deltaY = this.startY - this.getClientY(event as MouseEvent | TouchEvent);
+    const dragSpeed = deltaY / (endTime - this.startTime);
+
+    if (dragSpeed > 0.5 || deltaY > 100) {
+      bottomSheet.style.height = '100vh'; // Snap to max height
+    } else if (dragSpeed < -0.5 || deltaY < -100) {
+      bottomSheet.style.height = '50px'; // Snap to min height
+    }
   }
 
   private getClientY(event: MouseEvent | TouchEvent): number {
