@@ -660,24 +660,23 @@
         scroll-behavior: smooth; /* Smooth scrolling for better UX */
         scrollbar-width: none; /* Hide scrollbar in Firefox */
     }
-
+    
     .routes-container-mobile::-webkit-scrollbar {
         display: none; /* Hide scrollbar in WebKit browsers */
     }
     
-    
     .route-item-mobile {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #fafafa;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin: 8px 0;
-    box-sizing: border-box; /* Prevent unexpected overflows */
-}
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #fafafa;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin: 8px 0;
+        box-sizing: border-box; /* Prevent unexpected overflows */
+    }
 
     
     .route-item-mobile.hidden {
