@@ -5,6 +5,8 @@ import { NavigationService } from '../../services/navigation.service';
 import { RoutesService } from '../../services/routes.service';
 import { MapStyleService } from '../../services/map-style.service';
 import { MapInstanceService } from '../../services/map-instance.service';
+import {WebsocketService} from '../../services/websocket.service';
+import { Subscription } from 'rxjs';
 
 declare var google: any;
 
@@ -14,12 +16,15 @@ declare var google: any;
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit, AfterViewInit {
+  private gpsSubscription: Subscription | null = null; // To manage WebSocket subscriptions
+
   constructor(
     private mapService: MapService,
     private navigationService: NavigationService,
     private routesService: RoutesService,
     private mapStyleService: MapStyleService,
-    private mapInstanceService: MapInstanceService
+    private mapInstanceService: MapInstanceService,
+    private websocketService: WebsocketService
   ) { }
 
   ngOnInit(): void {
@@ -27,6 +32,12 @@ export class MapComponent implements OnInit, AfterViewInit {
     const styleUrl = savedMode === 'true' ? 'assets/darkmap.json' : 'assets/retro.json';
     this.mapStyleService.loadMapStyle(styleUrl).subscribe(style => {
       this.initMap(style);
+    });
+
+    // Subscribe to real-time GPS updates
+    this.websocketService.on('gpsUpdate', (data) => {
+      console.log('Real-time GPS update:', data);
+      this.mapService.updateRealTimeLocation(data); // Pass data to MapService
     });
   }
 
@@ -61,6 +72,12 @@ export class MapComponent implements OnInit, AfterViewInit {
       }
     } else {
       console.error('Map element not found!');
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.gpsSubscription) {
+      this.gpsSubscription.unsubscribe(); // Unsubscribe to avoid memory leaks
     }
   }
 }
