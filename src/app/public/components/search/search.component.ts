@@ -168,8 +168,6 @@ export class SearchComponent implements OnInit, AfterViewInit {
       bottomSheet.classList.add('minimized'); // Optional: Add a class for more control via CSS
     }
   }
-  
-  
 
   /*------------------------------------------
   Route and Navigation Logic
@@ -286,6 +284,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
       alert('Both current location and destination must be set to reverse.');
     }
   }
+  
   useMyLocation(): void {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
