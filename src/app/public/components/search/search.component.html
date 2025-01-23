@@ -141,6 +141,8 @@
             <div class="buttons">
                 <button (click)="useMyLocation()">Use My Location</button>
                 <button (click)="navigateToDestination()">Navigate</button>
+                <!-- Add this button somewhere appropriate in your HTML -->
+                <button (click)="stopRealTimeTracking()">Stop Real-Time Tracking</button>
             </div>
         </div>
     </div>
@@ -237,7 +239,7 @@
                     (mouseover)="highlightRoute(route)" (mouseleave)="clearHighlight()" (click)="minimizeBottomSheet()"
                     [class.selected]="route === selectedRoute"
                     [class.opacity]="highlightedRoute && route !== highlightedRoute">
-            
+
                     <div class="route-details-mobile">
                         <div class="origin-info-mobile">
                             <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"
@@ -268,7 +270,7 @@
                             <div class="duration">{{ route.duration }}</div>
                         </div>
                     </div>
-            
+
                     <div class="route-footer-mobile">
                         <div class="estimated-time-mobile">
                             <span>10:00 AM - 12:00 PM</span>

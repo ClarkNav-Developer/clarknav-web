@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MapService } from './map.service';
 import { RoutesService } from './routes.service';
@@ -9,6 +9,10 @@ declare var google: any;
   providedIn: 'root',
 })
 export class NavigationService {
+
+  private watchId: number | null = null; // To store the ID of the watchPosition listener
+  private userMarker: google.maps.Marker | null = null; // Marker for the user's current location
+  private locationUpdateInterval: any = null; // Interval for updating the location
   
   /*------------------------------------------
   Constants and Bounds
@@ -42,7 +46,8 @@ export class NavigationService {
   constructor(
     private mapService: MapService,
     private routesService: RoutesService,
-    private http: HttpClient
+    private http: HttpClient,
+    private ngZone: NgZone // Ensures UI updates when location changes
   ) {}
 
   /*------------------------------------------
@@ -73,21 +78,6 @@ export class NavigationService {
    * Main function to navigate to the destination.
    */
   navigateToDestination(): void {
-    const request = {
-      origin: this.currentLocation,
-      destination: this.destination,
-      travelMode: google.maps.TravelMode.DRIVING,
-    };
-
-    const cachedResponse = this.getCachedResponse(request);
-    if (cachedResponse) {
-      this.mapService.displayRouteWithDirectionsAPI(cachedResponse, 'blue');
-      return;
-    }
-
-    if (this.currentLocation && this.destination) {
-      this.mapService.displayRouteWithDirectionsAPI([this.currentLocation, this.destination], 'blue');
-    }
     if (!this.validateLocations()) return;
 
     this.mapService.clearMap();
@@ -115,6 +105,7 @@ export class NavigationService {
     // Display walking path from current location to the nearest start waypoint
     this.mapService.displayWalkingPath(this.currentLocation!, nearestStartWaypoint, routePath.color);
 
+    // Display the initial route segments
     this.mapService.displayRouteSegments({ path: routePath.path, color: routePath.color });
 
     const finalDestination = this.routesService.isNearby(
@@ -126,6 +117,9 @@ export class NavigationService {
 
     // Display walking path from the end of the route path to the destination
     this.mapService.displayWalkingPath(finalDestination, this.destination!, routePath.color);
+
+    // Set the initial route path in the MapService with the route color
+    this.mapService.setCurrentRoutePath(routePath.path);
   }
 
   /*------------------------------------------
@@ -158,5 +152,82 @@ export class NavigationService {
    */
   private isWithinClarkBounds(location: google.maps.LatLngLiteral): boolean {
     return this.clarkBounds.contains(new google.maps.LatLng(location.lat, location.lng));
+  }
+
+  /**
+   * Start real-time tracking of the user's location.
+   */
+  startRealTimeTracking(): void {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser.');
+      return;
+    }
+  
+    // Watch the user's location
+    this.watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        this.ngZone.run(() => {
+          const { latitude, longitude } = position.coords;
+          const newLocation: google.maps.LatLngLiteral = { lat: latitude, lng: longitude };
+  
+          console.log('Real-time location updated:', newLocation);
+  
+          // Update current location
+          this.currentLocation = newLocation;
+  
+          // Update user marker on the map
+          if (!this.userMarker) {
+            this.userMarker = this.mapService.addMarker(newLocation, 'User', true);
+          } else {
+            this.userMarker.setPosition(new google.maps.LatLng(latitude, longitude));
+          }
+  
+          // Update real-time location on the map
+          this.mapService.updateRealTimeLocation(newLocation);
+  
+          // Optionally, adjust the map view
+          this.mapService.map.panTo(newLocation);
+        });
+      },
+      (error) => {
+        console.error('Error fetching real-time location:', error);
+        alert('Unable to fetch real-time location. Please ensure location services are enabled.');
+      },
+      {
+        enableHighAccuracy: true, // Use GPS if available for more accurate tracking
+        maximumAge: 0,           // Don't use cached positions
+        timeout: 10000,          // Timeout after 10 seconds
+      }
+    );
+  
+    // Set an interval to refresh the location every 10 seconds
+    this.locationUpdateInterval = setInterval(() => {
+      if (this.currentLocation) {
+        this.mapService.updateRealTimeLocation(this.currentLocation);
+      }
+    }, 10000); // 10 seconds
+  }
+
+  /**
+   * Stop real-time tracking of the user's location.
+   */
+  stopRealTimeTracking(): void {
+    if (this.watchId !== null) {
+      navigator.geolocation.clearWatch(this.watchId);
+      this.watchId = null;
+
+      if (this.userMarker) {
+        this.userMarker.setMap(null); // Remove the marker from the map
+        this.userMarker = null;
+      }
+
+      console.log('Real-time tracking stopped.');
+    }
+
+    // Clear the interval
+    if (this.locationUpdateInterval) {
+      clearInterval(this.locationUpdateInterval);
+      this.locationUpdateInterval = null;
+    }
   }
 }

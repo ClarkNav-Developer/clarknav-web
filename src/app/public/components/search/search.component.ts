@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Renderer2 } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Renderer2, OnDestroy} from '@angular/core';
 import { MapService } from '../../services/map.service';
 import { NavigationService } from '../../services/navigation.service';
 import { SuggestedRoutesService } from '../../services/suggested-routes.service';
@@ -255,6 +255,15 @@ export class SearchComponent implements OnInit, AfterViewInit {
     this.selectedRoute = route;
     this.showAllRoutes = false;
     this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
+    this.navigationService.startRealTimeTracking(); // Start real-time tracking
+  }
+
+  ngOnDestroy(): void {
+    this.navigationService.stopRealTimeTracking();
+  }
+
+  stopRealTimeTracking(): void {
+    this.navigationService.stopRealTimeTracking();
   }
 
 
