@@ -69,11 +69,12 @@ export class AccountComponent implements OnInit {
     this.showMenuContent = true;
   }
 
-  logout() {
+  logout(event: Event) {
+    event.preventDefault(); // Prevent the default link behavior
     this.authService.logout().subscribe(
       response => {
         console.log('Logged out successfully');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/admin/login']);
       },
       error => {
         console.error('Logout error:', error);

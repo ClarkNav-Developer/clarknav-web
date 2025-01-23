@@ -1,7 +1,9 @@
+// filepath: /path/to/your/angular/project/src/app/components/login/login.component.ts
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Inject } from '@angular/core';
 import { AuthService } from '../../../auth/auth.service';
+import { User } from '../../../models/user';
 
 @Component({
   selector: 'app-login',
@@ -12,9 +14,11 @@ export class LoginComponent {
   isLoginForm = true;
   email = '';
   password = '';
+  passwordConfirmation = '';
   firstName = '';
   lastName = '';
   errorMessage = '';
+  rememberMe: boolean = false;
 
   constructor(@Inject(AuthService) private authService: AuthService, private router: Router) {}
 
@@ -40,27 +44,49 @@ export class LoginComponent {
 
   onLoginSubmit(event: Event) {
     event.preventDefault();
-    this.authService.login({ email: this.email, password: this.password })
-      .subscribe(
-        (response: any) => {
-          this.router.navigate(['/dashboard']);
-        },
-        (error) => {
-          this.errorMessage = 'Invalid email or password';
-        }
-      );
+    this.authService.login(this.email, this.password).subscribe(
+      (response: any) => {
+        this.authService.getIdentity().subscribe({
+          next: (isAuthenticated) => {
+            if (isAuthenticated) {
+              const user = this.authService.getCurrentUser();
+              if (user?.isAdmin) {
+                this.router.navigate(['/admin/admin-dashboard']);
+              } else if (user?.isUser) {
+                this.router.navigate(['/dashboard']);
+              } else {
+                this.router.navigate(['/dashboard']);
+              }
+            } else {
+              this.errorMessage = 'Failed to retrieve user identity.';
+            }
+          },
+          error: () => {
+            this.errorMessage = 'Error fetching user identity.';
+          }
+        });
+      },
+      (error) => {
+        this.errorMessage = 'Invalid email or password';
+      }
+    );
   }
+
 
   onRegisterSubmit(event: Event) {
     event.preventDefault();
-    this.authService.register({
+    const newUser: Partial<User> = {
       first_name: this.firstName,
       last_name: this.lastName,
       email: this.email,
-      password: this.password
-    }).subscribe(
+      password: this.password,
+      isAdmin: false, // Default to false
+      isUser: true,   // Default to true
+    };
+    this.authService.register(newUser).subscribe(
       (response: any) => {
-        this.isLoginForm = true;
+        alert('Registration successful');
+        this.onLoginClick();
       },
       (error) => {
         this.errorMessage = 'Registration failed';

@@ -1,21 +1,25 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { CanActivateFn } from '@angular/router';
 import { AuthService } from './auth.service';
+import { inject } from '@angular/core';
+import { map } from 'rxjs/operators';
+import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthGuard implements CanActivate {
+export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-  constructor(private authService: AuthService, private router: Router) {}
-
-  canActivate(): boolean {
-    // Implement your authentication logic here
-    const isAuthenticated = true; // Replace with actual authentication check
-    if (!isAuthenticated) {
-      this.router.navigate(['/login']);
-      return false;
-    }
+  // Check if the user is trying to access the login page
+  if (state.url === '/admin/login') {
     return true;
   }
-}
+
+  return authService.getIdentity().pipe(
+    map(getIdentity => {
+      if (!getIdentity) {
+        router.navigate(['/admin/login']);
+        return false;
+      }
+      return true;
+    })
+  );
+};
