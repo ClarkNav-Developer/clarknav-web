@@ -32,6 +32,10 @@ export class SearchComponent implements OnInit, AfterViewInit {
   private isDragging = false;
   private startY = 0;
   private startHeight = 0;
+  private startTime = 0;
+  private dragStartTime: number = 0; // Tracks the drag start time
+  private lastY: number = 0; // Tracks the last Y position for velocity calculation
+  private velocity: number = 0; // Dragging velocity
 
   // Add a flag to check if a search has been performed
   searchPerformed = false;
@@ -90,60 +94,78 @@ export class SearchComponent implements OnInit, AfterViewInit {
   private setupBottomSheetDragging(): void {
     const bottomSheet = document.getElementById('bottomSheet');
     const handle = bottomSheet?.querySelector('.drag-handle');
-
+  
     if (handle && bottomSheet) {
-      this.renderer.listen(handle, 'mousedown', (event: MouseEvent) => this.onDragStart(event, bottomSheet));
-      this.renderer.listen(document, 'mousemove', (event: MouseEvent) => this.onDrag(event, bottomSheet));
-      this.renderer.listen(document, 'mouseup', () => this.onDragEnd());
-
-      this.renderer.listen(handle, 'touchstart', (event: TouchEvent) => this.onTouchStart(event, bottomSheet));
-      this.renderer.listen(document, 'touchmove', (event: TouchEvent) => this.onTouchMove(event, bottomSheet));
-      this.renderer.listen(document, 'touchend', () => this.onDragEnd());
+      this.renderer.listen(handle, 'mousedown', (event: MouseEvent) => this.initiateDrag(event, bottomSheet));
+      this.renderer.listen(handle, 'touchstart', (event: TouchEvent) => this.initiateDrag(event, bottomSheet));
     }
   }
-
-  private onDragStart(event: MouseEvent | TouchEvent, bottomSheet: HTMLElement): void {
+  
+  private initiateDrag(event: MouseEvent | TouchEvent, bottomSheet: HTMLElement): void {
+    event.preventDefault();
     this.isDragging = true;
     this.startY = this.getClientY(event);
     this.startHeight = bottomSheet.offsetHeight;
+  
+    const moveHandler = (moveEvent: MouseEvent | TouchEvent) => this.performDrag(moveEvent, bottomSheet);
+    const endHandler = () => {
+      this.endDrag(bottomSheet);
+      document.removeEventListener('mousemove', moveHandler);
+      document.removeEventListener('mouseup', endHandler);
+      document.removeEventListener('touchmove', moveHandler);
+      document.removeEventListener('touchend', endHandler);
+    };
+  
+    document.addEventListener('mousemove', moveHandler);
+    document.addEventListener('mouseup', endHandler);
+    document.addEventListener('touchmove', moveHandler, { passive: false });
+    document.addEventListener('touchend', endHandler);
   }
-
-  private onDrag(event: MouseEvent, bottomSheet: HTMLElement | null): void {
-    if (this.isDragging && bottomSheet) {
-      const deltaY = this.startY - event.clientY;
-      const newHeight = Math.max(150, Math.min(this.startHeight + deltaY, window.innerHeight));
-      this.updateBottomSheetHeight(bottomSheet, newHeight);
-    }
+  
+  private performDrag(event: MouseEvent | TouchEvent, bottomSheet: HTMLElement): void {
+    if (!this.isDragging) return;
+    
+    const currentY = this.getClientY(event);
+    const deltaY = this.startY - currentY;
+    const newHeight = Math.min(window.innerHeight, Math.max(300, this.startHeight + deltaY));
+    this.updateBottomSheetHeight(bottomSheet, newHeight);
   }
-
-  private onTouchStart(event: TouchEvent, bottomSheet: HTMLElement): void {
-    this.isDragging = true;
-    this.startY = this.getClientY(event);
-    this.startHeight = bottomSheet.offsetHeight;
-  }
-
-  private onTouchMove(event: TouchEvent, bottomSheet: HTMLElement): void {
-    if (this.isDragging) {
-      const deltaY = this.startY - event.touches[0].clientY;
-      const newHeight = Math.max(150, Math.min(this.startHeight + deltaY, window.innerHeight));
-      this.updateBottomSheetHeight(bottomSheet, newHeight);
-    }
-  }
-
-  private onDragEnd(): void {
+  
+  private endDrag(bottomSheet: HTMLElement): void {
     this.isDragging = false;
+  
+    const finalHeight = parseInt(bottomSheet.style.height || '0', 10);
+    const threshold = window.innerHeight / 2;
+  
+    // Snap logic: either fully expand, minimize, or half-expand
+    if (finalHeight > threshold) {
+      this.snapToHeight(bottomSheet, '50vh');
+    } else if (finalHeight < 200) {
+      this.snapToHeight(bottomSheet, '50px');
+    } else {
+      this.snapToHeight(bottomSheet, '50vh');
+    }
   }
-
+  
+  private snapToHeight(bottomSheet: HTMLElement, height: string): void {
+    bottomSheet.style.transition = 'height 0.3s ease';
+    bottomSheet.style.height = height;
+    setTimeout(() => bottomSheet.style.transition = '', 300);
+  }
+  
   private getClientY(event: MouseEvent | TouchEvent): number {
-    return event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+    return event instanceof MouseEvent ? event.clientY : event.touches[0]?.clientY || 0;
   }
-
+  
   private updateBottomSheetHeight(bottomSheet: HTMLElement, height: number): void {
     bottomSheet.style.height = `${height}px`;
+  }
 
-    const routesContainer = bottomSheet.querySelector('.routes-container-mobile') as HTMLElement;
-    if (routesContainer) {
-      routesContainer.style.maxHeight = `${height - 100}px`;
+  minimizeBottomSheet(): void {
+    const bottomSheet = document.getElementById('bottomSheet');
+    if (bottomSheet) {
+      bottomSheet.style.height = '150px'; // Adjust this height to your minimum state
+      bottomSheet.classList.add('minimized'); // Optional: Add a class for more control via CSS
     }
   }
 
@@ -262,6 +284,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
       alert('Both current location and destination must be set to reverse.');
     }
   }
+  
   useMyLocation(): void {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
@@ -269,6 +292,24 @@ export class SearchComponent implements OnInit, AfterViewInit {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
+        console.log('Current Location:', this.currentLocation);
+        
+        // Update the input fields with the current location address
+        const currentLocationInput = document.getElementById('current-location-box') as HTMLInputElement;
+        const currentLocationInputMobile = document.getElementById('current-location-box-mobile') as HTMLInputElement;
+        
+        if (currentLocationInput || currentLocationInputMobile) {
+          this.geocodeLatLng(this.currentLocation, (address: string) => {
+            if (currentLocationInput) {
+              currentLocationInput.value = address;
+            }
+            if (currentLocationInputMobile) {
+              currentLocationInputMobile.value = address;
+            }
+            this.currentLocationAddress = address;
+          });
+        }
+
         this.resolveAddresses();
         this.mapService.addMarker(this.currentLocation, 'Your Location');
         this.mapService.map.setCenter(this.currentLocation);
@@ -397,6 +438,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
       'search-box',
       'search-box-2',
       'search-box-mobile',
+      'search-box-mobile-2',
       'current-location-box',
       'current-location-box-mobile',
     ].map(id => document.getElementById(id) as HTMLInputElement);

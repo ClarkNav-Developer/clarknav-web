@@ -397,7 +397,7 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        top: 40px;
+        top: 20px;
     }
 
     .search-bar-container-mobile {
@@ -466,7 +466,7 @@
     }
 
     .mobile-container.show {
-        top: 30px;
+        top: 10px;
         /* Adjust to the position you want it to drop to */
     }
 
@@ -543,30 +543,39 @@
 
     /* bottom sheet style */
     .bottom-sheet-mobile {
+        --bottom-sheet-height: 50px;
         position: absolute;
         z-index: 1001;
-        bottom: -100%; /* Initially hidden */
+        bottom: 0;
         width: calc(100% - 20px);
         margin: 0 10px;
         background-color: white;
         border-radius: 20px 20px 0 0;
         box-shadow: 0px -4px 8px 4px rgba(0, 0, 0, 0.1);
-        transition: bottom ease-in-out 0.5s; /* Smooth slide-up effect with delay */
-        min-height: 15vh;
-        max-height: 45vh;
+        transition: height 0.3s ease;
+        height: var(--bottom-sheet-height);
         padding: 20px;
+        transform: translateY(100%);
+        will-change: transform;
+        touch-action: none; /* Prevent default touch actions */
+        overscroll-behavior: none; /* Prevent pull-to-refresh in Chrome */
+
     }
 
     .bottom-sheet-mobile.show {
         bottom: 0;
-        display: block;
-        /* Slide up into view */
+        transform: translateY(0);
     }
 
     .bottom-sheet-mobile.hide {
         bottom: -100%;
-        /* Slide down out of view */
+        transform: translateY(100%);
     }
+
+    .bottom-sheet-mobile.minimized {
+        height: 150px; /* Adjust this value based on your minimum state */
+        transition: height 0.3s ease-in-out; /* Smooth transition */
+      }
 
     .mobile-container {
         position: absolute;
@@ -583,11 +592,6 @@
         /* Animation for drop down */
     }
 
-    .mobile-container.show {
-        top: 30px;
-        /* Adjust to the position you want it to drop to */
-    }
-
     .drag-handle {
         width: 50px;
         height: 6px;
@@ -595,10 +599,18 @@
         border-radius: 3px;
         margin: 0 auto 15px auto;
         cursor: grab;
+        touch-action: none; /* Prevent default touch actions */
     }
 
     .drag-handle:active {
         cursor: grabbing;
+    }
+
+    /* Touch screen specific styles */
+    @media (pointer: coarse) {
+        .drag-handle {
+            touch-action: pan-y; /* Allow vertical scrolling */
+        }
     }
 
     .close-btn {
@@ -642,25 +654,33 @@
         overflow-x: auto;
     }
 
+    .content {
+        min-height: 8vh;
+        max-height: 35vh;
+        overflow-y: scroll; /* Allow vertical scrolling */
+        scroll-behavior: smooth; /* Smooth scrolling for better UX */
+        scrollbar-width: none; /* Hide scrollbar in Firefox */
+        -webkit-overflow-scrolling: touch; /* Enable smooth scrolling on mobile devices */
+    }
+
+    .content::-webkit-scrollbar {
+        display: none; /* Hide scrollbar in WebKit browsers */
+    }
+
     .routes-container-mobile {
         display: flex;
         flex-direction: column;
         gap: 12px;
-        overflow-y: auto;
-        transition: max-height 0.3s ease;
-        /* Smooth adjustment effect */
-        max-height: 60vh;
-        /* Limit the height of the container */
+        overflow-y: auto; /* Allow vertical scrolling */
+        max-height: calc(100vh - 150px); /* Ensure content fits within the screen */
+        padding-bottom: 10px; /* Optional padding for better spacing */
+        box-sizing: border-box; /* Include padding in the height calculation */
     }
-
-    /* .route-mobile {
-        padding: 12px;
-        background-color: #f5f5f5;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    } */
-
-    /* Route box styles */
+    
+    .routes-container-mobile::-webkit-scrollbar {
+        display: none; /* Hide scrollbar in WebKit browsers */
+    }
+    
     .route-item-mobile {
         padding: 10px;
         border: 1px solid #ddd;
@@ -671,8 +691,10 @@
         flex-direction: column;
         gap: 16px;
         margin: 8px 0;
+        box-sizing: border-box; /* Prevent unexpected overflows */
     }
 
+    
     .route-item-mobile.hidden {
         display: none;
     }
@@ -720,6 +742,61 @@
         font-size: 10px;
     }
 
+    .route-footer-mobile {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .estimated-time {
+        font-size: 10px;
+    }
+
+    .fare-info {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .fare {
+        background-color: #32AA00;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        width: auto;
+        display: flex;
+        justify-content: center;
+        padding: 3px 10px;
+        font-size: small;
+        gap: 5px;
+    }
+
+    .fare svg {
+        height: 10px;
+    }
+
+    .footer-extra-info-mobile {
+        right: 0;
+    }
+
+    .disclaimer-info-mobile {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .disclaimer-info-mobile p {
+        font-size: 10px;
+    }
+
+    .disclaimer-info-mobile .fare {
+        font-size: 10px;
+    }
+
     /* side nav */
     .side-nav-mobile {
         z-index: 1000;
@@ -739,20 +816,18 @@
     .current-loc-button button {
         border-radius: 50%;
         width: 50px;
-        /* Adjust the width and height to make it a perfect circle */
         height: 50px;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 0;
-        /* Remove padding to ensure the content is centered */
         background-color: white;
         border: 1px solid #ACACAC;
+        box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, 0.1);
     }
 
     .navigation-button button {
         border-radius: 10px;
-        /* padding: 10px; */
         width: 50px;
         height: 50px;
         display: flex;
@@ -760,5 +835,6 @@
         justify-content: center;
         background-color: #007bff;
         border: none;
+        box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, 0.1);
     }
 }
