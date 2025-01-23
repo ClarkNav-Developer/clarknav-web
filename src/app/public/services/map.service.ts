@@ -31,6 +31,7 @@ export class MapService {
   destination: google.maps.LatLngLiteral | null = null;
   private currentRoutePath: google.maps.LatLngLiteral[] = []; // Store the current route path
   private currentRouteColor: string = ''; // Store the current route color
+  private autoCenterEnabled: boolean = false; // Property to enable or disable auto-centering
 
   constructor(private routesService: RoutesService) { }
 
@@ -74,12 +75,12 @@ export class MapService {
     this.clearRouteRenderers();
   }
 
-  private clearMarkers() {
+  clearMarkers() {
     this.markers.forEach(marker => marker.setMap(null));
     this.markers = [];
   }
 
-  private clearRouteRenderers() {
+  clearRouteRenderers() {
     this.routeRenderers.forEach((renderer) => renderer.setMap(null));
     this.routeRenderers = [];
   }
@@ -103,8 +104,8 @@ export class MapService {
           }
         : undefined, // Default marker for non-user locations
     });
-  
-    return marker; // Ensure the marker object is returned
+    this.markers.push(marker);
+    return marker;
   }
   
 
@@ -182,76 +183,80 @@ export class MapService {
     this.routeRenderers.push(directionsRenderer);
   }
 
-  setCurrentRoutePath(path: google.maps.LatLngLiteral[]): void {
+  setCurrentRoutePath(path: google.maps.LatLngLiteral[], color: string): void {
     this.currentRoutePath = path;
+    this.currentRouteColor = color;
   }
 
   updateRealTimeLocation(data: { lat: number; lng: number }) {
     const position = new google.maps.LatLng(data.lat, data.lng);
-  
+
     if (!this.realTimeMarker) {
+      // Create a new marker for real-time tracking if it doesn't exist
       this.realTimeMarker = new google.maps.Marker({
         position,
         map: this.map,
         title: 'Real-Time Location',
         icon: {
-          url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-          scaledSize: new google.maps.Size(40, 40),
+          url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png', // Customize icon
+          scaledSize: new google.maps.Size(40, 40), // Adjust size
         },
       });
     } else {
+      // Update marker position
       this.realTimeMarker.setPosition(position);
     }
-  
-    this.map.panTo(position);
-  
+
     // Update the route path dynamically
     this.updateRoutePath(position);
+
+    // Center the map on the real-time marker if auto-centering is enabled
+    if (this.autoCenterEnabled) {
+      this.map.panTo(position);
+    }
+  }
+
+  enableAutoCenter() {
+    this.autoCenterEnabled = true;
+  }
+
+  disableAutoCenter() {
+    this.autoCenterEnabled = false;
+  }
+
+  centerMapOnRealTimeLocation() {
+    if (this.realTimeMarker) {
+      this.map.panTo(this.realTimeMarker.getPosition());
+    }
   }
   
-
   private updateRoutePath(currentPosition: google.maps.LatLng) {
     if (!this.currentRoutePath.length) return;
-  
+
+    // Find the nearest point on the route path to the current position
     let nearestIndex = -1;
     let minDistance = Infinity;
-  
-    // Find the nearest point on the route path to the current position
+
     this.currentRoutePath.forEach((point, index) => {
-      const distance = google.maps.geometry.spherical.computeDistanceBetween(
-        currentPosition,
-        new google.maps.LatLng(point.lat, point.lng)
-      );
+      const distance = google.maps.geometry.spherical.computeDistanceBetween(currentPosition, new google.maps.LatLng(point.lat, point.lng));
       if (distance < minDistance) {
         minDistance = distance;
         nearestIndex = index;
       }
     });
-  
-    // If the current position is within the threshold distance of the next waypoint,
-    // we should not remove segments prematurely.
+
+    // Check if the user has passed the next waypoint
     const THRESHOLD_DISTANCE = 10; // meters
     if (nearestIndex !== -1 && minDistance < THRESHOLD_DISTANCE) {
-      // Check if we're between two waypoints or past the last one
-      if (nearestIndex === 0 || nearestIndex === this.currentRoutePath.length - 1) {
-        // If the user is near the first or last waypoint, do not slice the path
-        return;
-      }
-  
-      // Only slice the path if the user has passed a waypoint
-      this.currentRoutePath = this.currentRoutePath.slice(nearestIndex);
-  
-      // Clear the existing route renderers
-      this.clearRouteRenderers();
-  
-      // Ensure the remaining route segments are displayed
-      if (this.currentRoutePath.length > 1) {
-        this.displayRouteSegments({
-          path: this.currentRoutePath,
-          color: this.currentRouteColor, // Preserve the color
-        });
-      }
+      // If the user is near the first or last waypoint, do not slice the path
+      return;
     }
+
+    // Clear the existing route renderers
+    this.clearRouteRenderers();
+
+    // Display the updated route path with the stored route color
+    this.displayRouteSegments({ path: this.currentRoutePath, color: this.currentRouteColor });
   }
 
   /*------------------------------------------
@@ -262,15 +267,15 @@ export class MapService {
       console.error("Route path must have at least two waypoints to display a route.");
       return;
     }
-  
+
     const { path, color } = routePath;
-  
+
     // Display each segment using Directions API
     for (let i = 0; i < path.length - 1; i++) {
       const segment = { origin: path[i], destination: path[i + 1], color };
       this.displayRouteSegment(segment);
     }
-  
+
     // Add markers for each waypoint
     path.forEach((waypoint) => {
       this.addMarker(waypoint, 'Waypoint');

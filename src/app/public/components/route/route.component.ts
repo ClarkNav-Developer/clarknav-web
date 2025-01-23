@@ -162,6 +162,7 @@ export class RouteComponent implements OnInit, OnDestroy {
 
   showRouteListAgain() {
     this.mapService.clearMap(); // Clear the rendered route
+    this.mapService.clearMarkers(); // Clear the map markers
     this.showRouteList = true;
     this.showBackground = true; // Show the background
     this.currentRouteName = ''; // Clear the current route name

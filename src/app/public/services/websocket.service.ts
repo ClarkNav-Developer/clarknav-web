@@ -24,4 +24,13 @@ export class WebsocketService {
   public disconnect(): void {
     this.socket.disconnect();
   }
+
+  // Add methods for real-time tracking
+  public subscribeToRealTimeTracking(callback: (data: any) => void): void {
+    this.on('realTimeTrackingUpdate', callback);
+  }
+
+  public sendLocationUpdate(location: { lat: number; lng: number }): void {
+    this.emit('locationUpdate', location);
+  }
 }
