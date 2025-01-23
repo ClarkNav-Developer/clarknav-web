@@ -6,13 +6,15 @@
       <div class="menu-list-container">
         <h2>Menu</h2>
         <div class="menu-list">
-          <a href="" class="menu-list-button" (click)="selectMenuItem('account-settings'); $event.preventDefault()">Account Settings</a>
+          <a href="" class="menu-list-button"
+            (click)="selectMenuItem('account-settings'); $event.preventDefault()">Account Settings</a>
         </div>
         <div class="menu-list">
           <a href="" class="menu-list-button" (click)="selectMenuItem('history'); $event.preventDefault()">History</a>
         </div>
         <div class="menu-list">
-          <a href="" class="menu-list-button" (click)="selectMenuItem('report-bugs'); $event.preventDefault()">Report bugs</a>
+          <a href="" class="menu-list-button" (click)="selectMenuItem('report-bugs'); $event.preventDefault()">Report
+            bugs</a>
         </div>
         <div class="menu-list">
           <a href="" class="menu-list-button" (click)="selectMenuItem('feedback'); $event.preventDefault()">Feedback</a>
@@ -41,22 +43,27 @@
           </div>
           <div class="content-info">
             <div class="info">
-              <p>FIRST NAME</p>
-              <input type="text" placeholder="First Name" />
-              <p>LAST NAME</p>
-              <input type="text" placeholder="Last Name" />
-              <p>EMAIL</p>
-              <input type="text" placeholder="Your email" />
-              <p>CHANGE PASSWORD</p>
-              <input type="text" placeholder="Old Password" />
-              <input type="text" placeholder="New Password" />
-              <button>Delete Account</button>
+              <form (submit)="updateCredentials($event)">
+                <p>FIRST NAME</p>
+                <input type="text" [(ngModel)]="firstName" name="firstName" placeholder="First Name" />
+                <p>LAST NAME</p>
+                <input type="text" [(ngModel)]="lastName" name="lastName" placeholder="Last Name" />
+                <p>EMAIL</p>
+                <input type="text" [(ngModel)]="email" name="email" placeholder="Your email" disabled />
+                <p>CHANGE PASSWORD</p>
+                <input type="password" [(ngModel)]="currentPassword" name="currentPassword"
+                  placeholder="Current Password" />
+                <input type="password" [(ngModel)]="newPassword" name="newPassword" placeholder="New Password" />
+                <input type="password" [(ngModel)]="newPasswordConfirmation" name="newPasswordConfirmation"
+                  placeholder="Confirm New Password" />
+                <button type="submit">Update Credentials</button>
+              </form>
             </div>
           </div>
         </div>
 
         <div *ngIf="selectedMenuItem === 'history'" class="account-history-container">
-           <div class="header-info">
+          <div class="header-info">
             <h2>HISTORY</h2>
           </div>
           <div class="content-info">
@@ -77,27 +84,27 @@
           </div>
         </div>
 
-       <div *ngIf="selectedMenuItem === 'feedback'" class="feedback-container">
-        <div class="header-info">
-          <h2>FEEDBACK</h2>
-        </div>
-        <div class="content-info">
-          <div class="info">
-            <p>Put Content here</p>
+        <div *ngIf="selectedMenuItem === 'feedback'" class="feedback-container">
+          <div class="header-info">
+            <h2>FEEDBACK</h2>
+          </div>
+          <div class="content-info">
+            <div class="info">
+              <p>Put Content here</p>
+            </div>
           </div>
         </div>
-       </div>
 
-       <div *ngIf="selectedMenuItem === 'faqs'" class="faqs-container">
-        <div class="header-info">
-          <h2>FAQs</h2>
-        </div>
-        <div class="content-info">
-          <div class="info">
-            <p>Put Content here</p>
+        <div *ngIf="selectedMenuItem === 'faqs'" class="faqs-container">
+          <div class="header-info">
+            <h2>FAQs</h2>
+          </div>
+          <div class="content-info">
+            <div class="info">
+              <p>Put Content here</p>
+            </div>
           </div>
         </div>
-       </div>
       </div>
     </div>
 
@@ -112,16 +119,20 @@
     <div class="content-mobile" *ngIf="showMenuContent">
       <div class="menu-list-container-mobile">
         <div class="menu-list-mobile">
-          <a href="" class="menu-list-button" (click)="selectMenuItem('account-settings-mobile'); $event.preventDefault()">Account Settings</a>
+          <a href="" class="menu-list-button"
+            (click)="selectMenuItem('account-settings-mobile'); $event.preventDefault()">Account Settings</a>
         </div>
         <div class="menu-list-mobile">
-          <a href="" class="menu-list-button" (click)="selectMenuItem('history-mobile'); $event.preventDefault()">History</a>
+          <a href="" class="menu-list-button"
+            (click)="selectMenuItem('history-mobile'); $event.preventDefault()">History</a>
         </div>
         <div class="menu-list-mobile">
-          <a href="" class="menu-list-button" (click)="selectMenuItem('report-bugs-mobile'); $event.preventDefault()">Report bugs</a>
+          <a href="" class="menu-list-button"
+            (click)="selectMenuItem('report-bugs-mobile'); $event.preventDefault()">Report bugs</a>
         </div>
         <div class="menu-list-mobile">
-          <a href="" class="menu-list-button" (click)="selectMenuItem('feedback-mobile'); $event.preventDefault()">Feedback</a>
+          <a href="" class="menu-list-button"
+            (click)="selectMenuItem('feedback-mobile'); $event.preventDefault()">Feedback</a>
         </div>
         <div class="menu-list-mobile">
           <a href="" class="menu-list-button" (click)="selectMenuItem('faqs-mobile'); $event.preventDefault()">FAQs</a>
@@ -134,7 +145,7 @@
           </label>
         </div>
         <div class="menu-list-mobile">
-          <a href="" style="color: red;">Logout</a>
+          <a href="" (click)="logout($event)" style="color: red;">Logout</a>
         </div>
       </div>
     </div>
@@ -142,28 +153,39 @@
     <div class="menu-info-container-mobile" *ngIf="!showMenuContent">
       <div *ngIf="selectedMenuItem === 'account-settings-mobile'" class="account-info-container-mobile">
         <div class="header-info">
-          <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg></button>
+          <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg"
+              height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
+              <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
+            </svg></button>
           <h2>ACCOUNT SETTINGS</h2>
         </div>
         <div class="content-info-mobile">
           <div class="info-mobile">
-            <p>FIRST NAME</p>
-            <input type="text" placeholder="First Name" />
-            <p>LAST NAME</p>
-            <input type="text" placeholder="Last Name" />
-            <p>EMAIL</p>
-            <input type="text" placeholder="Your email" />
-            <p>CHANGE PASSWORD</p>
-            <input type="text" placeholder="Old Password" />
-            <input type="text" placeholder="New Password" />
-            <button>Delete Account</button>
+            <form (submit)="updateCredentials($event)">
+              <p>FIRST NAME</p>
+              <input type="text" [(ngModel)]="firstName" name="firstName" placeholder="First Name" />
+              <p>LAST NAME</p>
+              <input type="text" [(ngModel)]="lastName" name="lastName" placeholder="Last Name" />
+              <p>EMAIL</p>
+              <input type="text" [(ngModel)]="email" name="email" placeholder="Your email" disabled />
+              <p>CHANGE PASSWORD</p>
+              <input type="password" [(ngModel)]="currentPassword" name="currentPassword"
+                placeholder="Current Password" />
+              <input type="password" [(ngModel)]="newPassword" name="newPassword" placeholder="New Password" />
+              <input type="password" [(ngModel)]="newPasswordConfirmation" name="newPasswordConfirmation"
+                placeholder="Confirm New Password" />
+              <button type="submit">Update Credentials</button>
+            </form>
           </div>
         </div>
       </div>
 
       <div *ngIf="selectedMenuItem === 'history-mobile'" class="account-history-container-mobile">
-         <div class="header-info">
-          <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg></button>
+        <div class="header-info">
+          <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg"
+              height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
+              <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
+            </svg></button>
           <h2>HISTORY</h2>
         </div>
         <div class="content-info">
@@ -175,7 +197,10 @@
 
       <div *ngIf="selectedMenuItem === 'report-bugs-mobile'" class="report-bugs-container-mobile">
         <div class="header-info">
-          <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg></button>
+          <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg"
+              height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
+              <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
+            </svg></button>
           <h2>REPORT BUGS</h2>
         </div>
         <div class="content-info">
@@ -185,30 +210,35 @@
         </div>
       </div>
 
-     <div *ngIf="selectedMenuItem === 'feedback-mobile'" class="feedback-container-mobile">
-      <div class="header-info">
-        <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg></button>
-        <h2>FEEDBACK</h2>
-      </div>
-      <div class="content-info">
-        <div class="info">
-          <p>Put Content here</p>
+      <div *ngIf="selectedMenuItem === 'feedback-mobile'" class="feedback-container-mobile">
+        <div class="header-info">
+          <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg"
+              height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
+              <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
+            </svg></button>
+          <h2>FEEDBACK</h2>
+        </div>
+        <div class="content-info">
+          <div class="info">
+            <p>Put Content here</p>
+          </div>
         </div>
       </div>
-     </div>
 
-     <div *ngIf="selectedMenuItem === 'faqs-mobile'" class="faqs-container-mobile">
-      <div class="header-info">
-        <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg></button>
-        <h2>FAQs</h2>
-      </div>
-      <div class="content-info">
-        <div class="info">
-          <p>Put Content here</p>
+      <div *ngIf="selectedMenuItem === 'faqs-mobile'" class="faqs-container-mobile">
+        <div class="header-info">
+          <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg"
+              height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
+              <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
+            </svg></button>
+          <h2>FAQs</h2>
+        </div>
+        <div class="content-info">
+          <div class="info">
+            <p>Put Content here</p>
+          </div>
         </div>
       </div>
-     </div>
     </div>
   </div>
 </div>
-  

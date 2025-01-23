@@ -97,6 +97,7 @@ export class AuthService {
           } else {
             console.error('Error fetching identity:', error);
           }
+          this.router.navigate(['/dashboard']);
           return of(false);
         })
       );

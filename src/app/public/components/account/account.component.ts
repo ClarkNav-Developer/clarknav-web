@@ -15,6 +15,13 @@ export class AccountComponent implements OnInit {
   darkMode: boolean = false;
   showMenuContent: boolean = true; // New state to track menu content visibility
 
+  firstName: string = '';
+  lastName: string = '';
+  email: string = '';
+  currentPassword: string = '';
+  newPassword: string = '';
+  newPasswordConfirmation: string = '';
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -34,6 +41,14 @@ export class AccountComponent implements OnInit {
       this.mapStyleService.loadMapStyle('assets/darkmap.json').subscribe(style => {
         this.mapInstanceService.setMapStyle(style);
       });
+    }
+
+    // Load current user details
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser) {
+      this.firstName = currentUser.first_name;
+      this.lastName = currentUser.last_name;
+      this.email = currentUser.email;
     }
   }
 
@@ -78,6 +93,32 @@ export class AccountComponent implements OnInit {
       },
       error => {
         console.error('Logout error:', error);
+      }
+    );
+  }
+
+  updateCredentials(event: Event) {
+    event.preventDefault();
+    const updatedCredentials = {
+      first_name: this.firstName,
+      last_name: this.lastName,
+      current_password: this.currentPassword,
+      new_password: this.newPassword,
+      new_password_confirmation: this.newPasswordConfirmation,
+    };
+    this.authService.updateCredentials(updatedCredentials).subscribe(
+      response => {
+        if (response) {
+          console.log('Credentials updated successfully');
+          alert('Credentials updated successfully');
+        } else {
+          console.error('Failed to update credentials');
+          alert('Failed to update credentials');
+        }
+      },
+      error => {
+        console.error('Error updating credentials:', error);
+        alert('Error updating credentials');
       }
     );
   }
