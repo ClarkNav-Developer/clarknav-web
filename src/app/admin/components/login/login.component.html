@@ -11,11 +11,13 @@
                 <form *ngIf="isLoginForm" (ngSubmit)="onLoginSubmit($event)">
                     <div class="form-group">
                         <label for="email">EMAIL</label>
-                        <input type="email" id="email" name="email" [(ngModel)]="email" placeholder="juandelacruz@gmail.com" required (keydown.enter)="onLoginSubmit($event)">
+                        <input type="email" id="email" name="email" [(ngModel)]="email"
+                            placeholder="juandelacruz@gmail.com" required (keydown.enter)="onLoginSubmit($event)">
                     </div>
                     <div class="form-group password-eye">
                         <label for="password">PASSWORD</label>
-                        <input type="password" id="password" name="password" [(ngModel)]="password" placeholder="••••••••" required (keydown.enter)="onLoginSubmit($event)">
+                        <input type="password" id="password" name="password" [(ngModel)]="password"
+                            placeholder="••••••••" required (keydown.enter)="onLoginSubmit($event)">
                         <span class="material-icons" (click)="togglePassword()">visibility</span>
                     </div>
                     <div class="form-group">
@@ -27,30 +29,43 @@
                     <!-- <button type="submit" class="login-create-button">Login</button> -->
                 </form>
 
+
                 <form *ngIf="!isLoginForm" (ngSubmit)="onRegisterSubmit($event)">
                     <div class="form-group">
                         <label for="firstName">FIRST NAME</label>
-                        <input type="text" id="firstName" name="firstName" placeholder="Juan Miguel" required>
+                        <input type="text" id="firstName" name="firstName" placeholder="Juan Miguel"
+                            [(ngModel)]="firstName" required>
                     </div>
                     <div class="form-group">
                         <label for="lastName">LAST NAME</label>
-                        <input type="text" id="lastName" name="lastName" placeholder="Dela Cruz" required>
+                        <input type="text" id="lastName" name="lastName" placeholder="Dela Cruz" [(ngModel)]="lastName"
+                            required>
                     </div>
                     <div class="form-group">
                         <label for="email">EMAIL</label>
-                        <input type="email" id="email" name="email" placeholder="juandelacruz@gmail.com" required>
+                        <input type="email" id="email" name="email" placeholder="juandelacruz@gmail.com"
+                            [(ngModel)]="email" required>
                     </div>
                     <div class="form-group password-eye">
                         <label for="password">PASSWORD</label>
-                        <input type="password" id="password" name="password" placeholder="••••••••" required>
+                        <input type="password" id="password" name="password" placeholder="••••••••"
+                            [(ngModel)]="password" required>
+                        <span class="material-icons" (click)="togglePassword()">visibility</span>
+                    </div>
+                    <div class="form-group password-eye">
+                        <label for="passwordConfirmation">CONFIRM PASSWORD</label>
+                        <input type="password" id="passwordConfirmation" name="passwordConfirmation"
+                            placeholder="••••••••" [(ngModel)]="passwordConfirmation" required>
                         <span class="material-icons" (click)="togglePassword()">visibility</span>
                     </div>
                     <button class="login-create-button" type="submit">Create Account</button>
                 </form>
 
                 <div class="create-account">
-                    <p class="account-text" *ngIf="isLoginForm">Don't have an account yet? <a class="create-account-link" (click)="onRegisterClick()">Create an Account</a></p>
-                    <p class="account-text" *ngIf="!isLoginForm">Already have an account? <a class="create-account-link" (click)="onLoginClick()">Login</a></p>
+                    <p class="account-text" *ngIf="isLoginForm">Don't have an account yet? <a
+                            class="create-account-link" (click)="onRegisterClick()">Create an Account</a></p>
+                    <p class="account-text" *ngIf="!isLoginForm">Already have an account? <a class="create-account-link"
+                            (click)="onLoginClick()">Login</a></p>
                 </div>
             </div>
         </div>
