@@ -54,6 +54,7 @@ export class NavigationService {
     // Subscribe to real-time tracking updates from WebSocket
     this.websocketService.subscribeToRealTimeTracking((data) => {
       this.ngZone.run(() => {
+        console.log('Processing real-time location update from WebSocket:', data);
         this.mapService.updateRealTimeLocation(data);
       });
     });

@@ -11,6 +11,14 @@ export class WebsocketService {
     this.socket = io('https://clarknav-websocket-e8b0952da147.herokuapp.com', {
       transports: ['websocket', 'polling'], // Ensure both transports are allowed
     }); // Replace with your Heroku app URL
+
+    this.socket.on('connect', () => {
+      console.log('WebSocket connected');
+    });
+
+    this.socket.on('disconnect', () => {
+      console.log('WebSocket disconnected');
+    });
   }
 
   public on(event: string, callback: (data: any) => void): void {
@@ -27,10 +35,14 @@ export class WebsocketService {
 
   // Add methods for real-time tracking
   public subscribeToRealTimeTracking(callback: (data: any) => void): void {
-    this.on('realTimeTrackingUpdate', callback);
+    this.on('realTimeTrackingUpdate', (data) => {
+      console.log('Received real-time location update:', data);
+      callback(data);
+    });
   }
 
   public sendLocationUpdate(location: { lat: number; lng: number }): void {
+    console.log('Sending location update:', location);
     this.emit('locationUpdate', location);
   }
 }
