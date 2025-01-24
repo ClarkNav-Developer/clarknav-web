@@ -185,7 +185,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
     this.fetchSuggestedRoutes();
     this.navigationService.currentLocation = this.currentLocation;
     this.navigationService.destination = this.destination;
-    this.navigationService.navigateToDestination();
+    // this.navigationService.navigateToDestination();
 
     this.isBottomSheetVisible = true;
     this.searchPerformed = true;
