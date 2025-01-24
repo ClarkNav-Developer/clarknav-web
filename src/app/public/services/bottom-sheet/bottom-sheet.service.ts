@@ -5,13 +5,22 @@ import { MapService } from '../map/map.service';
   providedIn: 'root'
 })
 export class BottomSheetService {
+  private renderer: Renderer2 | null = null;
   private isDragging = false;
   private startY = 0;
   private startHeight = 0;
 
-  constructor(private renderer: Renderer2, private mapService: MapService) {}
+  constructor(private mapService: MapService) {}
+  
+  setRenderer(renderer: Renderer2): void {
+    this.renderer = renderer;
+  }
 
   setupDragging(bottomSheet: HTMLElement, handle: HTMLElement): void {
+    if (!this.renderer) {
+      console.error('Renderer2 is not set.');
+      return;
+    }
     this.renderer.listen(handle, 'mousedown', (event: MouseEvent) => this.initiateDrag(event, bottomSheet));
     this.renderer.listen(handle, 'touchstart', (event: TouchEvent) => this.initiateDrag(event, bottomSheet));
   }
