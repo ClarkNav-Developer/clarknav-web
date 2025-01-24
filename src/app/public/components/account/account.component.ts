@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FloatingWindowService } from '../../../floating-window.service';
-import { MapStyleService } from '../../services/map-style.service';
-import { MapInstanceService } from '../../services/map-instance.service';
+import { MapStyleService } from '../../services/map/map-style.service';
+import { MapInstanceService } from '../../services/map/map-instance.service';
 import { AuthService } from '../../../auth/auth.service';
 import { Router } from '@angular/router';
 

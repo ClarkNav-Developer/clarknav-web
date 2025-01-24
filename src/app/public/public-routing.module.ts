@@ -1,10 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LayoutComponent } from './layout/layout.component';
-import { MapComponent } from './components/map/map.component';
-import { authGuard } from '../auth/auth.guard';
 
+// Layout Components
+import { LayoutComponent } from './layout/layout.component';
+
+// Feature Components
+import { MapComponent } from './components/map/map.component';
 import { LoginComponent } from '../admin/components/login/login.component';
+
+// Guards
+import { authGuard } from '../auth/auth.guard';
 
 const routes: Routes = [
   {

@@ -1,7 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { PublicRoutingModule } from './public-routing.module';
+
+// Components
 import { AboutComponent } from './components/about/about.component';
 import { FloatingWindowComponent } from './components/floating-window/floating-window.component';
 import { MapComponent } from './components/map/map.component';
@@ -9,24 +12,39 @@ import { NavigationComponent } from './components/navigation/navigation.componen
 import { SearchComponent } from './components/search/search.component';
 import { LayoutComponent } from './layout/layout.component';
 import { BottomNavigationComponent } from './components/bottom-navigation/bottom-navigation.component';
-import { FloatingWindowService } from '../floating-window.service';
 import { PlannerComponent } from './components/planner/planner.component';
 import { RouteComponent } from './components/route/route.component';
 import { AccountComponent } from './components/account/account.component';
 import { InformationComponent } from './components/information/information.component';
-import { FormsModule } from '@angular/forms';
-import { MapStyleService } from './services/map-style.service';
-import { MapInstanceService } from './services/map-instance.service';
+
+// Services
+import { FloatingWindowService } from '../floating-window.service';
+import { MapStyleService } from './services/map/map-style.service';
+import { MapInstanceService } from './services/map/map-instance.service';
 
 @NgModule({
   declarations: [
-    MapComponent,
-    SearchComponent,
-    NavigationComponent,
-    FloatingWindowComponent,
-    AboutComponent,
+    // Layout Components
     LayoutComponent,
     BottomNavigationComponent,
+
+    // Map Components
+    MapComponent,
+    MapComponent,
+    MapComponent,
+
+    // Navigation Components
+    NavigationComponent,
+    BottomNavigationComponent,
+
+    // Search Components
+    SearchComponent,
+
+    // Floating Window Components
+    FloatingWindowComponent,
+
+    // Other Components
+    AboutComponent,
     PlannerComponent,
     RouteComponent,
     AccountComponent,
@@ -37,8 +55,14 @@ import { MapInstanceService } from './services/map-instance.service';
     PublicRoutingModule,
     FormsModule,
   ],
-  providers: [FloatingWindowService, MapStyleService, MapInstanceService],
+  providers: [
+    // Services
+    FloatingWindowService,
+    MapStyleService,
+    MapInstanceService,
+  ],
   exports: [
+    // Exported Components
     MapComponent,
     SearchComponent,
     NavigationComponent,

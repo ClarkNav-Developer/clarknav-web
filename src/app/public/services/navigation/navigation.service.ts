@@ -1,8 +1,8 @@
 import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MapService } from './map.service';
-import { RoutesService } from './routes.service';
-import { WebsocketService } from './websocket.service';
+import { MapService } from '../map/map.service';
+import { RoutesService } from '../routes/routes.service';
+import { WebsocketService } from '../websocket/websocket.service';
 
 declare var google: any;
 

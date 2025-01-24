@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RoutesService } from './routes.service';
+import { RoutesService } from '../routes/routes.service';
 
 declare var google: any;
 

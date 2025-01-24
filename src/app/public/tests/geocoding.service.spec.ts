@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { BottomSheetService } from './bottom-sheet.service';
+import { GeocodingService } from '../services/geocoding/geocoding.service';
 
-describe('BottomSheetService', () => {
-  let service: BottomSheetService;
+describe('GeocodingService', () => {
+  let service: GeocodingService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(BottomSheetService);
+    service = TestBed.inject(GeocodingService);
   });
 
   it('should be created', () => {

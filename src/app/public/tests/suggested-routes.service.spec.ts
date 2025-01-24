@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SuggestedRoutesService } from './suggested-routes.service';
+import { SuggestedRoutesService } from '../services/routes/suggested-routes.service';
 
 describe('SuggestedRoutesService', () => {
   let service: SuggestedRoutesService;

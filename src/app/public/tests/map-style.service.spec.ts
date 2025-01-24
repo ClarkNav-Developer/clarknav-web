@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { WebsocketService } from './websocket.service';
+import { MapStyleService } from '../services/map/map-style.service';
 
-describe('WebsocketService', () => {
-  let service: WebsocketService;
+describe('MapStyleService', () => {
+  let service: MapStyleService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(WebsocketService);
+    service = TestBed.inject(MapStyleService);
   });
 
   it('should be created', () => {

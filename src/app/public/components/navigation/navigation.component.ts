@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationService } from '../../services/navigation.service';
-import { RoutesService } from '../../services/routes.service';
+import { NavigationService } from '../../services/navigation/navigation.service';
+import { RoutesService } from '../../services/routes/routes.service';
 
 declare var google: any;
 

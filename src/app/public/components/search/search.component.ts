@@ -1,7 +1,11 @@
 import { Component, OnInit, AfterViewInit, Renderer2, OnDestroy } from '@angular/core';
-import { MapService } from '../../services/map.service';
-import { NavigationService } from '../../services/navigation.service';
-import { SuggestedRoutesService } from '../../services/suggested-routes.service';
+import { MapService } from '../../services/map/map.service';
+import { NavigationService } from '../../services/navigation/navigation.service';
+import { SuggestedRoutesService } from '../../services/routes/suggested-routes.service';
+import { GeocodingService } from '../../services/geocoding/geocoding.service';
+import { BottomSheetService } from '../../services/bottom-sheet/bottom-sheet.service';
+import { FareService } from '../../services/fare/fare.service';
+import { LocationService } from '../../services/geocoding/location.service';
 
 declare var google: any;
 
@@ -10,35 +14,23 @@ declare var google: any;
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css']
 })
-export class SearchComponent implements OnInit, AfterViewInit {
+export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   // Locations and addresses
   currentLocation: google.maps.LatLngLiteral | null = null;
   destination: google.maps.LatLngLiteral | null = null;
   currentLocationAddress = 'Loading...';
   destinationAddress = 'Loading...';
-  geocoder = new google.maps.Geocoder();
 
   // UI state
   showNavigationWindow = false;
-  isBottomSheetVisible = false; // Make it false to hide the bottom sheet by default after testing
+  isBottomSheetVisible = false;
   showAllRoutes = true;
 
   // Route data
   suggestedRoutes: any[] = [];
   selectedRoute: any;
   highlightedRoute: any = null;
-  route: any = {
-    duration: null,
-  } // Add this line to define the route property
-
-  // Dragging state for the bottom sheet
-  private isDragging = false;
-  private startY = 0;
-  private startHeight = 0;
-  private startTime = 0;
-  private dragStartTime: number = 0; // Tracks the drag start time
-  private lastY: number = 0; // Tracks the last Y position for velocity calculation
-  private velocity: number = 0; // Dragging velocity
+  route: any = { duration: null };
 
   // Add a flag to check if a search has been performed
   searchPerformed = false;
@@ -47,6 +39,10 @@ export class SearchComponent implements OnInit, AfterViewInit {
     private mapService: MapService,
     private navigationService: NavigationService,
     private suggestedRoutesService: SuggestedRoutesService,
+    private geocodingService: GeocodingService,
+    private bottomSheetService: BottomSheetService,
+    private fareService: FareService,
+    private locationService: LocationService,
     private renderer: Renderer2
   ) { }
 
@@ -64,31 +60,27 @@ export class SearchComponent implements OnInit, AfterViewInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.navigationService.stopRealTimeTracking();
+  }
+
   /*------------------------------------------
   UI Controls
   --------------------------------------------*/
   toggleMobileContainer(): void {
-    const mobileContainer = document.querySelector('.mobile-container');
-    mobileContainer?.classList.toggle('show');
+    this.bottomSheetService.toggleMobileContainer();
   }
 
   toggleBottomSheet(): void {
-    const mobileBottomSheet = document.querySelector('.bottom-sheet-mobile');
-    if (mobileBottomSheet) {
-      if (mobileBottomSheet.classList.contains('hide')) {
-        mobileBottomSheet.classList.remove('hide');
-      }
-      mobileBottomSheet.classList.toggle('show');
-    }
+    this.bottomSheetService.toggleBottomSheet();
   }
 
   hideBottomSheet(): void {
-    const mobileBottomSheet = document.querySelector('.bottom-sheet-mobile');
-    if (mobileBottomSheet) {
-      mobileBottomSheet.classList.add('hide');
-      mobileBottomSheet.classList.remove('show');
-    }
-    this.mapService.clearMap();
+    this.bottomSheetService.hideBottomSheet(this.mapService);
+  }
+
+  minimizeBottomSheet(): void {
+    this.bottomSheetService.minimizeBottomSheet();
   }
 
   /*------------------------------------------
@@ -99,76 +91,8 @@ export class SearchComponent implements OnInit, AfterViewInit {
     const handle = bottomSheet?.querySelector('.drag-handle');
 
     if (handle && bottomSheet) {
-      this.renderer.listen(handle, 'mousedown', (event: MouseEvent) => this.initiateDrag(event, bottomSheet));
-      this.renderer.listen(handle, 'touchstart', (event: TouchEvent) => this.initiateDrag(event, bottomSheet));
-    }
-  }
-
-  private initiateDrag(event: MouseEvent | TouchEvent, bottomSheet: HTMLElement): void {
-    event.preventDefault();
-    this.isDragging = true;
-    this.startY = this.getClientY(event);
-    this.startHeight = bottomSheet.offsetHeight;
-
-    const moveHandler = (moveEvent: MouseEvent | TouchEvent) => this.performDrag(moveEvent, bottomSheet);
-    const endHandler = () => {
-      this.endDrag(bottomSheet);
-      document.removeEventListener('mousemove', moveHandler);
-      document.removeEventListener('mouseup', endHandler);
-      document.removeEventListener('touchmove', moveHandler);
-      document.removeEventListener('touchend', endHandler);
-    };
-
-    document.addEventListener('mousemove', moveHandler);
-    document.addEventListener('mouseup', endHandler);
-    document.addEventListener('touchmove', moveHandler, { passive: false });
-    document.addEventListener('touchend', endHandler);
-  }
-
-  private performDrag(event: MouseEvent | TouchEvent, bottomSheet: HTMLElement): void {
-    if (!this.isDragging) return;
-
-    const currentY = this.getClientY(event);
-    const deltaY = this.startY - currentY;
-    const newHeight = Math.min(window.innerHeight, Math.max(300, this.startHeight + deltaY));
-    this.updateBottomSheetHeight(bottomSheet, newHeight);
-  }
-
-  private endDrag(bottomSheet: HTMLElement): void {
-    this.isDragging = false;
-
-    const finalHeight = parseInt(bottomSheet.style.height || '0', 10);
-    const threshold = window.innerHeight / 2;
-
-    // Snap logic: either fully expand, minimize, or half-expand
-    if (finalHeight > threshold) {
-      this.snapToHeight(bottomSheet, '50vh');
-    } else if (finalHeight < 200) {
-      this.snapToHeight(bottomSheet, '50px');
-    } else {
-      this.snapToHeight(bottomSheet, '300px');
-    }
-  }
-
-  private snapToHeight(bottomSheet: HTMLElement, height: string): void {
-    bottomSheet.style.transition = 'height 0.3s ease';
-    bottomSheet.style.height = height;
-    setTimeout(() => bottomSheet.style.transition = '', 300);
-  }
-
-  private getClientY(event: MouseEvent | TouchEvent): number {
-    return event instanceof MouseEvent ? event.clientY : event.touches[0]?.clientY || 0;
-  }
-
-  private updateBottomSheetHeight(bottomSheet: HTMLElement, height: number): void {
-    bottomSheet.style.height = `${height}px`;
-  }
-
-  minimizeBottomSheet(): void {
-    const bottomSheet = document.getElementById('bottomSheet');
-    if (bottomSheet) {
-      bottomSheet.style.height = '150px'; // Adjust this height to your minimum state
-      bottomSheet.classList.add('minimized'); // Optional: Add a class for more control via CSS
+      this.renderer.listen(handle, 'mousedown', (event: MouseEvent) => this.bottomSheetService.initiateDrag(event, bottomSheet));
+      this.renderer.listen(handle, 'touchstart', (event: TouchEvent) => this.bottomSheetService.initiateDrag(event, bottomSheet));
     }
   }
 
@@ -181,7 +105,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.resolveAddresses();
+    this.locationService.resolveAddresses();
     this.fetchSuggestedRoutes();
     this.navigationService.currentLocation = this.currentLocation;
     this.navigationService.destination = this.destination;
@@ -205,10 +129,12 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
       // Calculate distance, duration, and fare for each route
       this.suggestedRoutes.forEach(route => {
-        route.distanceInKm = this.calculateDistance(route);
+        route.distanceInKm = this.fareService.calculateDistance(route);
         console.log(`Distance for route: ${route.distanceInKm} km`);
-        this.calculateDuration(route);
-        this.calculateFare(route);
+        this.fareService.calculateDuration(this.currentLocation!, this.destination!, (duration) => {
+          route.duration = duration;
+        });
+        this.fareService.calculateFare(route);
         console.log(`Fare for route: ₱${route.fare}`);
         console.log(`Student Fare for route: ₱${route.studentFare}`);
       });
@@ -227,6 +153,17 @@ export class SearchComponent implements OnInit, AfterViewInit {
       this.highlightedRoute = null;
       this.renderRoutesOnMap(this.selectedRoute, true); // Keep the selected route rendered
     }
+  }
+
+  selectRoute(route: any): void {
+    this.selectedRoute = route;
+    this.showAllRoutes = false;
+    this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
+    this.navigationService.startRealTimeTracking(); // Start real-time tracking
+  }
+
+  stopRealTimeTracking(): void {
+    this.navigationService.stopRealTimeTracking();
   }
 
   private renderRoutesOnMap(route?: any, isSelection: boolean = false): void {
@@ -254,192 +191,15 @@ export class SearchComponent implements OnInit, AfterViewInit {
     }
   }
 
-  selectRoute(route: any): void {
-    this.selectedRoute = route;
-    this.showAllRoutes = false;
-    this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
-    this.navigationService.startRealTimeTracking(); // Start real-time tracking
-  }
-
-  ngOnDestroy(): void {
-    this.navigationService.stopRealTimeTracking();
-  }
-
-  stopRealTimeTracking(): void {
-    this.navigationService.stopRealTimeTracking();
-  }
-
-
   /*------------------------------------------
   Location Utilities
   --------------------------------------------*/
   reverseLocation(): void {
-    if (this.currentLocation && this.destination) {
-      // Reverse the currentLocation and destination
-      [this.currentLocation, this.destination] = [this.destination, this.currentLocation];
-  
-      // Reverse the input values in the search boxes
-      const currentLocationInput = document.getElementById('current-location-box') as HTMLInputElement;
-      const destinationInput = document.getElementById('search-box') as HTMLInputElement;
-  
-      if (currentLocationInput && destinationInput) {
-        const tempValue = currentLocationInput.value;
-        currentLocationInput.value = destinationInput.value;
-        destinationInput.value = tempValue;
-      }
-  
-      // Resolve addresses and update the map
-      this.resolveAddresses();
-      this.mapService.map.setCenter(this.currentLocation);
-      this.fetchSuggestedRoutes();
-    } else {
-      alert('Both current location and destination must be set to reverse.');
-    }
+    this.locationService.reverseLocation();
   }
-  
+
   useMyLocation(): void {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        this.currentLocation = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        };
-        console.log('Current Location:', this.currentLocation);
-
-        // Update the input fields with the current location address
-        const currentLocationInput = document.getElementById('current-location-box') as HTMLInputElement;
-        const currentLocationInputMobile = document.getElementById('current-location-box-mobile') as HTMLInputElement;
-
-        if (currentLocationInput || currentLocationInputMobile) {
-          this.geocodeLatLng(this.currentLocation, (address: string) => {
-            if (currentLocationInput) {
-              currentLocationInput.value = address;
-            }
-            if (currentLocationInputMobile) {
-              currentLocationInputMobile.value = address;
-            }
-            this.currentLocationAddress = address;
-          });
-        }
-
-        this.resolveAddresses();
-        this.mapService.addMarker(this.currentLocation, 'Your Location');
-        this.mapService.map.setCenter(this.currentLocation);
-      }, error => {
-        console.error('Error fetching location', error);
-        alert('Unable to fetch your current location.');
-      });
-    } else {
-      alert('Geolocation is not supported by your browser.');
-    }
-  }
-
-  private resolveAddresses(): void {
-    if (this.currentLocation) {
-      this.geocodeLatLng(this.currentLocation, (address: string) => {
-        this.currentLocationAddress = address || 'Unable to resolve address';
-      });
-    } else {
-      this.currentLocationAddress = 'Current location not set';
-    }
-
-    if (this.destination) {
-      this.geocodeLatLng(this.destination, (address: string) => {
-        this.destinationAddress = address || 'Unable to resolve address';
-      });
-    } else {
-      this.destinationAddress = 'Destination not set';
-    }
-  }
-
-
-  private geocodeLatLng(latLng: google.maps.LatLngLiteral, callback: (address: string) => void): void {
-    this.geocoder.geocode({ location: latLng }, (results: google.maps.GeocoderResult[], status: google.maps.GeocoderStatus) => {
-      if (status === 'OK' && results[0]) {
-        let placeName = '';
-
-        // Try to find a specific name for the origin (e.g., "Bayanihan Jeepney Terminal")
-        for (const component of results[0].address_components) {
-          if (component.types.includes('point_of_interest') || component.types.includes('establishment')) {
-            placeName = component.long_name;
-            break;
-          }
-        }
-
-        // Fallback to locality or sublocality if no specific name is found
-        if (!placeName) {
-          for (const component of results[0].address_components) {
-            if (component.types.includes('locality') || component.types.includes('sublocality')) {
-              placeName = component.long_name;
-              break;
-            }
-          }
-        }
-
-        // Default to formatted address if no specific place is found
-        if (!placeName) {
-          placeName = results[0].formatted_address;
-        }
-
-        callback(placeName);  // Return the resolved name
-      } else {
-        console.error('Geocoder failed due to: ' + status);
-        callback('Address not found');
-      }
-    });
-  }
-
-
-  /*------------------------------------------
-  Fare and Distance Calculations
-  --------------------------------------------*/
-  private calculateFare(route: any): void {
-    const baseFare = 13;
-    const additionalFare = Math.max(0, route.distanceInKm - 4) * 1.8;
-    const totalFare = baseFare + additionalFare;
-
-    // Round up to the nearest whole number
-    route.fare = Math.ceil(totalFare);
-    console.log(`Total fare before: ₱${totalFare}, Total fare after: ₱${route.fare}`);
-
-    // Calculate student fare with 20% discount and round up to the nearest whole number
-    route.studentFare = Math.ceil(totalFare * 0.8);
-    console.log(`Total fare before: ₱${totalFare * 0.8}, Total fare after: ₱${route.studentFare}`);
-
-  }
-
-  private calculateDistance(route: any): number {
-    let totalDistance = 0;
-    const path = route.path || [];
-
-    for (let i = 0; i < path.length - 1; i++) {
-      const startLatLng = new google.maps.LatLng(path[i].lat, path[i].lng);
-      const endLatLng = new google.maps.LatLng(path[i + 1].lat, path[i + 1].lng);
-      totalDistance += google.maps.geometry.spherical.computeDistanceBetween(startLatLng, endLatLng);
-    }
-
-    return totalDistance / 1000; // Convert to kilometers
-  }
-
-  private calculateDuration(route: any): void {
-    const service = new google.maps.DistanceMatrixService();
-    service.getDistanceMatrix(
-      {
-        origins: [this.currentLocation],
-        destinations: [this.destination],
-        travelMode: google.maps.TravelMode.DRIVING,
-      },
-      (response: google.maps.DistanceMatrixResponse, status: google.maps.DistanceMatrixStatus) => {
-        if (status === 'OK' && response.rows[0].elements[0].status === 'OK') {
-          let durationText = response.rows[0].elements[0].duration.text;
-          // Convert duration to a shorter format
-          durationText = durationText.replace(' mins', 'm').replace(' min', 'm');
-          route.duration = durationText;
-        } else {
-          console.error('Error fetching duration: ', status);
-        }
-      }
-    );
+    this.locationService.useMyLocation();
   }
 
   /*------------------------------------------
@@ -483,7 +243,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
               this.destination = location;
             }
 
-            this.resolveAddresses(); // Ensure address is resolved after location selection
+            this.locationService.resolveAddresses(); // Ensure address is resolved after location selection
             this.mapService.addMarker(location, input.id.includes('current') ? 'Your Location' : 'Destination');
             this.mapService.map.setCenter(location);
 

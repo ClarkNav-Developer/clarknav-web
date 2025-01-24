@@ -1,7 +1,7 @@
 import { Component, Renderer2, OnInit, OnDestroy } from '@angular/core';
 import { FloatingWindowService } from '../../../floating-window.service';
-import { MapService } from '../../services/map.service';
-import { RoutesService } from '../../services/routes.service';
+import { MapService } from '../../services/map/map.service';
+import { RoutesService } from '../../services/routes/routes.service';
 import { Subscription } from 'rxjs';
 
 @Component({
