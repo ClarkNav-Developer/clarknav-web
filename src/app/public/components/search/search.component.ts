@@ -32,6 +32,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   highlightedRoute: any = null;
   route: any = { duration: null };
 
+  private trackingInterval: any = null;
   // Add a flag to check if a search has been performed
   searchPerformed = false;
 
@@ -109,7 +110,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.fetchSuggestedRoutes();
     this.navigationService.currentLocation = this.currentLocation;
     this.navigationService.destination = this.destination;
-    this.navigationService.navigateToDestination();
+    // this.navigationService.navigateToDestination();
 
     this.isBottomSheetVisible = true;
     this.searchPerformed = true;
@@ -155,17 +156,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  selectRoute(route: any): void {
-    this.selectedRoute = route;
-    this.showAllRoutes = false;
-    this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
-    this.navigationService.startRealTimeTracking(); // Start real-time tracking
-  }
-
-  stopRealTimeTracking(): void {
-    this.navigationService.stopRealTimeTracking();
-  }
-
   private renderRoutesOnMap(route?: any, isSelection: boolean = false): void {
     this.mapService.clearMap();
 
@@ -190,6 +180,57 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }
   }
+
+  selectRoute(route: any): void {
+    this.selectedRoute = route;
+    this.route = route;
+    this.showAllRoutes = false;
+    this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
+    this.navigationService.startRealTimeTracking(); // Start real-time tracking
+  }
+
+  stopRealTimeTracking(): void {
+    if (this.trackingInterval) {
+      clearInterval(this.trackingInterval);
+      this.trackingInterval = null;
+    }
+    // Additional logic to stop tracking, if any
+  }
+
+
+
+  /*------------------------------------------
+  Navigation Controls
+  --------------------------------------------*/
+
+  startNavigation(): void {
+    if (this.selectedRoute) {
+      this.navigationService.startRealTimeTracking();
+      this.isBottomSheetVisible = false;
+      this.showNavigationWindow = false;
+
+      // Hide the mobile container
+      const mobileContainer = document.querySelector('.mobile-container');
+      if (mobileContainer) {
+        mobileContainer.classList.remove('show');
+      }
+
+      // Hide the bottom sheet
+      const bottomSheet = document.getElementById('bottomSheet');
+      if (bottomSheet) {
+        bottomSheet.style.height = '0';
+        bottomSheet.classList.remove('show');
+      }
+    } else {
+      alert('Please select a route to start navigation.');
+    }
+  }
+
+  stopNavigation(): void {
+    this.navigationService.stopRealTimeTracking();
+    this.mapService.clearMap(); // Clear all markers and routes rendered on the map
+  }
+
 
   /*------------------------------------------
   Location Utilities
