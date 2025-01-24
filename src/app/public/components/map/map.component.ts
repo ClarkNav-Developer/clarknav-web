@@ -17,6 +17,7 @@ declare var google: any;
 })
 export class MapComponent implements OnInit, AfterViewInit {
   private gpsSubscription: Subscription | null = null; // To manage WebSocket subscriptions
+  private autoCenterTimeout: any; // To manage auto-center timeout
 
   constructor(
     private mapService: MapService,
@@ -67,6 +68,10 @@ export class MapComponent implements OnInit, AfterViewInit {
         this.mapInstanceService.setMap(map);
         this.mapService.initializeMap(map);
         this.routesService.loadRoutes();
+
+        // Add event listeners to detect user interactions
+        map.addListener('dragstart', () => this.onUserInteraction());
+        map.addListener('zoom_changed', () => this.onUserInteraction());
       } catch (error) {
         console.error('Error initializing map:', error);
       }
@@ -75,9 +80,30 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onUserInteraction() {
+    // Disable auto-centering
+    this.mapService.disableAutoCenter();
+
+    // Clear any existing timeout
+    if (this.autoCenterTimeout) {
+      clearTimeout(this.autoCenterTimeout);
+    }
+
+    // Re-enable auto-centering after 10 seconds
+    this.autoCenterTimeout = setTimeout(() => {
+      this.mapService.enableAutoCenter();
+      if (this.mapService.currentLocation) {
+        this.mapService.centerMapOnRealTimeLocation();
+      }
+    }, 10000); // 10 seconds
+  }
+  
   ngOnDestroy(): void {
     if (this.gpsSubscription) {
       this.gpsSubscription.unsubscribe(); // Unsubscribe to avoid memory leaks
+    }
+    if (this.autoCenterTimeout) {
+      clearTimeout(this.autoCenterTimeout);
     }
   }
 }

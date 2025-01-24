@@ -2,6 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MapService } from './map.service';
 import { RoutesService } from './routes.service';
+import { WebsocketService } from './websocket.service';
 
 declare var google: any;
 
@@ -47,8 +48,17 @@ export class NavigationService {
     private mapService: MapService,
     private routesService: RoutesService,
     private http: HttpClient,
-    private ngZone: NgZone // Ensures UI updates when location changes
-  ) {}
+    private ngZone: NgZone, // Ensures UI updates when location changes
+    private websocketService: WebsocketService
+  ) {
+    // Subscribe to real-time tracking updates from WebSocket
+    this.websocketService.subscribeToRealTimeTracking((data) => {
+      this.ngZone.run(() => {
+        console.log('Processing real-time location update from WebSocket:', data);
+        this.mapService.updateRealTimeLocation(data);
+      });
+    });
+  }
 
   /*------------------------------------------
   Route Navigation
@@ -119,7 +129,11 @@ export class NavigationService {
     this.mapService.displayWalkingPath(finalDestination, this.destination!, routePath.color);
 
     // Set the initial route path in the MapService with the route color
-    this.mapService.setCurrentRoutePath(routePath.path);
+    this.mapService.setCurrentRoutePath(routePath.path, routePath.color);
+
+    // Enable auto-centering and center the map on the user's real-time location
+    this.mapService.enableAutoCenter();
+    this.mapService.centerMapOnRealTimeLocation();
   }
 
   /*------------------------------------------
@@ -184,9 +198,6 @@ export class NavigationService {
   
           // Update real-time location on the map
           this.mapService.updateRealTimeLocation(newLocation);
-  
-          // Optionally, adjust the map view
-          this.mapService.map.panTo(newLocation);
         });
       },
       (error) => {

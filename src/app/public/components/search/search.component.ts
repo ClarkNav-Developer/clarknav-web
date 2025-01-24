@@ -27,6 +27,9 @@ export class SearchComponent implements OnInit, AfterViewInit {
   suggestedRoutes: any[] = [];
   selectedRoute: any;
   highlightedRoute: any = null;
+  route: any = {
+    duration: null,
+  } // Add this line to define the route property
 
   // Dragging state for the bottom sheet
   private isDragging = false;
@@ -143,7 +146,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
     } else if (finalHeight < 200) {
       this.snapToHeight(bottomSheet, '50px');
     } else {
-      this.snapToHeight(bottomSheet, '50vh');
+      this.snapToHeight(bottomSheet, '300px');
     }
   }
 
