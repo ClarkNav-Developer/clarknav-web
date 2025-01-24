@@ -237,9 +237,13 @@
             <h3>Suggested Routes</h3>
             <div class="routes-container-mobile">
                 <div *ngFor="let route of suggestedRoutes" class="route-item-mobile" (click)="selectRoute(route)"
-                    (mouseover)="highlightRoute(route)" (mouseleave)="clearHighlight()" (click)="minimizeBottomSheet()"
+                    (mouseover)="highlightRoute(route)" (mouseleave)="clearHighlight()" (click)="minimizeBottomSheet()" (click)="startNavigation()"
                     [class.selected]="route === selectedRoute"
                     [class.opacity]="highlightedRoute && route !== highlightedRoute">
+
+                    <div class="route-header-mobile">
+                        <h3>Route 1</h3>
+                    </div>
 
                     <div class="route-details-mobile">
                         <div class="origin-info-mobile">
@@ -294,7 +298,7 @@
     <div class="navigation-status">
         <div class="navigation-status-container">
             <div class="end-navigation-button">
-                <button (click)="stopRealTimeTracking()">End Navigation</button>
+                <button (click)="stopNavigation()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></button>
             </div>
             <div class="navigation-status-info">
                 <div class="origin-info-mobile">
@@ -325,6 +329,9 @@
                 <div class="time-info-mobile">
                     <div class="duration">{{ route.duration }}</div>
                 </div>
+            </div>
+            <div class="estimated-time-mobile">
+                <span style="font-size: 14px;">10:00 AM - 12:00 PM</span>
             </div>
         </div>
     </div>

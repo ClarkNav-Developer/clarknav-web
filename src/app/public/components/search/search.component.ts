@@ -39,6 +39,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
   private dragStartTime: number = 0; // Tracks the drag start time
   private lastY: number = 0; // Tracks the last Y position for velocity calculation
   private velocity: number = 0; // Dragging velocity
+  private trackingInterval: any = null; // Tracking interval
 
   // Add a flag to check if a search has been performed
   searchPerformed = false;
@@ -62,6 +63,38 @@ export class SearchComponent implements OnInit, AfterViewInit {
     if (!this.mapService) {
       console.error('MapService is not available.');
     }
+  }
+
+  /*------------------------------------------
+  Navigation Controls
+  --------------------------------------------*/
+
+  startNavigation(): void {
+    if (this.selectedRoute) {
+      this.navigationService.startRealTimeTracking();
+      this.isBottomSheetVisible = false;
+      this.showNavigationWindow = false;
+
+      // Hide the mobile container
+      const mobileContainer = document.querySelector('.mobile-container');
+      if (mobileContainer) {
+        mobileContainer.classList.remove('show');
+      }
+
+      // Hide the bottom sheet
+      const bottomSheet = document.getElementById('bottomSheet');
+      if (bottomSheet) {
+        bottomSheet.style.height = '0';
+        bottomSheet.classList.remove('show');
+      }
+    } else {
+      alert('Please select a route to start navigation.');
+    }
+  }
+
+  stopNavigation(): void {
+    this.navigationService.stopRealTimeTracking();
+    this.mapService.clearMap(); // Clear all markers and routes rendered on the map
   }
 
   /*------------------------------------------
@@ -256,6 +289,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
   selectRoute(route: any): void {
     this.selectedRoute = route;
+    this.route = route; // Update the route object
     this.showAllRoutes = false;
     this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
     this.navigationService.startRealTimeTracking(); // Start real-time tracking
@@ -266,7 +300,11 @@ export class SearchComponent implements OnInit, AfterViewInit {
   }
 
   stopRealTimeTracking(): void {
-    this.navigationService.stopRealTimeTracking();
+    if (this.trackingInterval) {
+      clearInterval(this.trackingInterval);
+      this.trackingInterval = null;
+    }
+    // Additional logic to stop tracking, if any
   }
 
 
