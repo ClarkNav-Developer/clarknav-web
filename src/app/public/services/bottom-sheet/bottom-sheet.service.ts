@@ -1,6 +1,5 @@
 import { Injectable, Renderer2 } from '@angular/core';
 import { MapService } from '../map/map.service';
-import { SearchComponent } from '../../components/search/search.component';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +16,7 @@ export class BottomSheetService {
     this.renderer.listen(handle, 'touchstart', (event: TouchEvent) => this.initiateDrag(event, bottomSheet));
   }
 
-  initiateDrag(event: MouseEvent | TouchEvent, bottomSheet: HTMLElement): void {
+  public initiateDrag(event: MouseEvent | TouchEvent, bottomSheet: HTMLElement): void {
     event.preventDefault();
     this.isDragging = true;
     this.startY = this.getClientY(event);
@@ -76,7 +75,7 @@ export class BottomSheetService {
     bottomSheet.style.height = `${height}px`;
   }
 
-  toggleBottomSheet(): void {
+  public toggleBottomSheet(): void {
     const mobileBottomSheet = document.querySelector('.bottom-sheet-mobile');
     if (mobileBottomSheet) {
       if (mobileBottomSheet.classList.contains('hide')) {
@@ -86,7 +85,7 @@ export class BottomSheetService {
     }
   }
 
-  hideBottomSheet(mapService: MapService): void {
+  public hideBottomSheet(mapService: MapService): void {
     const mobileBottomSheet = document.querySelector('.bottom-sheet-mobile');
     if (mobileBottomSheet) {
       mobileBottomSheet.classList.add('hide');
@@ -95,7 +94,7 @@ export class BottomSheetService {
     mapService.clearMap();
   }
 
-  minimizeBottomSheet(): void {
+  public minimizeBottomSheet(): void {
     const bottomSheet = document.getElementById('bottomSheet');
     if (bottomSheet) {
       bottomSheet.style.height = '150px';
@@ -103,7 +102,7 @@ export class BottomSheetService {
     }
   }
 
-  toggleMobileContainer(): void {
+  public toggleMobileContainer(): void {
     const mobileContainer = document.querySelector('.mobile-container');
     mobileContainer?.classList.toggle('show');
   }

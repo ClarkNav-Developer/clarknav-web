@@ -197,8 +197,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     // Additional logic to stop tracking, if any
   }
 
-
-
   /*------------------------------------------
   Navigation Controls
   --------------------------------------------*/
@@ -230,7 +228,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.navigationService.stopRealTimeTracking();
     this.mapService.clearMap(); // Clear all markers and routes rendered on the map
   }
-
 
   /*------------------------------------------
   Location Utilities
