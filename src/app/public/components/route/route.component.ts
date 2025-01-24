@@ -99,7 +99,7 @@ export class RouteComponent implements OnInit, OnDestroy {
       this.displayRoute(cachedRoute, routeId);
       return;
     }
-
+  
     const route = this.routesService.getRouteById(routeId);
     if (route) {
       this.cacheRoute(routeId, route);
@@ -157,7 +157,7 @@ export class RouteComponent implements OnInit, OnDestroy {
   }
 
   renderRoute8() {
-    this.renderRoute('B1');
+    this.renderRoute('B2');
   }
 
   showRouteListAgain() {

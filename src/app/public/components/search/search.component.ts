@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Renderer2, OnDestroy} from '@angular/core';
+import { Component, OnInit, AfterViewInit, Renderer2, OnDestroy } from '@angular/core';
 import { MapService } from '../../services/map.service';
 import { NavigationService } from '../../services/navigation.service';
 import { SuggestedRoutesService } from '../../services/suggested-routes.service';
@@ -81,7 +81,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
       mobileBottomSheet.classList.toggle('show');
     }
   }
-  
+
   hideBottomSheet(): void {
     const mobileBottomSheet = document.querySelector('.bottom-sheet-mobile');
     if (mobileBottomSheet) {
@@ -97,19 +97,19 @@ export class SearchComponent implements OnInit, AfterViewInit {
   private setupBottomSheetDragging(): void {
     const bottomSheet = document.getElementById('bottomSheet');
     const handle = bottomSheet?.querySelector('.drag-handle');
-  
+
     if (handle && bottomSheet) {
       this.renderer.listen(handle, 'mousedown', (event: MouseEvent) => this.initiateDrag(event, bottomSheet));
       this.renderer.listen(handle, 'touchstart', (event: TouchEvent) => this.initiateDrag(event, bottomSheet));
     }
   }
-  
+
   private initiateDrag(event: MouseEvent | TouchEvent, bottomSheet: HTMLElement): void {
     event.preventDefault();
     this.isDragging = true;
     this.startY = this.getClientY(event);
     this.startHeight = bottomSheet.offsetHeight;
-  
+
     const moveHandler = (moveEvent: MouseEvent | TouchEvent) => this.performDrag(moveEvent, bottomSheet);
     const endHandler = () => {
       this.endDrag(bottomSheet);
@@ -118,28 +118,28 @@ export class SearchComponent implements OnInit, AfterViewInit {
       document.removeEventListener('touchmove', moveHandler);
       document.removeEventListener('touchend', endHandler);
     };
-  
+
     document.addEventListener('mousemove', moveHandler);
     document.addEventListener('mouseup', endHandler);
     document.addEventListener('touchmove', moveHandler, { passive: false });
     document.addEventListener('touchend', endHandler);
   }
-  
+
   private performDrag(event: MouseEvent | TouchEvent, bottomSheet: HTMLElement): void {
     if (!this.isDragging) return;
-    
+
     const currentY = this.getClientY(event);
     const deltaY = this.startY - currentY;
     const newHeight = Math.min(window.innerHeight, Math.max(300, this.startHeight + deltaY));
     this.updateBottomSheetHeight(bottomSheet, newHeight);
   }
-  
+
   private endDrag(bottomSheet: HTMLElement): void {
     this.isDragging = false;
-  
+
     const finalHeight = parseInt(bottomSheet.style.height || '0', 10);
     const threshold = window.innerHeight / 2;
-  
+
     // Snap logic: either fully expand, minimize, or half-expand
     if (finalHeight > threshold) {
       this.snapToHeight(bottomSheet, '50vh');
@@ -149,17 +149,17 @@ export class SearchComponent implements OnInit, AfterViewInit {
       this.snapToHeight(bottomSheet, '300px');
     }
   }
-  
+
   private snapToHeight(bottomSheet: HTMLElement, height: string): void {
     bottomSheet.style.transition = 'height 0.3s ease';
     bottomSheet.style.height = height;
     setTimeout(() => bottomSheet.style.transition = '', 300);
   }
-  
+
   private getClientY(event: MouseEvent | TouchEvent): number {
     return event instanceof MouseEvent ? event.clientY : event.touches[0]?.clientY || 0;
   }
-  
+
   private updateBottomSheetHeight(bottomSheet: HTMLElement, height: number): void {
     bottomSheet.style.height = `${height}px`;
   }
@@ -202,7 +202,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
         this.suggestedRoutes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
         localStorage.setItem(key, JSON.stringify(this.suggestedRoutes));
       }
-  
+
       // Calculate distance, duration, and fare for each route
       this.suggestedRoutes.forEach(route => {
         route.distanceInKm = this.calculateDistance(route);
@@ -305,11 +305,11 @@ export class SearchComponent implements OnInit, AfterViewInit {
           lng: position.coords.longitude,
         };
         console.log('Current Location:', this.currentLocation);
-        
+
         // Update the input fields with the current location address
         const currentLocationInput = document.getElementById('current-location-box') as HTMLInputElement;
         const currentLocationInputMobile = document.getElementById('current-location-box-mobile') as HTMLInputElement;
-        
+
         if (currentLocationInput || currentLocationInputMobile) {
           this.geocodeLatLng(this.currentLocation, (address: string) => {
             if (currentLocationInput) {
@@ -397,11 +397,11 @@ export class SearchComponent implements OnInit, AfterViewInit {
     const baseFare = 13;
     const additionalFare = Math.max(0, route.distanceInKm - 4) * 1.8;
     const totalFare = baseFare + additionalFare;
-    
+
     // Round up to the nearest whole number
     route.fare = Math.ceil(totalFare);
     console.log(`Total fare before: ₱${totalFare}, Total fare after: ₱${route.fare}`);
-    
+
     // Calculate student fare with 20% discount and round up to the nearest whole number
     route.studentFare = Math.ceil(totalFare * 0.8);
     console.log(`Total fare before: ₱${totalFare * 0.8}, Total fare after: ₱${route.studentFare}`);
@@ -411,13 +411,13 @@ export class SearchComponent implements OnInit, AfterViewInit {
   private calculateDistance(route: any): number {
     let totalDistance = 0;
     const path = route.path || [];
-  
+
     for (let i = 0; i < path.length - 1; i++) {
       const startLatLng = new google.maps.LatLng(path[i].lat, path[i].lng);
       const endLatLng = new google.maps.LatLng(path[i + 1].lat, path[i + 1].lng);
       totalDistance += google.maps.geometry.spherical.computeDistanceBetween(startLatLng, endLatLng);
     }
-  
+
     return totalDistance / 1000; // Convert to kilometers
   }
 
@@ -445,7 +445,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
   /*------------------------------------------
   Autocomplete Initialization
   --------------------------------------------*/
-    private initializeAutocomplete(): void {
+  private initializeAutocomplete(): void {
     const inputs = [
       'search-box',
       'search-box-2',
@@ -454,7 +454,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
       'current-location-box',
       'current-location-box-mobile',
     ].map(id => document.getElementById(id) as HTMLInputElement);
-  
+
     inputs.forEach(input => {
       if (input) {
         const autocomplete = new google.maps.places.Autocomplete(input, {
@@ -462,7 +462,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
           bounds: this.navigationService.clarkBounds,
           strictBounds: true,
         });
-  
+
         autocomplete.addListener('place_changed', () => {
           const place = autocomplete.getPlace();
           if (place.geometry) {
@@ -470,31 +470,31 @@ export class SearchComponent implements OnInit, AfterViewInit {
               lat: place.geometry.location.lat(),
               lng: place.geometry.location.lng(),
             };
-  
+
             // Extract the place name
             const placeName = place.name || 'Unknown Place';
-  
+
             // Set the input value to the place name
             input.value = placeName;
-  
+
             if (input.id.includes('current')) {
               this.currentLocation = location;
             } else {
               this.destination = location;
             }
-  
+
             this.resolveAddresses(); // Ensure address is resolved after location selection
             this.mapService.addMarker(location, input.id.includes('current') ? 'Your Location' : 'Destination');
             this.mapService.map.setCenter(location);
-  
+
             // Fetch suggested routes immediately after setting the locations
             this.fetchSuggestedRoutes();
-  
+
             // Update the searchPerformed flag
             this.searchPerformed = !!this.currentLocation && !!this.destination;
           }
         });
-  
+
         // Add event listener to update searchPerformed flag when input changes
         input.addEventListener('input', () => {
           this.searchPerformed = !!this.currentLocation && !!this.destination;
