@@ -1,4 +1,4 @@
-import { Injectable, Renderer2 } from '@angular/core';
+import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { MapService } from '../map/map.service';
 
 @Injectable({
@@ -8,8 +8,11 @@ export class BottomSheetService {
   private isDragging = false;
   private startY = 0;
   private startHeight = 0;
+  private renderer: Renderer2;
 
-  constructor(private renderer: Renderer2, private mapService: MapService) {}
+  constructor(rendererFactory: RendererFactory2, private mapService: MapService) {
+    this.renderer = rendererFactory.createRenderer(null, null);
+  }
 
   setupDragging(bottomSheet: HTMLElement, handle: HTMLElement): void {
     this.renderer.listen(handle, 'mousedown', (event: MouseEvent) => this.initiateDrag(event, bottomSheet));
