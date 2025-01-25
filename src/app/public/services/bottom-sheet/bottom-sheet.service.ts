@@ -1,20 +1,26 @@
-import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
+import { Injectable, Renderer2 } from '@angular/core';
 import { MapService } from '../map/map.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BottomSheetService {
+  private renderer: Renderer2 | null = null;
   private isDragging = false;
   private startY = 0;
   private startHeight = 0;
-  private renderer: Renderer2;
 
-  constructor(rendererFactory: RendererFactory2, private mapService: MapService) {
-    this.renderer = rendererFactory.createRenderer(null, null);
+  constructor(private mapService: MapService) {}
+  
+  setRenderer(renderer: Renderer2): void {
+    this.renderer = renderer;
   }
 
   setupDragging(bottomSheet: HTMLElement, handle: HTMLElement): void {
+    if (!this.renderer) {
+      console.error('Renderer2 is not set.');
+      return;
+    }
     this.renderer.listen(handle, 'mousedown', (event: MouseEvent) => this.initiateDrag(event, bottomSheet));
     this.renderer.listen(handle, 'touchstart', (event: TouchEvent) => this.initiateDrag(event, bottomSheet));
   }

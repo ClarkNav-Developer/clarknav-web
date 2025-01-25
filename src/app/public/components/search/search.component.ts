@@ -43,7 +43,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     private geocodingService: GeocodingService,
     private bottomSheetService: BottomSheetService,
     private fareService: FareService,
-    private locationService: LocationService,
+    public locationService: LocationService,
     private renderer: Renderer2
   ) { }
 
@@ -53,6 +53,8 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.initializeAutocomplete();
     this.setupBottomSheetDragging();
+    this.bottomSheetService.setRenderer(this.renderer);
+    this.locationService.resolveAddresses(); // Ensure addresses are resolved on initialization
   }
 
   ngAfterViewInit(): void {
