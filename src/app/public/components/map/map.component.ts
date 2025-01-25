@@ -29,12 +29,6 @@ export class MapComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
-    const savedMode = localStorage.getItem('darkMode');
-    const styleUrl = savedMode === 'true' ? 'assets/darkmap.json' : 'assets/retro.json';
-    this.mapStyleService.loadMapStyle(styleUrl).subscribe(style => {
-      this.initMap(style);
-    });
-
     // Subscribe to real-time GPS updates
     this.websocketService.on('gpsUpdate', (data) => {
       console.log('Real-time GPS update:', data);
@@ -45,40 +39,43 @@ export class MapComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     const savedMode = localStorage.getItem('darkMode');
     const styleUrl = savedMode === 'true' ? 'assets/darkmap.json' : 'assets/retro.json';
+  
     this.mapStyleService.loadMapStyle(styleUrl).subscribe(style => {
-      this.initMap(style);
+      this.initMap(style); // Initialize map with the loaded style
     });
   }
+  
 
   initMap(style: any) {
     const mapElement = document.getElementById('map');
-    if (mapElement) {
-      try {
-        const map = new google.maps.Map(mapElement as HTMLElement, {
-          center: { lat: 15.187769063648858, lng: 120.55950164794922 },
-          zoom: 14,
-          minZoom: 14,
-          mapTypeControl: false,
-          streetViewControl: false,
-          fullscreenControl: false,
-          zoomControl: false,
-          styles: style
-        });
-
-        this.mapInstanceService.setMap(map);
-        this.mapService.initializeMap(map);
-        this.routesService.loadRoutes();
-
-        // Add event listeners to detect user interactions
-        map.addListener('dragstart', () => this.onUserInteraction());
-        map.addListener('zoom_changed', () => this.onUserInteraction());
-      } catch (error) {
-        console.error('Error initializing map:', error);
-      }
-    } else {
-      console.error('Map element not found!');
+    if (!mapElement) {
+      console.error('Map element not found! Ensure the DOM is fully loaded.');
+      return;
+    }
+  
+    try {
+      const map = new google.maps.Map(mapElement as HTMLElement, {
+        center: { lat: 15.187769063648858, lng: 120.55950164794922 },
+        zoom: 14,
+        minZoom: 14,
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false,
+        zoomControl: false,
+        styles: style,
+      });
+  
+      this.mapInstanceService.setMap(map);
+      this.mapService.initializeMap(map);
+      this.routesService.loadRoutes();
+  
+      map.addListener('dragstart', () => this.onUserInteraction());
+      map.addListener('zoom_changed', () => this.onUserInteraction());
+    } catch (error) {
+      console.error('Error initializing map:', error);
     }
   }
+  
 
   onUserInteraction() {
     // Disable auto-centering

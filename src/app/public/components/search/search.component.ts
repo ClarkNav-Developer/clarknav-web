@@ -18,8 +18,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   // Locations and addresses
   currentLocation: google.maps.LatLngLiteral | null = null;
   destination: google.maps.LatLngLiteral | null = null;
-  currentLocationAddress = 'Loading...';
-  destinationAddress = 'Loading...';
 
   // UI state
   showNavigationWindow = false;
@@ -279,8 +277,10 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
             if (input.id.includes('current')) {
               this.currentLocation = location;
+              this.locationService.currentLocation = location;
             } else {
               this.destination = location;
+              this.locationService.destination = location;
             }
 
             this.locationService.resolveAddresses(); // Ensure address is resolved after location selection
