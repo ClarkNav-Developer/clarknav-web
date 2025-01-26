@@ -229,6 +229,13 @@ export class MapService {
       this.map.panTo(this.realTimeMarker.getPosition());
     }
   }
+
+  removeRealTimeMarker(): void {
+    if (this.realTimeMarker) {
+      this.realTimeMarker.setMap(null); // Remove the marker from the map
+      this.realTimeMarker = null; // Clear the reference
+    }
+  }
   
   private updateRoutePath(currentPosition: google.maps.LatLng) {
     if (!this.currentRoutePath.length) return;

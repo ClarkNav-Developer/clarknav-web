@@ -229,6 +229,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   stopNavigation(): void {
     this.navigationService.stopRealTimeTracking();
     this.mapService.clearMap(); // Clear all markers and routes rendered on the map
+    this.mapService.removeRealTimeMarker(); // Remove the real-time marker
     this.showNavigationStatus = false; // Hide navigation status
   }
 
