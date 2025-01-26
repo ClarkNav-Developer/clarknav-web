@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from '../environments/environment';
 import { MapInstanceService } from './public/services/map/map-instance.service';
 import { MapStyleService } from './public/services/map/map-style.service';
+import { MapService } from './public/services/map/map.service';
 
 @Component({
   selector: 'app-root',

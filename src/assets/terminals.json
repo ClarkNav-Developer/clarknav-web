@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "jeepney_routes": [
+    "jeepneys": [
       {
         "route_id": 1,
         "route_name": "Jeepney Route 1 - Green",
@@ -67,7 +67,7 @@
         ]
       }
     ],
-    "bus_routes": [
+    "bus": [
       {
         "route_id": 1,
         "route_name": "Clark Loop Northbound",
