@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { RoutesService } from '../routes/routes.service';
+import { TerminalMarkerService } from '../custom-marker/terminal-marker.service';
 
 declare var google: any;
 
@@ -33,7 +34,7 @@ export class MapService {
   private currentRouteColor: string = ''; // Store the current route color
   private autoCenterEnabled: boolean = false; // Property to enable or disable auto-centering
 
-  constructor(private routesService: RoutesService) { }
+  constructor(private routesService: RoutesService, private terminalMarkerService: TerminalMarkerService) { }
 
   // Caching the directions results
   private getCacheKey(request: any): string {
@@ -60,6 +61,7 @@ export class MapService {
   --------------------------------------------*/
   initializeMap(map: any) {
     this.map = map;
+    this.loadAndDisplayTerminals();
     this.directionsService = new google.maps.DirectionsService();
     this.directionsRenderer = new google.maps.DirectionsRenderer({
       map: this.map,
@@ -107,7 +109,34 @@ export class MapService {
     this.markers.push(marker);
     return marker;
   }
-  
+
+  private loadAndDisplayTerminals() {
+    this.terminalMarkerService.getTerminals().subscribe((data: any) => {
+      console.log('Terminals response:', data); // Log the response
+
+      if (data && Array.isArray(data.jeepneys) && Array.isArray(data.bus)) {
+        const allRoutes = [...data.jeepneys, ...data.bus];
+        allRoutes.forEach((route) => {
+          if (Array.isArray(route.terminals)) {
+            route.terminals.forEach((terminal: any) => {
+              if (terminal.coordinates && terminal.coordinates.lat && terminal.coordinates.lng) {
+                this.addMarker(
+                  { lat: terminal.coordinates.lat, lng: terminal.coordinates.lng },
+                  terminal.terminal_name
+                );
+              } else {
+                console.error('Terminal coordinates are missing or incomplete:', terminal);
+              }
+            });
+          } else {
+            console.error('Route terminals are not an array:', route);
+          }
+        });
+      } else {
+        console.error('Terminals data is not in the expected format:', data);
+      }
+    });
+  }
 
   /*------------------------------------------
   Route Display
@@ -227,6 +256,13 @@ export class MapService {
   centerMapOnRealTimeLocation() {
     if (this.realTimeMarker) {
       this.map.panTo(this.realTimeMarker.getPosition());
+    }
+  }
+
+  removeRealTimeMarker(): void {
+    if (this.realTimeMarker) {
+      this.realTimeMarker.setMap(null); // Remove the marker from the map
+      this.realTimeMarker = null; // Clear the reference
     }
   }
   
