@@ -1,0 +1,245 @@
+{
+    "version": "1.0.0",
+    "jeepney_routes": [
+      {
+        "route_id": 1,
+        "route_name": "Jeepney Route 1 - Green",
+        "terminals": [
+          {
+            "terminal_name": "Bayanihan Jeepney Terminal",
+            "coordinates": {
+              "lat": 15.167845251212512,
+              "lng": 120.58447172650088
+            }
+          }
+        ],
+        "stops": [
+          {
+            "stop_name": "Stop 1 - North",
+            "coordinates": {
+              "lat": 15.080,
+              "lng": 120.655
+            }
+          },
+          {
+            "stop_name": "Stop 2 - North",
+            "coordinates": {
+              "lat": 15.078,
+              "lng": 120.660
+            }
+          },
+          {
+            "stop_name": "Stop 3 - North",
+            "coordinates": {
+              "lat": 15.070,
+              "lng": 120.670
+            }
+          }
+        ]
+      },
+      {
+        "route_id": 2,
+        "route_name": "Jeepney Route 2 - Beige",
+        "terminals": [
+          {
+            "terminal_name": "Bayanihan Jeepney Terminal",
+            "coordinates": {
+              "lat": 15.167845251212512,
+              "lng": 120.58447172650088
+            }
+          }
+        ],
+        "stops": [
+          {
+            "stop_name": "Stop 1 - South",
+            "coordinates": {
+              "lat": 15.055,
+              "lng": 120.685
+            }
+          },
+          {
+            "stop_name": "Stop 2 - South",
+            "coordinates": {
+              "lat": 15.048,
+              "lng": 120.690
+            }
+          },
+          {
+            "stop_name": "Stop 3 - South",
+            "coordinates": {
+              "lat": 15.040,
+              "lng": 120.695
+            }
+          }
+        ]
+      },
+      {
+        "route_id": 3,
+        "route_name": "Jeepney Route 3 - Blue",
+        "terminals": [
+          {
+            "terminal_name": "Bayanihan Jeepney Terminal",
+            "coordinates": {
+              "lat": 15.167845251212512,
+              "lng": 120.58447172650088
+            }
+          }
+        ],
+        "stops": [
+          {
+            "stop_name": "Stop 1 - North",
+            "coordinates": {
+              "lat": 15.080,
+              "lng": 120.655
+            }
+          },
+          {
+            "stop_name": "Stop 2 - North",
+            "coordinates": {
+              "lat": 15.078,
+              "lng": 120.660
+            }
+          },
+          {
+            "stop_name": "Stop 3 - North",
+            "coordinates": {
+              "lat": 15.070,
+              "lng": 120.670
+            }
+          }
+        ]
+      },
+      {
+        "route_id": 4,
+        "route_name": "Jeepney Route 5 - Red",
+        "terminals": [
+          {
+            "terminal_name": "Bayanihan Jeepney Terminal",
+            "coordinates": {
+              "lat": 15.167845251212512,
+              "lng": 120.58447172650088
+            }
+          }
+        ],
+        "stops": [
+          {
+            "stop_name": "Stop 1 - North",
+            "coordinates": {
+              "lat": 15.080,
+              "lng": 120.655
+            }
+          },
+          {
+            "stop_name": "Stop 2 - North",
+            "coordinates": {
+              "lat": 15.078,
+              "lng": 120.660
+            }
+          },
+          {
+            "stop_name": "Stop 3 - North",
+            "coordinates": {
+              "lat": 15.070,
+              "lng": 120.670
+            }
+          }
+        ]
+      },
+      {
+        "route_id": 5,
+        "route_name": "Jeepney Route 6 - Yellow",
+        "terminals": [
+          {
+            "terminal_name": "Bayanihan Jeepney Terminal",
+            "coordinates": {
+              "lat": 15.167845251212512,
+              "lng": 120.58447172650088
+            }
+          }
+        ],
+        "stops": [
+          {
+            "stop_name": "Stop 1 - North",
+            "coordinates": {
+              "lat": 15.080,
+              "lng": 120.655
+            }
+          },
+          {
+            "stop_name": "Stop 2 - North",
+            "coordinates": {
+              "lat": 15.078,
+              "lng": 120.660
+            }
+          },
+          {
+            "stop_name": "Stop 3 - North",
+            "coordinates": {
+              "lat": 15.070,
+              "lng": 120.670
+            }
+          }
+        ]
+      }
+    ],
+    "bus_routes": [
+      {
+        "route_id": 1,
+        "route_name": "Clark Loop Northbound",
+        "terminals": [
+          {
+            "terminal_name": "SM Flagpole Area",
+            "coordinates": {
+              "lat": 15.166990332241307,
+              "lng": 120.58012455198933
+            }
+          }
+        ],
+        "stops": [
+          {
+            "stop_name": "Bus Stop 1",
+            "coordinates": {
+              "lat": 15.085,
+              "lng": 120.705
+            }
+          },
+          {
+            "stop_name": "Bus Stop 2",
+            "coordinates": {
+              "lat": 15.080,
+              "lng": 120.710
+            }
+          }
+        ]
+      },
+      {
+        "route_id": 2,
+        "route_name": "Clark Loop Southbound",
+        "terminals": [
+          {
+            "terminal_name": "Clark International Airport Terminal",
+            "coordinates": {
+              "lat": 15.197193613093418, 
+              "lng": 120.5587415065987
+            }
+          }
+        ],
+        "stops": [
+          {
+            "stop_name": "Bus Stop 1",
+            "coordinates": {
+              "lat": 15.100,
+              "lng": 120.725
+            }
+          },
+          {
+            "stop_name": "Bus Stop 2",
+            "coordinates": {
+              "lat": 15.110,
+              "lng": 120.730
+            }
+          }
+        ]
+      }
+    ]
+  }

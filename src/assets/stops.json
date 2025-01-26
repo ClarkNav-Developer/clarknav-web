@@ -1,0 +1,183 @@
+{   
+    "version": "1.0.0",
+    "jeepney_routes": [
+      {
+        "route_id": 1,
+        "route_name": "Jeepney Route 1 - Green",
+        "stops": [
+          {
+            "stop_name": "Stop 1 - North",
+            "coordinates": {
+              "lat": 15.080,
+              "lng": 120.655
+            }
+          },
+          {
+            "stop_name": "Stop 2 - North",
+            "coordinates": {
+              "lat": 15.078,
+              "lng": 120.660
+            }
+          },
+          {
+            "stop_name": "Stop 3 - North",
+            "coordinates": {
+              "lat": 15.070,
+              "lng": 120.670
+            }
+          }
+        ]
+      },
+      {
+        "route_id": 2,
+        "route_name": "Jeepney Route 2 - Beige",
+        "stops": [
+          {
+            "stop_name": "Stop 1 - South",
+            "coordinates": {
+              "lat": 15.055,
+              "lng": 120.685
+            }
+          },
+          {
+            "stop_name": "Stop 2 - South",
+            "coordinates": {
+              "lat": 15.048,
+              "lng": 120.690
+            }
+          },
+          {
+            "stop_name": "Stop 3 - South",
+            "coordinates": {
+              "lat": 15.040,
+              "lng": 120.695
+            }
+          }
+        ]
+      },
+      {
+        "route_id": 3,
+        "route_name": "Jeepney Route 3 - Blue",
+        "stops": [
+          {
+            "stop_name": "Stop 1 - North",
+            "coordinates": {
+              "lat": 15.080,
+              "lng": 120.655
+            }
+          },
+          {
+            "stop_name": "Stop 2 - North",
+            "coordinates": {
+              "lat": 15.078,
+              "lng": 120.660
+            }
+          },
+          {
+            "stop_name": "Stop 3 - North",
+            "coordinates": {
+              "lat": 15.070,
+              "lng": 120.670
+            }
+          }
+        ]
+      },
+      {
+        "route_id": 4,
+        "route_name": "Jeepney Route 5 - Red",
+        "stops": [
+          {
+            "stop_name": "Stop 1 - North",
+            "coordinates": {
+              "lat": 15.080,
+              "lng": 120.655
+            }
+          },
+          {
+            "stop_name": "Stop 2 - North",
+            "coordinates": {
+              "lat": 15.078,
+              "lng": 120.660
+            }
+          },
+          {
+            "stop_name": "Stop 3 - North",
+            "coordinates": {
+              "lat": 15.070,
+              "lng": 120.670
+            }
+          }
+        ]
+      },
+      {
+        "route_id": 5,
+        "route_name": "Jeepney Route 6 - Yellow",
+        "stops": [
+          {
+            "stop_name": "Stop 1 - North",
+            "coordinates": {
+              "lat": 15.080,
+              "lng": 120.655
+            }
+          },
+          {
+            "stop_name": "Stop 2 - North",
+            "coordinates": {
+              "lat": 15.078,
+              "lng": 120.660
+            }
+          },
+          {
+            "stop_name": "Stop 3 - North",
+            "coordinates": {
+              "lat": 15.070,
+              "lng": 120.670
+            }
+          }
+        ]
+      }
+    ],
+    "bus_routes": [
+      {
+        "route_id": 1,
+        "route_name": "Clark Loop Northbound",
+        "stops": [
+          {
+            "stop_name": "Bus Stop 1",
+            "coordinates": {
+              "lat": 15.085,
+              "lng": 120.705
+            }
+          },
+          {
+            "stop_name": "Bus Stop 2",
+            "coordinates": {
+              "lat": 15.080,
+              "lng": 120.710
+            }
+          }
+        ]
+      },
+      {
+        "route_id": 2,
+        "route_name": "Clark Loop Southbound",
+        "stops": [
+          {
+            "stop_name": "Bus Stop 1",
+            "coordinates": {
+              "lat": 15.100,
+              "lng": 120.725
+            }
+          },
+          {
+            "stop_name": "Bus Stop 2",
+            "coordinates": {
+              "lat": 15.110,
+              "lng": 120.730
+            }
+          }
+        ]
+      }
+    ]
+  }
+  
