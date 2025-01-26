@@ -294,9 +294,10 @@
         </div>
     </div>
 
-    <div class="navigation-status">
+    <div class="navigation-status" *ngIf="showNavigationStatus" [class.show]="showNavigationStatus">
         <div class="navigation-status-container">
             <div class="end-navigation-button">
+                <h3>Route 1</h3>
                 <button (click)="stopNavigation()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></button>
             </div>
             <div class="navigation-status-info">

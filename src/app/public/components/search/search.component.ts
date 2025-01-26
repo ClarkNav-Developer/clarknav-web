@@ -22,6 +22,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   // UI state
   showNavigationWindow = false;
   isBottomSheetVisible = false;
+  showNavigationStatus = false;
   showAllRoutes = true;
 
   // Route data
@@ -206,6 +207,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
       this.navigationService.startRealTimeTracking();
       this.isBottomSheetVisible = false;
       this.showNavigationWindow = false;
+      this.showNavigationStatus = true; // Show navigation status
 
       // Hide the mobile container
       const mobileContainer = document.querySelector('.mobile-container');
@@ -227,6 +229,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   stopNavigation(): void {
     this.navigationService.stopRealTimeTracking();
     this.mapService.clearMap(); // Clear all markers and routes rendered on the map
+    this.showNavigationStatus = false; // Hide navigation status
   }
 
   /*------------------------------------------

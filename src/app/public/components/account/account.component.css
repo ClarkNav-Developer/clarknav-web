@@ -11,12 +11,12 @@
     transform: translate(-50%, -50%);
     height: 600px;
     width: 600px;
-    overflow-y: auto;
+    overflow: hidden;
     padding: 20px;
     background: white;
     box-shadow: 0px 2px 4px 3px rgba(0, 0, 0, 0.1);
     border-radius: 20px;
-    z-index: 1000;
+    z-index: 1002;
   }
 
   .floating-overlay {
@@ -26,7 +26,7 @@
     width: 100%;
     height: 100%;
     /* background: rgba(0, 0, 0, 0.5); */
-    z-index: 999;
+    z-index: 1001;
   }
 
   /* Close Button Style */
@@ -159,10 +159,118 @@
 
 
   /* Report Bugs Style */
+  .report-bugs-container .header-info {
+    margin-bottom: 20px;
+  }
 
+  .report-bugs-container .content-info label {
+    font-size: 0.8em;
+  }
+
+  .report-bugs-container .content-info p {
+    margin: 10px 0 0 5px;
+    font-size: 0.8em;
+  }
+
+  .report-bugs-container .bugs-form {
+    padding-bottom: 10px;
+    height: 55vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+    /* For Firefox */
+  }
+
+  .report-bugs-container .bugs-form::-webkit-scrollbar {
+    display: none;
+    /* For Chrome, Safari, and Opera */
+  }
+
+  .report-bugs-container .content-info input,
+  .report-bugs-container .content-info textarea,
+  .report-bugs-container .content-info select {
+    padding: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 15px;
+    background-color: #f3f3f3;
+    margin: 5px 0;
+  }
+
+  .report-bugs-container .content-info textarea {
+    resize: vertical;
+  }
+
+  .report-bugs-container .content-info button {
+    background-color: rgb(0, 123, 255);
+    border: none;
+    margin: 15px 0 0 5px;
+    padding: 5px 10px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+  }
+
+  .report-bugs-container .content-info button:hover {
+    background-color: rgb(0, 102, 204);
+  }
 
   /* Feedback Style */
+  .feedback-container .header-info {
+    margin-bottom: 20px;
+  }
 
+  .feedback-container .feedback-form {
+    padding-bottom: 10px;
+    height: 55vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+    /* For Firefox */
+  }
+
+  .feedback-container .feedback-form::-webkit-scrollbar {
+    display: none;
+    /* For Chrome, Safari, and Opera */
+  }
+
+  .feedback-container .content-info label {
+    font-size: 0.8em;
+  }
+
+  .feedback-container .content-info p {
+    margin: 10px 0 0 5px;
+    font-size: 0.8em;
+  }
+
+  .feedback-container .content-info input,
+  .feedback-container .content-info textarea,
+  .feedback-container .content-info select {
+    padding: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 15px;
+    background-color: #f3f3f3;
+    margin: 5px 0;
+  }
+
+  .feedback-container .content-info textarea {
+    resize: vertical;
+  }
+
+  .feedback-container .content-info button {
+    background-color: rgb(0, 123, 255);
+    border: none;
+    margin: 15px 0 0 5px;
+    padding: 5px 10px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+  }
+
+  .feedback-container .content-info button:hover {
+    background-color: rgb(0, 102, 204);
+  }
 
   /* FAQs Style */
 
@@ -346,13 +454,60 @@
     padding-top: 30px;
   }
 
-   .report-bugs-container-mobile .header-info {
+  .report-bugs-container-mobile .header-info {
     margin-bottom: 20px;
   }
 
-  .report-bugs-container-mobile .content-info-mobile p{
-    margin: 5px 0 0 5px;
+  .report-bugs-container-mobile .content-info label {
     font-size: 0.8em;
+  }
+
+  .report-bugs-container-mobile .content-info p {
+    margin: 10px 0 0 5px;
+    font-size: 0.8em;
+  }
+
+  .report-bugs-container-mobile .bugs-form {
+    padding-bottom: 10px;
+    height: 55vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+    /* For Firefox */
+  }
+
+  .report-bugs-container-mobile .bugs-form::-webkit-scrollbar {
+    display: none;
+    /* For Chrome, Safari, and Opera */
+  }
+
+  .report-bugs-container-mobile .content-info input,
+  .report-bugs-container-mobile .content-info textarea,
+  .report-bugs-container-mobile .content-info select {
+    padding: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 15px;
+    background-color: #f3f3f3;
+    margin: 5px 0;
+  }
+
+  .report-bugs-container-mobile .content-info textarea {
+    resize: vertical;
+  }
+
+  .report-bugs-container-mobile .content-info button {
+    background-color: rgb(0, 123, 255);
+    border: none;
+    margin: 15px 0 0 5px;
+    padding: 5px 10px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+  }
+
+  .report-bugs-container-mobile .content-info button:hover {
+    background-color: rgb(0, 102, 204);
   }
 
   /* Feedback Style for Mobile */
@@ -360,14 +515,62 @@
     padding-top: 30px;
   }
 
-   .feedback-container-mobile .header-info {
+  .feedback-container-mobile .header-info {
     margin-bottom: 20px;
   }
 
-  .feedback-container-mobile .content-info-mobile p{
-    margin: 5px 0 0 5px;
+  .feedback-container-mobile .feedback-form {
+    padding-bottom: 10px;
+    height: 55vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+    /* For Firefox */
+  }
+
+  .feedback-container-mobile .feedback-form::-webkit-scrollbar {
+    display: none;
+    /* For Chrome, Safari, and Opera */
+  }
+
+  .feedback-container-mobile .content-info label {
     font-size: 0.8em;
   }
+
+  .feedback-container-mobile .content-info p {
+    margin: 10px 0 0 5px;
+    font-size: 0.8em;
+  }
+
+  .feedback-container-mobile .content-info input,
+  .feedback-container-mobile .content-info textarea,
+  .feedback-container-mobile .content-info select {
+    padding: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 15px;
+    background-color: #f3f3f3;
+    margin: 5px 0;
+  }
+
+  .feedback-container-mobile .content-info textarea {
+    resize: vertical;
+  }
+
+  .feedback-container-mobile .content-info button {
+    background-color: rgb(0, 123, 255);
+    border: none;
+    margin: 15px 0 0 5px;
+    padding: 5px 10px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+  }
+
+  .feedback-container-mobile .content-info button:hover {
+    background-color: rgb(0, 102, 204);
+  }
+
 
   /* FAQs Style for Mobile */
   .faqs-container-mobile {
