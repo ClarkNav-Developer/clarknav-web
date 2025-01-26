@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { FloatingWindowService } from '../../../floating-window.service';
 import { MapStyleService } from '../../services/map/map-style.service';
 import { MapInstanceService } from '../../services/map/map-instance.service';
 import { AuthService } from '../../../auth/auth.service';
 import { Router } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-account',
@@ -22,8 +24,21 @@ export class AccountComponent implements OnInit {
   newPassword: string = '';
   newPasswordConfirmation: string = '';
 
+  bugReport: any = {};
+  feedback: any = {};
+
+  bugPriorities = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
+  bugStatuses = ['OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'];
+  deviceOSOptions = ['ANDROID', 'IOS', 'WINDOWS', 'MACOS', 'LINUX', 'OTHER'];
+  browserOptions = ['CHROME', 'SAFARI', 'FIREFOX', 'EDGE', 'OPERA', 'OTHER'];
+
+  feedbackCategories = ['FEATURE_SUGGESTION', 'USABILITY_ISSUE', 'APP_PERFORMANCE', 'ROUTE_ACCURACY', 'GENERAL_EXPERIENCE', 'ADDITIONAL_SUGGESTIONS'];
+  feedbackPriorities = ['LOW', 'MEDIUM', 'HIGH'];
+  feedbackStatuses = ['UNDER_REVIEW', 'IN_PROGRESS', 'IMPLEMENTED', 'CLOSED'];
+
   constructor(
     private authService: AuthService,
+    private http: HttpClient,
     private router: Router,
     private floatingWindowService: FloatingWindowService,
     private mapStyleService: MapStyleService,
@@ -119,6 +134,28 @@ export class AccountComponent implements OnInit {
       error => {
         console.error('Error updating credentials:', error);
         alert('Error updating credentials');
+      }
+    );
+  }
+
+  onSubmitBugReport() {
+    this.http.post(`${environment.apiUrl}/api/bug-reports`, this.bugReport).subscribe(
+      response => {
+        console.log('Bug report submitted successfully', response);
+      },
+      error => {
+        console.error('Error submitting bug report', error);
+      }
+    );
+  }
+
+  onSubmitFeedback() {
+    this.http.post(`${environment.apiUrl}/api/feedback`, this.feedback).subscribe(
+      response => {
+        console.log('Feedback submitted successfully', response);
+      },
+      error => {
+        console.error('Error submitting feedback', error);
       }
     );
   }
