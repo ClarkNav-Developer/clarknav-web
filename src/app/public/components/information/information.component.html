@@ -1,5 +1,42 @@
 <div class="desktop-view">
-    <p>Put content here</p>
+    <div class="floating-overlay" (click)="closeWindow($event)"></div>
+    <div class="floating-window">
+        <div class="header">
+            <h2>Information</h2>
+            <button class="close-btn" (click)="closeWindow($event)">X</button>
+        </div>
+        <div class="content">
+            <div class="tab-container">
+                <div class="tab" [class.active]="activeTab === 'tab1'" (click)="openTab('tab1')">Bus Stops</div>
+                <div class="tab" [class.active]="activeTab === 'tab2'" (click)="openTab('tab2')">Schedule</div>
+                <div class="tab" [class.active]="activeTab === 'tab3'" (click)="openTab('tab3')">Route Map</div>
+            </div>
+            <div id="tab1" class="tab-content" [class.active]="activeTab === 'tab1'">
+                <div class="bus-stops">
+                    <h3>Bus Stops for Northbound</h3>
+                    <img src="public\clark-loop-info\stops\clark-loop-northbound-stops.jpg" alt="Clark Loop Stops for Northbound" (click)="openImage($event)">
+                    <h3>Bus Stops for Southbound</h3>
+                    <img src="public\clark-loop-info\stops\clark-loop-southbound-stops.jpg" alt="Clark Loop Stops for Southbound"(click)="openImage($event)">
+                </div>
+            </div>
+            <div id="tab2" class="tab-content" [class.active]="activeTab === 'tab2'">
+                <div class="schedule">
+                    <h3>Clark Loop Weekday Schedule</h3>
+                    <img src="public\clark-loop-info\schedule\clark-loop-week-day-schedule.jpg" alt="Clark Loop Weekday Schedule"(click)="openImage($event)">
+                    <h3>Clark Loop Saturday Schedule</h3>
+                    <img src="public\clark-loop-info\schedule\clark-loop-saturday-schedule.jpg" alt="Clark Loop Saturday Schedule"(click)="openImage($event)">
+                    <h3>Clark Loop Sunday Schedule</h3>
+                    <img src="public\clark-loop-info\schedule\clark-loop-sunday-schedule.jpg" alt="Clark Loop Sunday Schedule"(click)="openImage($event)">
+                </div>
+            </div>
+            <div id="tab3" class="tab-content" [class.active]="activeTab === 'tab3'">
+                <div class="route-map">
+                    <h3>Clark Loop Route Map</h3>
+                    <img src="public\clark-loop-info\route-map\clark-loop-route-map.jpg" alt="Clark Loop Route Map"(click)="openImage($event)">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="mobile-view">
