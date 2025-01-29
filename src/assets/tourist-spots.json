@@ -1,0 +1,146 @@
+[
+    {
+      "name": "Air Force City",
+      "coordinates": {
+        "latitude": 15.185,
+        "longitude": 120.560
+      },
+      "marker": "public/tourist-spot/air-force-city.svg"
+    },
+    {
+      "name": "Bicentennial Park",
+      "coordinates": {
+        "latitude": 15.186,
+        "longitude": 120.561
+      },
+      "marker": "public/tourist-spot/bicentennial-park.svg"
+    },
+    {
+      "name": "Deco Central Showroom",
+      "coordinates": {
+        "latitude": 15.187,
+        "longitude": 120.562
+      },
+      "marker": "public/tourist-spot/deco-central-showroom.svg"
+    },
+    {
+      "name": "Aqua Planet",
+      "coordinates": {
+        "latitude": 15.188,
+        "longitude": 120.563
+      },
+      "marker": "public/tourist-spot/aqua-planet.svg"
+    },
+    {
+      "name": "Children's Playground",
+      "coordinates": {
+        "latitude": 15.189,
+        "longitude": 120.564
+      },
+      "marker": "public/tourist-spot/childrens-playground.svg"
+    },
+    {
+      "name": "El Kabayo",
+      "coordinates": {
+        "latitude": 15.190,
+        "longitude": 120.565
+      },
+      "marker": "public/tourist-spot/el-kabayo.svg"
+    },
+    {
+      "name": "Clark International Speedway",
+      "coordinates": {
+        "latitude": 15.191,
+        "longitude": 120.566
+      },
+      "marker": "public/tourist-spot/clark-international-speedway.svg"
+    },
+    {
+      "name": "Clark Museum",
+      "coordinates": {
+        "latitude": 15.192,
+        "longitude": 120.567
+      },
+      "marker": "public/tourist-spot/clark-museum.svg"
+    },
+    {
+      "name": "Clark Safari",
+      "coordinates": {
+        "latitude": 15.193,
+        "longitude": 120.568
+      },
+      "marker": "public/tourist-spot/clark-safari.svg"
+    },
+    {
+      "name": "Dinosaur Island",
+      "coordinates": {
+        "latitude": 15.194,
+        "longitude": 120.569
+      },
+      "marker": "public/tourist-spot/dinosaur-island.svg"
+    },
+    {
+      "name": "Fontana Casino",
+      "coordinates": {
+        "latitude": 15.195,
+        "longitude": 120.570
+      },
+      "marker": "public/tourist-spot/fontana-casino.svg"
+    },
+    {
+      "name": "Fontana Water Park",
+      "coordinates": {
+        "latitude": 15.196,
+        "longitude": 120.571
+      },
+      "marker": "public/tourist-spot/fontana-water-park.svg"
+    },
+    {
+      "name": "Hann Casino & Resort",
+      "coordinates": {
+        "latitude": 15.197,
+        "longitude": 120.572
+      },
+      "marker": "public/tourist-spot/hann-casino-and-resort.svg"
+    },
+    {
+      "name": "Midori Hotel & Casino",
+      "coordinates": {
+        "latitude": 15.198,
+        "longitude": 120.573
+      },
+      "marker": "public/tourist-spot/midori-hotel-and-casino.svg"
+    },
+    {
+      "name": "Nayong Pilipino Clark",
+      "coordinates": {
+        "latitude": 15.199,
+        "longitude": 120.574
+      },
+      "marker": "public/tourist-spot/nayong-pilipino.svg"
+    },
+    {
+      "name": "Clark Parade Grounds",
+      "coordinates": {
+        "latitude": 15.200,
+        "longitude": 120.575
+      },
+      "marker": "public/tourist-spot/clark-parade-grounds.svg"
+    },
+    {
+      "name": "Royce Hotel & Casino",
+      "coordinates": {
+        "latitude": 15.201,
+        "longitude": 120.576
+      },
+      "marker": "public/tourist-spot/royce-hotel-and-casino.svg"
+    },
+    {
+      "name": "Widus Hotel & Casino",
+      "coordinates": {
+        "latitude": 15.202,
+        "longitude": 120.577
+      },
+      "marker": "public/tourist-spot/widus-hotel-and-casino.svg"
+    }
+  ]
