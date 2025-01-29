@@ -6,6 +6,7 @@ import { GeocodingService } from '../../services/geocoding/geocoding.service';
 import { BottomSheetService } from '../../services/bottom-sheet/bottom-sheet.service';
 import { FareService } from '../../services/fare/fare.service';
 import { LocationService } from '../../services/geocoding/location.service';
+import { FloatingWindowService } from '../../../floating-window.service';
 
 declare var google: any;
 
@@ -43,7 +44,8 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     private bottomSheetService: BottomSheetService,
     private fareService: FareService,
     public locationService: LocationService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    public floatingWindowService: FloatingWindowService
   ) { }
 
   /*------------------------------------------
@@ -83,6 +85,10 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   minimizeBottomSheet(): void {
     this.bottomSheetService.minimizeBottomSheet();
+  }
+
+  openInformationComponent() {
+    this.floatingWindowService.open('information');
   }
 
   /*------------------------------------------
