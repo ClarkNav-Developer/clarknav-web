@@ -2,6 +2,8 @@ import { Component, Renderer2, OnInit, OnDestroy } from '@angular/core';
 import { FloatingWindowService } from '../../../floating-window.service';
 import { MapService } from '../../services/map/map.service';
 import { RoutesService } from '../../services/routes/routes.service';
+import { LocationService } from '../../services/geocoding/location.service';
+import { SuggestedRoutesService } from '../../services/routes/suggested-routes.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -22,6 +24,8 @@ export class RouteComponent implements OnInit, OnDestroy {
     public floatingWindowService: FloatingWindowService,
     private mapService: MapService,
     private routesService: RoutesService,
+    private suggestedRoutesService: SuggestedRoutesService,
+    private locationService: LocationService,
     private renderer: Renderer2
   ) {
     this.loadCache();
@@ -130,6 +134,18 @@ export class RouteComponent implements OnInit, OnDestroy {
     if (floatingWindow) {
       this.renderer.addClass(floatingWindow, 'bottom-position');
     }
+
+    // Save navigation history
+    this.suggestedRoutesService.saveNavigationHistory(
+      this.locationService.currentLocationAddress,
+      this.locationService.destinationAddress,
+      { path: mainWaypoints, color: routeColor },
+      true
+    ).subscribe(response => {
+      console.log('Navigation history saved:', response);
+    }, error => {
+      console.error('Error saving navigation history:', error);
+    });
   }
 
   renderRoute1() {

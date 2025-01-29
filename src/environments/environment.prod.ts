@@ -8,11 +8,11 @@ export const environment = {
     //OLD API KEY
 
     apiUrl: apiUrl,
-    loginUrl: `${apiUrl}/api/login`,
-    logoutUrl: `${apiUrl}/api/logout`,   
-    registerUrl: `${apiUrl}/api/register`,
-    identityUrl: `${apiUrl}/api/get-identity`,
-    updateUserUrl: `${apiUrl}/api/update-credentials`,
+    loginUrl: `${apiUrl}/api/auth/login`,
+    logoutUrl: `${apiUrl}/api/auth/logout`,   
+    registerUrl: `${apiUrl}/api/auth/register`,
+    identityUrl: `${apiUrl}/api/auth/get-identity`,
+    updateUserUrl: `${apiUrl}/api/auth/update-credentials`,
 };
 
 // new api key AIzaSyBcBSQmpNYjVOZtWYCKuP8kka1M60sfbHo

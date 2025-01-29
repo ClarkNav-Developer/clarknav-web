@@ -6,6 +6,8 @@ import { MapInstanceService } from '../../services/map/map-instance.service';
 import { AuthService } from '../../../auth/auth.service';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
+import { NavigationHistoryService } from '../../services/geocoding/navigationhistory.service';
+import { SuggestedRoutesService } from '../../services/routes/suggested-routes.service';
 
 @Component({
   selector: 'app-account',
@@ -55,13 +57,17 @@ export class AccountComponent implements OnInit {
   feedbackPriorities = ['LOW', 'MEDIUM', 'HIGH'];
   feedbackStatuses = ['UNDER_REVIEW', 'IN_PROGRESS', 'IMPLEMENTED', 'CLOSED'];
 
+  navigationHistories: any[] = [];
+
   constructor(
     private authService: AuthService,
     private http: HttpClient,
     private router: Router,
     private floatingWindowService: FloatingWindowService,
     private mapStyleService: MapStyleService,
-    private mapInstanceService: MapInstanceService
+    private mapInstanceService: MapInstanceService,
+    private navigationHistoryService: NavigationHistoryService,
+    private suggestedRoutesService: SuggestedRoutesService
   ) {
     const savedMode = localStorage.getItem('darkMode');
     this.darkMode = savedMode === 'true';
@@ -84,6 +90,36 @@ export class AccountComponent implements OnInit {
       this.lastName = currentUser.last_name;
       this.email = currentUser.email;
     }
+
+    // Fetch navigation histories
+    this.fetchNavigationHistories();
+  }
+
+  fetchNavigationHistories() {
+    this.navigationHistoryService.getNavigationHistories().subscribe(
+      (response) => {
+        this.navigationHistories = response;
+        console.log('Navigation histories fetched successfully:', this.navigationHistories);
+      },
+      (error) => {
+        console.error('Error fetching navigation histories:', error);
+      }
+    );
+  }
+
+  viewRoute(history: any) {
+    this.suggestedRoutesService.saveNavigationHistory(
+      history.origin,
+      history.destination,
+      history.route_details,
+      history.navigation_confirmed
+    ).subscribe(response => {
+      console.log('Navigation history saved:', response);
+      // Navigate to the route view
+      this.router.navigate(['/route'], { queryParams: { routeId: response.id } });
+    }, error => {
+      console.error('Error saving navigation history:', error);
+    });
   }
 
   closeWindow(event: Event) {

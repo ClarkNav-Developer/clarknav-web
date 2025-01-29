@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { GeocodingService } from './geocoding.service';
+import { LocationSearchService } from './locationsearch.service';
 
 declare var google: any;
 
@@ -12,7 +13,7 @@ export class LocationService {
   currentLocationAddress = 'Loading...';
   destinationAddress = 'Loading...';
 
-  constructor(private geocodingService: GeocodingService) { }
+  constructor(private geocodingService: GeocodingService, private locationSearchService: LocationSearchService) { }
 
   reverseLocation(): void {
     if (this.currentLocation && this.destination) {
@@ -75,6 +76,8 @@ export class LocationService {
     if (this.currentLocation) {
       this.geocodingService.geocodeLatLng(this.currentLocation, (address: string) => {
         this.currentLocationAddress = address || 'Unable to resolve address';
+        console.log('Resolved current location address:', this.currentLocationAddress);
+        this.saveLocationSearchIfComplete();
       });
     } else {
       this.currentLocationAddress = 'Current location not set';
@@ -83,9 +86,27 @@ export class LocationService {
     if (this.destination) {
       this.geocodingService.geocodeLatLng(this.destination, (address: string) => {
         this.destinationAddress = address || 'Unable to resolve address';
+        console.log('Resolved destination address:', this.destinationAddress);
+        this.saveLocationSearchIfComplete();
       });
     } else {
       this.destinationAddress = 'Destination not set';
+    }
+  }
+
+  private saveLocationSearchIfComplete(): void {
+    if (this.currentLocationAddress && this.destinationAddress &&
+        this.currentLocationAddress !== 'Current location not set' &&
+        this.destinationAddress !== 'Destination not set') {
+      console.log('Saving location search with the following details:');
+      console.log('Current Location Address:', this.currentLocationAddress);
+      console.log('Destination Address:', this.destinationAddress);
+      this.locationSearchService.createLocationSearch(this.currentLocationAddress, this.destinationAddress)
+        .subscribe(response => {
+          console.log('Location search saved:', response);
+        }, error => {
+          console.error('Error saving location search:', error);
+        });
     }
   }
 }

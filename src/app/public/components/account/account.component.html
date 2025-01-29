@@ -67,9 +67,17 @@
             <h2>HISTORY</h2>
           </div>
           <div class="content-info">
-            <div class="info">
-              <h5></h5>
+            <div *ngIf="navigationHistories.length > 0; else noHistory">
+              <div *ngFor="let history of navigationHistories" class="history-item">
+                <h5>{{ history.origin }} to {{ history.destination }}</h5>
+                <p>Route Details: {{ history.route_details | json }}</p>
+                <p>Navigation Confirmed: {{ history.navigation_confirmed }}</p>
+                <p>Date: {{ history.created_at | date:'short' }}</p>
+              </div>
             </div>
+            <ng-template #noHistory>
+              <p>No navigation history found.</p>
+            </ng-template>
           </div>
         </div>
 

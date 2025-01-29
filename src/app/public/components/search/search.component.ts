@@ -194,6 +194,23 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showAllRoutes = false;
     this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
     this.navigationService.startRealTimeTracking(); // Start real-time tracking
+
+    // Save navigation history
+    console.log('Saving navigation history with the following details:');
+    console.log('Origin:', this.locationService.currentLocationAddress);
+    console.log('Destination:', this.locationService.destinationAddress);
+    console.log('Route Details:', { path: route.path, color: route.color });
+
+    this.suggestedRoutesService.saveNavigationHistory(
+      this.locationService.currentLocationAddress,
+      this.locationService.destinationAddress,
+      { path: route.path, color: route.color },
+      true
+    ).subscribe(response => {
+      console.log('Navigation history saved:', response);
+    }, error => {
+      console.error('Error saving navigation history:', error);
+    });
   }
 
   stopRealTimeTracking(): void {
@@ -293,15 +310,18 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
               this.locationService.destination = location;
             }
 
-            this.locationService.resolveAddresses(); // Ensure address is resolved after location selection
-            this.mapService.addMarker(location, input.id.includes('current') ? 'Your Location' : 'Destination');
-            this.mapService.map.setCenter(location);
+            // Only resolve addresses if both currentLocation and destination are set
+            if (this.currentLocation && this.destination) {
+              this.locationService.resolveAddresses(); // Ensure address is resolved after location selection
+              this.mapService.addMarker(location, input.id.includes('current') ? 'Your Location' : 'Destination');
+              this.mapService.map.setCenter(location);
 
-            // Fetch suggested routes immediately after setting the locations
-            this.fetchSuggestedRoutes();
+              // Fetch suggested routes immediately after setting the locations
+              this.fetchSuggestedRoutes();
 
-            // Update the searchPerformed flag
-            this.searchPerformed = !!this.currentLocation && !!this.destination;
+              // Update the searchPerformed flag
+              this.searchPerformed = !!this.currentLocation && !!this.destination;
+            }
           }
         });
 
