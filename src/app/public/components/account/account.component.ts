@@ -24,8 +24,27 @@ export class AccountComponent implements OnInit {
   newPassword: string = '';
   newPasswordConfirmation: string = '';
 
-  bugReport: any = {};
-  feedback: any = {};
+  bugReport: any = {
+    title: '',
+    category: '',
+    description: '',
+    steps: '',
+    expected: '',
+    actual: '',
+    device: '',
+    frequency: '',
+    screenshots: null
+  };
+  feedback: any = {
+    title: '',
+    feature: '',
+    usability: '',
+    performance: '',
+    experience: '',
+    suggestions: '',
+    priority: 'LOW',
+    status: 'UNDER_REVIEW'
+  };
 
   bugPriorities = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
   bugStatuses = ['OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'];
@@ -138,25 +157,44 @@ export class AccountComponent implements OnInit {
     );
   }
 
-  onSubmitBugReport() {
-    this.http.post(`${environment.apiUrl}/api/bug-reports`, this.bugReport).subscribe(
+  onSubmitBugReport(event: Event) {
+    event.preventDefault();
+    const formData = new FormData();
+    for (const key in this.bugReport) {
+      if (this.bugReport.hasOwnProperty(key)) {
+        formData.append(key, this.bugReport[key]);
+      }
+    }
+    this.http.post(`${environment.apiUrl}/api/bug-reports`, formData).subscribe(
       response => {
         console.log('Bug report submitted successfully', response);
+        alert('Bug report submitted successfully');
       },
       error => {
         console.error('Error submitting bug report', error);
+        alert('Error submitting bug report');
       }
     );
   }
 
-  onSubmitFeedback() {
+  onSubmitFeedback(event: Event) {
+    event.preventDefault();
     this.http.post(`${environment.apiUrl}/api/feedback`, this.feedback).subscribe(
       response => {
         console.log('Feedback submitted successfully', response);
+        alert('Feedback submitted successfully');
       },
       error => {
         console.error('Error submitting feedback', error);
+        alert('Error submitting feedback');
       }
     );
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.bugReport.screenshots = input.files[0];
+    }
   }
 }

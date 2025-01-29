@@ -80,14 +80,15 @@
           <div class="content-info">
             <div class="info">
               <div class="report-bugs-container">
-                <form class="bugs-form" action="/submit-bug" method="POST">
+                <form class="bugs-form" (submit)="onSubmitBugReport($event)">
                   <!-- Title -->
                   <label for="title">Title:</label>
-                  <input type="text" id="title" name="title" placeholder="Enter a brief title for the bug" required>
+                  <input type="text" id="title" name="title" placeholder="Enter a brief title for the bug"
+                    [(ngModel)]="bugReport.title" required>
 
                   <!-- Category -->
                   <label for="category">Category:</label>
-                  <select id="category" name="category" required>
+                  <select id="category" name="category" [(ngModel)]="bugReport.category" required>
                     <option value="">-- Select Category --</option>
                     <option value="UI">UI/UX Issue</option>
                     <option value="Performance">Performance Issue</option>
@@ -99,32 +100,32 @@
                   <!-- Issue Description -->
                   <label for="description">Issue Description:</label>
                   <textarea id="description" name="description" rows="5" placeholder="Describe the issue in detail"
-                    required></textarea>
+                    [(ngModel)]="bugReport.description" required></textarea>
 
                   <!-- Steps to Reproduce -->
                   <label for="steps">Steps to Reproduce:</label>
                   <textarea id="steps" name="steps" rows="5" placeholder="List the steps to reproduce the issue"
-                    required></textarea>
+                    [(ngModel)]="bugReport.steps" required></textarea>
 
                   <!-- Expected Behavior -->
                   <label for="expected">Expected Behavior:</label>
                   <textarea id="expected" name="expected" rows="3" placeholder="Describe what should happen"
-                    required></textarea>
+                    [(ngModel)]="bugReport.expected" required></textarea>
 
                   <!-- Actual Behavior -->
                   <label for="actual">Actual Behavior:</label>
                   <textarea id="actual" name="actual" rows="3" placeholder="Describe what actually happens"
-                    required></textarea>
+                    [(ngModel)]="bugReport.actual" required></textarea>
 
                   <!-- Device Information -->
                   <label for="device">Device Information:</label>
                   <textarea id="device" name="device" rows="3"
                     placeholder="Provide details such as device, operating system, app version, etc."
-                    required></textarea>
+                    [(ngModel)]="bugReport.device" required></textarea>
 
                   <!-- Frequency -->
                   <label for="frequency">Frequency:</label>
-                  <select id="frequency" name="frequency" required>
+                  <select id="frequency" name="frequency" [(ngModel)]="bugReport.frequency" required>
                     <option value="">-- Select Frequency --</option>
                     <option value="Always">Always</option>
                     <option value="Sometimes">Sometimes</option>
@@ -133,7 +134,8 @@
 
                   <!-- Screenshots -->
                   <label for="screenshots">Screenshots:</label>
-                  <input type="file" id="screenshots" name="screenshots" accept="image/*">
+                  <input type="file" id="screenshots" name="screenshots" (change)="onFileSelected($event)"
+                    accept="image/*">
 
                   <!-- Submit Button -->
                   <button type="submit">Submit Bug Report</button>
@@ -150,35 +152,38 @@
           <div class="content-info">
             <div class="info">
               <div class="feedback-container">
-                <form class="feedback-form" action="/submit-feedback" method="POST">
+                <form class="feedback-form" (submit)="onSubmitFeedback($event)">
                   <!-- Title -->
                   <label for="title">Title:</label>
-                  <input type="text" id="title" name="title" placeholder="Enter a brief title for your feedback" required>
-        
+                  <input type="text" id="title" name="title" placeholder="Enter a brief title for your feedback"
+                    [(ngModel)]="feedback.title" required>
+
                   <!-- Feature Suggestion -->
                   <label for="feature">Feature Suggestion:</label>
                   <textarea id="feature" name="feature" rows="3" placeholder="Suggest a new feature or improvement"
-                    required></textarea>
-        
+                    [(ngModel)]="feedback.feature" required></textarea>
+
                   <!-- Usability Issue -->
                   <label for="usability">Usability Issue:</label>
                   <textarea id="usability" name="usability" rows="3"
-                    placeholder="Describe any usability issue you encountered"></textarea>
-        
+                    placeholder="Describe any usability issue you encountered"
+                    [(ngModel)]="feedback.usability"></textarea>
+
                   <!-- App Performance -->
                   <label for="performance">App Performance:</label>
                   <textarea id="performance" name="performance" rows="3"
-                    placeholder="Provide feedback on app performance"></textarea>
-        
+                    placeholder="Provide feedback on app performance" [(ngModel)]="feedback.performance"></textarea>
+
                   <!-- General Experience -->
                   <label for="experience">General Experience:</label>
-                  <textarea id="experience" name="experience" rows="3" placeholder="Share your overall experience"></textarea>
-        
+                  <textarea id="experience" name="experience" rows="3" placeholder="Share your overall experience"
+                    [(ngModel)]="feedback.experience"></textarea>
+
                   <!-- Additional Suggestions -->
                   <label for="suggestions">Additional Suggestions:</label>
                   <textarea id="suggestions" name="suggestions" rows="3"
-                    placeholder="Provide any additional suggestions"></textarea>
-        
+                    placeholder="Provide any additional suggestions" [(ngModel)]="feedback.suggestions"></textarea>
+
                   <!-- Submit Button -->
                   <button type="submit">Submit Feedback</button>
                 </form>
@@ -337,8 +342,7 @@
                 <!-- Device Information -->
                 <label for="device">Device Information:</label>
                 <textarea id="device" name="device" rows="3"
-                  placeholder="Provide details such as device, operating system, app version, etc."
-                  required></textarea>
+                  placeholder="Provide details such as device, operating system, app version, etc." required></textarea>
 
                 <!-- Frequency -->
                 <label for="frequency">Frequency:</label>
@@ -376,31 +380,32 @@
                 <!-- Title -->
                 <label for="title">Title:</label>
                 <input type="text" id="title" name="title" placeholder="Enter a brief title for your feedback" required>
-      
+
                 <!-- Feature Suggestion -->
                 <label for="feature">Feature Suggestion:</label>
                 <textarea id="feature" name="feature" rows="3" placeholder="Suggest a new feature or improvement"
                   required></textarea>
-      
+
                 <!-- Usability Issue -->
                 <label for="usability">Usability Issue:</label>
                 <textarea id="usability" name="usability" rows="3"
                   placeholder="Describe any usability issue you encountered"></textarea>
-      
+
                 <!-- App Performance -->
                 <label for="performance">App Performance:</label>
                 <textarea id="performance" name="performance" rows="3"
                   placeholder="Provide feedback on app performance"></textarea>
-      
+
                 <!-- General Experience -->
                 <label for="experience">General Experience:</label>
-                <textarea id="experience" name="experience" rows="3" placeholder="Share your overall experience"></textarea>
-      
+                <textarea id="experience" name="experience" rows="3"
+                  placeholder="Share your overall experience"></textarea>
+
                 <!-- Additional Suggestions -->
                 <label for="suggestions">Additional Suggestions:</label>
                 <textarea id="suggestions" name="suggestions" rows="3"
                   placeholder="Provide any additional suggestions"></textarea>
-      
+
                 <!-- Submit Button -->
                 <button type="submit">Submit Feedback</button>
               </form>

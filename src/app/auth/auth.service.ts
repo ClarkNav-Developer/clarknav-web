@@ -33,6 +33,7 @@ export class AuthService {
             token: response.token
           };
           console.log('User logged in successfully:', this.currentUser);
+          localStorage.setItem('authToken', response.token); // Store the token
           return response;
         } else {
           console.warn('Login failed:', response);
@@ -45,6 +46,11 @@ export class AuthService {
         return of(null);
       })
     );
+  }
+
+  // Method to get the token
+  getToken(): string | null {
+    return localStorage.getItem('authToken');
   }
 
 

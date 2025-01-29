@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
+// https://clarknav-websocket-e8b0952da147.herokuapp.com
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,7 @@ export class WebsocketService {
   private socket: Socket;
 
   constructor() {
-    this.socket = io('https://clarknav-websocket-e8b0952da147.herokuapp.com', {
+    this.socket = io('', {
       transports: ['websocket', 'polling'], // Ensure both transports are allowed
     }); // Replace with your Heroku app URL
 
