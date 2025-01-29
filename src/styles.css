@@ -299,11 +299,60 @@ body.dark-mode .route-item-mobile svg {
 }
 
 /* mobile side nav style */
+body.dark-mode .info-button button{
+  background-color: #313131 !important;
+  transition: background-color 0.1s ease-in-out;
+  border: 1px solid #000000 !important;
+}
+
+body.dark-mode .info-button button svg{
+  fill: #ffffff;
+}
+
 body.dark-mode .current-loc-button button {
   background-color: #313131 !important;
   border: 1px solid #000000 !important;
 }
 
+body.dark-mode .current-loc-button button:active {
+  background-color: #1f1f1f !important;
+
+}
+
+
 body.dark-mode .current-loc-button button svg{
   fill: #ffffff;
+}
+
+/* tab style for information component */
+body.dark-mode .content-mobile .tab {
+  background-color: #4d4d4d !important;
+  transition: background-color 0.1s ease-in-out;
+}
+
+/* navigation container style*/
+body.dark-mode .navigation-status-container {
+  background-color: #1e1e1e7c;
+  transition: background-color 0.1s ease-in-out;
+}
+
+body.dark-mode .navigation-status-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% - 20px);
+  height: 100%;
+  margin: 0 10px;
+  background-color: inherit;
+  backdrop-filter: blur(15px);
+  border-radius: inherit;
+  z-index: -1;
+  box-sizing: border-box;
+  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+}
+
+body.dark-mode .navigation-status-container svg {
+  fill: #e6e6e6;
+  transition: fill 0.1s ease-in-out;
 }
