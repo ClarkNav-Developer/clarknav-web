@@ -65,7 +65,7 @@
     }
 
     .container-mobile {
-        z-index: 1000;
+        z-index: 500;
         position: absolute;
         bottom: -1px;
         width: 100%;

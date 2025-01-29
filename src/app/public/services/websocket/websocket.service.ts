@@ -9,7 +9,9 @@ export class WebsocketService {
   private socket: Socket;
 
   constructor() {
-    this.socket = io('', {
+    // use this for live deployment https://clarknav-websocket-e8b0952da147.herokuapp.com
+    // use this for local development http://localhost:4000
+    this.socket = io('http://localhost:4000', {
       transports: ['websocket', 'polling'], // Ensure both transports are allowed
     }); // Replace with your Heroku app URL
 

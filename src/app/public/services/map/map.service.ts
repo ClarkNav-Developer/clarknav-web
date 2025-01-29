@@ -15,6 +15,7 @@ export class MapService {
 
   private markers: google.maps.Marker[] = [];
   private routeRenderers: google.maps.DirectionsRenderer[] = [];
+  private terminalMarkers: google.maps.Marker[] = [];
   private directionsCache = new Map<string, any>();
 
   private routeColors = {
@@ -27,6 +28,8 @@ export class MapService {
 
   private jeepneyRoutes: any[] = [];
   private filteredRoutes: any[] = [];
+  private jeepneyIcon: string = '';
+  private busIcon: string = '';
 
   currentLocation: google.maps.LatLngLiteral | null = null;
   destination: google.maps.LatLngLiteral | null = null;
@@ -34,7 +37,9 @@ export class MapService {
   private currentRouteColor: string = ''; // Store the current route color
   private autoCenterEnabled: boolean = false; // Property to enable or disable auto-centering
 
-  constructor(private routesService: RoutesService, private terminalMarkerService: TerminalMarkerService) { }
+  constructor(private routesService: RoutesService, private terminalMarkerService: TerminalMarkerService) { 
+    this.loadIcons();
+  }
 
   // Caching the directions results
   private getCacheKey(request: any): string {
@@ -110,32 +115,82 @@ export class MapService {
     return marker;
   }
 
-  private loadAndDisplayTerminals() {
-    this.terminalMarkerService.getTerminals().subscribe((data: any) => {
-      console.log('Terminals response:', data); // Log the response
+  private loadIcons(): Promise<void> {
+    return Promise.all([
+      fetch('/public/jeep-terminal-icon.svg')
+        .then(response => response.text())
+        .then(svg => {
+          this.jeepneyIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+        }),
+      fetch('/public/loop-terminal-icon.svg')
+        .then(response => response.text())
+        .then(svg => {
+          this.busIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+        })
+    ]).then(() => {});
+  }
 
-      if (data && Array.isArray(data.jeepneys) && Array.isArray(data.bus)) {
-        const allRoutes = [...data.jeepneys, ...data.bus];
-        allRoutes.forEach((route) => {
-          if (Array.isArray(route.terminals)) {
-            route.terminals.forEach((terminal: any) => {
-              if (terminal.coordinates && terminal.coordinates.lat && terminal.coordinates.lng) {
-                this.addMarker(
-                  { lat: terminal.coordinates.lat, lng: terminal.coordinates.lng },
-                  terminal.terminal_name
-                );
-              } else {
-                console.error('Terminal coordinates are missing or incomplete:', terminal);
-              }
-            });
-          } else {
-            console.error('Route terminals are not an array:', route);
-          }
-        });
+  private loadAndDisplayTerminals() {
+    this.loadIcons().then(() => {
+      const cachedTerminals = localStorage.getItem('terminalsData');
+      if (cachedTerminals) {
+        console.log('Terminals loaded from cache:', JSON.parse(cachedTerminals));
+        const data = JSON.parse(cachedTerminals);
+        this.processTerminalsData(data);
       } else {
-        console.error('Terminals data is not in the expected format:', data);
+        this.terminalMarkerService.getTerminals().subscribe((data: any) => {
+          console.log('Fetching terminals from service');
+          console.log('Terminals response:', data); // Log the response
+          localStorage.setItem('terminalsData', JSON.stringify(data));
+          this.processTerminalsData(data);
+        });
       }
     });
+  }
+
+  private processTerminalsData(data: any) {
+    if (data && Array.isArray(data.jeepneys) && Array.isArray(data.bus)) {
+      const allRoutes = [...data.jeepneys, ...data.bus];
+      allRoutes.forEach((route) => {
+        if (Array.isArray(route.terminals)) {
+          route.terminals.forEach((terminal: any) => {
+            if (terminal.coordinates && terminal.coordinates.lat && terminal.coordinates.lng) {
+              const icon = route.route_name.includes('Jeepney') ? this.jeepneyIcon : this.busIcon;
+              this.addCustomMarker(
+                { lat: terminal.coordinates.lat, lng: terminal.coordinates.lng },
+                terminal.terminal_name,
+                icon,
+                true // Indicate that this is a terminal marker
+              );
+            } else {
+              console.error('Terminal coordinates are missing or incomplete:', terminal);
+            }
+          });
+        } else {
+          console.error('Route terminals are not an array:', route);
+        }
+      });
+    } else {
+      console.error('Terminals data is not in the expected format:', data);
+    }
+  }
+
+  private addCustomMarker(location: google.maps.LatLngLiteral, title: string, icon: string, isTerminal: boolean = false) {
+    const marker = new google.maps.Marker({
+      position: location,
+      map: this.map,
+      icon: {
+        url: icon,
+        scaledSize: new google.maps.Size(60, 60), // Adjust size as needed
+      },
+      title: title,
+    });
+
+    if (isTerminal) {
+      this.terminalMarkers.push(marker);
+    } else {
+      this.markers.push(marker);
+    }
   }
 
   /*------------------------------------------
