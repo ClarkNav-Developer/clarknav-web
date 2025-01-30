@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RoutesService } from '../routes/routes.service';
 import { TerminalMarkerService } from '../custom-marker/terminal-marker.service';
+import { TouristSpotService } from '../custom-marker/tourist-spot.service';
 
 declare var google: any;
 
@@ -37,7 +38,11 @@ export class MapService {
   private currentRouteColor: string = ''; // Store the current route color
   private autoCenterEnabled: boolean = false; // Property to enable or disable auto-centering
 
-  constructor(private routesService: RoutesService, private terminalMarkerService: TerminalMarkerService) { 
+  constructor(private routesService: RoutesService, 
+    private terminalMarkerService: TerminalMarkerService,
+    private touristSpotService: TouristSpotService
+  ) 
+  { 
     this.loadIcons();
   }
 
@@ -66,7 +71,8 @@ export class MapService {
   --------------------------------------------*/
   initializeMap(map: any) {
     this.map = map;
-    this.loadAndDisplayTerminals();
+    this.loadAndDisplayTerminals(); // Load and display terminals
+    this.loadAndDisplayTouristSpots(); // Load and display tourist spots
     this.directionsService = new google.maps.DirectionsService();
     this.directionsRenderer = new google.maps.DirectionsRenderer({
       map: this.map,
@@ -196,7 +202,43 @@ export class MapService {
   /*------------------------------------------
   Tourist Spot Display
   --------------------------------------------*/
+  loadAndDisplayTouristSpots() {
+    const cachedData = this.getCachedTouristSpots();
+    if (cachedData && cachedData.spots) {
+      console.log('Tourist spots loaded from cache:', cachedData);
+      this.displayTouristSpots(cachedData.spots);
+    } else {
+      this.touristSpotService.getTouristSpots().subscribe((data: any) => {
+        if (data && data.spots) {
+          console.log('Tourist spots loaded from API:', data);
+          this.cacheTouristSpots(data);
+          this.displayTouristSpots(data.spots);
+        } else {
+          console.error('Invalid tourist spots data:', data);
+        }
+      });
+    }
+  }
 
+  private displayTouristSpots(spots: any) {
+    if (Array.isArray(spots)) {
+      spots.forEach((spot: any) => {
+        const location = { lat: spot.coordinates.latitude, lng: spot.coordinates.longitude };
+        this.addCustomMarker(location, spot.name, spot.marker);
+      });
+    } else {
+      console.error('Invalid spots array:', spots);
+    }
+  }
+
+  private cacheTouristSpots(data: any) {
+    localStorage.setItem('touristSpots', JSON.stringify(data));
+  }
+
+  private getCachedTouristSpots(): any {
+    const data = localStorage.getItem('touristSpots');
+    return data ? JSON.parse(data) : null;
+  }
   
 
   /*------------------------------------------
