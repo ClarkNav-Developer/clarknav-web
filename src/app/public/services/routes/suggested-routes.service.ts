@@ -34,25 +34,27 @@ export class SuggestedRoutesService {
     if (cachedRoutes) {
       return cachedRoutes;
     }
-
+  
     const startWaypoint = this.routesService.findNearestStop(currentLocation);
     const endWaypoint = this.routesService.findNearestStop(destination);
-
+  
     if (!startWaypoint || !endWaypoint) {
       return [];
     }
-
+  
     const routes = this.routesService.findAllRoutePaths(startWaypoint, endWaypoint);
-
+  
     // Cache the routes
     this.cacheRoutes(key, routes);
-
-    // Return a flat array of routes
+  
+    // Return a flat array of routes with names
     return routes.map(route => ({
       path: route.path,
       color: route.color,
       start: startWaypoint,
       end: endWaypoint,
+      name: this.routesService.getRouteById(route.routeId)?.routeName || 'Unknown Route',
+      routeId: route.routeId
     }));
   }
 

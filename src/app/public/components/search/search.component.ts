@@ -134,7 +134,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         this.suggestedRoutes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
         localStorage.setItem(key, JSON.stringify(this.suggestedRoutes));
       }
-
+  
       // Calculate distance, duration, and fare for each route
       this.suggestedRoutes.forEach(route => {
         route.distanceInKm = this.fareService.calculateDistance(route);
@@ -194,13 +194,13 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showAllRoutes = false;
     this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
     this.navigationService.startRealTimeTracking(); // Start real-time tracking
-
+  
     // Save navigation history
     console.log('Saving navigation history with the following details:');
     console.log('Origin:', this.locationService.currentLocationAddress);
     console.log('Destination:', this.locationService.destinationAddress);
     console.log('Route Details:', { path: route.path, color: route.color });
-
+  
     this.suggestedRoutesService.saveNavigationHistory(
       this.locationService.currentLocationAddress,
       this.locationService.destinationAddress,
