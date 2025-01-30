@@ -306,7 +306,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
       } else {
         console.error('Geolocation is not supported by this browser.');
       }
-    }, 1000); // Update every 10 seconds
+    }, 10000); // Update every 10 seconds
   }
 
   private stopUpdatingDuration(): void {
