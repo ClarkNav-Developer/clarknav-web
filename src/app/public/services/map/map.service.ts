@@ -17,6 +17,7 @@ export class MapService {
   private markers: google.maps.Marker[] = [];
   private routeRenderers: google.maps.DirectionsRenderer[] = [];
   private terminalMarkers: google.maps.Marker[] = [];
+  private touristSpotMarkers: any[] = [];
   private directionsCache = new Map<string, any>();
 
   private routeColors = {
@@ -224,7 +225,7 @@ export class MapService {
     if (Array.isArray(spots)) {
       spots.forEach((spot: any) => {
         const location = { lat: spot.coordinates.latitude, lng: spot.coordinates.longitude };
-        this.addCustomMarker(location, spot.name, spot.marker);
+        this.addTouristSpotMarker(location, spot.name, spot.marker);
       });
     } else {
       console.error('Invalid spots array:', spots);
@@ -238,6 +239,20 @@ export class MapService {
   private getCachedTouristSpots(): any {
     const data = localStorage.getItem('touristSpots');
     return data ? JSON.parse(data) : null;
+  }
+
+  private addTouristSpotMarker(location: google.maps.LatLngLiteral, title: string, icon: string) {
+    const marker = new google.maps.Marker({
+      position: location,
+      map: this.map,
+      icon: {
+        url: icon,
+        scaledSize: new google.maps.Size(60, 60), // Adjust size as needed
+      },
+      title: title,
+    });
+
+    this.touristSpotMarkers.push(marker);
   }
   
 
