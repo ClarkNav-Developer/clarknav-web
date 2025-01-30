@@ -283,7 +283,7 @@
 
                     <div class="route-footer-mobile">
                         <div class="estimated-time-mobile">
-                            <span>10:00 AM - 12:00 PM</span>
+                            <span>{{ currentTime }} - {{ arrivalTime }}</span>
                         </div>
                         <div class="fare-info">
                             <span class="fare">₱{{ route.fare }}</span>
@@ -342,7 +342,7 @@
                 </div>
             </div>
             <div class="estimated-time-mobile">
-                <span style="font-size: 14px;">10:00 AM - 12:00 PM</span>
+                <span style="font-size: 14px;">{{ currentTime }} - {{ arrivalTime }}</span>
             </div>
         </div>
     </div>
