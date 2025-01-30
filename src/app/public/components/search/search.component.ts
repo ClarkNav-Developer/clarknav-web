@@ -32,6 +32,10 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   highlightedRoute: any = null;
   route: any = { duration: null };
 
+  // Time data
+  currentTime: string = '';
+  arrivalTime: string = '';
+
   private trackingInterval: any = null;
   // Add a flag to check if a search has been performed
   searchPerformed = false;
@@ -139,8 +143,10 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
       this.suggestedRoutes.forEach(route => {
         route.distanceInKm = this.fareService.calculateDistance(route);
         console.log(`Distance for route: ${route.distanceInKm} km`);
-        this.fareService.calculateDuration(this.currentLocation!, this.destination!, (duration) => {
+        this.fareService.calculateDuration(this.currentLocation!, this.destination!, (duration, arrivalTime) => {
           route.duration = duration;
+          this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          this.arrivalTime = arrivalTime;
         });
         this.fareService.calculateFare(route);
         console.log(`Fare for route: ₱${route.fare}`);

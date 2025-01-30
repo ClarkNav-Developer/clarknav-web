@@ -119,10 +119,7 @@
 
                         <div class="route-footer">
                             <div class="estimated-time">
-                                <!-- Estimated time:
-                                <span *ngIf="route.duration; else calculating">{{ route.duration }}</span>
-                                <ng-template #calculating>Calculating...</ng-template> -->
-                                <span>10:00 AM - 12:00 PM</span>
+                                <span>{{ currentTime }} - {{ arrivalTime }}</span>
                             </div>
                             <div class="fare-info">
                                 <span class="fare">₱{{ route.fare }}</span>
