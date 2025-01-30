@@ -54,4 +54,36 @@ export class FareService {
       }
     );
   }
+
+  calculateRemainingDuration(currentLocation: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, speed: number, callback: (duration: string, arrivalTime: string) => void): void {
+    const service = new google.maps.DistanceMatrixService();
+    service.getDistanceMatrix(
+      {
+        origins: [currentLocation],
+        destinations: [destination],
+        travelMode: google.maps.TravelMode.DRIVING,
+      },
+      (response: google.maps.DistanceMatrixResponse, status: google.maps.DistanceMatrixStatus) => {
+        if (status === 'OK' && response.rows[0].elements[0].status === 'OK') {
+          let durationText = response.rows[0].elements[0].duration.text;
+          durationText = durationText.replace(' mins', 'm').replace(' min', 'm');
+
+          // Calculate remaining duration based on speed
+          const distanceInMeters = response.rows[0].elements[0].distance.value;
+          const distanceInKm = distanceInMeters / 1000;
+          const remainingDurationInMinutes = distanceInKm / speed * 60;
+          const remainingDurationText = `${Math.round(remainingDurationInMinutes)}m`;
+
+          // Calculate the estimated arrival time
+          const currentTime = new Date();
+          const arrivalTime = new Date(currentTime.getTime() + remainingDurationInMinutes * 60000);
+          const arrivalTimeString = arrivalTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+          callback(remainingDurationText, arrivalTimeString);
+        } else {
+          console.error('Error fetching remaining duration: ', status);
+        }
+      }
+    );
+  }
 }
