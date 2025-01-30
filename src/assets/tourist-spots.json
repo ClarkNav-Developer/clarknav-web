@@ -1,0 +1,149 @@
+{
+  "version": "1.0.0",
+  "spots": [
+    {
+      "name": "Air Force City",
+      "coordinates": {
+        "latitude": 15.175294175047403,
+        "longitude": 120.5414346956833
+      },
+      "marker": "public/tourist-spot/Air-Force-City.svg"
+    },
+    {
+      "name": "Bicentennial Park",
+      "coordinates": {
+        "latitude": 15.178068217027596,
+        "longitude": 120.51569428318288
+      },
+      "marker": "public/tourist-spot/Bicentennial-Park.svg"
+    },
+    {
+      "name": "Deco Central Showroom",
+      "coordinates": {
+        "latitude": 15.196896393822197,
+        "longitude": 120.5348104532023
+      },
+      "marker": "public/tourist-spot/Deco-Central-Showroom.svg"
+    },
+    {
+      "name": "Aqua Planet",
+      "coordinates": {
+        "latitude": 15.187423751091243,
+        "longitude": 120.49904728557948
+      },
+      "marker": "public/tourist-spot/Aqua-Planet.svg"
+    },
+    {
+      "name": "Children's Playground",
+      "coordinates": {
+        "latitude": 15.180291468071129,
+        "longitude": 120.51840679994044
+      },
+      "marker": "public/tourist-spot/Childrens-Playground.svg"
+    },
+    {
+      "name": "El Kabayo",
+      "coordinates": {
+        "latitude": 15.200926735741804,
+        "longitude": 120.541596761018
+      },
+      "marker": "public/tourist-spot/El-Kabayo.svg"
+    },
+    {
+      "name": "Clark International Speedway",
+      "coordinates": {
+        "latitude": 15.205735759853521,
+        "longitude": 120.5359003093877
+      },
+      "marker": "public/tourist-spot/Clark-International-Speedway.svg"
+    },
+    {
+      "name": "Clark Museum",
+      "coordinates": {
+        "latitude": 15.182212110984924,
+        "longitude": 120.5268649713241
+      },
+      "marker": "public/tourist-spot/Clark-Museum.svg"
+    },
+    {
+      "name": "Clark Safari",
+      "coordinates": {
+        "latitude": 15.183772997694714,
+        "longitude": 120.49791544007869
+      },
+      "marker": "public/tourist-spot/Clark-Safari.svg"
+    },
+    {
+      "name": "Dinosaur Island",
+      "coordinates": {
+        "latitude": 15.207178196321857,
+        "longitude": 120.54589929450535
+      },
+      "marker": "public/tourist-spot/Dinosaur-Island.svg"
+    },
+    {
+      "name": "Fontana Casino",
+      "coordinates": {
+        "latitude": 15.194349259242717,
+        "longitude": 120.50850416381738
+      },
+      "marker": "public/tourist-spot/Fontana-Casino.svg"
+    },
+    {
+      "name": "Fontana Water Park",
+      "coordinates": {
+        "latitude": 15.193821901145046,
+        "longitude": 120.51095373222407
+      },
+      "marker": "public/tourist-spot/Fontana-Water-Park.svg"
+    },
+    {
+      "name": "Hann Casino & Resort",
+      "coordinates": {
+        "latitude": 15.192240628293488,
+        "longitude": 120.52477012493614
+      },
+      "marker": "public/tourist-spot/Hann-Casino-and-Resort.svg"
+    },
+    {
+      "name": "Midori Hotel & Casino",
+      "coordinates": {
+        "latitude": 15.192827968279955,
+        "longitude": 120.52148388427503
+      },
+      "marker": "public/tourist-spot/Midori-Hotel-and-Casino.svg"
+    },
+    {
+      "name": "Nayong Pilipino",
+      "coordinates": {
+        "latitude": 15.203195846812106,
+        "longitude": 120.52976915419806
+      },
+      "marker": "public/tourist-spot/Nayong-Pilipino.svg"
+    },
+    {
+      "name": "Clark Parade Grounds",
+      "coordinates": {
+        "latitude": 15.18122632329207,
+        "longitude": 120.52427578128665
+      },
+      "marker": "public/tourist-spot/Clark-Parade-Grounds.svg"
+    },
+    {
+      "name": "Royce Hotel & Casino",
+      "coordinates": {
+        "latitude": 15.180790028571105,
+        "longitude": 120.52994060974713
+      },
+      "marker": "public/tourist-spot/Royce-Hotel-and-Casino.svg"
+    },
+    {
+      "name": "Widus Hotel & Casino",
+      "coordinates": {
+        "latitude": 15.189630872168443,
+        "longitude": 120.52498107507229
+      },
+      "marker": "public/tourist-spot/Widus-Hotel-Casino.svg"
+    }
+  ]
+}
