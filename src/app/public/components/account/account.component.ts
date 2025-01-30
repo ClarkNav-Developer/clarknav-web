@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { NavigationHistoryService } from '../../services/geocoding/navigationhistory.service';
 import { SuggestedRoutesService } from '../../services/routes/suggested-routes.service';
+import { MapService } from '../../services/map/map.service';
 
 @Component({
   selector: 'app-account',
@@ -58,6 +59,7 @@ export class AccountComponent implements OnInit {
   feedbackStatuses = ['UNDER_REVIEW', 'IN_PROGRESS', 'IMPLEMENTED', 'CLOSED'];
 
   navigationHistories: any[] = [];
+  private historiesFetched: boolean = false; // Flag to track if histories have been fetched
 
   constructor(
     private authService: AuthService,
@@ -67,7 +69,8 @@ export class AccountComponent implements OnInit {
     private mapStyleService: MapStyleService,
     private mapInstanceService: MapInstanceService,
     private navigationHistoryService: NavigationHistoryService,
-    private suggestedRoutesService: SuggestedRoutesService
+    private suggestedRoutesService: SuggestedRoutesService,
+    private mapService: MapService
   ) {
     const savedMode = localStorage.getItem('darkMode');
     this.darkMode = savedMode === 'true';
@@ -82,17 +85,31 @@ export class AccountComponent implements OnInit {
         this.mapInstanceService.setMapStyle(style);
       });
     }
-
-    // Load current user details
-    const currentUser = this.authService.getCurrentUser();
-    if (currentUser) {
-      this.firstName = currentUser.first_name;
-      this.lastName = currentUser.last_name;
-      this.email = currentUser.email;
+  
+    // Fetch current user details from the server
+    this.authService.getIdentity().subscribe(
+      (isAuthenticated) => {
+        if (isAuthenticated) {
+          const currentUser = this.authService.getCurrentUser();
+          if (currentUser) {
+            this.firstName = currentUser.first_name;
+            this.lastName = currentUser.last_name;
+            this.email = currentUser.email;
+          }
+        } else {
+          console.error('Failed to fetch user identity.');
+        }
+      },
+      (error) => {
+        console.error('Error fetching user identity:', error);
+      }
+    );
+  
+    // Fetch navigation histories if not already fetched
+    if (!this.historiesFetched) {
+      this.fetchNavigationHistories();
+      this.historiesFetched = true;
     }
-
-    // Fetch navigation histories
-    this.fetchNavigationHistories();
   }
 
   fetchNavigationHistories() {
@@ -108,18 +125,20 @@ export class AccountComponent implements OnInit {
   }
 
   viewRoute(history: any) {
-    this.suggestedRoutesService.saveNavigationHistory(
-      history.origin,
-      history.destination,
-      history.route_details,
-      history.navigation_confirmed
-    ).subscribe(response => {
-      console.log('Navigation history saved:', response);
-      // Navigate to the route view
-      this.router.navigate(['/route'], { queryParams: { routeId: response.id } });
-    }, error => {
-      console.error('Error saving navigation history:', error);
-    });
+    console.log('Viewing route with the following details:', history);
+    this.mapService.clearMap(); // Clear any existing routes on the map
+
+    // Render the route on the map
+    this.mapService.displayRouteSegments({ path: history.route_details.path, color: history.route_details.color });
+
+    // Ensure walking paths are displayed for the selected route
+    const startWaypoint = history.route_details.path[0];
+    const endWaypoint = history.route_details.path[history.route_details.path.length - 1];
+    this.mapService.displayWalkingPath(startWaypoint, startWaypoint, history.route_details.color);
+    this.mapService.displayWalkingPath(endWaypoint, endWaypoint, history.route_details.color);
+
+    // Center the map on the route
+    this.mapService.map.setCenter(startWaypoint);
   }
 
   closeWindow(event: Event) {
@@ -169,13 +188,24 @@ export class AccountComponent implements OnInit {
 
   updateCredentials(event: Event) {
     event.preventDefault();
-    const updatedCredentials = {
+    const updatedCredentials: {
+      first_name: string;
+      last_name: string;
+      current_password?: string;
+      new_password?: string;
+      new_password_confirmation?: string;
+    } = {
       first_name: this.firstName,
       last_name: this.lastName,
-      current_password: this.currentPassword,
-      new_password: this.newPassword,
-      new_password_confirmation: this.newPasswordConfirmation,
     };
+  
+    // Only include password fields if new password is provided
+    if (this.newPassword) {
+      updatedCredentials.current_password = this.currentPassword;
+      updatedCredentials.new_password = this.newPassword;
+      updatedCredentials.new_password_confirmation = this.newPasswordConfirmation;
+    }
+  
     this.authService.updateCredentials(updatedCredentials).subscribe(
       response => {
         if (response) {

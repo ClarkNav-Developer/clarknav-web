@@ -13,6 +13,7 @@ export const environment = {
     registerUrl: `${apiUrl}/api/auth/register`,
     identityUrl: `${apiUrl}/api/auth/get-identity`,
     updateUserUrl: `${apiUrl}/api/auth/update-credentials`,
+    refreshUrl: `${apiUrl}/api/auth/refresh`,
 };
 
 

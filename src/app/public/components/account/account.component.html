@@ -70,9 +70,10 @@
             <div *ngIf="navigationHistories.length > 0; else noHistory">
               <div *ngFor="let history of navigationHistories" class="history-item">
                 <h5>{{ history.origin }} to {{ history.destination }}</h5>
-                <p>Route Details: {{ history.route_details | json }}</p>
-                <p>Navigation Confirmed: {{ history.navigation_confirmed }}</p>
+                <!-- <p>Route Details: {{ history.route_details | json }}</p> -->
+                <!-- <p>Navigation Confirmed: {{ history.navigation_confirmed }}</p> -->
                 <p>Date: {{ history.created_at | date:'short' }}</p>
+                <button (click)="viewRoute(history)">View Route</button>
               </div>
             </div>
             <ng-template #noHistory>

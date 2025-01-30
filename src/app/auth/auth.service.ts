@@ -34,6 +34,7 @@ export class AuthService {
           };
           console.log('User logged in successfully:', this.currentUser);
           localStorage.setItem('authToken', response.token); // Store the token
+          localStorage.setItem('refreshToken', response.refresh_token); // Store the refresh token
           return response;
         } else {
           console.warn('Login failed:', response);
@@ -53,6 +54,10 @@ export class AuthService {
     return localStorage.getItem('authToken');
   }
 
+  // Method to get the refresh token
+  getRefreshToken(): string | null {
+    return localStorage.getItem('refreshToken');
+  }
 
   // Logout method
   logout(): Observable<any> {
@@ -61,7 +66,8 @@ export class AuthService {
       tap(() => {
         console.log('Logout successful.');
         this.currentUser = null;
-        localStorage.removeItem('token'); // Remove the token
+        localStorage.removeItem('authToken'); // Remove the token
+        localStorage.removeItem('refreshToken'); // Remove the refresh token
         alert('You have been logged out successfully.');
         this.router.navigate(['/dashboard']);
       }),
@@ -73,15 +79,11 @@ export class AuthService {
     );
   }
 
-  // Get identity method
+    // Get identity method
   getIdentity(): Observable<boolean> {
     console.debug('Fetching user identity');
-    if (!this.currentUser) {
-      console.warn('User is not logged in, skipping identity fetch.');
-      return of(false);
-    }
     return this.http
-      .get<{ data: User; succeeded: boolean }>(environment.identityUrl, {
+      .get<{ data: User; succeeded: boolean }>(`${environment.identityUrl}`, {
         withCredentials: true,
       })
       .pipe(
@@ -89,10 +91,7 @@ export class AuthService {
           console.log('Identity response:', response);
           if (response.succeeded) {
             this.currentUser = { ...response.data };
-            console.log(
-              'Current user during identity fetch:',
-              this.currentUser
-            );
+            console.log('Current user during identity fetch:', this.currentUser);
             return true;
           }
           return false;
@@ -109,44 +108,47 @@ export class AuthService {
       );
   }
 
-  // Update credentials method
-  updateCredentials(updatedCredentials: {
-    first_name: string;
-    last_name: string;
-    current_password: string;
-    new_password?: string;
-    new_password_confirmation?: string;
-  }): Observable<any> {
-    if (!this.currentUser || !this.currentUser.id) {
-      console.error('No current user or user ID is missing.');
-      return of(null);
-    }
-    const url = `${environment.updateUserUrl}/${this.currentUser.id}`;
-    return this.http
-      .put<any>(url, updatedCredentials, { withCredentials: true })
-      .pipe(
-        tap((response) => {
-          if (response.succeeded) {
-            this.currentUser = {
-              ...this.currentUser,
-              first_name: updatedCredentials.first_name,
-              last_name: updatedCredentials.last_name,
-            } as User;
-            console.log(
-              'User credentials updated successfully',
-              this.currentUser
-            );
-          }
-        }),
-        catchError((error) => {
-          console.error(
-            'An error occurred while updating your credentials.',
-            error
-          );
-          return of(null);
-        })
-      );
+ // Update credentials method
+ updateCredentials(updatedCredentials: {
+  first_name: string;
+  last_name: string;
+  current_password?: string;
+  new_password?: string;
+  new_password_confirmation?: string;
+}): Observable<any> {
+  if (!this.currentUser || !this.currentUser.id) {
+    console.error('No current user or user ID is missing.');
+    return of(null);
   }
+  const url = `${environment.updateUserUrl}/${this.currentUser.id}`;
+  return this.http
+    .put<any>(url, updatedCredentials, { withCredentials: true })
+    .pipe(
+      tap((response) => {
+        if (response.succeeded) {
+          this.currentUser = {
+            ...this.currentUser,
+            first_name: updatedCredentials.first_name,
+            last_name: updatedCredentials.last_name,
+          } as User;
+          console.log(
+            'User credentials updated successfully',
+            this.currentUser
+          );
+        }
+      }),
+      catchError((error) => {
+        console.error(
+          'An error occurred while updating your credentials.',
+          error
+        );
+        if (error.status === 422) {
+          console.error('Validation errors:', error.error.errors);
+        }
+        return of(null);
+      })
+    );
+}
 
   // Get current user
   getCurrentUser(): User | null {
@@ -171,5 +173,28 @@ export class AuthService {
           return of(null);
         })
       );
+  }
+
+  // Refresh token method
+  refreshToken(): Observable<any> {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) {
+      console.error('No refresh token available.');
+      return of(null);
+    }
+    return this.http.post<any>(environment.refreshUrl, { refresh_token: refreshToken }, { withCredentials: true }).pipe(
+      tap(response => {
+        if (response.token) {
+          localStorage.setItem('authToken', response.token); // Update the token
+          console.log('Token refreshed successfully.');
+        } else {
+          console.warn('Token refresh failed:', response);
+        }
+      }),
+      catchError(error => {
+        console.error('Token refresh error occurred:', error);
+        return of(null);
+      })
+    );
   }
 }

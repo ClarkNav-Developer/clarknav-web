@@ -138,6 +138,7 @@
     border-radius: 15px;
     background-color: #f3f3f3;
     margin: 5px 0;
+    color: black;
   }
 
   .account-info-container .content-info button{
@@ -418,6 +419,7 @@
     border-radius: 15px;
     background-color: #f3f3f3;
     margin: 5px 0;
+    color: black;
   }
 
   .account-info-container-mobile .content-info-mobile button{

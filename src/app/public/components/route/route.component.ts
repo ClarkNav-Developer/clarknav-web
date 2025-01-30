@@ -68,8 +68,13 @@ export class RouteComponent implements OnInit, OnDestroy {
     const key = this.getCacheKey(routeId);
     const cachedRoute = localStorage.getItem(key);
     if (cachedRoute) {
-      console.log(`Route ${routeId} loaded from cache`);
-      return JSON.parse(cachedRoute);
+      try {
+        return JSON.parse(cachedRoute);
+      } catch (error) {
+        console.error(`Error parsing JSON from localStorage for key ${key}:`, error);
+        localStorage.removeItem(key); // Remove invalid JSON data from localStorage
+        return null;
+      }
     }
     return null;
   }
@@ -78,7 +83,7 @@ export class RouteComponent implements OnInit, OnDestroy {
     // Load any existing cache from localStorage
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key && key !== 'routesVersion') { // Skip non-route keys
+      if (key && key !== 'routesVersion' && key !== 'authToken') { // Skip non-route keys
         try {
           const cachedRoute = localStorage.getItem(key);
           if (cachedRoute) {
@@ -100,20 +105,20 @@ export class RouteComponent implements OnInit, OnDestroy {
 
     const cachedRoute = this.getCachedRoute(routeId);
     if (cachedRoute) {
-      this.displayRoute(cachedRoute, routeId);
+      this.displayRoute(cachedRoute, routeId, false);
       return;
     }
   
     const route = this.routesService.getRouteById(routeId);
     if (route) {
       this.cacheRoute(routeId, route);
-      this.displayRoute(route, routeId);
+      this.displayRoute(route, routeId, false);
     } else {
       console.error(`Route ${routeId} not found`);
     }
   }
 
-  private displayRoute(route: any, routeId: string) {
+  private displayRoute(route: any, routeId: string, saveHistory: boolean = true) {
     const mainWaypoints = route.waypoints.map(this.routesService.parseWaypoint);
     const routeColor = route.color;
     this.mapService.displayRouteSegments({ path: mainWaypoints, color: routeColor });
@@ -135,17 +140,21 @@ export class RouteComponent implements OnInit, OnDestroy {
       this.renderer.addClass(floatingWindow, 'bottom-position');
     }
 
-    // Save navigation history
-    this.suggestedRoutesService.saveNavigationHistory(
-      this.locationService.currentLocationAddress,
-      this.locationService.destinationAddress,
-      { path: mainWaypoints, color: routeColor },
-      true
-    ).subscribe(response => {
-      console.log('Navigation history saved:', response);
-    }, error => {
-      console.error('Error saving navigation history:', error);
-    });
+    // Save navigation history if both currentLocation and destination are set and saveHistory is true
+    if (saveHistory && this.locationService.currentLocationAddress && this.locationService.destinationAddress &&
+        this.locationService.currentLocationAddress !== 'Current location not set' &&
+        this.locationService.destinationAddress !== 'Destination not set') {
+      this.suggestedRoutesService.saveNavigationHistory(
+        this.locationService.currentLocationAddress,
+        this.locationService.destinationAddress,
+        { path: mainWaypoints, color: routeColor },
+        true
+      ).subscribe(response => {
+        console.log('Navigation history saved:', response);
+      }, error => {
+        console.error('Error saving navigation history:', error);
+      });
+    }
   }
 
   renderRoute1() {
