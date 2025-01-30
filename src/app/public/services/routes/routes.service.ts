@@ -122,33 +122,33 @@ export class RoutesService {
   findAllRoutePaths(
     startWaypoint: google.maps.LatLngLiteral,
     endWaypoint: google.maps.LatLngLiteral
-  ): { path: google.maps.LatLngLiteral[]; color: string }[] {
+  ): { path: google.maps.LatLngLiteral[]; color: string; routeId: string }[] {
     const routes = [...this.jeepneyRoutes, ...this.busRoutes];
-    const allPaths: { path: google.maps.LatLngLiteral[]; color: string }[] = [];
-
+    const allPaths: { path: google.maps.LatLngLiteral[]; color: string; routeId: string }[] = [];
+  
     routes.forEach(route => {
       let waypoints = route.waypoints.map(this.parseWaypoint);
-
+  
       // Include extensions using truncate and bidirectional logic
       const relevantExtensions = (route.extensions || [])
         .filter((extension: any) => this.isRelevantExtension(extension, startWaypoint, endWaypoint))
         .map((extension: any) => extension.waypoints.map(this.parseWaypoint));
-
+  
       let processedWaypoints = [...waypoints];
       relevantExtensions.forEach((extensionWaypoints: google.maps.LatLngLiteral[]) => {
         processedWaypoints = this.truncateAndIntegrateRoute(processedWaypoints, extensionWaypoints);
       });
-
+  
       // Find paths between start and end points
       const startIndex = processedWaypoints.findIndex(wp => this.isNearby(wp, startWaypoint));
       const endIndex = processedWaypoints.findIndex(wp => this.isNearby(wp, endWaypoint));
-
+  
       if (startIndex !== -1 && endIndex !== -1) {
         const path = this.findShortestPath(processedWaypoints, startIndex, endIndex);
-        allPaths.push({ path, color: route.color });
+        allPaths.push({ path, color: route.color, routeId: route.routeId });
       }
     });
-
+  
     return allPaths;
   }
 

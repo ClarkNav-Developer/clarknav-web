@@ -4,7 +4,7 @@
     "jeepney": [
       {
         "routeId": "J1",
-        "routeName": "Bayanihan Terminal – Mt. Pinatubo Community",
+        "routeName": "Jeepney Route 1 Green",
         "color": "#228B22",
         "waypoints": [
           "15.16772, 120.5842",
@@ -71,7 +71,7 @@
       },
       {
         "routeId": "J2",
-        "routeName": "Bayanihan Terminal – Clark Hostel",
+        "routeName": "Jeepney Route 2 Beige",
         "color": "#D4B895",
         "waypoints": [
           "15.16772, 120.5842",
@@ -132,7 +132,7 @@
       },
       {
         "routeId": "J3",
-        "routeName": "Bayanihan Terminal – (Airforce City Gil Puyat Avenue)- Picnic Ground",
+        "routeName": "Jeepney Route 3 Blue",
         "color": "#1d58c6",
         "waypoints": [
           "15.16768, 120.5841",
@@ -216,7 +216,7 @@
       },
       {
         "routeId": "J5",
-        "routeName": "Bayanihan Terminal – IE-5 – GGLC",
+        "routeName": "Jeepney Route 5 Red",
         "color": "#CE0000",
         "waypoints": [
           "15.16767, 120.58423",
@@ -246,7 +246,7 @@
       },
       {
         "routeId": "J6",
-        "routeName": "Mabalacat Public Market Terminal – PhilExcel",
+        "routeName": "Jeepney Route 6 Yellow",
         "color": "#FFDE21",
         "waypoints": [
           "15.222772256224928, 120.5739026337972",
@@ -357,7 +357,7 @@
     "bus": [
       {
         "routeId": "B1",
-        "routeName": "SM City Clark - Clark International Airport",
+        "routeName": "Clark Loop Northbound",
         "direction": "northbound",
         "color": "#1d58c6",
         "waypoints": [
@@ -395,7 +395,7 @@
       },
       {
         "routeId": "B2",
-        "routeName": "Clark International Airport - SM City Clark",
+        "routeName": "Clark Loop Southbound",
         "direction": "southbound",
         "color": "#F98100",
         "waypoints": [

@@ -452,26 +452,25 @@ export class MapService {
       new google.maps.LatLng(origin.lat, origin.lng),
       new google.maps.LatLng(destination.lat, destination.lng)
     );
-
+  
     const request = {
       origin,
       destination,
       travelMode: google.maps.TravelMode.WALKING,
     };
-
+  
     const cachedResponse = this.getCachedResponse(request);
     if (cachedResponse) {
       this.renderWalkingDirections(cachedResponse, color);
       return;
     }
-
+  
     if (distance < 50) {
       this.renderStaticWalkingPath(origin, destination, color);
     } else {
       this.requestWalkingDirections(origin, destination, color);
     }
   }
-
 
   private renderStaticWalkingPath(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, color: string) {
     const path = new google.maps.Polyline({

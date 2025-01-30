@@ -82,6 +82,10 @@
                         [class.selected]="route === selectedRoute"
                         [class.opacity]="highlightedRoute && route !== highlightedRoute">
 
+                        <div class="route-header">
+                            <h3>{{ route.name }}</h3>
+                        </div>
+
                         <div class="route-details">
                             <div class="origin-info">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960"
@@ -115,10 +119,7 @@
 
                         <div class="route-footer">
                             <div class="estimated-time">
-                                <!-- Estimated time:
-                                <span *ngIf="route.duration; else calculating">{{ route.duration }}</span>
-                                <ng-template #calculating>Calculating...</ng-template> -->
-                                <span>10:00 AM - 12:00 PM</span>
+                                <span>{{ currentTime }} - {{ arrivalTime }}</span>
                             </div>
                             <div class="fare-info">
                                 <span class="fare">₱{{ route.fare }}</span>
@@ -126,8 +127,13 @@
                         </div>
                         <div class="footer-extra-info">
                             <div class="disclaimer-info">
-                                <p>For Student/PWD/Senior Citizen discount</p>
-                                <span class="fare">₱{{ route.studentFare }}</span>
+                                <div class="left">
+                                    <button><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M220-150v-597.69Q220-778 241-799q21-21 51.31-21h375.38Q698-820 719-799q21 21 21 51.31V-150L480-261.54 220-150Zm60-92 200-86 200 86v-505.69q0-4.62-3.85-8.46-3.84-3.85-8.46-3.85H292.31q-4.62 0-8.46 3.85-3.85 3.84-3.85 8.46V-242Zm0-518h400-400Z"/></svg></button>
+                                </div>
+                                <div class="right">
+                                    <p>For Student/PWD/Senior Citizen discount</p>
+                                    <span class="fare">₱{{ route.studentFare }}</span>
+                                </div>
                             </div>
                         </div>
 
@@ -241,7 +247,7 @@
                     [class.opacity]="highlightedRoute && route !== highlightedRoute">
 
                     <div class="route-header-mobile">
-                        <h3>Route 1</h3>
+                        <h4>{{ route.name }}</h4>
                     </div>
 
                     <div class="route-details-mobile">
@@ -277,7 +283,7 @@
 
                     <div class="route-footer-mobile">
                         <div class="estimated-time-mobile">
-                            <span>10:00 AM - 12:00 PM</span>
+                            <span>{{ currentTime }} - {{ arrivalTime }}</span>
                         </div>
                         <div class="fare-info">
                             <span class="fare">₱{{ route.fare }}</span>
@@ -285,8 +291,13 @@
                     </div>
                     <div class="footer-extra-info-mobile">
                         <div class="disclaimer-info-mobile">
-                            <p>For Student/PWD/Senior Citizen discount</p>
-                            <span class="fare">₱{{ route.studentFare }}</span>
+                            <div class="left">
+                                <button><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M220-150v-597.69Q220-778 241-799q21-21 51.31-21h375.38Q698-820 719-799q21 21 21 51.31V-150L480-261.54 220-150Zm60-92 200-86 200 86v-505.69q0-4.62-3.85-8.46-3.84-3.85-8.46-3.85H292.31q-4.62 0-8.46 3.85-3.85 3.84-3.85 8.46V-242Zm0-518h400-400Z"/></svg></button>
+                            </div>
+                            <div class="right">
+                                <p>For Student/PWD/Senior Citizen discount</p>
+                                <span class="fare">₱{{ route.studentFare }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -297,7 +308,7 @@
     <div class="navigation-status" *ngIf="showNavigationStatus" [class.show]="showNavigationStatus">
         <div class="navigation-status-container">
             <div class="end-navigation-button">
-                <h3>Route 1</h3>
+                <h4>{{ route.name }}</h4>
                 <button (click)="stopNavigation()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></button>
             </div>
             <div class="navigation-status-info">
@@ -331,7 +342,7 @@
                 </div>
             </div>
             <div class="estimated-time-mobile">
-                <span style="font-size: 14px;">10:00 AM - 12:00 PM</span>
+                <span style="font-size: 14px;">{{ currentTime }} - {{ arrivalTime }}</span>
             </div>
         </div>
     </div>

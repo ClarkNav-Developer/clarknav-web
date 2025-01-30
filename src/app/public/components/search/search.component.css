@@ -293,6 +293,20 @@
 
     .disclaimer-info {
         display: flex;
+        justify-content: space-between;
+    }
+
+    .disclaimer-info .left button {
+        background: transparent;
+        border: none;
+    }
+
+    .disclaimer-info .left svg:active {
+        fill: #28a745;
+    }
+
+    .disclaimer-info .right{
+        display: flex;
         flex-direction: row;
         gap: 10px;
         align-items: center;
@@ -800,6 +814,20 @@
     }
 
     .disclaimer-info-mobile {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .disclaimer-info-mobile .left button {
+        background: transparent;
+        border: none;
+    }
+
+    .disclaimer-info-mobile .left svg:active {
+        fill: #28a745;
+    }
+
+    .disclaimer-info-mobile .right{
         display: flex;
         flex-direction: row;
         gap: 10px;

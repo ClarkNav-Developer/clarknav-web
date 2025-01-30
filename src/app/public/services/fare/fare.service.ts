@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { WebsocketService } from '../websocket/websocket.service';
 
 declare var google: any;
 
@@ -6,6 +7,8 @@ declare var google: any;
   providedIn: 'root'
 })
 export class FareService {
+  constructor(private websocketService: WebsocketService) {}
+
   calculateFare(route: any): void {
     const baseFare = 13;
     const additionalFare = Math.max(0, route.distanceInKm - 4) * 1.8;
@@ -28,7 +31,7 @@ export class FareService {
     return totalDistance / 1000; // Convert to kilometers
   }
 
-  calculateDuration(currentLocation: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, callback: (duration: string) => void): void {
+  calculateDuration(currentLocation: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, callback: (duration: string, arrivalTime: string) => void): void {
     const service = new google.maps.DistanceMatrixService();
     service.getDistanceMatrix(
       {
@@ -40,11 +43,39 @@ export class FareService {
         if (status === 'OK' && response.rows[0].elements[0].status === 'OK') {
           let durationText = response.rows[0].elements[0].duration.text;
           durationText = durationText.replace(' mins', 'm').replace(' min', 'm');
-          callback(durationText);
+  
+          // Calculate the estimated arrival time
+          const durationInMinutes = parseInt(durationText.replace('m', ''), 10);
+          const currentTime = new Date();
+          const arrivalTime = new Date(currentTime.getTime() + durationInMinutes * 60000);
+          const arrivalTimeString = arrivalTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
+          callback(durationText, arrivalTimeString);
         } else {
           console.error('Error fetching duration: ', status);
         }
       }
     );
+  }
+
+  calculateRemainingDuration(currentLocation: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, speed: number, callback: (duration: string, arrivalTime: string) => void): void {
+    this.websocketService.sendLocationUpdate(currentLocation);
+
+    this.websocketService.subscribeToRealTimeTracking((data) => {
+      const distanceInMeters = google.maps.geometry.spherical.computeDistanceBetween(
+        new google.maps.LatLng(data.lat, data.lng),
+        new google.maps.LatLng(destination.lat, destination.lng)
+      );
+      const distanceInKm = distanceInMeters / 1000;
+      const remainingDurationInMinutes = distanceInKm / speed * 60;
+      const remainingDurationText = `${Math.round(remainingDurationInMinutes)}m`;
+
+      // Calculate the estimated arrival time
+      const currentTime = new Date();
+      const arrivalTime = new Date(currentTime.getTime() + remainingDurationInMinutes * 60000);
+      const arrivalTimeString = arrivalTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      callback(remainingDurationText, arrivalTimeString);
+    });
   }
 }

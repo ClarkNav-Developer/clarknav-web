@@ -32,7 +32,13 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   highlightedRoute: any = null;
   route: any = { duration: null };
 
+  // Time data
+  currentTime: string = '';
+  arrivalTime: string = '';
+  private updateDurationInterval: any = null;
+
   private trackingInterval: any = null;
+  private speed: number = 60; // Assume a default speed of 60 km/h
   // Add a flag to check if a search has been performed
   searchPerformed = false;
 
@@ -56,6 +62,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.setupBottomSheetDragging();
     this.bottomSheetService.setRenderer(this.renderer);
     this.locationService.resolveAddresses(); // Ensure addresses are resolved on initialization
+    this.startUpdatingDuration();
   }
 
   ngAfterViewInit(): void {
@@ -66,6 +73,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.navigationService.stopRealTimeTracking();
+    this.stopUpdatingDuration();
   }
 
   /*------------------------------------------
@@ -134,13 +142,15 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         this.suggestedRoutes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
         localStorage.setItem(key, JSON.stringify(this.suggestedRoutes));
       }
-
+  
       // Calculate distance, duration, and fare for each route
       this.suggestedRoutes.forEach(route => {
         route.distanceInKm = this.fareService.calculateDistance(route);
         console.log(`Distance for route: ${route.distanceInKm} km`);
-        this.fareService.calculateDuration(this.currentLocation!, this.destination!, (duration) => {
+        this.fareService.calculateDuration(this.currentLocation!, this.destination!, (duration, arrivalTime) => {
           route.duration = duration;
+          this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          this.arrivalTime = arrivalTime;
         });
         this.fareService.calculateFare(route);
         console.log(`Fare for route: ₱${route.fare}`);
@@ -194,13 +204,13 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showAllRoutes = false;
     this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
     this.navigationService.startRealTimeTracking(); // Start real-time tracking
-
+  
     // Save navigation history
     console.log('Saving navigation history with the following details:');
     console.log('Origin:', this.locationService.currentLocationAddress);
     console.log('Destination:', this.locationService.destinationAddress);
     console.log('Route Details:', { path: route.path, color: route.color });
-
+  
     this.suggestedRoutesService.saveNavigationHistory(
       this.locationService.currentLocationAddress,
       this.locationService.destinationAddress,
@@ -244,6 +254,9 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         bottomSheet.style.height = '0';
         bottomSheet.classList.remove('show');
       }
+
+      // Start updating duration
+      this.startUpdatingDuration();
     } else {
       alert('Please select a route to start navigation.');
     }
@@ -254,6 +267,9 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.mapService.clearMap(); // Clear all markers and routes rendered on the map
     this.mapService.removeRealTimeMarker(); // Remove the real-time marker
     this.showNavigationStatus = false; // Hide navigation status
+
+    // Stop updating duration
+    this.stopUpdatingDuration();
   }
 
   /*------------------------------------------
@@ -265,6 +281,39 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   useMyLocation(): void {
     this.locationService.useMyLocation();
+  }
+
+  private startUpdatingDuration(): void {
+    this.updateDurationInterval = setInterval(() => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          this.currentLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          if (this.currentLocation && this.destination) {
+            this.fareService.calculateRemainingDuration(this.currentLocation, this.destination, this.speed, (duration, arrivalTime) => {
+              this.route.duration = duration;
+              this.arrivalTime = arrivalTime;
+              console.log('Updated duration:', duration); // Log the updated duration
+              console.log('Updated arrival time:', arrivalTime); // Log the updated arrival time
+            });
+          }
+        }, (error) => {
+          console.error('Error getting current position:', error);
+        });
+      } else {
+        console.error('Geolocation is not supported by this browser.');
+      }
+    }, 1000); // Update every 10 seconds
+  }
+
+  private stopUpdatingDuration(): void {
+    if (this.updateDurationInterval) {
+      clearInterval(this.updateDurationInterval);
+      this.updateDurationInterval = null;
+    }
   }
 
   /*------------------------------------------
