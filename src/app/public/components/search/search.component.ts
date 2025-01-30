@@ -7,6 +7,7 @@ import { BottomSheetService } from '../../services/bottom-sheet/bottom-sheet.ser
 import { FareService } from '../../services/fare/fare.service';
 import { LocationService } from '../../services/geocoding/location.service';
 import { FloatingWindowService } from '../../../floating-window.service';
+import { RoutesService } from '../../services/routes/routes.service';
 
 declare var google: any;
 
@@ -41,6 +42,8 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   private speed: number = 60; // Assume a default speed of 60 km/h
   // Add a flag to check if a search has been performed
   searchPerformed = false;
+  selectedTransportType: string = 'All'; // Track selected transport type
+
 
   constructor(
     private mapService: MapService,
@@ -51,7 +54,8 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     private fareService: FareService,
     public locationService: LocationService,
     private renderer: Renderer2,
-    public floatingWindowService: FloatingWindowService
+    public floatingWindowService: FloatingWindowService,
+    private routesService: RoutesService
   ) { }
 
   /*------------------------------------------
@@ -131,32 +135,65 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.searchPerformed = true;
   }
 
-  fetchSuggestedRoutes() {
+    fetchSuggestedRoutes() {
     if (this.currentLocation && this.destination) {
       const key = JSON.stringify({ currentLocation: this.currentLocation, destination: this.destination });
       const cachedRoutes = localStorage.getItem(key);
+  
       if (cachedRoutes) {
         this.suggestedRoutes = JSON.parse(cachedRoutes);
-        console.log('Suggested routes loaded from cache');
       } else {
-        this.suggestedRoutes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
+        // Get suggested routes
+        const routes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
+  
+        // Assign transport type based on `routes.json` category
+        this.suggestedRoutes = routes.map((route: any) => ({
+          ...route,
+          type: this.getTransportType(route.routeId) // Assign transport type
+        }));
+  
         localStorage.setItem(key, JSON.stringify(this.suggestedRoutes));
+      }
+  
+      // Filter routes based on selected transport type
+      if (this.selectedTransportType !== 'All') {
+        this.suggestedRoutes = this.suggestedRoutes.filter(route => route.type === this.selectedTransportType);
+      }
+  
+      // Display message if no routes are found
+      if (this.suggestedRoutes.length === 0) {
+        console.log("No suggested routes found. Please check your input.");
       }
   
       // Calculate distance, duration, and fare for each route
       this.suggestedRoutes.forEach(route => {
         route.distanceInKm = this.fareService.calculateDistance(route);
-        console.log(`Distance for route: ${route.distanceInKm} km`);
         this.fareService.calculateDuration(this.currentLocation!, this.destination!, (duration, arrivalTime) => {
           route.duration = duration;
           this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           this.arrivalTime = arrivalTime;
         });
         this.fareService.calculateFare(route);
-        console.log(`Fare for route: ₱${route.fare}`);
-        console.log(`Student Fare for route: ₱${route.studentFare}`);
       });
     }
+  }
+
+  getTransportType(routeId: string): string {
+    const route = this.routesService.getRouteById(routeId);
+    if (!route) return 'Unknown';
+  
+    if (this.routesService.jeepneyRoutes.includes(route)) return 'Jeepney';
+    if (this.routesService.busRoutes.includes(route)) return 'Bus';
+    if (this.routesService.taxiRoutes.includes(route)) return 'Taxi';
+  
+    return 'Unknown';
+  }
+
+
+  // Handle transport type selection
+  selectTransportType(type: string) {
+    this.selectedTransportType = type;
+    this.fetchSuggestedRoutes();
   }
 
   highlightRoute(route: any): void {
@@ -204,13 +241,13 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showAllRoutes = false;
     this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
     this.navigationService.startRealTimeTracking(); // Start real-time tracking
-  
+
     // Save navigation history
     console.log('Saving navigation history with the following details:');
     console.log('Origin:', this.locationService.currentLocationAddress);
     console.log('Destination:', this.locationService.destinationAddress);
     console.log('Route Details:', { path: route.path, color: route.color });
-  
+
     this.suggestedRoutesService.saveNavigationHistory(
       this.locationService.currentLocationAddress,
       this.locationService.destinationAddress,

@@ -14,6 +14,7 @@ export class RoutesService {
   // Route Data
   jeepneyRoutes: any[] = [];
   busRoutes: any[] = [];
+  taxiRoutes: any[] = [];
 
   //checking for routes version
   private readonly routesUrl = 'assets/routes.json';
