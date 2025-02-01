@@ -1,47 +1,117 @@
 <div class="desktop-view">
     <div class="floating-overlay" (click)="closeWindow($event)"></div>
     <div class="floating-window">
-      <button class="close-btn" (click)="closeWindow($event)">X</button>
+        <button class="close-btn" (click)="closeWindow($event)">X</button>
 
-      <div class="header">
-        <img src="public\circle-logo.png" alt="ClarkNav Logo" />
-        <h1>Route <br>Planner</h1>
-    </div>
-    <div class="content">
-        <div class="list-planner-container">
-            <div class="list-planner">
-                <div class="routes">
-                    <h3>Route 1</h3>
-                    <div class="route">
-                        <p class="time"><strong>10:00 AM - 10:30 AM</strong> | <span class="fare">Estimated fare: ₱14</span></p>
-                        <p><span class="location">Clark Main Gate</span> ➡️ <span class="location">Clark Outsourcing</span></p>
-                        <p class="duration">30 mins</p>
-                    </div>
-                </div>
+        <div class="header">
+            <img src="public\circle-logo.png" alt="ClarkNav Logo" />
+            <h1>Route <br>Planner</h1>
+        </div>
+        <div class="divider-horizontal"></div>
+        <div class="content">
+            <div class="list-planner-container">
+                <div class="list-planner">
 
-                <div class="routes">
-                    <h3>Route 2</h3>
-                    <div class="route">
-                        <p class="time"><strong>10:00 AM - 10:30 AM</strong> | <span class="fare">Estimated fare: ₱14</span></p>
-                        <p><span class="location">Clark Main Gate</span> ➡️ <span class="location">Clark Outsourcing</span></p>
-                        <p class="duration">30 mins</p>
-                    </div>
-                </div>
 
-                <div class="routes">
-                    <h3>Route 3</h3>
-                    <div class="route">
-                        <p class="time"><strong>10:00 AM - 10:30 AM</strong> | <span class="fare">Estimated fare: ₱14</span></p>
-                        <p><span class="location">Clark Main Gate</span> ➡️ <span class="location">Clark Outsourcing</span></p>
-                        <p class="duration">30 mins</p>
+                    <div class="routes-container">
+                        <div class="route-card">
+                            <div class="route-header">
+                                <h3 class="route-title">{{ routeData?.name }}</h3>
+                                <div class="fares">
+                                    <span class="fare" *ngIf="routeData?.fare">Estimated Fare</span>
+                                    <div class="fare-details">
+                                        <div class="fare-item">
+                                            <span class="regular-fare" *ngIf="routeData?.fare">₱{{ routeData?.fare }}</span>
+                                        </div>
+                                        <div class="fare-item">
+                                            <span class="student-fare" *ngIf="routeData?.studentFare">₱{{ routeData?.studentFare }}</span>
+                                            <span class="discount-info" *ngIf="routeData?.studentFare">For Student/PWD/Senior Citizen discount</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    
+                    
+                            <div class="route-details">
+
+                                <div class="origin-info">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960"
+                                        width="30px" fill="#000000">
+                                        <path
+                                            d="M226.61-206v46q0 14.45-10.62 24.22-10.63 9.78-25.67 9.78H160.3q-15.05 0-25.67-9.78Q124-145.55 124-160v-318.92L209.69-720q5.11-15.57 18.69-24.78 13.58-9.22 30.24-9.22h109.84v-74.77h224.62V-754h109.84q16.08 0 29.19 9.35 13.12 9.35 18.2 24.65L836-478.92V-160q0 14.45-10.63 24.22Q814.75-126 799.7-126h-30.02q-15.04 0-25.67-9.78-10.62-9.77-10.62-24.22v-46H226.61Zm-4.3-342.92h515.38L689.23-684H270.77l-48.46 135.08Zm74.24 226.77q22.83 0 39.53-16.79 16.69-16.78 16.69-39.61t-16.78-39.53q-16.79-16.69-39.62-16.69t-39.52 16.78q-16.7 16.79-16.7 39.62t16.79 39.52q16.78 16.7 39.61 16.7Zm367.08 0q22.83 0 39.52-16.79 16.7-16.78 16.7-39.61t-16.79-39.53q-16.78-16.69-39.61-16.69t-39.53 16.78q-16.69 16.79-16.69 39.62t16.78 39.52q16.79 16.7 39.62 16.7Z" />
+                                    </svg>
+                                    <span>{{ originAddress }}</span>
+                                </div>
+                                <div class="divider-info">
+                                    <span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                                            width="24px" fill="#000000">
+                                            <path
+                                                d="m317.62-69.85-73.77-73.77L581.23-481 243.85-818.38l73.77-73.77L728.77-481 317.62-69.85Z" />
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="destination-info">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                                        width="24px" fill="#000000">
+                                        <path
+                                            d="m273.08-34 117.69-577.92-70.08 30v139.53h-86v-195.84l187.69-81.62q20-8 37.97-11.19 17.96-3.19 34.8.66 17.85 2.84 31.81 12.88 13.96 10.04 24.58 26.89l33.84 55.99q32.85 54.54 78.12 79.04 45.27 24.5 104.5 26.81v86q-76.46-3.08-131.62-30.77-55.15-27.69-92.77-76.62l-24.76 126.01L604-338.77V-34h-86v-239.31l-79.85-83.61L363.54-34h-90.46ZM542-750.15q-35.69 0-59.77-24.08-24.08-24.08-24.08-59.77 0-35.69 24.08-59.77 24.08-24.08 59.77-24.08 35.69 0 59.77 24.08 24.08 24.08 24.08 59.77 0 35.69-24.08 59.77-24.08 24.08-59.77 24.08Z" />
+                                    </svg>
+                                    <span>{{ destinationAddress }}</span>
+                                </div>
+
+                                <!-- <p class="locations">
+                                    <span class="location">{{ originAddress }}</span>
+                                    <span class="arrow">➡️</span>
+                                    <span class="location">{{ destinationAddress }}</span>
+                                </p> -->
+                            </div>
+
+                            <div class="route-schedule-container">
+                                <div class="route-schedule">
+                                    <p class="time">
+                                        <strong>{{ routeData?.departureTime || 'Departure Time' }} - {{ arrivalTime || 'Arrival Time' }}</strong>
+                                    </p>
+                                </div>
+                
+                                <div class="route-schedule">
+                                    <p class="duration">
+                                        {{ routeData?.duration || '' }}
+                                    </p>
+                                </div>
+                            </div>
+                    
+                            <div class="route-actions">
+                                <div class="input-group-container">
+                                    <div class="input-group">
+                                        <label for="departure-date">Departure Date:</label>
+                                        <input type="date" id="departure-date" [(ngModel)]="departureDate" (change)="calculateFareAndDuration()" />
+                                    </div>
+                    
+                                    <div class="input-group">
+                                        <label for="departure-time">Departure Time:</label>
+                                        <input type="time" id="departure-time" [(ngModel)]="routeData.departureTime" (change)="calculateFareAndDuration()" />
+                                    </div>
+                                </div>
+                    
+                                <div class="button-group">
+                                    <button class="validate-btn" (click)="validateRoute()">Validate Route</button>
+                                    <button *ngIf="!isRouteCompleted" class="done-btn" (click)="markRouteAsDone()">✔ Mark as Done</button>
+                                    <button *ngIf="isRouteCompleted" class="reset-btn" (click)="resetRoute()">🔄 Reset Route</button>
+                                </div>
+                    
+                                <p *ngIf="isRouteCompleted" class="done-message">✅ Route completed!</p>
+                            </div>
+                        </div>
                     </div>
+                    
+
                 </div>
             </div>
         </div>
     </div>
-    </div>
 </div>
-  
+
 <div class="mobile-view">
     <div class="floating-overlay" (click)="closeWindow($event)"></div>
     <div class="floating-window">
@@ -54,29 +124,15 @@
         <div class="content-mobile">
             <div class="list-planner-container-mobile">
                 <div class="list-planner-mobile">
+
+                    <!-- Apply the updated route planner functionality here -->
                     <div class="routes-mobile">
                         <h3>Route 1</h3>
                         <div class="route">
-                            <p class="time"><strong>10:00 AM - 10:30 AM</strong> | <span class="fare">Estimated fare: ₱14</span></p>
-                            <p><span class="location">Clark Main Gate</span> ➡️ <span class="location">Clark Outsourcing</span></p>
-                            <p class="duration">30 mins</p>
-                        </div>
-                    </div>
-
-                    <div class="routes-mobile">
-                        <h3>Route 2</h3>
-                        <div class="route">
-                            <p class="time"><strong>10:00 AM - 10:30 AM</strong> | <span class="fare">Estimated fare: ₱14</span></p>
-                            <p><span class="location">Clark Main Gate</span> ➡️ <span class="location">Clark Outsourcing</span></p>
-                            <p class="duration">30 mins</p>
-                        </div>
-                    </div>
-
-                    <div class="routes-mobile">
-                        <h3>Route 3</h3>
-                        <div class="route">
-                            <p class="time"><strong>10:00 AM - 10:30 AM</strong> | <span class="fare">Estimated fare: ₱14</span></p>
-                            <p><span class="location">Clark Main Gate</span> ➡️ <span class="location">Clark Outsourcing</span></p>
+                            <p class="time"><strong>10:00 AM - 10:30 AM</strong> | <span class="fare">Estimated fare:
+                                    ₱14</span></p>
+                            <p><span class="location">Clark Main Gate</span> ➡️ <span class="location">Clark
+                                    Outsourcing</span></p>
                             <p class="duration">30 mins</p>
                         </div>
                     </div>
@@ -85,5 +141,3 @@
         </div>
     </div>
 </div>
-  
-    

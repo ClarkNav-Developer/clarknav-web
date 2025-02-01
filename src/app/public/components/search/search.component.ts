@@ -8,6 +8,7 @@ import { FareService } from '../../services/fare/fare.service';
 import { LocationService } from '../../services/geocoding/location.service';
 import { FloatingWindowService } from '../../../floating-window.service';
 import { RoutesService } from '../../services/routes/routes.service';
+import { Router } from '@angular/router';
 
 declare var google: any;
 
@@ -55,7 +56,8 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     public locationService: LocationService,
     private renderer: Renderer2,
     public floatingWindowService: FloatingWindowService,
-    private routesService: RoutesService
+    private routesService: RoutesService,
+    private router: Router,
   ) { }
 
   /*------------------------------------------
@@ -78,6 +80,11 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.navigationService.stopRealTimeTracking();
     this.stopUpdatingDuration();
+  }
+
+  saveRoute(route: any): void {
+    console.log('saveRoute called with route:', route); // Debugging log
+    this.router.navigate(['/planner'], { state: { route } });
   }
 
   /*------------------------------------------
