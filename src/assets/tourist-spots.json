@@ -9,7 +9,7 @@
       },
       "marker": "public/tourist-spot/Air-Force-City.svg",
       "description": "A historical site showcasing the history of the Philippine Air Force.",
-      "image": "public/tourist-spot/images/air force city.png"
+      "image": "public/tourist-spot/images/air-force-city.png"
     },
     {
       "name": "Bicentennial Park",
@@ -19,7 +19,7 @@
       },
       "marker": "public/tourist-spot/Bicentennial-Park.svg",
       "description": "A beautiful park commemorating the bicentennial anniversary.",
-      "image": "public/tourist-spot/images/bicentenial park.png"
+      "image": "public/tourist-spot/images/bicentenial-park.png"
     },
     {
       "name": "Deco Central Showroom",
@@ -29,7 +29,7 @@
       },
       "marker": "public/tourist-spot/Deco-Central-Showroom.svg",
       "description": "A showroom displaying various decorative items.",
-      "image": "public/tourist-spot/images/deco central.png"
+      "image": "public/tourist-spot/images/deco-central.png"
     },
     {
       "name": "Aqua Planet",
@@ -39,7 +39,7 @@
       },
       "marker": "public/tourist-spot/Aqua-Planet.svg",
       "description": "A water park with various attractions and slides.",
-      "image": "public/tourist-spot/images/aqua planet.png"
+      "image": "public/tourist-spot/images/aqua-planet.png"
     },
     {
       "name": "Children's Playground",
@@ -49,7 +49,7 @@
       },
       "marker": "public/tourist-spot/Childrens-Playground.svg",
       "description": "A playground designed for children with various play structures.",
-      "image": "public/tourist-spot/images/childrens playground.jpg"
+      "image": "public/tourist-spot/images/childrens-playground.jpg"
     },
     {
       "name": "El Kabayo",
@@ -59,7 +59,7 @@
       },
       "marker": "public/tourist-spot/El-Kabayo.svg",
       "description": "A horse riding facility offering various equestrian activities.",
-      "image": "public/tourist-spot/images/el kabayo.png"
+      "image": "public/tourist-spot/images/el-kabayo.png"
     },
     {
       "name": "Clark International Speedway",
@@ -69,7 +69,7 @@
       },
       "marker": "public/tourist-spot/Clark-International-Speedway.svg",
       "description": "A speedway hosting various motorsport events.",
-      "image": "public/tourist-spot/images/clark speedway.png"
+      "image": "public/tourist-spot/images/clark-speedway.png"
     },
     {
       "name": "Clark Museum",
@@ -79,7 +79,7 @@
       },
       "marker": "public/tourist-spot/Clark-Museum.svg",
       "description": "A museum showcasing the history and culture of Clark.",
-      "image": "public/tourist-spot/images/clark museum.png"
+      "image": "public/tourist-spot/images/clark-museum.png"
     },
     {
       "name": "Clark Safari",
@@ -89,7 +89,7 @@
       },
       "marker": "public/tourist-spot/Clark-Safari.svg",
       "description": "A safari park with various animals and attractions.",
-      "image": "public/tourist-spot/images/clark safari.png"
+      "image": "public/tourist-spot/images/clark-safari.png"
     },
     {
       "name": "Dinosaur Island",
@@ -99,7 +99,7 @@
       },
       "marker": "public/tourist-spot/Dinosaur-Island.svg",
       "description": "A theme park featuring life-sized dinosaur replicas.",
-      "image": "public/tourist-spot/images/dinosuar island.png"
+      "image": "public/tourist-spot/images/dinosuar-island.png"
     },
     {
       "name": "Fontana Casino",
@@ -109,7 +109,7 @@
       },
       "marker": "public/tourist-spot/Fontana-Casino.svg",
       "description": "A casino offering various gaming and entertainment options.",
-      "image": "public/tourist-spot/images/fontana casino.png"
+      "image": "public/tourist-spot/images/fontana-casino.png"
     },
     {
       "name": "Fontana Water Park",
@@ -119,7 +119,7 @@
       },
       "marker": "public/tourist-spot/Fontana-Water-Park.svg",
       "description": "A water park with various pools and slides.",
-      "image": "public/tourist-spot/images/fontana waterpark.png"
+      "image": "public/tourist-spot/images/fontana-waterpark.png"
     },
     {
       "name": "Hann Casino & Resort",
@@ -149,7 +149,7 @@
       },
       "marker": "public/tourist-spot/Nayong-Pilipino.svg",
       "description": "A cultural park showcasing the heritage of the Philippines.",
-      "image": "public/tourist-spot/images/nayong pilipino.png"
+      "image": "public/tourist-spot/images/nayong-pilipino.png"
     },
     {
       "name": "Clark Parade Grounds",
@@ -159,7 +159,7 @@
       },
       "marker": "public/tourist-spot/Clark-Parade-Grounds.svg",
       "description": "A large open space used for various events and activities.",
-      "image": "public/tourist-spot/images/clark parade ground.png"
+      "image": "public/tourist-spot/images/clark-parade-ground.png"
     },
     {
       "name": "Royce Hotel & Casino",
