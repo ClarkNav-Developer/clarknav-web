@@ -6,7 +6,6 @@ import { MapInstanceService } from '../../services/map/map-instance.service';
 import { AuthService } from '../../../auth/auth.service';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
-import { NavigationHistoryService } from '../../services/geocoding/navigationhistory.service';
 import { SuggestedRoutesService } from '../../services/routes/suggested-routes.service';
 import { MapService } from '../../services/map/map.service';
 
@@ -68,7 +67,6 @@ export class AccountComponent implements OnInit {
     private floatingWindowService: FloatingWindowService,
     private mapStyleService: MapStyleService,
     private mapInstanceService: MapInstanceService,
-    private navigationHistoryService: NavigationHistoryService,
     private suggestedRoutesService: SuggestedRoutesService,
     private mapService: MapService
   ) {
@@ -113,9 +111,9 @@ export class AccountComponent implements OnInit {
   }
 
   fetchNavigationHistories() {
-    this.navigationHistoryService.getNavigationHistories().subscribe(
+    this.http.get(environment.navigationHistoriesUrl).subscribe(
       (response) => {
-        this.navigationHistories = response;
+        this.navigationHistories = response as any[];
         console.log('Navigation histories fetched successfully:', this.navigationHistories);
       },
       (error) => {
@@ -231,7 +229,7 @@ export class AccountComponent implements OnInit {
         formData.append(key, this.bugReport[key]);
       }
     }
-    this.http.post(`${environment.apiUrl}/api/bug-reports`, formData).subscribe(
+    this.http.post(environment.bugReportsUrl, formData).subscribe(
       response => {
         console.log('Bug report submitted successfully', response);
         alert('Bug report submitted successfully');
@@ -245,13 +243,13 @@ export class AccountComponent implements OnInit {
 
   onSubmitFeedback(event: Event) {
     event.preventDefault();
-    this.http.post(`${environment.apiUrl}/api/feedback`, this.feedback).subscribe(
+    this.http.post(environment.feedbackUrl, this.feedback).subscribe(
       response => {
         console.log('Feedback submitted successfully', response);
         alert('Feedback submitted successfully');
       },
       error => {
-        console.error('Error submitting feedback', error);
+        console.error('Error submitting feedback:', error);
         alert('Error submitting feedback');
       }
     );

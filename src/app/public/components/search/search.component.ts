@@ -83,8 +83,11 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   saveRoute(route: any): void {
-    console.log('saveRoute called with route:', route); // Debugging log
-    this.router.navigate(['/planner'], { state: { route } });
+    if (route) {
+      this.router.navigate(['/planner'], { state: { route } });
+    } else {
+      alert('Please select a route to save.');
+    }
   }
 
   /*------------------------------------------

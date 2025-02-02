@@ -79,7 +79,7 @@ export class AuthService {
     );
   }
 
-    // Get identity method
+  // Get identity method
   getIdentity(): Observable<boolean> {
     console.debug('Fetching user identity');
     return this.http
@@ -108,47 +108,47 @@ export class AuthService {
       );
   }
 
- // Update credentials method
- updateCredentials(updatedCredentials: {
-  first_name: string;
-  last_name: string;
-  current_password?: string;
-  new_password?: string;
-  new_password_confirmation?: string;
-}): Observable<any> {
-  if (!this.currentUser || !this.currentUser.id) {
-    console.error('No current user or user ID is missing.');
-    return of(null);
-  }
-  const url = `${environment.updateUserUrl}/${this.currentUser.id}`;
-  return this.http
-    .put<any>(url, updatedCredentials, { withCredentials: true })
-    .pipe(
-      tap((response) => {
-        if (response.succeeded) {
-          this.currentUser = {
-            ...this.currentUser,
-            first_name: updatedCredentials.first_name,
-            last_name: updatedCredentials.last_name,
-          } as User;
-          console.log(
-            'User credentials updated successfully',
-            this.currentUser
+  // Update credentials method
+  updateCredentials(updatedCredentials: {
+    first_name: string;
+    last_name: string;
+    current_password?: string;
+    new_password?: string;
+    new_password_confirmation?: string;
+  }): Observable<any> {
+    if (!this.currentUser || !this.currentUser.id) {
+      console.error('No current user or user ID is missing.');
+      return of(null);
+    }
+    const url = `${environment.updateUserUrl}/${this.currentUser.id}`;
+    return this.http
+      .put<any>(url, updatedCredentials, { withCredentials: true })
+      .pipe(
+        tap((response) => {
+          if (response.succeeded) {
+            this.currentUser = {
+              ...this.currentUser,
+              first_name: updatedCredentials.first_name,
+              last_name: updatedCredentials.last_name,
+            } as User;
+            console.log(
+              'User credentials updated successfully',
+              this.currentUser
+            );
+          }
+        }),
+        catchError((error) => {
+          console.error(
+            'An error occurred while updating your credentials.',
+            error
           );
-        }
-      }),
-      catchError((error) => {
-        console.error(
-          'An error occurred while updating your credentials.',
-          error
-        );
-        if (error.status === 422) {
-          console.error('Validation errors:', error.error.errors);
-        }
-        return of(null);
-      })
-    );
-}
+          if (error.status === 422) {
+            console.error('Validation errors:', error.error.errors);
+          }
+          return of(null);
+        })
+      );
+  }
 
   // Get current user
   getCurrentUser(): User | null {
@@ -157,7 +157,7 @@ export class AuthService {
   }
 
   // Register new user
-  register(user: Partial<User>): Observable<any> {
+  register(user: any): Observable<any> {
     console.debug('Registering new user:', user);
     return this.http
       .post<any>(environment.registerUrl, user, { withCredentials: true })
@@ -167,9 +167,7 @@ export class AuthService {
         }),
         catchError((error) => {
           console.error('Registration error occurred:', error);
-          alert(
-            'Registration failed. Please check your details and try again.'
-          );
+          alert('Registration failed. Please check your details and try again.');
           return of(null);
         })
       );
@@ -179,22 +177,24 @@ export class AuthService {
   refreshToken(): Observable<any> {
     const refreshToken = this.getRefreshToken();
     if (!refreshToken) {
-      console.error('No refresh token available.');
+      console.error("No refresh token available.");
       return of(null);
     }
+
     return this.http.post<any>(environment.refreshUrl, { refresh_token: refreshToken }, { withCredentials: true }).pipe(
       tap(response => {
         if (response.token) {
-          localStorage.setItem('authToken', response.token); // Update the token
-          console.log('Token refreshed successfully.');
+          localStorage.setItem("authToken", response.token);
+          console.log("Token refreshed successfully:", response.token);
         } else {
-          console.warn('Token refresh failed:', response);
+          console.warn("Token refresh failed:", response);
         }
       }),
       catchError(error => {
-        console.error('Token refresh error occurred:', error);
+        console.error("Token refresh error occurred:", error);
         return of(null);
       })
     );
   }
+
 }

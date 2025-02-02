@@ -26,18 +26,6 @@
     z-index: 999;
   }
 
-  .close-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: red;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
-  }
-
   .content {
     display: flex;
     flex-direction: column;
@@ -62,229 +50,264 @@
   }
 
   .header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
   }
-  
+
   .header img {
-      height: 90px;
-      margin-right: 10px;
+    height: 90px;
+    margin-right: 10px;
   }
-  
+
   .header h1 {
-      margin-left: 10px;
-      text-transform: uppercase;
-      font-family: 'Lemon/Milk light', sans-serif;
-      font-style: normal;
-      font-weight: 400;
-      letter-spacing: 2px;
+    margin-left: 10px;
+    text-transform: uppercase;
+    font-family: 'Lemon/Milk light', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: 2px;
   }
 
   .divider-horizontal {
     border-top: 0.2em solid #eee;
-}
+  }
+
+  .no-planner {
+    padding: 20px;
+    margin: 20px;
+    text-align: center;
+    color: #777;
+    font-size: 14px;
+  }
+
+  .list-planner-container {
+    max-height: 400px; /* Set a maximum height */
+    overflow-y: auto; /* Enable vertical scrolling */
+    margin: 10px;
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  }
   
+  .list-planner-container::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+  }
+
+  /* .close-btn-2 {
+    right: 0px;
+    position: absolute;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  .close-btn-2:hover {
+    background: darkred;
+  } */
+
   .routes-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      margin: 20px 0 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 20px 0 0 0;
   }
-  
+
   .route-card {
-      width: 100%;
-      transition: transform 0.3s ease;
+    width: 100%;
+    transition: transform 0.3s ease;
   }
-  
+
   .route-header {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 10px;
-      margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
   }
-  
+
   .fares {
-      display: flex;
-      flex-direction: column;
+    display: flex;
+    flex-direction: column;
   }
-  
+
   .fare-details {
-      display: flex;
-      gap: 1rem;
+    display: flex;
+    gap: 1rem;
   }
-  
+
   .fare-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
-  
+
   .regular-fare {
-      color: #007bff;
-      /* Regular fare color */
-      font-weight: bold;
+    color: #007bff;
+    /* Regular fare color */
+    font-weight: bold;
   }
-  
+
   .student-fare {
-      color: #28a745;
-      /* Student fare color */
-      font-weight: bold;
+    color: #28a745;
+    /* Student fare color */
+    font-weight: bold;
   }
-  
+
   .discount-info {
-      font-size: 0.6rem;
-      font-style: italic;
-      color: #888;
-      align-items: center;
+    font-size: 0.6rem;
+    font-style: italic;
+    color: #888;
+    align-items: center;
   }
-  
+
   .route-details {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      width: 100%;
-      justify-content: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    justify-content: flex-start;
   }
-  
+
   .origin-info {
-      min-width: 20%;
-      max-width: 40%;
-      display: flex;
-      flex-direction: row;
-      gap: 10px;
-      align-items: center;
+    min-width: 20%;
+    max-width: 40%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
   }
-  
+
   .origin-info svg {
-      height: 30px;
+    height: 30px;
   }
-  
+
   .origin-info span {
-      width: 100%;
+    width: 100%;
   }
-  
+
   .divider-info {
-      display: flex;
-      align-items: center;
+    display: flex;
+    align-items: center;
   }
-  
+
   .destination-info {
-      min-width: 20%;
-      max-width: 40%;
-      display: flex;
-      flex-direction: row;
-      gap: 10px;
-      align-items: center;
+    min-width: 20%;
+    max-width: 40%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
   }
-  
+
   .destination-info svg {
-      height: 30px;
+    height: 30px;
   }
-  
+
   .destination-info span {
-      width: 100%;
+    width: 100%;
   }
-  
+
   .route-schedule-container {
-      display: flex;
-      justify-content: space-between;
-      /* Ensure space between the elements */
-      align-items: center;
-      /* Align vertically */
-      margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    /* Ensure space between the elements */
+    align-items: center;
+    /* Align vertically */
+    margin: 10px 0;
   }
-  
+
   .route-schedule.time {
-      flex: 1;
-      display: flex;
-      justify-content: flex-start;
-      /* Time aligned to the start (left) */
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    /* Time aligned to the start (left) */
   }
-  
+
   .route-schedule.duration {
-      flex: 1;
-      display: flex;
-      justify-content: flex-end;
-      /* Duration aligned to the end (right) */
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    /* Duration aligned to the end (right) */
   }
-  
+
   .input-group-container {
-      display: flex;
-      gap: 1rem;
-      margin-top: 10px;
+    display: flex;
+    gap: 1rem;
+    margin-top: 10px;
   }
-  
+
   .input-group {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
   }
-  
+
   .input-group label {
-      margin-bottom: 0.5rem;
-      color: #555;
+    margin-bottom: 0.5rem;
+    color: #555;
   }
-  
+
   .input-group input {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
   }
-  
+
   .button-group {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
   }
-  
+
   button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.3s ease;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease;
   }
-  
+
   .validate-btn {
-      background-color: #007bff;
-      color: white;
+    background-color: #007bff;
+    color: white;
   }
-  
+
   .validate-btn:hover {
-      background-color: #0056b3;
+    background-color: #0056b3;
   }
-  
+
   .done-btn {
-      background-color: #28a745;
-      color: white;
+    background-color: #28a745;
+    color: white;
   }
-  
+
   .done-btn:hover {
-      background-color: #1e7e34;
+    background-color: #1e7e34;
   }
-  
+
   .reset-btn {
-      background-color: #ffc107;
-      color: black;
+    background-color: #ffc107;
+    color: black;
   }
-  
+
   .reset-btn:hover {
-      background-color: #e0a800;
+    background-color: #e0a800;
   }
-  
+
   .done-message {
-      margin-top: 15px;
-      font-size: 1.2rem;
-      color: #28a745;
-      text-align: center;
+    margin-top: 15px;
+    font-size: 1.2rem;
+    color: #28a745;
+    text-align: center;
   }
 
 }
@@ -301,9 +324,7 @@
     left: 10px;
     width: calc(100% - 20px);
     max-height: 70vh;
-    /* Limit height to prevent overflow */
     overflow-y: auto;
-    /* Enable scrolling for overflowing content */
     padding: 20px;
     background: white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -325,7 +346,6 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    /* Space between items */
   }
 
   .close-btn {
@@ -359,15 +379,210 @@
     margin-left: 10px;
   }
 
-  .routes-mobile {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    border-radius: 8px;
-    padding: 10px;
-    background-color: #f1f1f1;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin: 20px 0;
+  .no-planner-mobile {
+    padding: 20px;
+    margin: 20px;
+    text-align: center;
+    color: #777;
+    font-size: 14px;
   }
 
+  .routes-container-mobile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 20px 0 0 0;
+  }
+
+  .route-card-mobile {
+    width: 100%;
+    transition: transform 0.3s ease;
+  }
+
+  .route-header-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+  }
+
+  .fares-mobile {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .fare-details-mobile {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .fare-item-mobile {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .regular-fare-mobile {
+    color: #007bff;
+    font-weight: bold;
+  }
+
+  .student-fare-mobile {
+    color: #28a745;
+    font-weight: bold;
+  }
+
+  .discount-info-mobile {
+    font-size: 0.6rem;
+    font-style: italic;
+    color: #888;
+    align-items: center;
+  }
+
+  .route-details-mobile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .origin-info-mobile {
+    min-width: 20%;
+    max-width: 40%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .origin-info-mobile svg {
+    height: 30px;
+  }
+
+  .origin-info-mobile span {
+    width: 100%;
+  }
+
+  .divider-info-mobile {
+    display: flex;
+    align-items: center;
+  }
+
+  .destination-info-mobile {
+    min-width: 20%;
+    max-width: 40%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .destination-info-mobile svg {
+    height: 30px;
+  }
+
+  .destination-info-mobile span {
+    width: 100%;
+  }
+
+  .route-schedule-container-mobile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+  }
+
+  .time-duration-mobile {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .time-duration-mobile strong {
+    flex: 1;
+  }
+
+  .duration-mobile {
+    margin-left: 10px;
+    white-space: nowrap;
+  }
+
+  .input-group-container-mobile {
+    display: flex;
+    gap: 1rem;
+    margin-top: 10px;
+  }
+
+  .input-group-mobile {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .input-group-mobile label {
+    margin-bottom: 0.5rem;
+    color: #555;
+  }
+
+  .input-group-mobile input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+
+  button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease;
+  }
+
+  .button-group-mobile {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+  }
+
+  .validate-btn-mobile {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .validate-btn-mobile:hover {
+    background-color: #0056b3;
+  }
+
+  .done-btn-mobile {
+    background-color: #28a745;
+    color: white;
+  }
+
+  .done-btn-mobile:hover {
+    background-color: #1e7e34;
+  }
+
+  .reset-btn-mobile {
+    background-color: #ffc107;
+    color: black;
+  }
+
+  .reset-btn-mobile:hover {
+    background-color: #e0a800;
+  }
+
+  .done-message-mobile {
+    margin-top: 15px;
+    font-size: 1.2rem;
+    color: #28a745;
+    text-align: center;
+  }
 }

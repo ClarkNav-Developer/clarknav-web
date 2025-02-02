@@ -83,13 +83,20 @@ export class LoginComponent {
       isAdmin: false, // Default to false
       isUser: true,   // Default to true
     };
-    this.authService.register(newUser).subscribe(
+  
+    // Map passwordConfirmation to password_confirmation
+    const registrationData = {
+      ...newUser,
+      password_confirmation: this.passwordConfirmation
+    };
+  
+    this.authService.register(registrationData).subscribe(
       (response: any) => {
         alert('Registration successful');
         this.onLoginClick();
       },
       (error) => {
-        this.errorMessage = 'Registration failed';
+        this.errorMessage = 'Registration failed: ' + error.error.message;
       }
     );
   }

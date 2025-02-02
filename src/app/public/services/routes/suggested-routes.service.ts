@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { RoutesService } from './routes.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, throwError, catchError } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SuggestedRoutesService {
   private routeCache = new Map<string, any>();
-  private apiUrl = 'http://localhost:8000/api/navigation-histories';
 
   constructor(private routesService: RoutesService, private http: HttpClient) {}
 
@@ -61,7 +61,7 @@ export class SuggestedRoutesService {
   saveNavigationHistory(origin: string, destination: string, routeDetails: any, navigationConfirmed: boolean): Observable<any> {
     const body = { origin, destination, route_details: routeDetails, navigation_confirmed: navigationConfirmed };
     console.log('Saving navigation history:', body);
-    return this.http.post(this.apiUrl, body).pipe(
+    return this.http.post(environment.navigationHistoriesUrl, body).pipe(
       tap(response => console.log('Navigation history saved:', response)),
       catchError(error => {
         console.error('Error saving navigation history:', error);
