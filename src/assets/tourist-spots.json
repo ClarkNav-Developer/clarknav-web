@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "spots": [
     {
       "name": "Air Force City",
@@ -7,7 +7,9 @@
         "latitude": 15.175294175047403,
         "longitude": 120.5414346956833
       },
-      "marker": "public/tourist-spot/Air-Force-City.svg"
+      "marker": "public/tourist-spot/Air-Force-City.svg",
+      "description": "A historical site showcasing the history of the Philippine Air Force.",
+      "image": "public/tourist-spot/images/air-force-city.png"
     },
     {
       "name": "Bicentennial Park",
@@ -15,7 +17,9 @@
         "latitude": 15.178068217027596,
         "longitude": 120.51569428318288
       },
-      "marker": "public/tourist-spot/Bicentennial-Park.svg"
+      "marker": "public/tourist-spot/Bicentennial-Park.svg",
+      "description": "A beautiful park commemorating the bicentennial anniversary.",
+      "image": "public/tourist-spot/images/bicentenial-park.png"
     },
     {
       "name": "Deco Central Showroom",
@@ -23,7 +27,9 @@
         "latitude": 15.196896393822197,
         "longitude": 120.5348104532023
       },
-      "marker": "public/tourist-spot/Deco-Central-Showroom.svg"
+      "marker": "public/tourist-spot/Deco-Central-Showroom.svg",
+      "description": "A showroom displaying various decorative items.",
+      "image": "public/tourist-spot/images/deco-central.png"
     },
     {
       "name": "Aqua Planet",
@@ -31,7 +37,9 @@
         "latitude": 15.187423751091243,
         "longitude": 120.49904728557948
       },
-      "marker": "public/tourist-spot/Aqua-Planet.svg"
+      "marker": "public/tourist-spot/Aqua-Planet.svg",
+      "description": "A water park with various attractions and slides.",
+      "image": "public/tourist-spot/images/aqua-planet.png"
     },
     {
       "name": "Children's Playground",
@@ -39,7 +47,9 @@
         "latitude": 15.180291468071129,
         "longitude": 120.51840679994044
       },
-      "marker": "public/tourist-spot/Childrens-Playground.svg"
+      "marker": "public/tourist-spot/Childrens-Playground.svg",
+      "description": "A playground designed for children with various play structures.",
+      "image": "public/tourist-spot/images/childrens-playground.jpg"
     },
     {
       "name": "El Kabayo",
@@ -47,7 +57,9 @@
         "latitude": 15.200926735741804,
         "longitude": 120.541596761018
       },
-      "marker": "public/tourist-spot/El-Kabayo.svg"
+      "marker": "public/tourist-spot/El-Kabayo.svg",
+      "description": "A horse riding facility offering various equestrian activities.",
+      "image": "public/tourist-spot/images/el-kabayo.png"
     },
     {
       "name": "Clark International Speedway",
@@ -55,7 +67,9 @@
         "latitude": 15.205735759853521,
         "longitude": 120.5359003093877
       },
-      "marker": "public/tourist-spot/Clark-International-Speedway.svg"
+      "marker": "public/tourist-spot/Clark-International-Speedway.svg",
+      "description": "A speedway hosting various motorsport events.",
+      "image": "public/tourist-spot/images/clark-speedway.png"
     },
     {
       "name": "Clark Museum",
@@ -63,7 +77,9 @@
         "latitude": 15.182212110984924,
         "longitude": 120.5268649713241
       },
-      "marker": "public/tourist-spot/Clark-Museum.svg"
+      "marker": "public/tourist-spot/Clark-Museum.svg",
+      "description": "A museum showcasing the history and culture of Clark.",
+      "image": "public/tourist-spot/images/clark-museum.png"
     },
     {
       "name": "Clark Safari",
@@ -71,7 +87,9 @@
         "latitude": 15.183772997694714,
         "longitude": 120.49791544007869
       },
-      "marker": "public/tourist-spot/Clark-Safari.svg"
+      "marker": "public/tourist-spot/Clark-Safari.svg",
+      "description": "A safari park with various animals and attractions.",
+      "image": "public/tourist-spot/images/clark-safari.png"
     },
     {
       "name": "Dinosaur Island",
@@ -79,7 +97,9 @@
         "latitude": 15.207178196321857,
         "longitude": 120.54589929450535
       },
-      "marker": "public/tourist-spot/Dinosaur-Island.svg"
+      "marker": "public/tourist-spot/Dinosaur-Island.svg",
+      "description": "A theme park featuring life-sized dinosaur replicas.",
+      "image": "public/tourist-spot/images/dinosuar-island.png"
     },
     {
       "name": "Fontana Casino",
@@ -87,7 +107,9 @@
         "latitude": 15.194349259242717,
         "longitude": 120.50850416381738
       },
-      "marker": "public/tourist-spot/Fontana-Casino.svg"
+      "marker": "public/tourist-spot/Fontana-Casino.svg",
+      "description": "A casino offering various gaming and entertainment options.",
+      "image": "public/tourist-spot/images/fontana-casino.png"
     },
     {
       "name": "Fontana Water Park",
@@ -95,7 +117,9 @@
         "latitude": 15.193821901145046,
         "longitude": 120.51095373222407
       },
-      "marker": "public/tourist-spot/Fontana-Water-Park.svg"
+      "marker": "public/tourist-spot/Fontana-Water-Park.svg",
+      "description": "A water park with various pools and slides.",
+      "image": "public/tourist-spot/images/fontana-waterpark.png"
     },
     {
       "name": "Hann Casino & Resort",
@@ -103,7 +127,9 @@
         "latitude": 15.192240628293488,
         "longitude": 120.52477012493614
       },
-      "marker": "public/tourist-spot/Hann-Casino-and-Resort.svg"
+      "marker": "public/tourist-spot/Hann-Casino-and-Resort.svg",
+      "description": "A luxury resort and casino offering various amenities.",
+      "image": "public/tourist-spot/images/hann.jpg"
     },
     {
       "name": "Midori Hotel & Casino",
@@ -111,7 +137,9 @@
         "latitude": 15.192827968279955,
         "longitude": 120.52148388427503
       },
-      "marker": "public/tourist-spot/Midori-Hotel-and-Casino.svg"
+      "marker": "public/tourist-spot/Midori-Hotel-and-Casino.svg",
+      "description": "A hotel and casino offering luxury accommodations and gaming.",
+      "image": "public/tourist-spot/images/midori.jpg"
     },
     {
       "name": "Nayong Pilipino",
@@ -119,7 +147,9 @@
         "latitude": 15.203195846812106,
         "longitude": 120.52976915419806
       },
-      "marker": "public/tourist-spot/Nayong-Pilipino.svg"
+      "marker": "public/tourist-spot/Nayong-Pilipino.svg",
+      "description": "A cultural park showcasing the heritage of the Philippines.",
+      "image": "public/tourist-spot/images/nayong-pilipino.png"
     },
     {
       "name": "Clark Parade Grounds",
@@ -127,7 +157,9 @@
         "latitude": 15.18122632329207,
         "longitude": 120.52427578128665
       },
-      "marker": "public/tourist-spot/Clark-Parade-Grounds.svg"
+      "marker": "public/tourist-spot/Clark-Parade-Grounds.svg",
+      "description": "A large open space used for various events and activities.",
+      "image": "public/tourist-spot/images/clark-parade-ground.png"
     },
     {
       "name": "Royce Hotel & Casino",
@@ -135,7 +167,9 @@
         "latitude": 15.180790028571105,
         "longitude": 120.52994060974713
       },
-      "marker": "public/tourist-spot/Royce-Hotel-and-Casino.svg"
+      "marker": "public/tourist-spot/Royce-Hotel-and-Casino.svg",
+      "description": "A hotel and casino offering luxury accommodations and gaming.",
+      "image": "public/tourist-spot/images/royce.webp"
     },
     {
       "name": "Widus Hotel & Casino",
@@ -143,7 +177,9 @@
         "latitude": 15.189630872168443,
         "longitude": 120.52498107507229
       },
-      "marker": "public/tourist-spot/Widus-Hotel-Casino.svg"
+      "marker": "public/tourist-spot/Widus-Hotel-Casino.svg",
+      "description": "A hotel and casino offering luxury accommodations and gaming.",
+      "image": "public/tourist-spot/images/widus.webp"
     }
   ]
 }

@@ -15,6 +15,22 @@
       "request": "launch",
       "preLaunchTask": "npm: test",
       "url": "http://localhost:9876/debug.html"
+    },
+    {
+      "name": "ng serve (Opera GX)",
+      "type": "chrome",
+      "request": "launch",
+      "preLaunchTask": "npm: start",
+      "url": "http://localhost:4200/",
+      "runtimeExecutable": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\Opera GX.exe"
+    },
+    {
+      "name": "ng test (Opera GX)",
+      "type": "chrome",
+      "request": "launch",
+      "preLaunchTask": "npm: test",
+      "url": "http://localhost:9876/debug.html",
+      "runtimeExecutable": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\Opera GX.exe"
     }
   ]
 }

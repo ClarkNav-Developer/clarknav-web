@@ -21,6 +21,7 @@ import { InformationComponent } from './components/information/information.compo
 import { FloatingWindowService } from '../floating-window.service';
 import { MapStyleService } from './services/map/map-style.service';
 import { MapInstanceService } from './services/map/map-instance.service';
+import { TouristSpotComponent } from './components/tourist-spot/tourist-spot.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { MapInstanceService } from './services/map/map-instance.service';
     RouteComponent,
     AccountComponent,
     InformationComponent,
+    TouristSpotComponent,
   ],
   imports: [
     CommonModule,
