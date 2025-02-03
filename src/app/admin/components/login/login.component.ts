@@ -31,9 +31,9 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  togglePassword() {
-    const passwordInput = document.getElementById('password') as HTMLInputElement;
-    const passwordIcon = document.querySelector('.password-eye .material-icons') as HTMLElement;
+  togglePassword(fieldId: string, iconId: string) {
+    const passwordInput = document.getElementById(fieldId) as HTMLInputElement;
+    const passwordIcon = document.getElementById(iconId) as HTMLElement;
     if (passwordInput.type === 'password') {
       passwordInput.type = 'text';
       passwordIcon.textContent = 'visibility_off';

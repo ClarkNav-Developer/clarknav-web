@@ -1,71 +1,149 @@
 <link rel="stylesheet" href="../../../admin/layout/layout.component.css">
-<div class="main-container">
-    <div class="main-content">
-        <div class="login-body">
-            <div class="login-container">
-                <div class="logo-placeholder">
-                    <h1>Welcome to</h1>
-                    <img src="/public/bg-nav-900.png" alt="Logo" class="logo-image">
+
+<!-- Desktop View -->
+<div class="desktop-view">
+    <div class="main-container">
+        <div class="main-content">
+            <div class="login-body">
+                <div class="login-container">
+                    <div class="logo-placeholder">
+                        <h1>Welcome to</h1>
+                        <img src="/public/bg-nav-900.png" alt="Logo" class="logo-image">
+                    </div>
+
+                    <form *ngIf="isLoginForm" (ngSubmit)="onLoginSubmit($event)">
+                        <div class="form-group">
+                            <label for="email">EMAIL</label>
+                            <input type="email" id="email-desktop" name="email" [(ngModel)]="email"
+                                placeholder="juandelacruz@gmail.com" required (keydown.enter)="onLoginSubmit($event)">
+                        </div>
+                        <div class="form-group password-eye">
+                            <label for="password">PASSWORD</label>
+                            <input type="password" id="password-desktop" name="password" [(ngModel)]="password"
+                                placeholder="••••••••" required (keydown.enter)="onLoginSubmit($event)">
+                            <span id="password-icon-desktop" class="material-icons" (click)="togglePassword('password-desktop', 'password-icon-desktop')">visibility</span>
+                        </div>
+                        <!-- <div class="form-group">
+                            <a>Forgot Password?</a>
+                        </div> -->
+                        <div class="form-group">
+                            <span class="error-message">{{ errorMessage }}</span>
+                        </div>
+                        <button type="submit" class="login-create-button">Login</button>
+                    </form>
+
+                    <form *ngIf="!isLoginForm" (ngSubmit)="onRegisterSubmit($event)">
+                        <div class="form-group">
+                            <label for="firstName">FIRST NAME</label>
+                            <input type="text" id="firstName-desktop" name="firstName" placeholder="Juan Miguel"
+                                [(ngModel)]="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">LAST NAME</label>
+                            <input type="text" id="lastName-desktop" name="lastName" placeholder="Dela Cruz"
+                                [(ngModel)]="lastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">EMAIL</label>
+                            <input type="email" id="email-desktop" name="email" placeholder="juandelacruz@gmail.com"
+                                [(ngModel)]="email" required>
+                        </div>
+                        <div class="form-group password-eye">
+                            <label for="password">PASSWORD</label>
+                            <input type="password" id="password-desktop" name="password" placeholder="••••••••"
+                                [(ngModel)]="password" required>
+                            <span id="password-icon-desktop" class="material-icons" (click)="togglePassword('password-desktop', 'password-icon-desktop')">visibility</span>
+                        </div>
+                        <div class="form-group password-eye">
+                            <label for="passwordConfirmation">CONFIRM PASSWORD</label>
+                            <input type="password" id="passwordConfirmation-desktop" name="passwordConfirmation"
+                                placeholder="••••••••" [(ngModel)]="passwordConfirmation" required>
+                            <span id="password-confirmation-icon-desktop" class="material-icons" (click)="togglePassword('passwordConfirmation-desktop', 'password-confirmation-icon-desktop')">visibility</span>
+                        </div>
+                        <button class="login-create-button" type="submit">Create Account</button>
+                    </form>
+
+                    <div class="create-account">
+                        <p class="account-text" *ngIf="isLoginForm">Don't have an account yet? <a
+                                class="create-account-link" (click)="onRegisterClick()">Create an Account</a></p>
+                        <p class="account-text" *ngIf="!isLoginForm">Already have an account? <a
+                                class="create-account-link" (click)="onLoginClick()">Login</a></p>
+                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-                <form *ngIf="isLoginForm" (ngSubmit)="onLoginSubmit($event)">
-                    <div class="form-group">
-                        <label for="email">EMAIL</label>
-                        <input type="email" id="email" name="email" [(ngModel)]="email"
-                            placeholder="juandelacruz@gmail.com" required (keydown.enter)="onLoginSubmit($event)">
+<!-- Mobile View -->
+<div class="mobile-view">
+    <div class="main-container">
+        <div class="main-content">
+            <div class="login-body">
+                <div class="login-container">
+                    <div class="logo-placeholder">
+                        <h1>Welcome to</h1>
+                        <img src="/public/bg-nav-900.png" alt="Logo" class="logo-image">
                     </div>
-                    <div class="form-group password-eye">
-                        <label for="password">PASSWORD</label>
-                        <input type="password" id="password" name="password" [(ngModel)]="password"
-                            placeholder="••••••••" required (keydown.enter)="onLoginSubmit($event)">
-                        <span class="material-icons" (click)="togglePassword()">visibility</span>
-                    </div>
-                    <div class="form-group">
-                        <a>Forgot Password?</a>
-                    </div>
-                    <div class="form-group">
-                        <span class="error-message">{{ errorMessage }}</span>
-                    </div>
-                    <!-- <button type="submit" class="login-create-button">Login</button> -->
-                </form>
 
+                    <form *ngIf="isLoginForm" (ngSubmit)="onLoginSubmit($event)">
+                        <div class="form-group">
+                            <label for="email">EMAIL</label>
+                            <input type="email" id="email-mobile" name="email" [(ngModel)]="email"
+                                placeholder="juandelacruz@gmail.com" required (keydown.enter)="onLoginSubmit($event)">
+                        </div>
+                        <div class="form-group password-eye">
+                            <label for="password">PASSWORD</label>
+                            <input type="password" id="password-mobile" name="password" [(ngModel)]="password"
+                                placeholder="••••••••" required (keydown.enter)="onLoginSubmit($event)">
+                            <span id="password-icon-mobile" class="material-icons" (click)="togglePassword('password-mobile', 'password-icon-mobile')">visibility</span>
+                        </div>
+                        <!-- <div class="form-group">
+                            <a>Forgot Password?</a>
+                        </div> -->
+                        <div class="form-group">
+                            <span class="error-message">{{ errorMessage }}</span>
+                        </div>
+                        <button type="submit" class="login-create-button">Login</button>
+                    </form>
 
-                <form *ngIf="!isLoginForm" (ngSubmit)="onRegisterSubmit($event)">
-                    <div class="form-group">
-                        <label for="firstName">FIRST NAME</label>
-                        <input type="text" id="firstName" name="firstName" placeholder="Juan Miguel"
-                            [(ngModel)]="firstName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="lastName">LAST NAME</label>
-                        <input type="text" id="lastName" name="lastName" placeholder="Dela Cruz" [(ngModel)]="lastName"
-                            required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">EMAIL</label>
-                        <input type="email" id="email" name="email" placeholder="juandelacruz@gmail.com"
-                            [(ngModel)]="email" required>
-                    </div>
-                    <div class="form-group password-eye">
-                        <label for="password">PASSWORD</label>
-                        <input type="password" id="password" name="password" placeholder="••••••••"
-                            [(ngModel)]="password" required>
-                        <span class="material-icons" (click)="togglePassword()">visibility</span>
-                    </div>
-                    <div class="form-group password-eye">
-                        <label for="passwordConfirmation">CONFIRM PASSWORD</label>
-                        <input type="password" id="passwordConfirmation" name="passwordConfirmation"
-                            placeholder="••••••••" [(ngModel)]="passwordConfirmation" required>
-                        <span class="material-icons" (click)="togglePassword()">visibility</span>
-                    </div>
-                    <button class="login-create-button" type="submit">Create Account</button>
-                </form>
+                    <form *ngIf="!isLoginForm" (ngSubmit)="onRegisterSubmit($event)">
+                        <div class="form-group">
+                            <label for="firstName">FIRST NAME</label>
+                            <input type="text" id="firstName-mobile" name="firstName" placeholder="Juan Miguel"
+                                [(ngModel)]="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">LAST NAME</label>
+                            <input type="text" id="lastName-mobile" name="lastName" placeholder="Dela Cruz"
+                                [(ngModel)]="lastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">EMAIL</label>
+                            <input type="email" id="email-mobile" name="email" placeholder="juandelacruz@gmail.com"
+                                [(ngModel)]="email" required>
+                        </div>
+                        <div class="form-group password-eye">
+                            <label for="password">PASSWORD</label>
+                            <input type="password" id="password-mobile" name="password" placeholder="••••••••"
+                                [(ngModel)]="password" required>
+                            <span id="password-icon-mobile" class="material-icons" (click)="togglePassword('password-mobile', 'password-icon-mobile')">visibility</span>
+                        </div>
+                        <div class="form-group password-eye">
+                            <label for="passwordConfirmation">CONFIRM PASSWORD</label>
+                            <input type="password" id="passwordConfirmation-mobile" name="passwordConfirmation"
+                                placeholder="••••••••" [(ngModel)]="passwordConfirmation" required>
+                            <span id="password-confirmation-icon-mobile" class="material-icons" (click)="togglePassword('passwordConfirmation-mobile', 'password-confirmation-icon-mobile')">visibility</span>
+                        </div>
+                        <button class="login-create-button" type="submit">Create Account</button>
+                    </form>
 
-                <div class="create-account">
-                    <p class="account-text" *ngIf="isLoginForm">Don't have an account yet? <a
-                            class="create-account-link" (click)="onRegisterClick()">Create an Account</a></p>
-                    <p class="account-text" *ngIf="!isLoginForm">Already have an account? <a class="create-account-link"
-                            (click)="onLoginClick()">Login</a></p>
+                    <div class="create-account">
+                        <p class="account-text" *ngIf="isLoginForm">Don't have an account yet? <a
+                                class="create-account-link" (click)="onRegisterClick()">Create an Account</a></p>
+                        <p class="account-text" *ngIf="!isLoginForm">Already have an account? <a
+                                class="create-account-link" (click)="onLoginClick()">Login</a></p>
+                    </div>
                 </div>
             </div>
         </div>

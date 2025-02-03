@@ -138,3 +138,50 @@
     color: #666;
     font-size: 24px
 }
+
+/* Desktop View */
+@media screen and (min-width: 431px) {
+    .mobile-view {
+        display: none;
+    }
+}
+
+/* Mobile View */
+@media screen and (max-width: 430px) {
+    .desktop-view {
+        display: none;
+    }
+
+    .login-container {
+        padding: 20px 40px;
+        width: calc(100% - 40px);
+        min-height: auto;
+        border-radius: 20px;
+    }
+
+    .logo-placeholder .logo-image {
+        height: 6em;
+    }
+
+    .login-container h1 {
+        font-size: 18px;
+    }
+
+    .login-create-button {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .form-group input {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .password-eye input {
+        padding-right: 30px;
+    }
+
+    .password-eye .material-icons {
+        font-size: 20px;
+    }
+}
