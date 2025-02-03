@@ -58,6 +58,7 @@ export class AccountComponent implements OnInit {
   feedbackStatuses = ['UNDER_REVIEW', 'IN_PROGRESS', 'IMPLEMENTED', 'CLOSED'];
 
   navigationHistories: any[] = [];
+  isLoggedIn: boolean = false;
   private historiesFetched: boolean = false; // Flag to track if histories have been fetched
 
   constructor(
@@ -77,6 +78,7 @@ export class AccountComponent implements OnInit {
   ngOnInit() {
     const savedMode = localStorage.getItem('darkMode');
     this.darkMode = savedMode === 'true';
+  
     if (this.darkMode) {
       document.body.classList.add('dark-mode');
       this.mapStyleService.loadMapStyle('assets/darkmap.json').subscribe(style => {
@@ -87,6 +89,7 @@ export class AccountComponent implements OnInit {
     // Fetch current user details from the server
     this.authService.getIdentity().subscribe(
       (isAuthenticated) => {
+        this.isLoggedIn = isAuthenticated;
         if (isAuthenticated) {
           const currentUser = this.authService.getCurrentUser();
           if (currentUser) {
@@ -94,21 +97,19 @@ export class AccountComponent implements OnInit {
             this.lastName = currentUser.last_name;
             this.email = currentUser.email;
           }
-        } else {
-          console.error('Failed to fetch user identity.');
+          // Fetch navigation histories only if the user is logged in
+          if (!this.historiesFetched) {
+            this.fetchNavigationHistories();
+            this.historiesFetched = true;
+          }
         }
       },
       (error) => {
         console.error('Error fetching user identity:', error);
       }
     );
-  
-    // Fetch navigation histories if not already fetched
-    if (!this.historiesFetched) {
-      this.fetchNavigationHistories();
-      this.historiesFetched = true;
-    }
   }
+  
 
   fetchNavigationHistories() {
     this.http.get(environment.navigationHistoriesUrl).subscribe(

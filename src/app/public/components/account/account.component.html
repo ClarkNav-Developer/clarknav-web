@@ -5,13 +5,17 @@
     <div class="content">
       <div class="menu-list-container">
         <h2>Menu</h2>
-        <div class="menu-list">
+        <!-- Account Settings - Visible only if logged in -->
+        <div class="menu-list" *ngIf="isLoggedIn">
           <a href="" class="menu-list-button"
             (click)="selectMenuItem('account-settings'); $event.preventDefault()">Account Settings</a>
         </div>
-        <div class="menu-list">
+
+        <!-- History - Visible only if logged in -->
+        <div class="menu-list" *ngIf="isLoggedIn">
           <a href="" class="menu-list-button" (click)="selectMenuItem('history'); $event.preventDefault()">History</a>
         </div>
+
         <div class="menu-list">
           <a href="" class="menu-list-button" (click)="selectMenuItem('report-bugs'); $event.preventDefault()">Report
             bugs</a>
@@ -29,40 +33,52 @@
             <span class="slider"></span>
           </label>
         </div>
-        <div class="menu-list">
+
+        <!-- Show Logout if logged in, else show Create Account & Login -->
+        <div class="menu-list" *ngIf="isLoggedIn; else guestOptions">
           <a href="" (click)="logout($event)" style="color: red;">Logout</a>
         </div>
+
+        <ng-template #guestOptions>
+          <div class="menu-list">
+            <a routerLink="/login" [queryParams]="{ mode: 'register' }" style="color: green;">Create Account</a>
+          </div>
+          <div class="menu-list">
+            <a routerLink="/login" [queryParams]="{ mode: 'login' }" style="color: blue;">Login</a>
+          </div>
+        </ng-template>
+
       </div>
 
       <div class="divider"></div>
 
       <div class="menu-info-container">
-        <div *ngIf="selectedMenuItem === 'account-settings'" class="account-info-container">
+        <!-- ACCOUNT SETTINGS (Visible only if logged in) -->
+        <div *ngIf="isLoggedIn && selectedMenuItem === 'account-settings'" class="account-info-container">
           <div class="header-info">
             <h2>ACCOUNT SETTINGS</h2>
           </div>
           <div class="content-info">
-            <div class="info">
-              <form (submit)="updateCredentials($event)">
-                <p>FIRST NAME</p>
-                <input type="text" [(ngModel)]="firstName" name="firstName" placeholder="First Name" />
-                <p>LAST NAME</p>
-                <input type="text" [(ngModel)]="lastName" name="lastName" placeholder="Last Name" />
-                <p>EMAIL</p>
-                <input type="text" [(ngModel)]="email" name="email" placeholder="Your email" disabled />
-                <p>CHANGE PASSWORD</p>
-                <input type="password" [(ngModel)]="currentPassword" name="currentPassword"
-                  placeholder="Current Password" />
-                <input type="password" [(ngModel)]="newPassword" name="newPassword" placeholder="New Password" />
-                <input type="password" [(ngModel)]="newPasswordConfirmation" name="newPasswordConfirmation"
-                  placeholder="Confirm New Password" />
-                <button type="submit">Update Credentials</button>
-              </form>
-            </div>
+            <form (submit)="updateCredentials($event)">
+              <p>FIRST NAME</p>
+              <input type="text" [(ngModel)]="firstName" name="firstName" placeholder="First Name" />
+              <p>LAST NAME</p>
+              <input type="text" [(ngModel)]="lastName" name="lastName" placeholder="Last Name" />
+              <p>EMAIL</p>
+              <input type="text" [(ngModel)]="email" name="email" placeholder="Your email" disabled />
+              <p>CHANGE PASSWORD</p>
+              <input type="password" [(ngModel)]="currentPassword" name="currentPassword"
+                placeholder="Current Password" />
+              <input type="password" [(ngModel)]="newPassword" name="newPassword" placeholder="New Password" />
+              <input type="password" [(ngModel)]="newPasswordConfirmation" name="newPasswordConfirmation"
+                placeholder="Confirm New Password" />
+              <button type="submit">Update Credentials</button>
+            </form>
           </div>
         </div>
 
-        <div *ngIf="selectedMenuItem === 'history'" class="account-history-container">
+        <!-- HISTORY (Visible only if logged in) -->
+        <div *ngIf="isLoggedIn && selectedMenuItem === 'history'" class="account-history-container">
           <div class="header-info">
             <h2>HISTORY</h2>
           </div>
@@ -73,7 +89,7 @@
                 <p>{{ history.created_at | date:'short' }}</p>
                 <button (click)="viewRoute(history)">View Route</button>
               </div>
-            </div>            
+            </div>
             <ng-template #noHistory>
               <p>No navigation history found.</p>
             </ng-template>
@@ -222,14 +238,19 @@
     <button class="close-btn" (click)="closeWindow($event)">X</button>
     <div class="content-mobile" *ngIf="showMenuContent">
       <div class="menu-list-container-mobile">
-        <div class="menu-list-mobile">
+
+        <!-- Account Settings - Visible only if logged in -->
+        <div class="menu-list-mobile" *ngIf="isLoggedIn">
           <a href="" class="menu-list-button"
             (click)="selectMenuItem('account-settings-mobile'); $event.preventDefault()">Account Settings</a>
         </div>
-        <div class="menu-list-mobile">
+
+        <!-- History - Visible only if logged in -->
+        <div class="menu-list-mobile" *ngIf="isLoggedIn">
           <a href="" class="menu-list-button"
             (click)="selectMenuItem('history-mobile'); $event.preventDefault()">History</a>
         </div>
+
         <div class="menu-list-mobile">
           <a href="" class="menu-list-button"
             (click)="selectMenuItem('report-bugs-mobile'); $event.preventDefault()">Report bugs</a>
@@ -248,14 +269,28 @@
             <span class="slider"></span>
           </label>
         </div>
-        <div class="menu-list-mobile">
+
+        <!-- Show Logout if logged in, else show Create Account & Login -->
+        <div class="menu-list-mobile" *ngIf="isLoggedIn; else guestOptionsMobile">
           <a href="" (click)="logout($event)" style="color: red;">Logout</a>
         </div>
+
+        <ng-template #guestOptionsMobile>
+          <div class="menu-list-mobile">
+            <a routerLink="/login" [queryParams]="{ mode: 'register' }" style="color: green;">Create Account</a>
+          </div>
+          <div class="menu-list-mobile">
+            <a routerLink="/login" [queryParams]="{ mode: 'login' }" style="color: blue;">Login</a>
+          </div>
+        </ng-template>
+
       </div>
     </div>
 
     <div class="menu-info-container-mobile" *ngIf="!showMenuContent">
-      <div *ngIf="selectedMenuItem === 'account-settings-mobile'" class="account-info-container-mobile">
+
+      <!-- ACCOUNT SETTINGS (Visible only if logged in) -->
+      <div *ngIf="isLoggedIn && selectedMenuItem === 'account-settings-mobile'" class="account-info-container-mobile">
         <div class="header-info">
           <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg"
               height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
@@ -284,7 +319,8 @@
         </div>
       </div>
 
-      <div *ngIf="selectedMenuItem === 'history-mobile'" class="account-history-container-mobile">
+      <!-- HISTORY (Visible only if logged in) -->
+      <div *ngIf="isLoggedIn && selectedMenuItem === 'history-mobile'" class="account-history-container-mobile">
         <div class="header-info">
           <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg"
               height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
@@ -300,7 +336,7 @@
                 <p>{{ history.created_at | date:'short' }}</p>
                 <button (click)="viewRoute(history)">View Route</button>
               </div>
-            </div>            
+            </div>
             <ng-template #noHistory>
               <p>No navigation history found.</p>
             </ng-template>
@@ -310,122 +346,123 @@
 
       <div *ngIf="selectedMenuItem === 'report-bugs-mobile'" class="report-bugs-container-mobile">
         <div class="header-info">
-          <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg"
-              height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
+          <button class="back-btn-menu-mobile" (click)="showMenu()">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
               <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
-            </svg></button>
+            </svg>
+          </button>
           <h2>REPORT BUGS</h2>
         </div>
         <div class="content-info">
           <div class="info">
-            <div class="report-bugs-container">
-              <form class="bugs-form" action="/submit-bug" method="POST">
-                <!-- Title -->
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title" placeholder="Enter a brief title for the bug" required>
+            <form class="bugs-form" (submit)="onSubmitBugReport($event)">
+              <!-- Title -->
+              <label for="title">Title:</label>
+              <input type="text" id="title" name="title" placeholder="Enter a brief title for the bug"
+                [(ngModel)]="bugReport.title" required>
 
-                <!-- Category -->
-                <label for="category">Category:</label>
-                <select id="category" name="category" required>
-                  <option value="">-- Select Category --</option>
-                  <option value="UI">UI/UX Issue</option>
-                  <option value="Performance">Performance Issue</option>
-                  <option value="Incorrect-Marker">Incorrect Marker Issue</option>
-                  <option value="Route-Path">Route Path Issue</option>
-                  <option value="Other">Other</option>
-                </select>
+              <!-- Category -->
+              <label for="category">Category:</label>
+              <select id="category" name="category" [(ngModel)]="bugReport.category" required>
+                <option value="">-- Select Category --</option>
+                <option value="UI">UI/UX Issue</option>
+                <option value="Performance">Performance Issue</option>
+                <option value="Incorrect-Marker">Incorrect Marker Issue</option>
+                <option value="Route-Path">Route Path Issue</option>
+                <option value="Other">Other</option>
+              </select>
 
-                <!-- Issue Description -->
-                <label for="description">Issue Description:</label>
-                <textarea id="description" name="description" rows="5" placeholder="Describe the issue in detail"
-                  required></textarea>
+              <!-- Issue Description -->
+              <label for="description">Issue Description:</label>
+              <textarea id="description" name="description" rows="5" placeholder="Describe the issue in detail"
+                [(ngModel)]="bugReport.description" required></textarea>
 
-                <!-- Steps to Reproduce -->
-                <label for="steps">Steps to Reproduce:</label>
-                <textarea id="steps" name="steps" rows="5" placeholder="List the steps to reproduce the issue"
-                  required></textarea>
+              <!-- Steps to Reproduce -->
+              <label for="steps">Steps to Reproduce:</label>
+              <textarea id="steps" name="steps" rows="5" placeholder="List the steps to reproduce the issue"
+                [(ngModel)]="bugReport.steps" required></textarea>
 
-                <!-- Expected Behavior -->
-                <label for="expected">Expected Behavior:</label>
-                <textarea id="expected" name="expected" rows="3" placeholder="Describe what should happen"
-                  required></textarea>
+              <!-- Expected Behavior -->
+              <label for="expected">Expected Behavior:</label>
+              <textarea id="expected" name="expected" rows="3" placeholder="Describe what should happen"
+                [(ngModel)]="bugReport.expected" required></textarea>
 
-                <!-- Actual Behavior -->
-                <label for="actual">Actual Behavior:</label>
-                <textarea id="actual" name="actual" rows="3" placeholder="Describe what actually happens"
-                  required></textarea>
+              <!-- Actual Behavior -->
+              <label for="actual">Actual Behavior:</label>
+              <textarea id="actual" name="actual" rows="3" placeholder="Describe what actually happens"
+                [(ngModel)]="bugReport.actual" required></textarea>
 
-                <!-- Device Information -->
-                <label for="device">Device Information:</label>
-                <textarea id="device" name="device" rows="3"
-                  placeholder="Provide details such as device, operating system, app version, etc." required></textarea>
+              <!-- Device Information -->
+              <label for="device">Device Information:</label>
+              <textarea id="device" name="device" rows="3"
+                placeholder="Provide details such as device, operating system, app version, etc."
+                [(ngModel)]="bugReport.device" required></textarea>
 
-                <!-- Frequency -->
-                <label for="frequency">Frequency:</label>
-                <select id="frequency" name="frequency" required>
-                  <option value="">-- Select Frequency --</option>
-                  <option value="Always">Always</option>
-                  <option value="Sometimes">Sometimes</option>
-                  <option value="Rarely">Rarely</option>
-                </select>
+              <!-- Frequency -->
+              <label for="frequency">Frequency:</label>
+              <select id="frequency" name="frequency" [(ngModel)]="bugReport.frequency" required>
+                <option value="">-- Select Frequency --</option>
+                <option value="Always">Always</option>
+                <option value="Sometimes">Sometimes</option>
+                <option value="Rarely">Rarely</option>
+              </select>
 
-                <!-- Screenshots -->
-                <label for="screenshots">Screenshots:</label>
-                <input type="file" id="screenshots" name="screenshots" accept="image/*">
+              <!-- Screenshots -->
+              <label for="screenshots">Screenshots:</label>
+              <input type="file" id="screenshots" name="screenshots" (change)="onFileSelected($event)" accept="image/*">
 
-                <!-- Submit Button -->
-                <button type="submit">Submit Bug Report</button>
-              </form>
-            </div>
+              <!-- Submit Button -->
+              <button type="submit">Submit Bug Report</button>
+            </form>
           </div>
         </div>
       </div>
 
       <div *ngIf="selectedMenuItem === 'feedback-mobile'" class="feedback-container-mobile">
         <div class="header-info">
-          <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg"
-              height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
+          <button class="back-btn-menu-mobile" (click)="showMenu()">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
               <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
-            </svg></button>
+            </svg>
+          </button>
           <h2>FEEDBACK</h2>
         </div>
         <div class="content-info">
           <div class="info">
-            <div class="feedback-container">
-              <form class="feedback-form" action="/submit-feedback" method="POST">
-                <!-- Title -->
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title" placeholder="Enter a brief title for your feedback" required>
+            <form class="feedback-form" (submit)="onSubmitFeedback($event)">
+              <!-- Title -->
+              <label for="title">Title:</label>
+              <input type="text" id="title" name="title" placeholder="Enter a brief title for your feedback"
+                [(ngModel)]="feedback.title" required>
 
-                <!-- Feature Suggestion -->
-                <label for="feature">Feature Suggestion:</label>
-                <textarea id="feature" name="feature" rows="3" placeholder="Suggest a new feature or improvement"
-                  required></textarea>
+              <!-- Feature Suggestion -->
+              <label for="feature">Feature Suggestion:</label>
+              <textarea id="feature" name="feature" rows="3" placeholder="Suggest a new feature or improvement"
+                [(ngModel)]="feedback.feature" required></textarea>
 
-                <!-- Usability Issue -->
-                <label for="usability">Usability Issue:</label>
-                <textarea id="usability" name="usability" rows="3"
-                  placeholder="Describe any usability issue you encountered"></textarea>
+              <!-- Usability Issue -->
+              <label for="usability">Usability Issue:</label>
+              <textarea id="usability" name="usability" rows="3"
+                placeholder="Describe any usability issue you encountered" [(ngModel)]="feedback.usability"></textarea>
 
-                <!-- App Performance -->
-                <label for="performance">App Performance:</label>
-                <textarea id="performance" name="performance" rows="3"
-                  placeholder="Provide feedback on app performance"></textarea>
+              <!-- App Performance -->
+              <label for="performance">App Performance:</label>
+              <textarea id="performance" name="performance" rows="3" placeholder="Provide feedback on app performance"
+                [(ngModel)]="feedback.performance"></textarea>
 
-                <!-- General Experience -->
-                <label for="experience">General Experience:</label>
-                <textarea id="experience" name="experience" rows="3"
-                  placeholder="Share your overall experience"></textarea>
+              <!-- General Experience -->
+              <label for="experience">General Experience:</label>
+              <textarea id="experience" name="experience" rows="3" placeholder="Share your overall experience"
+                [(ngModel)]="feedback.experience"></textarea>
 
-                <!-- Additional Suggestions -->
-                <label for="suggestions">Additional Suggestions:</label>
-                <textarea id="suggestions" name="suggestions" rows="3"
-                  placeholder="Provide any additional suggestions"></textarea>
+              <!-- Additional Suggestions -->
+              <label for="suggestions">Additional Suggestions:</label>
+              <textarea id="suggestions" name="suggestions" rows="3" placeholder="Provide any additional suggestions"
+                [(ngModel)]="feedback.suggestions"></textarea>
 
-                <!-- Submit Button -->
-                <button type="submit">Submit Feedback</button>
-              </form>
-            </div>
+              <!-- Submit Button -->
+              <button type="submit">Submit Feedback</button>
+            </form>
           </div>
         </div>
       </div>

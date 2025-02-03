@@ -377,6 +377,11 @@
 
   .header-mobile h1 {
     margin-left: 10px;
+    text-transform: uppercase;
+    font-family: 'Lemon/Milk light', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: 2px;
   }
 
   .no-planner-mobile {

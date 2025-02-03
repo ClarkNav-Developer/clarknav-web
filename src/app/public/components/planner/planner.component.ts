@@ -7,6 +7,7 @@ import { FareService } from '../../services/fare/fare.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../auth/auth.service';
 
 @Component({
   selector: 'app-planner',
@@ -20,6 +21,7 @@ export class PlannerComponent implements OnInit {
   arrivalTime: string = '';
   departureDate: string = ''; // Stores selected date
   isRouteCompleted: boolean = false; // Tracks if route is marked as done
+  isLoggedIn: boolean = false;
   savedRoutes: any[] = [];  // To store fetched routes
 
   constructor(
@@ -29,7 +31,8 @@ export class PlannerComponent implements OnInit {
     private geocodingService: GeocodingService,
     private fareService: FareService,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) { }
 
   closeWindow(event: Event) {
@@ -38,20 +41,30 @@ export class PlannerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.fetchSavedRoutes(); // Fetch saved routes on initialization
+    this.authService.getIdentity().subscribe(
+      (isAuthenticated) => {
+        this.isLoggedIn = isAuthenticated;
+        if (isAuthenticated) {
+          this.fetchSavedRoutes();
+        }
+      },
+      (error) => {
+        console.error('Error fetching user identity:', error);
+      }
+    );
   
     this.activatedRoute.data.subscribe((data: any) => {
       if (history.state.route && this.routeData === null) {
         this.routeData = history.state.route;
         this.geocodeAddresses();
   
-        // Clear `history.state` after assignment
         setTimeout(() => {
           history.replaceState({}, '');
         }, 0);
       }
     });
   }
+  
   
 
   geocodeAddresses(): void {

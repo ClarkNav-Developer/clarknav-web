@@ -1,6 +1,5 @@
-// filepath: /path/to/your/angular/project/src/app/components/login/login.component.ts
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Inject } from '@angular/core';
 import { AuthService } from '../../../auth/auth.service';
 import { User } from '../../../models/user';
@@ -10,7 +9,7 @@ import { User } from '../../../models/user';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   isLoginForm = true;
   email = '';
   password = '';
@@ -20,7 +19,17 @@ export class LoginComponent {
   errorMessage = '';
   rememberMe: boolean = false;
 
-  constructor(@Inject(AuthService) private authService: AuthService, private router: Router) {}
+  constructor(
+    @Inject(AuthService) private authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.isLoginForm = params['mode'] !== 'register';
+    });
+  }
 
   togglePassword() {
     const passwordInput = document.getElementById('password') as HTMLInputElement;
@@ -53,9 +62,9 @@ export class LoginComponent {
               if (user?.isAdmin) {
                 this.router.navigate(['/admin/admin-dashboard']);
               } else if (user?.isUser) {
-                this.router.navigate(['/dashboard']);
+                this.router.navigate(['']);
               } else {
-                this.router.navigate(['/dashboard']);
+                this.router.navigate(['']);
               }
             } else {
               this.errorMessage = 'Failed to retrieve user identity.';
@@ -72,7 +81,6 @@ export class LoginComponent {
     );
   }
 
-
   onRegisterSubmit(event: Event) {
     event.preventDefault();
     const newUser: Partial<User> = {
@@ -83,13 +91,13 @@ export class LoginComponent {
       isAdmin: false, // Default to false
       isUser: true,   // Default to true
     };
-  
+
     // Map passwordConfirmation to password_confirmation
     const registrationData = {
       ...newUser,
       password_confirmation: this.passwordConfirmation
     };
-  
+
     this.authService.register(registrationData).subscribe(
       (response: any) => {
         alert('Registration successful');
