@@ -9,14 +9,14 @@ export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: R
   const router = inject(Router);
 
   // Check if the user is trying to access the login page
-  if (state.url === '/admin/login') {
+  if (state.url === '/login') {
     return true;
   }
 
   return authService.getIdentity().pipe(
     map(getIdentity => {
       if (!getIdentity) {
-        router.navigate(['/admin/login']);
+        router.navigate(['/login']);
         return false;
       }
       return true;

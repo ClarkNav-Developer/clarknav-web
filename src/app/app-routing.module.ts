@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from './auth/auth.guard';
+import { LoginComponent } from './admin/components/login/login.component'; // Import LoginComponent
 
 const routes: Routes = [
   {
@@ -14,6 +15,7 @@ const routes: Routes = [
       import('./admin/admin.module').then((m) => m.AdminModule),
     canActivate: [authGuard], // Protect the admin routes with AuthGuard
   },
+  { path: 'login', component: LoginComponent }, // Add login route here
   { path: '**', redirectTo: '' }, // Wildcard route for a 404 page can be added here
 ];
 

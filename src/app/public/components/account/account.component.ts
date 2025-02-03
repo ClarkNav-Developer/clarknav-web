@@ -176,7 +176,7 @@ export class AccountComponent implements OnInit {
     this.authService.logout().subscribe(
       response => {
         console.log('Logged out successfully');
-        this.router.navigate(['/admin/login']);
+        this.router.navigate(['/login']); // Redirect to /login
       },
       error => {
         console.error('Logout error:', error);
