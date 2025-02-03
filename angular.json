@@ -39,8 +39,7 @@
               "zone.js/dist/async-test",
               "zone.js/dist/fake-async-test",
               "core-js",
-              "core-js/es6",
-              "core-js/es7",
+              "core-js/es",
               "core-js/stable",
               "web-animations-js",
               "classlist.js"
