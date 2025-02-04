@@ -28,21 +28,7 @@
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js",
-              "zone.js/dist/zone",
-              "zone.js/dist/zone-error",
-              "zone.js/dist/long-stack-trace-zone",
-              "zone.js/dist/task-tracking",
-              "zone.js/dist/wtf",
-              "zone.js/dist/sync-test",
-              "zone.js/dist/proxy",
-              "zone.js/dist/jasmine-patch",
-              "zone.js/dist/async-test",
-              "zone.js/dist/fake-async-test",
-              "core-js",
-              "core-js/es",
-              "core-js/stable",
-              "web-animations-js",
-              "classlist.js"
+              "web-animations-js"
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [

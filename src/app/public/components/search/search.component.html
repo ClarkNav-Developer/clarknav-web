@@ -2,7 +2,7 @@
 <div class="desktop-view">
     <div class="search-container">
         <div class="search-bar-container">
-            <img src="public\no-bg-icon-2.png" alt="ClarkNav Logo">
+            <img src="public\no-bg-icon-2.png" alt="ClarkNav Logo" loading="lazy">
             <input type="text" id="search-box-2" placeholder="Search" />
             <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#CCCCCC">
                 <path
@@ -15,7 +15,7 @@
         <div class="search-panel">
             <div class="header">
                 <div class="img-header">
-                    <img src="/public/no-bg-icon.png" alt="logo" />
+                    <img src="/public/no-bg-icon.png" alt="logo" loading="lazy" />
                 </div>
                 <div class="icon-divider">
                     <div class="icon">
@@ -48,11 +48,13 @@
             </div>
 
             <div *ngIf="searchPerformed" class="transport-options">
-                <button class="option" [class.active]="selectedTransportType === 'All'" (click)="selectTransportType('All')">
+                <button class="option" [class.active]="selectedTransportType === 'All'"
+                    (click)="selectTransportType('All')">
                     <!-- <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000"><path d="M405.46-180.77v-230.71l57.23-161.9q3.85-8.93 12.96-15.62 9.12-6.69 21.04-6.69h294.93q11.41 0 20.97 6.69 9.56 6.69 13.02 15.62l55.24 161.79v230.55q0 9.32-7.17 16.49-7.17 7.16-16.22 7.16h-21.23q-9.05 0-16.21-6.74-7.17-6.75-7.17-16.64v-38.46H473.46v38.46q0 9.05-7.17 16.22-7.17 7.16-16.21 7.16h-21.23q-9.05 0-16.22-6.74-7.17-6.75-7.17-16.64Zm72.62-274h330.15L779.15-542h-270l-31.07 87.23Zm44.72 156.92q16.91 0 28.25-11.44 11.33-11.44 11.33-28.35 0-16.92-11.44-28.25-11.44-11.34-28.35-11.34-16.92 0-28.25 11.44Q483-354.35 483-337.43q0 16.91 11.44 28.25 11.44 11.33 28.36 11.33Zm242.92 0q16.91 0 28.25-11.44t11.34-28.35q0-16.92-11.44-28.25-11.45-11.34-28.36-11.34t-28.25 11.44q-11.34 11.44-11.34 28.36 0 16.91 11.44 28.25 11.45 11.33 28.36 11.33ZM159.15-160v-32.15L209-242q-53.08 0-91.46-32.31-38.39-32.31-38.39-83.64V-694q0-57.31 60.39-81.65Q199.92-800 338.15-800q135.93 0 197.46 24.73 61.54 24.73 61.54 81.27v42.92h-70V-690h-378v256h200.93v274H159.15Zm36.11-158.31q16.91 0 28.25-11.44t11.34-28.36q0-16.91-11.45-28.25-11.44-11.33-28.35-11.33-16.92 0-28.25 11.44-11.34 11.44-11.34 28.36 0 16.91 11.44 28.25 11.45 11.33 28.36 11.33Z"/></svg> -->
                     All
                 </button>
-                <button class="option" [class.active]="selectedTransportType === 'Jeepney'" (click)="selectTransportType('Jeepney')">
+                <button class="option" [class.active]="selectedTransportType === 'Jeepney'"
+                    (click)="selectTransportType('Jeepney')">
                     <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 0 24 24" width="30px">
                         <title>jeepney</title>
                         <path
@@ -61,7 +63,8 @@
                     <!-- <img src="/public/jeepney.svg" height="30px" viewBox="0 -960 960 960" width="30px" alt="Jeepney"> -->
                     Jeepney
                 </button>
-                <button class="option" [class.active]="selectedTransportType === 'Taxi'" (click)="selectTransportType('Taxi')">
+                <button class="option" [class.active]="selectedTransportType === 'Taxi'"
+                    (click)="selectTransportType('Taxi')">
                     <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"
                         fill="#000000">
                         <path
@@ -69,8 +72,10 @@
                     </svg>
                     Taxi
                 </button>
-                <button class="option" [class.active]="selectedTransportType === 'Bus'" (click)="selectTransportType('Bus')">
-                    <img src="/public/ClarkLoop-logo2.png" height="30px" viewBox="0 -960 960 960" alt="Loop">
+                <button class="option" [class.active]="selectedTransportType === 'Bus'"
+                    (click)="selectTransportType('Bus')">
+                    <img src="/public/ClarkLoop-logo2.png" height="30px" viewBox="0 -960 960 960" alt="Loop"
+                        loading="lazy">
                 </button>
             </div>
             <div *ngIf="searchPerformed" class="divider-horizontal"></div>
@@ -128,7 +133,11 @@
                         <div class="footer-extra-info">
                             <div class="disclaimer-info">
                                 <div class="left">
-                                    <button (click)="saveRoute(route)"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M220-150v-597.69Q220-778 241-799q21-21 51.31-21h375.38Q698-820 719-799q21 21 21 51.31V-150L480-261.54 220-150Zm60-92 200-86 200 86v-505.69q0-4.62-3.85-8.46-3.84-3.85-8.46-3.85H292.31q-4.62 0-8.46 3.85-3.85 3.84-3.85 8.46V-242Zm0-518h400-400Z"/></svg></button>
+                                    <button (click)="saveRoute(route)"><svg xmlns="http://www.w3.org/2000/svg"
+                                            height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
+                                            <path
+                                                d="M220-150v-597.69Q220-778 241-799q21-21 51.31-21h375.38Q698-820 719-799q21 21 21 51.31V-150L480-261.54 220-150Zm60-92 200-86 200 86v-505.69q0-4.62-3.85-8.46-3.84-3.85-8.46-3.85H292.31q-4.62 0-8.46 3.85-3.85 3.84-3.85 8.46V-242Zm0-518h400-400Z" />
+                                        </svg></button>
                                 </div>
                                 <div class="right">
                                     <p>For Student/PWD/Senior Citizen discount</p>
@@ -159,7 +168,7 @@
 <div class="mobile-view">
     <div class="search-container-mobile">
         <div class="search-bar-container-mobile">
-            <img src="public\no-bg-icon-2.png" alt="ClarkNav Logo">
+            <img src="public\no-bg-icon-2.png" alt="ClarkNav Logo" loading="lazy">
             <input type="text" id="search-box-mobile-2" placeholder="Search" />
             <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#CCCCCC">
                 <path
@@ -171,7 +180,7 @@
     <div class="mobile-container">
         <div class="mobile-header">
             <div class="mobile-logo">
-                <img src="public\no-bg-icon-2.png" alt="logo" />
+                <img src="public\no-bg-icon-2.png" alt="logo" loading="lazy" />
             </div>
             <div class="mobile-icon-divider">
                 <div class="mobile-icon">
@@ -229,7 +238,7 @@
                 </svg>
             </button>
             <button class="option-mobile">
-                <img src="/public/ClarkLoop-logo2.png" height="30px" viewBox="0 -960 960 960" alt="Loop">
+                <img src="/public/ClarkLoop-logo2.png" height="30px" viewBox="0 -960 960 960" alt="Loop" loading="lazy">
             </button>
             <button class="option-mobile">
                 <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"
@@ -242,8 +251,8 @@
         <div class="content">
             <h3>Suggested Routes</h3>
             <div class="routes-container-mobile">
-                <div *ngFor="let route of suggestedRoutes" class="route-item-mobile" (click)="selectRoute(route)" (click)="startNavigation()"
-                    [class.selected]="route === selectedRoute"
+                <div *ngFor="let route of suggestedRoutes" class="route-item-mobile" (click)="selectRoute(route)"
+                    (click)="startNavigation()" [class.selected]="route === selectedRoute"
                     [class.opacity]="highlightedRoute && route !== highlightedRoute">
 
                     <div class="route-header-mobile">
@@ -292,7 +301,11 @@
                     <div class="footer-extra-info-mobile">
                         <div class="disclaimer-info-mobile">
                             <div class="left">
-                                <button><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M220-150v-597.69Q220-778 241-799q21-21 51.31-21h375.38Q698-820 719-799q21 21 21 51.31V-150L480-261.54 220-150Zm60-92 200-86 200 86v-505.69q0-4.62-3.85-8.46-3.84-3.85-8.46-3.85H292.31q-4.62 0-8.46 3.85-3.85 3.84-3.85 8.46V-242Zm0-518h400-400Z"/></svg></button>
+                                <button><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                                        width="24px" fill="#000000">
+                                        <path
+                                            d="M220-150v-597.69Q220-778 241-799q21-21 51.31-21h375.38Q698-820 719-799q21 21 21 51.31V-150L480-261.54 220-150Zm60-92 200-86 200 86v-505.69q0-4.62-3.85-8.46-3.84-3.85-8.46-3.85H292.31q-4.62 0-8.46 3.85-3.85 3.84-3.85 8.46V-242Zm0-518h400-400Z" />
+                                    </svg></button>
                             </div>
                             <div class="right">
                                 <p>For Student/PWD/Senior Citizen discount</p>
@@ -309,7 +322,11 @@
         <div class="navigation-status-container">
             <div class="end-navigation-button">
                 <h4>{{ route.name }}</h4>
-                <button (click)="stopNavigation()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></button>
+                <button (click)="stopNavigation()"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
+                        viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
+                        <path
+                            d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+                    </svg></button>
             </div>
             <div class="navigation-status-info">
                 <div class="origin-info-mobile">
@@ -322,8 +339,8 @@
                 </div>
                 <div class="divider-info-mobile">
                     <span>
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
-                            width="24px" fill="#000000">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                            fill="#000000">
                             <path
                                 d="m317.62-69.85-73.77-73.77L581.23-481 243.85-818.38l73.77-73.77L728.77-481 317.62-69.85Z" />
                         </svg>
@@ -350,9 +367,15 @@
     <div class="side-nav-mobile">
         <div class="side-nav-container-mobile">
             <div class="info-button" (click)="openInformationComponent()">
-                <button class="menu-container-button"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M200-575.39h560v-119.99q0-9.24-7.69-16.93-7.69-7.69-16.93-7.69H224.62q-9.24 0-16.93 7.69-7.69 7.69-7.69 16.93v119.99Zm0 0V-720-575.39ZM224.62-120q-27.62 0-46.12-18.5Q160-157 160-184.62v-510.76q0-27.62 18.5-46.12Q197-760 224.62-760h70.76v-89.23h43.08V-760h286.16v-89.23h40V-760h70.76q27.62 0 46.12 18.5Q800-723 800-695.38v210.07q-9.77-3.61-19.77-5.38T760-493.92v-41.46H200v350.76q0 9.24 7.69 16.93 7.69 7.69 16.93 7.69h268.15q3.15 11.23 8.04 20.85 4.88 9.61 10.19 19.15H224.62Zm510.76 40q-66.84 0-113.42-46.58-46.58-46.57-46.58-113.42t46.58-113.42Q668.54-400 735.38-400q66.85 0 113.43 46.58 46.57 46.57 46.57 113.42t-46.57 113.42Q802.23-80 735.38-80Zm66.24-71.92 21.84-21.85-72.69-72.69v-108.92H720v121.84l81.62 81.62Z"/></svg></button>
-                <div *ngIf="(floatingWindowService.visibleComponent$ | async) === 'information'" class="floating-overlay"></div>
-                <app-information *ngIf="(floatingWindowService.visibleComponent$ | async) === 'information'"></app-information>
+                <button class="menu-container-button"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
+                        viewBox="0 -960 960 960" width="24px" fill="#000000">
+                        <path
+                            d="M200-575.39h560v-119.99q0-9.24-7.69-16.93-7.69-7.69-16.93-7.69H224.62q-9.24 0-16.93 7.69-7.69 7.69-7.69 16.93v119.99Zm0 0V-720-575.39ZM224.62-120q-27.62 0-46.12-18.5Q160-157 160-184.62v-510.76q0-27.62 18.5-46.12Q197-760 224.62-760h70.76v-89.23h43.08V-760h286.16v-89.23h40V-760h70.76q27.62 0 46.12 18.5Q800-723 800-695.38v210.07q-9.77-3.61-19.77-5.38T760-493.92v-41.46H200v350.76q0 9.24 7.69 16.93 7.69 7.69 16.93 7.69h268.15q3.15 11.23 8.04 20.85 4.88 9.61 10.19 19.15H224.62Zm510.76 40q-66.84 0-113.42-46.58-46.58-46.57-46.58-113.42t46.58-113.42Q668.54-400 735.38-400q66.85 0 113.43 46.58 46.57 46.57 46.57 113.42t-46.57 113.42Q802.23-80 735.38-80Zm66.24-71.92 21.84-21.85-72.69-72.69v-108.92H720v121.84l81.62 81.62Z" />
+                    </svg></button>
+                <div *ngIf="(floatingWindowService.visibleComponent$ | async) === 'information'"
+                    class="floating-overlay"></div>
+                <app-information
+                    *ngIf="(floatingWindowService.visibleComponent$ | async) === 'information'"></app-information>
             </div>
             <div class="current-loc-button">
                 <button (click)="useMyLocation()"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
