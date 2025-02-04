@@ -3,6 +3,7 @@ import { environment } from '../environments/environment';
 import { MapInstanceService } from './public/services/map/map-instance.service';
 import { MapStyleService } from './public/services/map/map-style.service';
 import { MapService } from './public/services/map/map.service';
+import { GoogleMapsLoaderService } from './public/services/geocoding/google-maps-loader.service';
 
 @Component({
   selector: 'app-root',
@@ -12,34 +13,23 @@ import { MapService } from './public/services/map/map.service';
 export class AppComponent implements OnInit {
   constructor(
     private mapInstanceService: MapInstanceService,
-    private mapStyleService: MapStyleService
+    private mapStyleService: MapStyleService,
+    private googleMapsLoader: GoogleMapsLoaderService // Add this line
   ) {}
 
   ngOnInit() {
-    this.loadGoogleMapsApi();
-    const savedMode = localStorage.getItem('darkMode');
-    if (savedMode === 'true') {
-      document.body.classList.add('dark-mode');
-      this.setInitialMapStyle('assets/darkmap.json');
-    } else {
-      this.setInitialMapStyle('assets/retro.json');
-    }
+    this.googleMapsLoader.load().then(() => {
+      this.initializeMap();
+    }).catch(error => {
+      console.error('Error loading Google Maps API:', error);
+    });
   }
 
-  loadGoogleMapsApi() {
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&libraries=places`;
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-      this.initializeMap();
-    };
-    document.head.appendChild(script);
-  }
 
   initializeMap() {
     const savedMode = localStorage.getItem('darkMode');
     if (savedMode === 'true') {
+      document.body.classList.add('dark-mode');
       this.setInitialMapStyle('assets/darkmap.json');
     } else {
       this.setInitialMapStyle('assets/retro.json');

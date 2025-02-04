@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { SuggestedRoutesService } from '../../services/routes/suggested-routes.service';
 import { MapService } from '../../services/map/map.service';
+import { GoogleMapsLoaderService } from '../../services/geocoding/google-maps-loader.service';
 
 @Component({
   selector: 'app-account',
@@ -69,45 +70,46 @@ export class AccountComponent implements OnInit {
     private mapStyleService: MapStyleService,
     private mapInstanceService: MapInstanceService,
     private suggestedRoutesService: SuggestedRoutesService,
-    private mapService: MapService
+    private mapService: MapService,
+    private googleMapsLoader: GoogleMapsLoaderService // Add this line
   ) {
     const savedMode = localStorage.getItem('darkMode');
     this.darkMode = savedMode === 'true';
   }
 
   ngOnInit() {
-    const savedMode = localStorage.getItem('darkMode');
-    this.darkMode = savedMode === 'true';
-  
-    if (this.darkMode) {
-      document.body.classList.add('dark-mode');
-      this.mapStyleService.loadMapStyle('assets/darkmap.json').subscribe(style => {
-        this.mapInstanceService.setMapStyle(style);
-      });
-    }
-  
-    // Fetch current user details from the server
-    this.authService.getIdentity().subscribe(
-      (isAuthenticated) => {
-        this.isLoggedIn = isAuthenticated;
-        if (isAuthenticated) {
-          const currentUser = this.authService.getCurrentUser();
-          if (currentUser) {
-            this.firstName = currentUser.first_name;
-            this.lastName = currentUser.last_name;
-            this.email = currentUser.email;
-          }
-          // Fetch navigation histories only if the user is logged in
-          if (!this.historiesFetched) {
-            this.fetchNavigationHistories();
-            this.historiesFetched = true;
-          }
-        }
-      },
-      (error) => {
-        console.error('Error fetching user identity:', error);
+    this.googleMapsLoader.load().then(() => {
+      const savedMode = localStorage.getItem('darkMode');
+      this.darkMode = savedMode === 'true';
+      if (this.darkMode) {
+        document.body.classList.add('dark-mode');
+        this.mapStyleService.loadMapStyle('assets/darkmap.json').subscribe(style => {
+          this.mapInstanceService.setMapStyle(style);
+        });
       }
-    );
+      this.authService.getIdentity().subscribe(
+        (isAuthenticated) => {
+          this.isLoggedIn = isAuthenticated;
+          if (isAuthenticated) {
+            const currentUser = this.authService.getCurrentUser();
+            if (currentUser) {
+              this.firstName = currentUser.first_name;
+              this.lastName = currentUser.last_name;
+              this.email = currentUser.email;
+            }
+            if (!this.historiesFetched) {
+              this.fetchNavigationHistories();
+              this.historiesFetched = true;
+            }
+          }
+        },
+        (error) => {
+          console.error('Error fetching user identity:', error);
+        }
+      );
+    }).catch(error => {
+      console.error('Error loading Google Maps API:', error);
+    });
   }
   
 

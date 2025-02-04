@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { MapService } from '../map/map.service';
 import { RoutesService } from '../routes/routes.service';
 import { WebsocketService } from '../websocket/websocket.service';
+import { GoogleMapsLoaderService } from '../geocoding/google-maps-loader.service';
 
 declare var google: any;
 
@@ -14,16 +15,13 @@ export class NavigationService {
   private watchId: number | null = null; // To store the ID of the watchPosition listener
   private userMarker: google.maps.Marker | null = null; // Marker for the user's current location
   private locationUpdateInterval: any = null; // Interval for updating the location
-  
+
   /*------------------------------------------
   Constants and Bounds
   --------------------------------------------*/
 
   // Define bounds for Clark
-  public clarkBounds = new google.maps.LatLngBounds(
-    new google.maps.LatLng(15.15350883733786, 120.4702890088466),
-    new google.maps.LatLng(15.24182812878962, 120.5925078185926)
-  );
+  public clarkBounds!: google.maps.LatLngBounds;
 
   // Route Colors
   private routes = {
@@ -44,19 +42,28 @@ export class NavigationService {
   currentLocation: google.maps.LatLngLiteral | null = null;
   destination: google.maps.LatLngLiteral | null = null;
 
+  // Add GoogleMapsLoaderService to the constructor
   constructor(
     private mapService: MapService,
     private routesService: RoutesService,
     private http: HttpClient,
-    private ngZone: NgZone, // Ensures UI updates when location changes
-    private websocketService: WebsocketService
+    private ngZone: NgZone,
+    private websocketService: WebsocketService,
+    private googleMapsLoader: GoogleMapsLoaderService // Add this line
   ) {
-    // Subscribe to real-time tracking updates from WebSocket
-    this.websocketService.subscribeToRealTimeTracking((data) => {
-      this.ngZone.run(() => {
-        console.log('Processing real-time location update from WebSocket:', data);
-        this.mapService.updateRealTimeLocation(data);
+    this.googleMapsLoader.load().then(() => {
+      this.clarkBounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(15.15350883733786, 120.4702890088466),
+        new google.maps.LatLng(15.24182812878962, 120.5925078185926)
+      );
+      this.websocketService.subscribeToRealTimeTracking((data) => {
+        this.ngZone.run(() => {
+          console.log('Processing real-time location update from WebSocket:', data);
+          this.mapService.updateRealTimeLocation(data);
+        });
       });
+    }).catch(error => {
+      console.error('Error loading Google Maps API:', error);
     });
   }
 
@@ -176,26 +183,26 @@ export class NavigationService {
       alert('Geolocation is not supported by your browser.');
       return;
     }
-  
+
     // Watch the user's location
     this.watchId = navigator.geolocation.watchPosition(
       (position) => {
         this.ngZone.run(() => {
           const { latitude, longitude } = position.coords;
           const newLocation: google.maps.LatLngLiteral = { lat: latitude, lng: longitude };
-  
+
           console.log('Real-time location updated:', newLocation);
-  
+
           // Update current location
           this.currentLocation = newLocation;
-  
+
           // Update user marker on the map
           if (!this.userMarker) {
             this.userMarker = this.mapService.addMarker(newLocation, 'User', true);
           } else {
             this.userMarker.setPosition(new google.maps.LatLng(latitude, longitude));
           }
-  
+
           // Update real-time location on the map
           this.mapService.updateRealTimeLocation(newLocation);
         });
@@ -210,7 +217,7 @@ export class NavigationService {
         timeout: 10000,          // Timeout after 10 seconds
       }
     );
-  
+
     // Set an interval to refresh the location every 10 seconds
     this.locationUpdateInterval = setInterval(() => {
       if (this.currentLocation) {

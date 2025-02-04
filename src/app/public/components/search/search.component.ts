@@ -9,6 +9,7 @@ import { LocationService } from '../../services/geocoding/location.service';
 import { FloatingWindowService } from '../../../floating-window.service';
 import { RoutesService } from '../../services/routes/routes.service';
 import { Router } from '@angular/router';
+import { GoogleMapsLoaderService } from '../../services/geocoding/google-maps-loader.service';
 
 declare var google: any;
 
@@ -58,17 +59,22 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     public floatingWindowService: FloatingWindowService,
     private routesService: RoutesService,
     private router: Router,
+    private googleMapsLoader: GoogleMapsLoaderService // Add this line
   ) { }
 
   /*------------------------------------------
   Lifecycle Hooks
   --------------------------------------------*/
   ngOnInit(): void {
-    this.initializeAutocomplete();
-    this.setupBottomSheetDragging();
-    this.bottomSheetService.setRenderer(this.renderer);
-    this.locationService.resolveAddresses(); // Ensure addresses are resolved on initialization
-    this.startUpdatingDuration();
+    this.googleMapsLoader.load().then(() => {
+      this.initializeAutocomplete();
+      this.setupBottomSheetDragging();
+      this.bottomSheetService.setRenderer(this.renderer);
+      this.locationService.resolveAddresses();
+      this.startUpdatingDuration();
+    }).catch(error => {
+      console.error('Error loading Google Maps API:', error);
+    });
   }
 
   ngAfterViewInit(): void {

@@ -1,5 +1,4 @@
-// filepath: /workspaces/clarknav-web/src/app/public/components/map/map.component.ts
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { MapService } from '../../services/map/map.service';
 import { NavigationService } from '../../services/navigation/navigation.service';
 import { RoutesService } from '../../services/routes/routes.service';
@@ -7,6 +6,7 @@ import { MapStyleService } from '../../services/map/map-style.service';
 import { MapInstanceService } from '../../services/map/map-instance.service';
 import { WebsocketService } from '../../services/websocket/websocket.service';
 import { Subscription } from 'rxjs';
+import { GoogleMapsLoaderService } from '../../services/geocoding/google-maps-loader.service';
 
 declare var google: any;
 
@@ -15,7 +15,7 @@ declare var google: any;
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent implements OnInit, AfterViewInit {
+export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   private gpsSubscription: Subscription | null = null; // To manage WebSocket subscriptions
   private autoCenterTimeout: any; // To manage auto-center timeout
 
@@ -25,7 +25,8 @@ export class MapComponent implements OnInit, AfterViewInit {
     private routesService: RoutesService,
     private mapStyleService: MapStyleService,
     private mapInstanceService: MapInstanceService,
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService,
+    private googleMapsLoader: GoogleMapsLoaderService // Add this line
   ) { }
 
   ngOnInit(): void {
@@ -37,11 +38,15 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    const savedMode = localStorage.getItem('darkMode');
-    const styleUrl = savedMode === 'true' ? 'assets/darkmap.json' : 'assets/retro.json';
+    this.googleMapsLoader.load().then(() => {
+      const savedMode = localStorage.getItem('darkMode');
+      const styleUrl = savedMode === 'true' ? 'assets/darkmap.json' : 'assets/retro.json';
   
-    this.mapStyleService.loadMapStyle(styleUrl).subscribe(style => {
-      this.initMap(style); // Initialize map with the loaded style
+      this.mapStyleService.loadMapStyle(styleUrl).subscribe(async (style) => {
+        await this.initMap(style); // Ensure map is fully initialized
+      });
+    }).catch(error => {
+      console.error('Error loading Google Maps API:', error);
     });
   }
   
@@ -52,7 +57,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       console.error('Map element not found! Ensure the DOM is fully loaded.');
       return;
     }
-  
+
     try {
       const map = new google.maps.Map(mapElement as HTMLElement, {
         center: { lat: 15.187769063648858, lng: 120.55950164794922 },
@@ -64,18 +69,17 @@ export class MapComponent implements OnInit, AfterViewInit {
         zoomControl: false,
         styles: style,
       });
-  
+
       this.mapInstanceService.setMap(map);
       this.mapService.initializeMap(map);
       this.routesService.loadRoutes();
-  
+
       map.addListener('dragstart', () => this.onUserInteraction());
       map.addListener('zoom_changed', () => this.onUserInteraction());
     } catch (error) {
       console.error('Error initializing map:', error);
     }
   }
-  
 
   onUserInteraction() {
     // Disable auto-centering
@@ -94,7 +98,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       }
     }, 10000); // 10 seconds
   }
-  
+
   ngOnDestroy(): void {
     if (this.gpsSubscription) {
       this.gpsSubscription.unsubscribe(); // Unsubscribe to avoid memory leaks

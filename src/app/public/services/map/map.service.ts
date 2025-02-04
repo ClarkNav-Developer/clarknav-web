@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { RoutesService } from '../routes/routes.service';
 import { TerminalMarkerService } from '../custom-marker/terminal-marker.service';
 import { TouristSpotService } from '../custom-marker/tourist-spot.service';
+import { GoogleMapsLoaderService } from '../geocoding/google-maps-loader.service';
 
 declare var google: any;
 
@@ -39,11 +40,12 @@ export class MapService {
   private currentRouteColor: string = ''; // Store the current route color
   private autoCenterEnabled: boolean = false; // Property to enable or disable auto-centering
 
-  constructor(private routesService: RoutesService, 
+  constructor(
+    private routesService: RoutesService,
     private terminalMarkerService: TerminalMarkerService,
-    private touristSpotService: TouristSpotService
-  ) 
-  { 
+    private touristSpotService: TouristSpotService,
+    private googleMapsLoader: GoogleMapsLoaderService // Add this line
+  ) {
     this.loadIcons();
   }
 
@@ -70,16 +72,21 @@ export class MapService {
   /*------------------------------------------
   Initialization
   --------------------------------------------*/
-  initializeMap(map: any) {
+// In initializeMap, ensure Google Maps API is loaded before proceeding
+initializeMap(map: any) {
+  this.googleMapsLoader.load().then(() => {
     this.map = map;
-    this.loadAndDisplayTerminals(); // Load and display terminals
-    this.loadAndDisplayTouristSpots(); // Load and display tourist spots
+    this.loadAndDisplayTerminals();
+    this.loadAndDisplayTouristSpots();
     this.directionsService = new google.maps.DirectionsService();
     this.directionsRenderer = new google.maps.DirectionsRenderer({
       map: this.map,
       preserveViewport: true,
     });
-  }
+  }).catch(error => {
+    console.error('Error loading Google Maps API:', error);
+  });
+}
 
   /*------------------------------------------
   Map Utilities
@@ -90,7 +97,7 @@ export class MapService {
   }
 
   clearMarkers() {
-    this.markers.forEach(marker => marker.setMap(null));
+    this.markers.forEach((marker) => marker.setMap(null));
     this.markers = [];
   }
 
@@ -125,15 +132,19 @@ export class MapService {
   private loadIcons(): Promise<void> {
     return Promise.all([
       fetch('/public/jeep-terminal-icon.svg')
-        .then(response => response.text())
-        .then(svg => {
-          this.jeepneyIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+        .then((response) => response.text())
+        .then((svg) => {
+          this.jeepneyIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
+            svg
+          )}`;
         }),
       fetch('/public/loop-terminal-icon.svg')
-        .then(response => response.text())
-        .then(svg => {
-          this.busIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
-        })
+        .then((response) => response.text())
+        .then((svg) => {
+          this.busIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
+            svg
+          )}`;
+        }),
     ]).then(() => {});
   }
 
@@ -141,7 +152,10 @@ export class MapService {
     this.loadIcons().then(() => {
       const cachedTerminals = localStorage.getItem('terminalsData');
       if (cachedTerminals) {
-        console.log('Terminals loaded from cache:', JSON.parse(cachedTerminals));
+        console.log(
+          'Terminals loaded from cache:',
+          JSON.parse(cachedTerminals)
+        );
         const data = JSON.parse(cachedTerminals);
         this.processTerminalsData(data);
       } else {
@@ -161,16 +175,28 @@ export class MapService {
       allRoutes.forEach((route) => {
         if (Array.isArray(route.terminals)) {
           route.terminals.forEach((terminal: any) => {
-            if (terminal.coordinates && terminal.coordinates.lat && terminal.coordinates.lng) {
-              const icon = route.route_name.includes('Jeepney') ? this.jeepneyIcon : this.busIcon;
+            if (
+              terminal.coordinates &&
+              terminal.coordinates.lat &&
+              terminal.coordinates.lng
+            ) {
+              const icon = route.route_name.includes('Jeepney')
+                ? this.jeepneyIcon
+                : this.busIcon;
               this.addCustomMarker(
-                { lat: terminal.coordinates.lat, lng: terminal.coordinates.lng },
+                {
+                  lat: terminal.coordinates.lat,
+                  lng: terminal.coordinates.lng,
+                },
                 terminal.terminal_name,
                 icon,
                 true // Indicate that this is a terminal marker
               );
             } else {
-              console.error('Terminal coordinates are missing or incomplete:', terminal);
+              console.error(
+                'Terminal coordinates are missing or incomplete:',
+                terminal
+              );
             }
           });
         } else {
@@ -182,7 +208,12 @@ export class MapService {
     }
   }
 
-  private addCustomMarker(location: google.maps.LatLngLiteral, title: string, icon: string, isTerminal: boolean = false) {
+  private addCustomMarker(
+    location: google.maps.LatLngLiteral,
+    title: string,
+    icon: string,
+    isTerminal: boolean = false
+  ) {
     const marker = new google.maps.Marker({
       position: location,
       map: this.map,
@@ -224,7 +255,10 @@ export class MapService {
   private displayTouristSpots(spots: any) {
     if (Array.isArray(spots)) {
       spots.forEach((spot: any) => {
-        const location = { lat: spot.coordinates.latitude, lng: spot.coordinates.longitude };
+        const location = {
+          lat: spot.coordinates.latitude,
+          lng: spot.coordinates.longitude,
+        };
         this.addTouristSpotMarker(location, spot.name, spot.marker);
       });
     } else {
@@ -241,7 +275,11 @@ export class MapService {
     return data ? JSON.parse(data) : null;
   }
 
-  private addTouristSpotMarker(location: google.maps.LatLngLiteral, title: string, icon: string) {
+  private addTouristSpotMarker(
+    location: google.maps.LatLngLiteral,
+    title: string,
+    icon: string
+  ) {
     const marker = new google.maps.Marker({
       position: location,
       map: this.map,
@@ -254,33 +292,42 @@ export class MapService {
 
     this.touristSpotMarkers.push(marker);
   }
-  
 
   /*------------------------------------------
   Route Display
   --------------------------------------------*/
   displayFilteredRoutes() {
-    this.filteredRoutes.forEach(route => {
+    this.filteredRoutes.forEach((route) => {
       const relevantWaypoints = this.getRelevantWaypoints(route.waypoints);
       this.addMarkersForRoute(relevantWaypoints, route.routeName);
     });
   }
 
   private getRelevantWaypoints(waypoints: string[]) {
-    return waypoints.filter(waypoint =>
-      this.routesService.isNearby(this.currentLocation!, this.routesService.parseWaypoint(waypoint)) ||
-      this.routesService.isNearby(this.destination!, this.routesService.parseWaypoint(waypoint))
+    return waypoints.filter(
+      (waypoint) =>
+        this.routesService.isNearby(
+          this.currentLocation!,
+          this.routesService.parseWaypoint(waypoint)
+        ) ||
+        this.routesService.isNearby(
+          this.destination!,
+          this.routesService.parseWaypoint(waypoint)
+        )
     );
   }
 
   private addMarkersForRoute(waypoints: string[], routeName: string) {
-    waypoints.forEach(waypoint => {
+    waypoints.forEach((waypoint) => {
       const location = this.routesService.parseWaypoint(waypoint);
       this.addMarker(location, routeName);
     });
   }
 
-  displayRouteWithDirectionsAPI(waypoints: google.maps.LatLngLiteral[], color: string) {
+  displayRouteWithDirectionsAPI(
+    waypoints: google.maps.LatLngLiteral[],
+    color: string
+  ) {
     if (waypoints.length < 2) return;
 
     const waypointBatches = this.routesService.batchWaypoints(waypoints);
@@ -288,7 +335,9 @@ export class MapService {
     waypointBatches.forEach((batch, index) => {
       const origin = batch[0];
       const destination = batch[batch.length - 1];
-      const waypointsForApi = batch.slice(1, batch.length - 1).map(waypoint => ({ location: waypoint }));
+      const waypointsForApi = batch
+        .slice(1, batch.length - 1)
+        .map((waypoint) => ({ location: waypoint }));
 
       const request = {
         origin,
@@ -313,7 +362,6 @@ export class MapService {
       });
     });
   }
-
 
   private renderDirections(result: any, color: string) {
     const directionsRenderer = new google.maps.DirectionsRenderer({
@@ -383,7 +431,7 @@ export class MapService {
       this.realTimeMarker = null; // Clear the reference
     }
   }
-  
+
   private updateRoutePath(currentPosition: google.maps.LatLng) {
     if (!this.currentRoutePath.length) return;
 
@@ -392,7 +440,10 @@ export class MapService {
     let minDistance = Infinity;
 
     this.currentRoutePath.forEach((point, index) => {
-      const distance = google.maps.geometry.spherical.computeDistanceBetween(currentPosition, new google.maps.LatLng(point.lat, point.lng));
+      const distance = google.maps.geometry.spherical.computeDistanceBetween(
+        currentPosition,
+        new google.maps.LatLng(point.lat, point.lng)
+      );
       if (distance < minDistance) {
         minDistance = distance;
         nearestIndex = index;
@@ -410,15 +461,23 @@ export class MapService {
     this.clearRouteRenderers();
 
     // Display the updated route path with the stored route color
-    this.displayRouteSegments({ path: this.currentRoutePath, color: this.currentRouteColor });
+    this.displayRouteSegments({
+      path: this.currentRoutePath,
+      color: this.currentRouteColor,
+    });
   }
 
   /*------------------------------------------
   Route Segment Display
   --------------------------------------------*/
-  displayRouteSegments(routePath: { path: google.maps.LatLngLiteral[], color: string }) {
+  displayRouteSegments(routePath: {
+    path: google.maps.LatLngLiteral[];
+    color: string;
+  }) {
     if (routePath.path.length < 2) {
-      console.error("Route path must have at least two waypoints to display a route.");
+      console.error(
+        'Route path must have at least two waypoints to display a route.'
+      );
       return;
     }
 
@@ -436,19 +495,27 @@ export class MapService {
     });
   }
 
-  private displayRouteSegment({ origin, destination, color }: { origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, color: string }) {
+  private displayRouteSegment({
+    origin,
+    destination,
+    color,
+  }: {
+    origin: google.maps.LatLngLiteral;
+    destination: google.maps.LatLngLiteral;
+    color: string;
+  }) {
     const request = {
       origin,
       destination,
       travelMode: google.maps.TravelMode.DRIVING,
     };
-  
+
     const cachedResponse = this.getCachedResponse(request);
     if (cachedResponse) {
       this.renderDirections(cachedResponse, color);
       return;
     }
-  
+
     this.directionsService.route(request, (result: any, status: any) => {
       if (status === google.maps.DirectionsStatus.OK) {
         this.cacheResponse(request, result);
@@ -457,29 +524,33 @@ export class MapService {
         console.error('Directions request failed for segment due to ' + status);
       }
     });
-  } 
+  }
 
   /*------------------------------------------
   Walking Path Display
   --------------------------------------------*/
-  displayWalkingPath(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, color: string) {
+  displayWalkingPath(
+    origin: google.maps.LatLngLiteral,
+    destination: google.maps.LatLngLiteral,
+    color: string
+  ) {
     const distance = google.maps.geometry.spherical.computeDistanceBetween(
       new google.maps.LatLng(origin.lat, origin.lng),
       new google.maps.LatLng(destination.lat, destination.lng)
     );
-  
+
     const request = {
       origin,
       destination,
       travelMode: google.maps.TravelMode.WALKING,
     };
-  
+
     const cachedResponse = this.getCachedResponse(request);
     if (cachedResponse) {
       this.renderWalkingDirections(cachedResponse, color);
       return;
     }
-  
+
     if (distance < 50) {
       this.renderStaticWalkingPath(origin, destination, color);
     } else {
@@ -487,13 +558,19 @@ export class MapService {
     }
   }
 
-  private renderStaticWalkingPath(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, color: string) {
+  private renderStaticWalkingPath(
+    origin: google.maps.LatLngLiteral,
+    destination: google.maps.LatLngLiteral,
+    color: string
+  ) {
     const path = new google.maps.Polyline({
       path: [origin, destination],
       geodesic: true,
       strokeColor: 'transparent', // No solid line, walking icons only
       strokeWeight: 0,
-      icons: [{ icon: this.getWalkingIcon(color), offset: '0', repeat: '15px' }],
+      icons: [
+        { icon: this.getWalkingIcon(color), offset: '0', repeat: '15px' },
+      ],
     });
     path.setMap(this.map);
     this.routeRenderers.push(path);
@@ -503,8 +580,11 @@ export class MapService {
     this.addWalkingPathMarker(destination, 'End', color);
   }
 
-
-  private requestWalkingDirections(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, color: string) {
+  private requestWalkingDirections(
+    origin: google.maps.LatLngLiteral,
+    destination: google.maps.LatLngLiteral,
+    color: string
+  ) {
     const request = {
       origin,
       destination,
@@ -531,11 +611,13 @@ export class MapService {
     const renderer = new google.maps.DirectionsRenderer({
       map: this.map,
       preserveViewport: true,
-      suppressMarkers: true, // Disable default markers 
+      suppressMarkers: true, // Disable default markers
       polylineOptions: {
         strokeColor: 'transparent', // No solid line, walking icons only
         strokeWeight: 0,
-        icons: [{ icon: this.getWalkingIcon(color), offset: '0', repeat: '15px' }],
+        icons: [
+          { icon: this.getWalkingIcon(color), offset: '0', repeat: '15px' },
+        ],
       },
     });
     renderer.setDirections(result);
@@ -547,7 +629,11 @@ export class MapService {
     this.addWalkingPathMarker(route.end_location, 'End', color);
   }
 
-  private addWalkingPathMarker(location: google.maps.LatLngLiteral, label: string, color: string) {
+  private addWalkingPathMarker(
+    location: google.maps.LatLngLiteral,
+    label: string,
+    color: string
+  ) {
     const svgIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
       <svg xmlns="http://www.w3.org/2000/svg" height="50" width="50" viewBox="0 0 100 100">
         <!-- Outer Circle -->
@@ -558,7 +644,7 @@ export class MapService {
           transform="translate(10, 10) scale(0.8)" />
       </svg>
     `)}`;
-  
+
     const marker = new google.maps.Marker({
       position: location,
       map: this.map,
@@ -569,10 +655,10 @@ export class MapService {
       },
       title: label,
     });
-  
+
     this.markers.push(marker);
   }
-  
+
   private getWalkingIcon(color: string) {
     return {
       path: 'M 0,-1 0,1',
