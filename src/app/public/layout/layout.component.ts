@@ -20,6 +20,6 @@ export class LayoutComponent implements OnInit {
     // Simulate a loading delay (adjust the time as needed)
     setTimeout(() => {
       this.isLoading = false;
-    }, 4000); // Show the loading screen for 4 seconds
+    }, 1000); // Show the loading screen for 4 seconds
   }
 }
