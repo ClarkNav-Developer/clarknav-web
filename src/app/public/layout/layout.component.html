@@ -1,8 +1,21 @@
-<app-search></app-search>
+<div id="loading-screen" class="loading-screen" [class.dark-mode]="darkMode" *ngIf="isLoading">
+    <img src="\public\loading-icon.gif" alt="Loading..." />
+</div>
+
+<div id="main-content" class="main-content" [class.hidden]="isLoading">
+    <app-search></app-search>
+    <app-map #mapComponent></app-map>
+    <app-navigation></app-navigation>
+    <app-floating-window></app-floating-window>
+    <app-bottom-navigation></app-bottom-navigation>
+</div>
+
+<!-- <app-search></app-search>
 <app-map #mapComponent></app-map>
 <app-navigation></app-navigation>
 <app-floating-window></app-floating-window>
-<app-bottom-navigation></app-bottom-navigation>
+<app-bottom-navigation></app-bottom-navigation> -->
+
 <!-- <app-bottom-sheet></app-bottom-sheet> -->
 
 <!-- <div class="main-container">
