@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { GeocodingService } from './geocoding.service';
 import { LocationSearchService } from './locationsearch.service';
 import { GoogleMapsLoaderService } from './google-maps-loader.service';
+import { MapService } from '../map/map.service';
 
 declare var google: any;
 
@@ -17,7 +18,8 @@ export class LocationService {
   constructor(
     private geocodingService: GeocodingService,
     private locationSearchService: LocationSearchService,
-    private googleMapsLoader: GoogleMapsLoaderService // Add this line
+    private googleMapsLoader: GoogleMapsLoaderService, // Add this line
+    private mapService: MapService // Add this line
   ) {}
 
   reverseLocation(): void {
@@ -83,6 +85,10 @@ export class LocationService {
                 );
               }
               this.resolveAddresses();
+  
+              // Add marker and center map on current location
+              this.mapService.addMarker(this.currentLocation, 'My Location', true);
+              this.mapService.map.panTo(this.currentLocation);
             },
             (error) => {
               console.error('Error fetching location', error);

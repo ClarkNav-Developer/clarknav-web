@@ -28,6 +28,6 @@ export class LayoutComponent implements OnInit {
     } else {
       // Skip the loading screen
       this.isLoading = false;
-    }
+    }, 1000); // Show the loading screen for 4 seconds
   }
 }

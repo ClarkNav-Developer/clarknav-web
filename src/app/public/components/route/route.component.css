@@ -1,4 +1,4 @@
-@media screen and (min-width: 431px) {
+@media screen and (min-width: 768px) {
   .mobile-view {
       display: none;
   }
@@ -125,7 +125,7 @@
   }
 }
 
-@media screen and (max-width: 430px) {
+@media screen and (max-width: 767px) {
   .desktop-view {
       display: none;
   }
