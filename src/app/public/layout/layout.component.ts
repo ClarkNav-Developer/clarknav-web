@@ -17,9 +17,17 @@ export class LayoutComponent implements OnInit {
       document.body.classList.add('dark-mode');
     }
 
-    // Simulate a loading delay (adjust the time as needed)
-    setTimeout(() => {
+    // Check if the loading screen has been shown before
+    const loadingScreenShown = localStorage.getItem('loadingScreenShown');
+    if (!loadingScreenShown) {
+      // Show the loading screen and set the flag in local storage
+      setTimeout(() => {
+        this.isLoading = false;
+        localStorage.setItem('loadingScreenShown', 'true');
+      }, 4000); // Show the loading screen for 4 seconds
+    } else {
+      // Skip the loading screen
       this.isLoading = false;
-    }, 4000); // Show the loading screen for 4 seconds
+    }
   }
 }

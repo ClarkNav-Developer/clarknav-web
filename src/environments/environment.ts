@@ -1,4 +1,4 @@
-const apiUrl = 'http://localhost:8000';  // Fixed apiUrl declaration
+const apiUrl = 'https://clarknavdb-17a82b9cf6a9.herokuapp.com';  // Fixed apiUrl declaration
 
 export const environment = {
     production: true,
