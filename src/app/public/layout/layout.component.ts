@@ -24,10 +24,10 @@ export class LayoutComponent implements OnInit {
       setTimeout(() => {
         this.isLoading = false;
         localStorage.setItem('loadingScreenShown', 'true');
-      }, 4000); // Show the loading screen for 4 seconds
+      }, 1000); // Show the loading screen for 1 second
     } else {
       // Skip the loading screen
       this.isLoading = false;
-    }, 1000); // Show the loading screen for 4 seconds
+    }
   }
 }
