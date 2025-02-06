@@ -60,7 +60,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     try {
       const map = new google.maps.Map(mapElement as HTMLElement, {
-        center: { lat: 15.187769063648858, lng: 120.55950164794922 },
+        center: { lat: 15.187481337206234, lng: 120.52909237418034 },
         zoom: 14,
         minZoom: 14,
         mapTypeControl: false,
