@@ -371,7 +371,7 @@ initializeMap(map: any) {
       polylineOptions: {
         strokeColor: color,
         strokeOpacity: 1.0,
-        strokeWeight: 3,
+        strokeWeight: 5,
       },
     });
     directionsRenderer.setDirections(result);
@@ -490,9 +490,9 @@ initializeMap(map: any) {
     }
 
     // Add markers for each waypoint
-    path.forEach((waypoint) => {
-      this.addMarker(waypoint, 'Waypoint');
-    });
+    // path.forEach((waypoint) => {
+    //   this.addMarker(waypoint, 'Waypoint');
+    // });
   }
 
   private displayRouteSegment({

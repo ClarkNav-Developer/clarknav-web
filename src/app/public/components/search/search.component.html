@@ -154,7 +154,7 @@
             </div>
 
             <div class="buttons">
-                <button (click)="useMyLocation()">Use My Location</button>
+                <!-- <button (click)="useMyLocation()">Use My Location</button> -->
                 <button (click)="navigateToDestination()">Navigate</button>
                 <!-- Add this button somewhere appropriate in your HTML -->
                 <!-- <button (click)="stopRealTimeTracking()">Stop Real-Time Tracking</button> -->
@@ -364,7 +364,7 @@
         </div>
     </div>
 
-    <div class="side-nav-mobile">
+    <div class="side-nav-mobile"  *ngIf="showSideNav">
         <div class="side-nav-container-mobile">
             <div class="info-button" (click)="openInformationComponent()">
                 <button class="menu-container-button"><svg xmlns="http://www.w3.org/2000/svg" height="24px"

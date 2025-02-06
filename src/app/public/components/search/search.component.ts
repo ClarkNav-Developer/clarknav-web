@@ -28,6 +28,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   isBottomSheetVisible = false;
   showNavigationStatus = false;
   showAllRoutes = true;
+  showSideNav: boolean = true;
 
   // Route data
   suggestedRoutes: any[] = [];
@@ -294,6 +295,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
       this.isBottomSheetVisible = false;
       this.showNavigationWindow = false;
       this.showNavigationStatus = true; // Show navigation status
+      this.showSideNav = false; // Hide side-nav-mobile
 
       // Hide the mobile container
       const mobileContainer = document.querySelector('.mobile-container');
@@ -320,6 +322,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.mapService.clearMap(); // Clear all markers and routes rendered on the map
     this.mapService.removeRealTimeMarker(); // Remove the real-time marker
     this.showNavigationStatus = false; // Hide navigation status
+    this.showSideNav = true; // Show side-nav-mobile
 
     // Stop updating duration
     this.stopUpdatingDuration();

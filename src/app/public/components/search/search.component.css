@@ -845,7 +845,7 @@
 
     /* navigation info styles */
     .navigation-status {
-        z-index: 901;
+        z-index: 500;
         position: absolute;
         bottom: 75px;
         width: 100%;
@@ -894,7 +894,7 @@
 
     /* side nav */
     .side-nav-mobile {
-        z-index: 500;
+        z-index: 499;
         position: absolute;
         bottom: 120px;
         right: 10px;
