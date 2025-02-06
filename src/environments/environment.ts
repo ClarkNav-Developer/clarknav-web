@@ -15,12 +15,12 @@ export const environment = {
     updateUserUrl: `${apiUrl}/api/auth/update-credentials`,
     refreshUrl: `${apiUrl}/api/auth/refresh`,
 
-    bugReportsUrl: `${apiUrl}/api/bug-reports`,
-    feedbackUrl: `${apiUrl}/api/feedback`,
-    locationSearchesUrl: `${apiUrl}/api/location-searches`,
-    navigationHistoriesUrl: `${apiUrl}/api/navigation-histories`,
-    routeUsagesUrl: `${apiUrl}/api/route-usages`,
-    customRoutesUrl: `${apiUrl}/api/custom-routes`,
+    // bugReportsUrl: `${apiUrl}/api/bug-reports`,
+    // feedbackUrl: `${apiUrl}/api/feedback`,
+    // locationSearchesUrl: `${apiUrl}/api/location-searches`,
+    // navigationHistoriesUrl: `${apiUrl}/api/navigation-histories`,
+    // routeUsagesUrl: `${apiUrl}/api/route-usages`,
+    // customRoutesUrl: `${apiUrl}/api/custom-routes`,
 };
 
 
