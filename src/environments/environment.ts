@@ -1,4 +1,4 @@
-const apiUrl = 'http://3.24.223.79'; 
+const apiUrl = 'https://clarknav.com'; 
 // const apiUrl = 'http://localhost:8000'; 
 
 export const environment = {
