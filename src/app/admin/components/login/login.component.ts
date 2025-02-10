@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Inject } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../auth/auth.service';
 import { User } from '../../../models/user';
 
@@ -11,24 +11,48 @@ import { User } from '../../../models/user';
 })
 export class LoginComponent implements OnInit {
   isLoginForm = true;
-  email = '';
-  password = '';
-  passwordConfirmation = '';
-  firstName = '';
-  lastName = '';
   errorMessage = '';
   rememberMe: boolean = false;
 
+  loginForm: FormGroup;
+  registerForm: FormGroup;
+
   constructor(
-    @Inject(AuthService) private authService: AuthService,
+    private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
-  ) {}
+    private route: ActivatedRoute,
+    private fb: FormBuilder
+  ) {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+      rememberMe: [false] // Add rememberMe control here
+    });
+
+    this.registerForm = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+      passwordConfirmation: ['', Validators.required]
+    });
+  }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.isLoginForm = params['mode'] !== 'register';
     });
+
+    // Load saved credentials if "Remember Me" was checked
+    const savedEmail = localStorage.getItem('rememberMeEmail');
+    const savedPassword = localStorage.getItem('rememberMePassword');
+    if (savedEmail && savedPassword) {
+      this.loginForm.patchValue({
+        email: savedEmail,
+        password: savedPassword
+      });
+      this.rememberMe = true;
+    }
   }
 
   togglePassword(fieldId: string, iconId: string) {
@@ -45,67 +69,93 @@ export class LoginComponent implements OnInit {
 
   onLoginClick() {
     this.isLoginForm = true;
+    this.errorMessage = '';
   }
 
   onRegisterClick() {
     this.isLoginForm = false;
+    this.errorMessage = '';
   }
 
-  onLoginSubmit(event: Event) {
-    event.preventDefault();
-    this.authService.login(this.email, this.password).subscribe(
-      (response: any) => {
-        this.authService.getIdentity().subscribe({
-          next: (isAuthenticated) => {
-            if (isAuthenticated) {
-              const user = this.authService.getCurrentUser();
-              if (user?.isAdmin) {
-                this.router.navigate(['/admin/admin-dashboard']);
-              } else if (user?.isUser) {
-                this.router.navigate(['']);
+  onLoginSubmit() {
+    if (this.loginForm.invalid) {
+      this.errorMessage = 'Please fill in all required fields correctly.';
+      return;
+    }
+
+    const { email, password } = this.loginForm.value;
+
+    if (this.rememberMe) {
+      localStorage.setItem('rememberMeEmail', email);
+      localStorage.setItem('rememberMePassword', password);
+    } else {
+      localStorage.removeItem('rememberMeEmail');
+      localStorage.removeItem('rememberMePassword');
+    }
+
+    this.authService.login(email, password).subscribe({
+      next: (response) => {
+        if (this.authService.isAuthenticated) {
+          this.authService.getIdentity().subscribe({
+            next: (isAuthenticated) => {
+              if (isAuthenticated) {
+                const user = this.authService.getCurrentUser();
+                if (user?.isAdmin) {
+                  this.router.navigate(['/admin/admin-dashboard']);
+                } else {
+                  this.router.navigate(['']);
+                }
               } else {
-                this.router.navigate(['']);
+                this.errorMessage = 'Failed to retrieve user identity.';
               }
-            } else {
-              this.errorMessage = 'Failed to retrieve user identity.';
+            },
+            error: () => {
+              this.errorMessage = 'Error fetching user identity.';
             }
-          },
-          error: () => {
-            this.errorMessage = 'Error fetching user identity.';
-          }
-        });
+          });
+        }
       },
-      (error) => {
-        this.errorMessage = 'Invalid email or password';
+      error: (error) => {
+        this.errorMessage = 'Invalid email or password.';
       }
-    );
+    });
   }
 
-  onRegisterSubmit(event: Event) {
-    event.preventDefault();
+  onRegisterSubmit() {
+    if (this.registerForm.invalid) {
+      this.errorMessage = 'Please fill in all required fields correctly.';
+      return;
+    }
+
+    const { firstName, lastName, email, password, passwordConfirmation } = this.registerForm.value;
+
+    if (password !== passwordConfirmation) {
+      this.errorMessage = 'Passwords do not match.';
+      return;
+    }
+
     const newUser: Partial<User> = {
-      first_name: this.firstName,
-      last_name: this.lastName,
-      email: this.email,
-      password: this.password,
-      isAdmin: false, // Default to false
-      isUser: true,   // Default to true
+      first_name: firstName,
+      last_name: lastName,
+      email: email,
+      password: password,
+      isAdmin: false,
+      isUser: true,
     };
 
-    // Map passwordConfirmation to password_confirmation
     const registrationData = {
       ...newUser,
-      password_confirmation: this.passwordConfirmation
+      password_confirmation: passwordConfirmation
     };
 
-    this.authService.register(registrationData).subscribe(
-      (response: any) => {
+    this.authService.register(registrationData).subscribe({
+      next: (response) => {
         alert('Registration successful');
         this.onLoginClick();
       },
-      (error) => {
-        this.errorMessage = 'Registration failed: ' + error.error.message;
+      error: (error) => {
+        this.errorMessage = 'Registration failed: ' + (error.error.message || 'Please try again.');
       }
-    );
+    });
   }
 }

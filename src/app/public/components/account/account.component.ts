@@ -71,7 +71,7 @@ export class AccountComponent implements OnInit {
     private mapInstanceService: MapInstanceService,
     private suggestedRoutesService: SuggestedRoutesService,
     private mapService: MapService,
-    private googleMapsLoader: GoogleMapsLoaderService // Add this line
+    private googleMapsLoader: GoogleMapsLoaderService
   ) {
     const savedMode = localStorage.getItem('darkMode');
     this.darkMode = savedMode === 'true';
@@ -87,42 +87,55 @@ export class AccountComponent implements OnInit {
           this.mapInstanceService.setMapStyle(style);
         });
       }
-      this.authService.getIdentity().subscribe(
-        (isAuthenticated) => {
-          this.isLoggedIn = isAuthenticated;
-          if (isAuthenticated) {
-            const currentUser = this.authService.getCurrentUser();
-            if (currentUser) {
-              this.firstName = currentUser.first_name;
-              this.lastName = currentUser.last_name;
-              this.email = currentUser.email;
-            }
-            if (!this.historiesFetched) {
+
+      if (!this.authService.isAuthenticated) {
+        this.authService.getIdentity().subscribe({
+          next: (isAuthenticated) => {
+            this.isLoggedIn = isAuthenticated;
+            if (isAuthenticated) {
+              const currentUser = this.authService.getCurrentUser();
+              if (currentUser) {
+                this.firstName = currentUser.first_name;
+                this.lastName = currentUser.last_name;
+                this.email = currentUser.email;
+              }
               this.fetchNavigationHistories();
-              this.historiesFetched = true;
             }
+          },
+          error: (error) => {
+            console.error('Error fetching user identity:', error);
           }
-        },
-        (error) => {
-          console.error('Error fetching user identity:', error);
+        });
+      } else {
+        this.isLoggedIn = true;
+        const currentUser = this.authService.getCurrentUser();
+        if (currentUser) {
+          this.firstName = currentUser.first_name;
+          this.lastName = currentUser.last_name;
+          this.email = currentUser.email;
         }
-      );
+        this.fetchNavigationHistories();
+      }
     }).catch(error => {
       console.error('Error loading Google Maps API:', error);
     });
   }
-  
 
   fetchNavigationHistories() {
-    this.http.get(environment.navigationHistoriesUrl).subscribe(
-      (response) => {
+    if (this.historiesFetched) {
+      return;
+    }
+
+    this.http.get(environment.navigationHistoriesUrl).subscribe({
+      next: (response) => {
         this.navigationHistories = response as any[];
+        this.historiesFetched = true;
         console.log('Navigation histories fetched successfully:', this.navigationHistories);
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching navigation histories:', error);
       }
-    );
+    });
   }
 
   viewRoute(history: any) {
@@ -176,15 +189,15 @@ export class AccountComponent implements OnInit {
 
   logout(event: Event) {
     event.preventDefault(); // Prevent the default link behavior
-    this.authService.logout().subscribe(
-      response => {
+    this.authService.logout().subscribe({
+      next: () => {
         console.log('Logged out successfully');
         this.router.navigate(['/login']); // Redirect to /login
       },
-      error => {
+      error: (error) => {
         console.error('Logout error:', error);
       }
-    );
+    });
   }
 
   updateCredentials(event: Event) {
@@ -207,8 +220,8 @@ export class AccountComponent implements OnInit {
       updatedCredentials.new_password_confirmation = this.newPasswordConfirmation;
     }
   
-    this.authService.updateCredentials(updatedCredentials).subscribe(
-      response => {
+    this.authService.updateCredentials(updatedCredentials).subscribe({
+      next: (response) => {
         if (response) {
           console.log('Credentials updated successfully');
           alert('Credentials updated successfully');
@@ -217,11 +230,11 @@ export class AccountComponent implements OnInit {
           alert('Failed to update credentials');
         }
       },
-      error => {
+      error: (error) => {
         console.error('Error updating credentials:', error);
         alert('Error updating credentials');
       }
-    );
+    });
   }
 
   onSubmitBugReport(event: Event) {
@@ -232,30 +245,30 @@ export class AccountComponent implements OnInit {
         formData.append(key, this.bugReport[key]);
       }
     }
-    this.http.post(environment.bugReportsUrl, formData).subscribe(
-      response => {
+    this.http.post(environment.bugReportsUrl, formData).subscribe({
+      next: (response) => {
         console.log('Bug report submitted successfully', response);
         alert('Bug report submitted successfully');
       },
-      error => {
+      error: (error) => {
         console.error('Error submitting bug report', error);
         alert('Error submitting bug report');
       }
-    );
+    });
   }
 
   onSubmitFeedback(event: Event) {
     event.preventDefault();
-    this.http.post(environment.feedbackUrl, this.feedback).subscribe(
-      response => {
+    this.http.post(environment.feedbackUrl, this.feedback).subscribe({
+      next: (response) => {
         console.log('Feedback submitted successfully', response);
         alert('Feedback submitted successfully');
       },
-      error => {
+      error: (error) => {
         console.error('Error submitting feedback:', error);
         alert('Error submitting feedback');
       }
-    );
+    });
   }
 
   onFileSelected(event: Event) {

@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-route',
   templateUrl: './route.component.html',
-  styleUrl: './route.component.css'
+  styleUrls: ['./route.component.css']
 })
 export class RouteComponent implements OnInit, OnDestroy {
   showRouteList: boolean = true;
@@ -52,13 +52,14 @@ export class RouteComponent implements OnInit, OnDestroy {
   }
 
   private getCacheKey(routeId: string): string {
-    return routeId;
+    return `route_${routeId}`;
   }
 
   private cacheRoute(routeId: string, route: any) {
     const key = this.getCacheKey(routeId);
     try {
       localStorage.setItem(key, JSON.stringify(route));
+      this.routeCache.set(key, route);
     } catch (error) {
       console.error(`Error storing JSON in localStorage for key ${key}:`, error);
     }
@@ -66,10 +67,16 @@ export class RouteComponent implements OnInit, OnDestroy {
 
   private getCachedRoute(routeId: string): any | null {
     const key = this.getCacheKey(routeId);
+    if (this.routeCache.has(key)) {
+      return this.routeCache.get(key);
+    }
+
     const cachedRoute = localStorage.getItem(key);
     if (cachedRoute) {
       try {
-        return JSON.parse(cachedRoute);
+        const parsedRoute = JSON.parse(cachedRoute);
+        this.routeCache.set(key, parsedRoute);
+        return parsedRoute;
       } catch (error) {
         console.error(`Error parsing JSON from localStorage for key ${key}:`, error);
         localStorage.removeItem(key); // Remove invalid JSON data from localStorage
@@ -80,10 +87,9 @@ export class RouteComponent implements OnInit, OnDestroy {
   }
 
   private loadCache() {
-    // Load any existing cache from localStorage
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key && key !== 'routesVersion' && key !== 'authToken') { // Skip non-route keys
+      if (key && key.startsWith('route_')) {
         try {
           const cachedRoute = localStorage.getItem(key);
           if (cachedRoute) {
@@ -108,7 +114,7 @@ export class RouteComponent implements OnInit, OnDestroy {
       this.displayRoute(cachedRoute, routeId, false);
       return;
     }
-  
+
     const route = this.routesService.getRouteById(routeId);
     if (route) {
       this.cacheRoute(routeId, route);
@@ -149,10 +155,13 @@ export class RouteComponent implements OnInit, OnDestroy {
         this.locationService.destinationAddress,
         { path: mainWaypoints, color: routeColor },
         true
-      ).subscribe(response => {
-        console.log('Navigation history saved:', response);
-      }, error => {
-        console.error('Error saving navigation history:', error);
+      ).subscribe({
+        next: (response) => {
+          console.log('Navigation history saved:', response);
+        },
+        error: (error) => {
+          console.error('Error saving navigation history:', error);
+        }
       });
     }
   }
@@ -192,7 +201,7 @@ export class RouteComponent implements OnInit, OnDestroy {
     this.showBackground = true; // Show the background
     this.currentRouteName = ''; // Clear the current route name
     this.currentRouteType = ''; // Clear the current route type
-  
+
     // Remove class to move the floating window back to the center
     const floatingWindow = document.querySelector('.floating-window');
     if (floatingWindow) {

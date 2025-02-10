@@ -41,33 +41,39 @@ export class PlannerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.authService.getIdentity().subscribe(
-      (isAuthenticated) => {
-        this.isLoggedIn = isAuthenticated;
-        if (isAuthenticated) {
-          this.fetchSavedRoutes();
-        }
-      },
-      (error) => {
-        console.error('Error fetching user identity:', error);
-      }
-    );
-  
+    this.checkAuthentication();
     this.activatedRoute.data.subscribe((data: any) => {
       if (history.state.route && this.routeData === null) {
         this.routeData = history.state.route;
         this.geocodeAddresses();
-  
+
         setTimeout(() => {
           history.replaceState({}, '');
         }, 0);
       }
     });
   }
-  
-  
 
-  geocodeAddresses(): void {
+  private checkAuthentication(): void {
+    if (this.authService.isAuthenticated) {
+      this.isLoggedIn = true;
+      this.fetchSavedRoutes();
+    } else {
+      this.authService.getIdentity().subscribe({
+        next: (isAuthenticated) => {
+          this.isLoggedIn = isAuthenticated;
+          if (isAuthenticated) {
+            this.fetchSavedRoutes();
+          }
+        },
+        error: (error) => {
+          console.error('Error fetching user identity:', error);
+        }
+      });
+    }
+  }
+
+  private geocodeAddresses(): void {
     if (this.routeData) {
       this.geocodingService.geocodeLatLng(this.routeData.start, (address: string) => {
         this.originAddress = address;
@@ -79,19 +85,18 @@ export class PlannerComponent implements OnInit {
     }
   }
 
-  fetchSavedRoutes(): void {
-    this.http.get<any[]>(environment.customRoutesUrl).subscribe(
-      (routes) => {
+  private fetchSavedRoutes(): void {
+    this.http.get<any[]>(environment.customRoutesUrl).subscribe({
+      next: (routes) => {
         this.savedRoutes = routes;
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching routes:', error);
         alert('Failed to fetch saved routes.');
       }
-    );
+    });
   }
 
-  // Remove the automatic saving after inserting the departure time
   calculateFareAndDuration(): void {
     if (!this.routeData || !this.routeData.departureTime || !this.routeData.departureDate) {
       this.arrivalTime = '';
@@ -100,7 +105,6 @@ export class PlannerComponent implements OnInit {
 
     const selectedDateTime = new Date(`${this.routeData.departureDate}T${this.routeData.departureTime}`);
 
-    // Ensure departure is in the future
     if (selectedDateTime < new Date()) {
       alert('Departure time must be in the future!');
       this.arrivalTime = '';
@@ -123,21 +127,16 @@ export class PlannerComponent implements OnInit {
 
       const arrivalDateTime = new Date(selectedDateTime.getTime() + durationMinutes * 60000);
 
-      // Convert to 12-hour format with AM/PM
       this.arrivalTime = arrivalDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
     });
 
     this.fareService.calculateFare(this.routeData);
   }
 
-  // Add a method to handle the close button action
   closeRouteData(): void {
     this.routeData = null;
-    
-    // Navigate without state to clear history
     this.router.navigateByUrl('/planner', { state: {} });
   }
-
 
   saveRouteToDatabase(): void {
     if (!this.routeData.departureTime || !this.routeData.departureDate) {
@@ -157,18 +156,18 @@ export class PlannerComponent implements OnInit {
       departure_date: this.routeData.departureDate,
     };
 
-    this.http.post(environment.customRoutesUrl, routePayload).subscribe(
-      (response) => {
+    this.http.post(environment.customRoutesUrl, routePayload).subscribe({
+      next: (response) => {
         console.log('Route saved:', response);
         alert('Route successfully saved.');
-        this.fetchSavedRoutes(); // Refresh the saved routes
-        this.routeData = null; // Clear the input fields
+        this.fetchSavedRoutes();
+        this.routeData = null;
       },
-      (error) => {
+      error: (error) => {
         console.error('Error saving route:', error);
         alert('Failed to save route.');
       }
-    );
+    });
   }
 
   markRouteAsDone(routeId: string): void {
@@ -177,35 +176,17 @@ export class PlannerComponent implements OnInit {
       return;
     }
 
-    this.http.delete(`${environment.customRoutesUrl}/${routeId}`).subscribe(
-      () => {
+    this.http.delete(`${environment.customRoutesUrl}/${routeId}`).subscribe({
+      next: () => {
         alert('Route deleted successfully.');
-        this.fetchSavedRoutes(); // Refresh the list
+        this.fetchSavedRoutes();
       },
-      (error) => {
+      error: (error) => {
         console.error('Error deleting route:', error);
         alert('Failed to delete route. Please check your network and try again.');
       }
-    );
+    });
   }
-
-  // updateRoute(routeId: string, updatedData: any): void {
-  //   if (!routeId) {
-  //     alert('Invalid route ID');
-  //     return;
-  //   }
-
-  //   this.http.put(`${environment.customRoutesUrl}/${routeId}`, updatedData).subscribe(
-  //     (response) => {
-  //       alert('Route updated successfully.');
-  //       this.fetchSavedRoutes();
-  //     },
-  //     (error) => {
-  //       console.error('Error updating route:', error);
-  //       alert('Failed to update route.');
-  //     }
-  //   );
-  // }
 
   resetRoute(): void {
     this.isRouteCompleted = false;

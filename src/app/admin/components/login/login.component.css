@@ -77,6 +77,22 @@
     font-weight: 500
 }
 
+.form-group-remember-token{
+    margin-bottom: 15px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.form-group-remember-token label {
+    font-size: 14px;
+    color: #666;
+    display: block;
+    font-weight: 500;
+    margin-left: 5px;
+}
+
 .create-account-link,
 .form-group a {
     color: #1d58c6;
