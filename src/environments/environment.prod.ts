@@ -1,4 +1,4 @@
-const apiUrl = 'https://clarknav.com'; 
+const apiUrl = 'https://api.clarknav.com'; 
 
 // const apiUrl = 'http://localhost:8000'; 
 
