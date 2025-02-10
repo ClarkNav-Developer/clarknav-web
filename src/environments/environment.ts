@@ -1,4 +1,5 @@
-const apiUrl = 'https://clarknavdb-17a82b9cf6a9.herokuapp.com';  // Fixed apiUrl declaration
+const apiUrl = 'http://3.24.223.79'; 
+// const apiUrl = 'http://localhost:8000'; 
 
 export const environment = {
     production: true,
@@ -15,12 +16,12 @@ export const environment = {
     updateUserUrl: `${apiUrl}/api/auth/update-credentials`,
     refreshUrl: `${apiUrl}/api/auth/refresh`,
 
-    // bugReportsUrl: `${apiUrl}/api/bug-reports`,
-    // feedbackUrl: `${apiUrl}/api/feedback`,
-    // locationSearchesUrl: `${apiUrl}/api/location-searches`,
-    // navigationHistoriesUrl: `${apiUrl}/api/navigation-histories`,
-    // routeUsagesUrl: `${apiUrl}/api/route-usages`,
-    // customRoutesUrl: `${apiUrl}/api/custom-routes`,
+    bugReportsUrl: `${apiUrl}/api/bug-reports`,
+    feedbackUrl: `${apiUrl}/api/feedback`,
+    locationSearchesUrl: `${apiUrl}/api/location-searches`,
+    navigationHistoriesUrl: `${apiUrl}/api/navigation-histories`,
+    routeUsagesUrl: `${apiUrl}/api/route-usages`,
+    customRoutesUrl: `${apiUrl}/api/custom-routes`,
 };
 
 

@@ -177,11 +177,7 @@
 
   .account-history-container .history-item-container {
     display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    box-shadow: 0px 1px 4px 1px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
     width: 100%;
   }
 
@@ -189,6 +185,12 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+    justify-content: space-between;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0px 1px 4px 1px rgba(0, 0, 0, 0.1);
+    margin: 5px 0;
   }
 
   .account-history-container .history-item p {
@@ -517,11 +519,7 @@
 
   .account-history-container-mobile .history-item-container {
     display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    box-shadow: 0px 1px 4px 1px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
     width: 100%;
   }
 
@@ -529,6 +527,12 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+    justify-content: space-between;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0px 1px 4px 1px rgba(0, 0, 0, 0.1);
+    margin: 5px 0;
   }
 
   .account-history-container-mobile .history-item p {
