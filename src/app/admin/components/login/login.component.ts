@@ -3,7 +3,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../auth/auth.service';
 import { User } from '../../../models/user';
-import { customEmailValidator } from './custom-email-validator'; // Import the custom email validator
 
 @Component({
   selector: 'app-login',
@@ -25,15 +24,15 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email, customEmailValidator()]], // Add custom email validator
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
-      rememberMe: [false]
+      rememberMe: [false] // Add rememberMe control here
     });
 
     this.registerForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email, customEmailValidator()]], // Add custom email validator
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
       passwordConfirmation: ['', Validators.required]
     });
