@@ -10,19 +10,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { GoogleMapsModule } from '@angular/google-maps';
 
 import { AppComponent } from './app.component';
-import { JeepneyRouteComponent } from './jeepney-route/jeepney-route.component';
-import { BusRouteComponent } from './bus-route/bus-route.component';
-import { AnnouncementComponent } from './announcement/announcement.component';
 
 import { PublicModule } from './public/public.module';
 import { AdminModule } from './admin/admin.module';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    JeepneyRouteComponent,
-    BusRouteComponent,
-    AnnouncementComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
