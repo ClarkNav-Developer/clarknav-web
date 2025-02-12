@@ -11,8 +11,6 @@ import { RoutesService } from '../../services/routes/routes.service';
 import { Router } from '@angular/router';
 import { GoogleMapsLoaderService } from '../../services/geocoding/google-maps-loader.service';
 import { AuthService } from '../../../auth/auth.service';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
 
 declare var google: any;
 
@@ -63,8 +61,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     private routesService: RoutesService,
     private router: Router,
     private googleMapsLoader: GoogleMapsLoaderService,
-    private authService: AuthService, // Add this line
-    private http: HttpClient // Add this line
+    private authService: AuthService // Add this line
   ) { }
 
   /*------------------------------------------
@@ -201,12 +198,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getTransportType(routeId: string): string {
     const route = this.routesService.getRouteById(routeId);
-    if (!route) {
-      console.error('Route not found:', routeId);
-      return 'Unknown';
-    }
-
-    console.log('Route found:', route);
+    if (!route) return 'Unknown';
 
     if (this.routesService.jeepneyRoutes.includes(route)) return 'Jeepney';
     if (this.routesService.busRoutes.includes(route)) return 'Bus';
@@ -261,15 +253,11 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   selectRoute(route: any): void {
-    console.log('Route selected:', route); // Debugging line
     this.selectedRoute = route;
     this.route = route;
     this.showAllRoutes = false;
     this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
     this.navigationService.startRealTimeTracking(); // Start real-time tracking
-
-    // Save route usage
-    this.saveRouteUsage(route);
 
     // Check if the user is authenticated before saving navigation history
     if (this.authService.isAuthenticated) {
@@ -292,32 +280,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       console.log('User is not authenticated. Navigation history will not be saved.');
     }
-  }
-
-  private saveRouteUsage(route: any): void {
-    console.log('Route object in saveRouteUsage:', route); // Debugging line
-    const routeUsage = {
-      user_id: this.authService.isAuthenticated ? this.authService.getCurrentUser()?.id : null,
-      route_id: route.routeId,
-      route_name: route.routeName || 'Unknown Route', // Ensure route_name is not undefined
-      description: route.description || 'No description available',
-      color: route.color,
-      origin: this.locationService.currentLocationAddress,
-      destination: this.locationService.destinationAddress,
-      route_type: this.getTransportType(route.routeId)
-    };
-
-    // Log route usage details for debugging
-    console.log('Route Usage:', routeUsage);
-
-    this.http.post(environment.routeUsagesUrl, routeUsage).subscribe(
-      response => {
-        console.log('Route usage saved:', response);
-      },
-      error => {
-        console.error('Error saving route usage:', error);
-      }
-    );
   }
 
   stopRealTimeTracking(): void {
