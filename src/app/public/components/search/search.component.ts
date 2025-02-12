@@ -297,28 +297,28 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   private saveRouteUsage(route: any): void {
     console.log('Route object in saveRouteUsage:', route); // Debugging line
     const routeUsage = {
-        user_id: this.authService.isAuthenticated ? this.authService.getCurrentUser()?.id : null,
-        route_id: route.routeId,
-        route_name: route.routeName || null,
-        description: route.description || null,
-        color: route.color,
-        origin: this.locationService.currentLocationAddress,
-        destination: this.locationService.destinationAddress,
-        route_type: this.getTransportType(route.routeId)
+      user_id: this.authService.isAuthenticated ? this.authService.getCurrentUser()?.id : null,
+      route_id: route.routeId,
+      route_name: route.routeName || 'Unknown Route', // Ensure route_name is not undefined
+      description: route.description || 'No description available',
+      color: route.color,
+      origin: this.locationService.currentLocationAddress,
+      destination: this.locationService.destinationAddress,
+      route_type: this.getTransportType(route.routeId)
     };
 
     // Log route usage details for debugging
     console.log('Route Usage:', routeUsage);
 
     this.http.post(environment.routeUsagesUrl, routeUsage).subscribe(
-        response => {
-            console.log('Route usage saved:', response);
-        },
-        error => {
-            console.error('Error saving route usage:', error);
-        }
+      response => {
+        console.log('Route usage saved:', response);
+      },
+      error => {
+        console.error('Error saving route usage:', error);
+      }
     );
-}
+  }
 
   stopRealTimeTracking(): void {
     if (this.trackingInterval) {
