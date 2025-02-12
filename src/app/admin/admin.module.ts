@@ -2,13 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { SidebarModule } from 'primeng/sidebar';
-import { RippleModule } from 'primeng/ripple';
-import { AvatarModule } from 'primeng/avatar';
-import { StyleClassModule } from 'primeng/styleclass';
-
 import { AdminRoutingModule } from './admin-routing.module';
 import { LayoutComponent } from './layout/layout.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
@@ -31,12 +24,6 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     AdminRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    ButtonModule,
-    InputTextModule,
-    SidebarModule,
-    RippleModule,
-    AvatarModule,
-    StyleClassModule
   ]
 })
 export class AdminModule { }

@@ -26,7 +26,7 @@ import { AdminModule } from './admin/admin.module';
   ],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule, // Must be here in AppModule only
+    BrowserAnimationsModule, 
     FormsModule,
     HttpClientModule,
     AppRoutingModule,

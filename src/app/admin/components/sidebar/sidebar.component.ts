@@ -1,6 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
-import { Sidebar } from 'primeng/sidebar';
-
+import { Component} from '@angular/core';
 
 @Component({
   selector: 'app-sidebar',
@@ -8,11 +6,5 @@ import { Sidebar } from 'primeng/sidebar';
   styleUrl: './sidebar.component.css'
 })
 export class SidebarComponent {
-  @ViewChild('sidebarRef') sidebarRef!: Sidebar;
 
-  sidebarVisible: boolean = false;
-
-  closeCallback(e: Event): void {
-    this.sidebarRef.close(e);
-  }
 }
