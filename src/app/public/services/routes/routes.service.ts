@@ -77,7 +77,13 @@ export class RoutesService {
    * Get a route by its unique ID.
    */
   getRouteById(routeId: string) {
-    return [...this.jeepneyRoutes, ...this.busRoutes].find(route => route.routeId === routeId);
+    const allRoutes = [...this.jeepneyRoutes, ...this.busRoutes];
+    const route = allRoutes.find(route => route.routeId === routeId);
+
+    // Log route details for debugging
+    console.log('Route by ID:', routeId, route);
+
+    return route;
   }
   // ================================
   // Nearest Stop and Pathfinding Methods

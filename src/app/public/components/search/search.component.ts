@@ -10,6 +10,9 @@ import { FloatingWindowService } from '../../../floating-window.service';
 import { RoutesService } from '../../services/routes/routes.service';
 import { Router } from '@angular/router';
 import { GoogleMapsLoaderService } from '../../services/geocoding/google-maps-loader.service';
+import { AuthService } from '../../../auth/auth.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 declare var google: any;
 
@@ -47,7 +50,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   searchPerformed = false;
   selectedTransportType: string = 'All'; // Track selected transport type
 
-
   constructor(
     private mapService: MapService,
     private navigationService: NavigationService,
@@ -60,7 +62,9 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     public floatingWindowService: FloatingWindowService,
     private routesService: RoutesService,
     private router: Router,
-    private googleMapsLoader: GoogleMapsLoaderService // Add this line
+    private googleMapsLoader: GoogleMapsLoaderService,
+    private authService: AuthService, // Add this line
+    private http: HttpClient // Add this line
   ) { }
 
   /*------------------------------------------
@@ -152,36 +156,36 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.searchPerformed = true;
   }
 
-    fetchSuggestedRoutes() {
+  fetchSuggestedRoutes() {
     if (this.currentLocation && this.destination) {
       const key = JSON.stringify({ currentLocation: this.currentLocation, destination: this.destination });
       const cachedRoutes = localStorage.getItem(key);
-  
+
       if (cachedRoutes) {
         this.suggestedRoutes = JSON.parse(cachedRoutes);
       } else {
         // Get suggested routes
         const routes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
-  
+
         // Assign transport type based on `routes.json` category
         this.suggestedRoutes = routes.map((route: any) => ({
           ...route,
           type: this.getTransportType(route.routeId) // Assign transport type
         }));
-  
+
         localStorage.setItem(key, JSON.stringify(this.suggestedRoutes));
       }
-  
+
       // Filter routes based on selected transport type
       if (this.selectedTransportType !== 'All') {
         this.suggestedRoutes = this.suggestedRoutes.filter(route => route.type === this.selectedTransportType);
       }
-  
+
       // Display message if no routes are found
       if (this.suggestedRoutes.length === 0) {
         console.log("No suggested routes found. Please check your input.");
       }
-  
+
       // Calculate distance, duration, and fare for each route
       this.suggestedRoutes.forEach(route => {
         route.distanceInKm = this.fareService.calculateDistance(route);
@@ -197,15 +201,19 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getTransportType(routeId: string): string {
     const route = this.routesService.getRouteById(routeId);
-    if (!route) return 'Unknown';
-  
+    if (!route) {
+      console.error('Route not found:', routeId);
+      return 'Unknown';
+    }
+
+    console.log('Route found:', route);
+
     if (this.routesService.jeepneyRoutes.includes(route)) return 'Jeepney';
     if (this.routesService.busRoutes.includes(route)) return 'Bus';
     if (this.routesService.taxiRoutes.includes(route)) return 'Taxi';
-  
+
     return 'Unknown';
   }
-
 
   // Handle transport type selection
   selectTransportType(type: string) {
@@ -253,29 +261,64 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   selectRoute(route: any): void {
+    console.log('Route selected:', route); // Debugging line
     this.selectedRoute = route;
     this.route = route;
     this.showAllRoutes = false;
     this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
     this.navigationService.startRealTimeTracking(); // Start real-time tracking
 
-    // Save navigation history
-    console.log('Saving navigation history with the following details:');
-    console.log('Origin:', this.locationService.currentLocationAddress);
-    console.log('Destination:', this.locationService.destinationAddress);
-    console.log('Route Details:', { path: route.path, color: route.color });
+    // Save route usage
+    this.saveRouteUsage(route);
 
-    this.suggestedRoutesService.saveNavigationHistory(
-      this.locationService.currentLocationAddress,
-      this.locationService.destinationAddress,
-      { path: route.path, color: route.color },
-      true
-    ).subscribe(response => {
-      console.log('Navigation history saved:', response);
-    }, error => {
-      console.error('Error saving navigation history:', error);
-    });
+    // Check if the user is authenticated before saving navigation history
+    if (this.authService.isAuthenticated) {
+      // Save navigation history
+      console.log('Saving navigation history with the following details:');
+      console.log('Origin:', this.locationService.currentLocationAddress);
+      console.log('Destination:', this.locationService.destinationAddress);
+      console.log('Route Details:', { path: route.path, color: route.color });
+
+      this.suggestedRoutesService.saveNavigationHistory(
+        this.locationService.currentLocationAddress,
+        this.locationService.destinationAddress,
+        { path: route.path, color: route.color },
+        true
+      ).subscribe(response => {
+        console.log('Navigation history saved:', response);
+      }, error => {
+        console.error('Error saving navigation history:', error);
+      });
+    } else {
+      console.log('User is not authenticated. Navigation history will not be saved.');
+    }
   }
+
+  private saveRouteUsage(route: any): void {
+    console.log('Route object in saveRouteUsage:', route); // Debugging line
+    const routeUsage = {
+        user_id: this.authService.isAuthenticated ? this.authService.getCurrentUser()?.id : null,
+        route_id: route.routeId,
+        route_name: route.routeName || null,
+        description: route.description || null,
+        color: route.color,
+        origin: this.locationService.currentLocationAddress,
+        destination: this.locationService.destinationAddress,
+        route_type: this.getTransportType(route.routeId)
+    };
+
+    // Log route usage details for debugging
+    console.log('Route Usage:', routeUsage);
+
+    this.http.post(environment.routeUsagesUrl, routeUsage).subscribe(
+        response => {
+            console.log('Route usage saved:', response);
+        },
+        error => {
+            console.error('Error saving route usage:', error);
+        }
+    );
+}
 
   stopRealTimeTracking(): void {
     if (this.trackingInterval) {

@@ -1,9 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { SidebarModule } from 'primeng/sidebar';
+import { RippleModule } from 'primeng/ripple';
+import { AvatarModule } from 'primeng/avatar';
+import { StyleClassModule } from 'primeng/styleclass';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { LayoutComponent } from './layout/layout.component';
@@ -11,7 +15,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FaresManagementComponent } from './components/fares-management/fares-management.component';
 import { LoginComponent } from './components/login/login.component';
 import { RoutesManagementComponent } from './components/routes-management/routes-management.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -19,16 +23,20 @@ import { ReactiveFormsModule } from '@angular/forms';
     DashboardComponent,
     FaresManagementComponent,
     LoginComponent,
-    RoutesManagementComponent
-
+    RoutesManagementComponent,
+    SidebarComponent
   ],
   imports: [
     CommonModule,
     AdminRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     ButtonModule,
     InputTextModule,
-    ReactiveFormsModule
+    SidebarModule,
+    RippleModule,
+    AvatarModule,
+    StyleClassModule
   ]
 })
 export class AdminModule { }

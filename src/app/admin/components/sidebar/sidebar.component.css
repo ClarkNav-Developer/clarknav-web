@@ -1,0 +1,54 @@
+
+body {
+    font-family: var(--font-family);
+    font-weight: normal;
+    background: var(--surface-ground);
+    color: var(--text-color);
+    padding: 1rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* .card {
+    background: var(--surface-card);
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+} */
+
+.sidenav-logo{
+    height: 50px;
+}
+
+.sidenav-header{
+    display: flex;
+    flex-direction: column;
+}
+
+.sidenav-text{
+    text-transform: uppercase;
+    font-family: "Lemon/Milk light", sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    color: black;
+    margin: -6px 0;
+}
+
+.sidenav-subtext{
+    text-transform: uppercase;
+    font-family: "Poppins", sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 8px;
+    letter-spacing: 3px;
+}
+
+.sidebutton {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: 1000;
+}
+

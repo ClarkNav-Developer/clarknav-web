@@ -145,25 +145,6 @@ export class RouteComponent implements OnInit, OnDestroy {
     if (floatingWindow) {
       this.renderer.addClass(floatingWindow, 'bottom-position');
     }
-
-    // Save navigation history if both currentLocation and destination are set and saveHistory is true
-    if (saveHistory && this.locationService.currentLocationAddress && this.locationService.destinationAddress &&
-        this.locationService.currentLocationAddress !== 'Current location not set' &&
-        this.locationService.destinationAddress !== 'Destination not set') {
-      this.suggestedRoutesService.saveNavigationHistory(
-        this.locationService.currentLocationAddress,
-        this.locationService.destinationAddress,
-        { path: mainWaypoints, color: routeColor },
-        true
-      ).subscribe({
-        next: (response) => {
-          console.log('Navigation history saved:', response);
-        },
-        error: (error) => {
-          console.error('Error saving navigation history:', error);
-        }
-      });
-    }
   }
 
   renderRoute1() {

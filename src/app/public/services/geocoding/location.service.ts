@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { GeocodingService } from './geocoding.service';
-import { LocationSearchService } from './locationsearch.service';
 import { GoogleMapsLoaderService } from './google-maps-loader.service';
 import { MapService } from '../map/map.service';
+import { environment } from '../../../../environments/environment';
+import { Observable } from 'rxjs';
 
 declare var google: any;
 
@@ -17,20 +19,18 @@ export class LocationService {
 
   constructor(
     private geocodingService: GeocodingService,
-    private locationSearchService: LocationSearchService,
-    private googleMapsLoader: GoogleMapsLoaderService, // Add this line
-    private mapService: MapService // Add this line
+    private http: HttpClient,
+    private googleMapsLoader: GoogleMapsLoaderService,
+    private mapService: MapService
   ) {}
 
   reverseLocation(): void {
     if (this.currentLocation && this.destination) {
-      // Reverse the currentLocation and destination
       [this.currentLocation, this.destination] = [
         this.destination,
         this.currentLocation,
       ];
 
-      // Reverse the input values in the search boxes
       const currentLocationInput = document.getElementById(
         'current-location-box'
       ) as HTMLInputElement;
@@ -44,14 +44,12 @@ export class LocationService {
         destinationInput.value = tempValue;
       }
 
-      // Resolve addresses and update the map
       this.resolveAddresses();
     } else {
       alert('Both current location and destination must be set to reverse.');
     }
   }
 
-  // In useMyLocation, ensure Google Maps API is loaded before proceeding
   useMyLocation(): void {
     this.googleMapsLoader
       .load()
@@ -86,7 +84,6 @@ export class LocationService {
               }
               this.resolveAddresses();
   
-              // Add marker and center map on current location
               this.mapService.addMarker(this.currentLocation, 'My Location', true);
               this.mapService.map.panTo(this.currentLocation);
             },
@@ -145,19 +142,22 @@ export class LocationService {
       console.log('Saving location search with the following details:');
       console.log('Current Location Address:', this.currentLocationAddress);
       console.log('Destination Address:', this.destinationAddress);
-      this.locationSearchService
-        .createLocationSearch(
-          this.currentLocationAddress,
-          this.destinationAddress
-        )
-        .subscribe(
-          (response) => {
-            console.log('Location search saved:', response);
-          },
-          (error) => {
-            console.error('Error saving location search:', error);
-          }
-        );
+      this.createLocationSearch(
+        this.currentLocationAddress,
+        this.destinationAddress
+      ).subscribe(
+        (response) => {
+          console.log('Location search saved:', response);
+        },
+        (error) => {
+          console.error('Error saving location search:', error);
+        }
+      );
     }
+  }
+
+  private createLocationSearch(origin: string, destination: string): Observable<any> {
+    const body = { origin, destination };
+    return this.http.post(environment.locationSearchesUrl, body);
   }
 }
