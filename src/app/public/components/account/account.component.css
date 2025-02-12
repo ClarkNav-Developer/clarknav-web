@@ -1,9 +1,8 @@
-@media screen and (min-width: 768px) {
+@media screen and (min-width:768px) {
   .mobile-view {
-    display: none;
+    display: none
   }
 
-  /* Floating Window Style */
   .floating-window {
     position: fixed;
     top: 50%;
@@ -13,10 +12,10 @@
     width: 600px;
     overflow: hidden;
     padding: 20px;
-    background: white;
-    box-shadow: 0px 2px 4px 3px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    box-shadow: 0 2px 4px 3px rgba(0, 0, 0, .1);
     border-radius: 20px;
-    z-index: 1002;
+    z-index: 1002
   }
 
   .floating-overlay {
@@ -25,70 +24,65 @@
     left: 0;
     width: 100%;
     height: 100%;
-    /* background: rgba(0, 0, 0, 0.5); */
-    z-index: 1001;
+    z-index: 1001
   }
 
-  /* Close Button Style */
   .close-btn {
     position: absolute;
     top: 20px;
     right: 20px;
     background: red;
-    color: white;
+    color: #fff;
     border: none;
     border-radius: 5px;
     padding: 5px 10px;
-    cursor: pointer;
+    cursor: pointer
   }
 
   .close-btn:hover {
-    background: darkred;
+    background: #8b0000
   }
 
-  /* Account Style */
   .content {
     display: flex;
-    height: 100%;
-    /* flex-direction: column; */
+    height: 100%
   }
 
   .menu-list-container {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    width: 30%;
+    width: 30%
   }
 
   .menu-list a {
     text-decoration: none;
-    color: black;
+    color: #000
   }
 
   .divider {
     border: 1px solid #e0e0e0;
-    margin: 0 20px;
+    margin: 0 20px
   }
 
   .menu-info-container {
-    width: 70%;
+    width: 70%
   }
 
-  /* Dark Mode Toggle Switch Style */
   .toggle-switch {
     position: relative;
     display: inline-block;
-    width: 40px; /* Adjusted width */
-    height: 20px; /* Adjusted height */
-    margin-left: 20px; /* Space between span and toggle */
+    width: 40px;
+    height: 20px;
+    margin-left: 20px
   }
-  
+
   .toggle-switch input {
     opacity: 0;
     width: 0;
-    height: 0;
+    height: 0
   }
-  
+
   .toggle-switch .slider {
     position: absolute;
     cursor: pointer;
@@ -97,68 +91,68 @@
     right: 0;
     bottom: 0;
     background-color: #ccc;
-    transition: 0.4s;
-    border-radius: 20px; /* Adjusted border-radius */
+    transition: .4s;
+    border-radius: 20px
   }
-  
+
   .toggle-switch .slider:before {
     position: absolute;
     content: "";
-    height: 14px; /* Adjusted height */
-    width: 14px; /* Adjusted width */
+    height: 14px;
+    width: 14px;
     left: 3px;
     bottom: 3px;
-    background-color: white;
-    transition: 0.4s;
-    border-radius: 50%;
-  }
-  
-  .toggle-switch input:checked + .slider {
-    background-color: darkblue;
-  }
-  
-  .toggle-switch input:checked + .slider:before {
-    transform: translateX(20px); /* Adjusted translateX */
-  }
-  
-  /* Account Settings Style */
-  .account-info-container .header-info {
-    margin-bottom: 20px;
+    background-color: #fff;
+    transition: .4s;
+    border-radius: 50%
   }
 
-  .account-info-container .content-info p{
+  .toggle-switch input:checked+.slider {
+    background-color: #00008b
+  }
+
+  .toggle-switch input:checked+.slider:before {
+    transform: translateX(20px)
+  }
+
+  .account-history-container .header-info,
+  .account-info-container .header-info,
+  .faqs-container .header-info,
+  .feedback-container .header-info,
+  .report-bugs-container .header-info {
+    margin-bottom: 20px
+  }
+
+  .account-info-container .content-info p,
+  .feedback-container .content-info p,
+  .report-bugs-container .content-info p {
     margin: 10px 0 0 5px;
-    font-size: 0.8em;
+    font-size: .8em
   }
 
-  .account-info-container .content-info input{
+  .account-info-container .content-info input {
     padding: 10px;
     width: 100%;
     border: none;
     border-radius: 15px;
     background-color: #f3f3f3;
     margin: 5px 0;
-    color: black;
+    color: #000
   }
 
-  .account-info-container .content-info button{
-    background-color: rgb(207, 0, 0);
+  .account-info-container .content-info button {
+    background-color: #cf0000;
     border: none;
     margin: 15px 0 0 5px;
     padding: 5px 10px;
-    color: white;
+    color: #fff;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    border-radius: 5px;
+    transition: background-color .3s;
+    border-radius: 5px
   }
 
-  .account-info-container .content-info button:hover{
-    background-color: rgb(172, 0, 0);
-  }
-
-  /* History Style */
-  .account-history-container .header-info {
-    margin-bottom: 20px;
+  .account-info-container .content-info button:hover {
+    background-color: #ac0000
   }
 
   .account-history-container .content-info {
@@ -167,18 +161,18 @@
     gap: 10px;
     overflow-y: auto;
     height: 55vh;
-    padding: 0 0 20px 0;
-    scrollbar-width: none;
+    padding: 0 0 20px;
+    scrollbar-width: none
   }
 
   .account-history-container .content-info::-webkit-scrollbar {
-    display: none;
+    display: none
   }
 
   .account-history-container .history-item-container {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 100%
   }
 
   .account-history-container .history-item {
@@ -189,174 +183,109 @@
     padding: 10px;
     border: 1px solid #e0e0e0;
     border-radius: 10px;
-    box-shadow: 0px 1px 4px 1px rgba(0, 0, 0, 0.1);
-    margin: 5px 0;
+    box-shadow: 0 1px 4px 1px rgba(0, 0, 0, .1);
+    margin: 5px 0
   }
 
   .account-history-container .history-item p {
-    font-size: 0.9em;
+    font-size: .9em
   }
 
-  .account-history-container .history-item button{
-    background-color: rgb(0, 176, 207);
+  .account-history-container .history-item button {
+    background-color: #00b0cf;
     border: none;
     padding: 5px 10px;
-    color: white;
+    color: #fff;
     cursor: pointer;
     border-radius: 5px;
-    width: 100px;
+    width: 100px
   }
 
-  .account-history-container .history-item button:hover{
-    background-color: rgb(0, 146, 172);
+  .account-history-container .history-item button:hover {
+    background-color: #0092ac
   }
 
-
-  /* Report Bugs Style */
-  .report-bugs-container .header-info {
-    margin-bottom: 20px;
-  }
-
+  .feedback-container .content-info label,
   .report-bugs-container .content-info label {
-    font-size: 0.8em;
+    font-size: .8em
   }
 
-  .report-bugs-container .content-info p {
-    margin: 10px 0 0 5px;
-    font-size: 0.8em;
-  }
-
+  .feedback-container .feedback-form,
   .report-bugs-container .bugs-form {
     padding-bottom: 10px;
     height: 55vh;
     overflow-y: auto;
-    scrollbar-width: none;
-    /* For Firefox */
+    scrollbar-width: none
   }
 
   .report-bugs-container .bugs-form::-webkit-scrollbar {
-    display: none;
-    /* For Chrome, Safari, and Opera */
-  }
-
-  .report-bugs-container .content-info input,
-  .report-bugs-container .content-info textarea,
-  .report-bugs-container .content-info select {
-    padding: 10px;
-    width: 100%;
-    border: none;
-    border-radius: 15px;
-    background-color: #f3f3f3;
-    margin: 5px 0;
-  }
-
-  .report-bugs-container .content-info textarea {
-    resize: vertical;
-  }
-
-  .report-bugs-container .content-info button {
-    background-color: rgb(0, 123, 255);
-    border: none;
-    margin: 15px 0 0 5px;
-    padding: 5px 10px;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    border-radius: 5px;
-  }
-
-  .report-bugs-container .content-info button:hover {
-    background-color: rgb(0, 102, 204);
-  }
-
-  /* Feedback Style */
-  .feedback-container .header-info {
-    margin-bottom: 20px;
-  }
-
-  .feedback-container .feedback-form {
-    padding-bottom: 10px;
-    height: 55vh;
-    overflow-y: auto;
-    scrollbar-width: none;
-    /* For Firefox */
-  }
-
-  .feedback-container .feedback-form::-webkit-scrollbar {
-    display: none;
-    /* For Chrome, Safari, and Opera */
-  }
-
-  .feedback-container .content-info label {
-    font-size: 0.8em;
-  }
-
-  .feedback-container .content-info p {
-    margin: 10px 0 0 5px;
-    font-size: 0.8em;
+    display: none
   }
 
   .feedback-container .content-info input,
+  .feedback-container .content-info select,
   .feedback-container .content-info textarea,
-  .feedback-container .content-info select {
+  .report-bugs-container .content-info input,
+  .report-bugs-container .content-info select,
+  .report-bugs-container .content-info textarea {
     padding: 10px;
     width: 100%;
     border: none;
     border-radius: 15px;
     background-color: #f3f3f3;
-    margin: 5px 0;
+    margin: 5px 0
   }
 
-  .feedback-container .content-info textarea {
-    resize: vertical;
+  .feedback-container .content-info textarea,
+  .report-bugs-container .content-info textarea {
+    resize: vertical
   }
 
-  .feedback-container .content-info button {
-    background-color: rgb(0, 123, 255);
+  .feedback-container .content-info button,
+  .report-bugs-container .content-info button {
+    background-color: #007bff;
     border: none;
     margin: 15px 0 0 5px;
     padding: 5px 10px;
-    color: white;
+    color: #fff;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    border-radius: 5px;
+    transition: background-color .3s;
+    border-radius: 5px
   }
 
-  .feedback-container .content-info button:hover {
-    background-color: rgb(0, 102, 204);
+  .feedback-container .content-info button:hover,
+  .report-bugs-container .content-info button:hover {
+    background-color: #06c
   }
 
-  /* FAQs Style */
-  .faqs-container  .header-info {
-    margin-bottom: 20px;
+  .feedback-container .feedback-form::-webkit-scrollbar {
+    display: none
   }
-  
+
   .faqs-container .content-info {
     padding-bottom: 20px;
     height: 52vh;
     overflow-y: auto;
-    scrollbar-width: none;
-    /* For Firefox */
+    scrollbar-width: none
   }
 
   .faqs-container .content-info::-webkit-scrollbar {
-    display: none;
-    /* For Chrome, Safari, and Opera */
+    display: none
   }
 
-  .faqs-container .content-info  h5 {
-    margin: 5px 0;
+  .faqs-container .content-info h5 {
+    margin: 5px 0
   }
 
-  .faqs-container .content-info p{
+  .faqs-container .content-info p {
     margin: 5px 0 0 5px;
-    font-size: 0.8em;
+    font-size: .8em
   }
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width:767px) {
   .desktop-view {
-    display: none;
+    display: none
   }
 
   .floating-window {
@@ -368,10 +297,10 @@
     max-height: 70vh;
     overflow: hidden;
     padding: 20px 40px;
-    background: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
     border-radius: 20px;
-    z-index: 1000;
+    z-index: 1000
   }
 
   .floating-overlay {
@@ -380,69 +309,68 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+    background: rgba(0, 0, 0, .5);
+    z-index: 999
+  }
+
+  .back-btn-menu-mobile,
+  .close-btn {
+    top: 20px;
+    position: absolute;
+    cursor: pointer
   }
 
   .close-btn {
-    position: absolute;
-    top: 20px;
     right: 20px;
     background: red;
-    color: white;
+    color: #fff;
     border: none;
     border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
+    padding: 5px 10px
   }
 
-  .back-btn-menu-mobile{
+  .back-btn-menu-mobile {
     border: none;
     background-color: rgba(0, 0, 0, 0);
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    cursor: pointer;
+    left: 20px
   }
 
-  .back-btn-menu-mobile:hover{
-    color: darkred;
+  .back-btn-menu-mobile:hover {
+    color: #8b0000
   }
 
   .content-mobile {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    /* Space between items */
+    gap: 10px
   }
 
   .menu-list-container-mobile {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    padding: 30px 0 10px;
+    padding: 30px 0 10px
   }
 
   .menu-list-mobile a {
     text-decoration: none;
-    color: black;
+    color: #000
   }
 
-  /* Dark Mode Toggle Switch Style */
   .toggle-switch {
     position: relative;
     display: inline-block;
-    width: 40px; /* Adjusted width */
-    height: 20px; /* Adjusted height */
-    margin-left: 20px; /* Space between span and toggle */
+    width: 40px;
+    height: 20px;
+    margin-left: 20px
   }
-  
+
   .toggle-switch input {
     opacity: 0;
     width: 0;
-    height: 0;
+    height: 0
   }
-  
+
   .toggle-switch .slider {
     position: absolute;
     cursor: pointer;
@@ -451,80 +379,75 @@
     right: 0;
     bottom: 0;
     background-color: #ccc;
-    transition: 0.4s;
-    border-radius: 20px; /* Adjusted border-radius */
+    transition: .4s;
+    border-radius: 20px
   }
-  
+
   .toggle-switch .slider:before {
     position: absolute;
     content: "";
-    height: 14px; /* Adjusted height */
-    width: 14px; /* Adjusted width */
+    height: 14px;
+    width: 14px;
     left: 3px;
     bottom: 3px;
-    background-color: white;
-    transition: 0.4s;
-    border-radius: 50%;
-  }
-  
-  .toggle-switch input:checked + .slider {
-    background-color: darkblue;
-  }
-  
-  .toggle-switch input:checked + .slider:before {
-    transform: translateX(20px); /* Adjusted translateX */
+    background-color: #fff;
+    transition: .4s;
+    border-radius: 50%
   }
 
-   /* Account Settings Style for Mobile */
-   .account-info-container-mobile {
-    padding-top: 30px;
+  .toggle-switch input:checked+.slider {
+    background-color: #00008b
   }
 
-   .account-info-container-mobile .header-info {
-    margin-bottom: 20px;
+  .toggle-switch input:checked+.slider:before {
+    transform: translateX(20px)
   }
 
-  .account-info-container-mobile .content-info-mobile p{
+  .account-history-container-mobile,
+  .account-info-container-mobile,
+  .faqs-container-mobile,
+  .feedback-container-mobile,
+  .report-bugs-container-mobile {
+    padding-top: 30px
+  }
+
+  .account-history-container-mobile .header-info,
+  .account-info-container-mobile .header-info,
+  .faqs-container-mobile .header-info,
+  .feedback-container-mobile .header-info,
+  .report-bugs-container-mobile .header-info {
+    margin-bottom: 20px
+  }
+
+  .account-info-container-mobile .content-info-mobile p,
+  .faqs-container-mobile .content-info p {
     margin: 5px 0 0 5px;
-    font-size: 0.8em;
+    font-size: .8em
   }
 
-  .account-info-container-mobile .content-info-mobile input{
+  .account-info-container-mobile .content-info-mobile input {
     padding: 10px;
     width: 100%;
     border: none;
     border-radius: 15px;
     background-color: #f3f3f3;
     margin: 5px 0;
-    color: black;
+    color: #000
   }
 
-  .account-info-container-mobile .content-info-mobile button{
-    background-color: rgb(207, 0, 0);
+  .account-info-container-mobile .content-info-mobile button {
+    background-color: #cf0000;
     border: none;
     margin: 15px 0 0 5px;
     padding: 5px 10px;
-    color: white;
+    color: #fff;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    border-radius: 5px;
+    transition: background-color .3s;
+    border-radius: 5px
   }
 
-  .account-info-container-mobile .content-info-mobile button:hover{
-    background-color: rgb(172, 0, 0);
-  }
-
-  /* History Style for Mobile */
-  .account-history-container-mobile {
-    padding-top: 30px;
-  }
-
-   .account-history-container-mobile .header-info {
-    margin-bottom: 20px;
-  }
-
-  .account-history-container-mobile .header-info {
-    margin-bottom: 20px;
+  .account-info-container-mobile .content-info-mobile button:hover {
+    background-color: #ac0000
   }
 
   .account-history-container-mobile .info {
@@ -533,18 +456,18 @@
     gap: 10px;
     overflow-y: auto;
     max-height: 57vh;
-    padding: 0 0 10px 0;
-    scrollbar-width: none;
+    padding: 0 0 10px;
+    scrollbar-width: none
   }
 
   .account-history-container-mobile .info::-webkit-scrollbar {
-    display: none;
+    display: none
   }
 
   .account-history-container-mobile .history-item-container {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 100%
   }
 
   .account-history-container-mobile .history-item {
@@ -555,179 +478,103 @@
     padding: 10px;
     border: 1px solid #e0e0e0;
     border-radius: 10px;
-    box-shadow: 0px 1px 4px 1px rgba(0, 0, 0, 0.1);
-    margin: 5px 0;
+    box-shadow: 0 1px 4px 1px rgba(0, 0, 0, .1);
+    margin: 5px 0
   }
 
   .account-history-container-mobile .history-item p {
-    font-size: 0.9em;
+    font-size: .9em
   }
 
-  .account-history-container-mobile .history-item button{
-    background-color: rgb(0, 176, 207);
+  .account-history-container-mobile .history-item button {
+    background-color: #00b0cf;
     border: none;
     padding: 5px 10px;
-    color: white;
+    color: #fff;
     cursor: pointer;
     border-radius: 5px;
-    width: 100px;
+    width: 100px
   }
 
-  .account-history-container-mobile .history-item button:hover{
-    background-color: rgb(0, 146, 172);
+  .account-history-container-mobile .history-item button:hover {
+    background-color: #0092ac
   }
 
-  /* Report Bugs Style for Mobile */
-  .report-bugs-container-mobile {
-    padding-top: 30px;
-  }
-
-  .report-bugs-container-mobile .header-info {
-    margin-bottom: 20px;
-  }
-
+  .feedback-container-mobile .content-info label,
   .report-bugs-container-mobile .content-info label {
-    font-size: 0.8em;
+    font-size: .8em
   }
 
+  .feedback-container-mobile .content-info p,
   .report-bugs-container-mobile .content-info p {
     margin: 10px 0 0 5px;
-    font-size: 0.8em;
+    font-size: .8em
   }
 
+  .feedback-container-mobile .feedback-form,
   .report-bugs-container-mobile .bugs-form {
     padding-bottom: 10px;
     height: 55vh;
     overflow-y: auto;
-    scrollbar-width: none;
-    /* For Firefox */
+    scrollbar-width: none
   }
 
   .report-bugs-container-mobile .bugs-form::-webkit-scrollbar {
-    display: none;
-    /* For Chrome, Safari, and Opera */
-  }
-
-  .report-bugs-container-mobile .content-info input,
-  .report-bugs-container-mobile .content-info textarea,
-  .report-bugs-container-mobile .content-info select {
-    padding: 10px;
-    width: 100%;
-    border: none;
-    border-radius: 15px;
-    background-color: #f3f3f3;
-    margin: 5px 0;
-  }
-
-  .report-bugs-container-mobile .content-info textarea {
-    resize: vertical;
-  }
-
-  .report-bugs-container-mobile .content-info button {
-    background-color: rgb(0, 123, 255);
-    border: none;
-    margin: 15px 0 0 5px;
-    padding: 5px 10px;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    border-radius: 5px;
-  }
-
-  .report-bugs-container-mobile .content-info button:hover {
-    background-color: rgb(0, 102, 204);
-  }
-
-  /* Feedback Style for Mobile */
-  .feedback-container-mobile {
-    padding-top: 30px;
-  }
-
-  .feedback-container-mobile .header-info {
-    margin-bottom: 20px;
-  }
-
-  .feedback-container-mobile .feedback-form {
-    padding-bottom: 10px;
-    height: 55vh;
-    overflow-y: auto;
-    scrollbar-width: none;
-    /* For Firefox */
-  }
-
-  .feedback-container-mobile .feedback-form::-webkit-scrollbar {
-    display: none;
-    /* For Chrome, Safari, and Opera */
-  }
-
-  .feedback-container-mobile .content-info label {
-    font-size: 0.8em;
-  }
-
-  .feedback-container-mobile .content-info p {
-    margin: 10px 0 0 5px;
-    font-size: 0.8em;
+    display: none
   }
 
   .feedback-container-mobile .content-info input,
+  .feedback-container-mobile .content-info select,
   .feedback-container-mobile .content-info textarea,
-  .feedback-container-mobile .content-info select {
+  .report-bugs-container-mobile .content-info input,
+  .report-bugs-container-mobile .content-info select,
+  .report-bugs-container-mobile .content-info textarea {
     padding: 10px;
     width: 100%;
     border: none;
     border-radius: 15px;
     background-color: #f3f3f3;
-    margin: 5px 0;
+    margin: 5px 0
   }
 
-  .feedback-container-mobile .content-info textarea {
-    resize: vertical;
+  .feedback-container-mobile .content-info textarea,
+  .report-bugs-container-mobile .content-info textarea {
+    resize: vertical
   }
 
-  .feedback-container-mobile .content-info button {
-    background-color: rgb(0, 123, 255);
+  .feedback-container-mobile .content-info button,
+  .report-bugs-container-mobile .content-info button {
+    background-color: #007bff;
     border: none;
     margin: 15px 0 0 5px;
     padding: 5px 10px;
-    color: white;
+    color: #fff;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    border-radius: 5px;
+    transition: background-color .3s;
+    border-radius: 5px
   }
 
-  .feedback-container-mobile .content-info button:hover {
-    background-color: rgb(0, 102, 204);
+  .feedback-container-mobile .content-info button:hover,
+  .report-bugs-container-mobile .content-info button:hover {
+    background-color: #06c
   }
 
-
-  /* FAQs Style for Mobile */
-  .faqs-container-mobile {
-    padding-top: 30px;
+  .feedback-container-mobile .feedback-form::-webkit-scrollbar {
+    display: none
   }
 
-   .faqs-container-mobile .header-info {
-    margin-bottom: 20px;
-  }
-  
   .faqs-container-mobile .content-info {
     padding-bottom: 20px;
     height: 52vh;
     overflow-y: auto;
-    scrollbar-width: none;
-    /* For Firefox */
+    scrollbar-width: none
   }
 
   .faqs-container-mobile .content-info::-webkit-scrollbar {
-    display: none;
-    /* For Chrome, Safari, and Opera */
+    display: none
   }
 
-  .faqs-container-mobile .content-info  h5 {
-    margin: 5px 0;
-  }
-
-  .faqs-container-mobile .content-info p{
-    margin: 5px 0 0 5px;
-    font-size: 0.8em;
+  .faqs-container-mobile .content-info h5 {
+    margin: 5px 0
   }
 }
