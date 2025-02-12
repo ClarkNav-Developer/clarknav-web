@@ -1,0 +1,94 @@
+.body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    overflow-y: auto;
+    height: 100vh;
+    padding: 20px;
+    transition: all 0.5s;
+}
+
+.chart-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px 0;
+}
+
+.chart-container h2{
+    padding-bottom: 20px;
+}
+
+.chart-container .container {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+#popularLocationChart {
+    display: block;
+    box-sizing: border-box;
+    height: 250px;
+    width: 700px;
+}
+
+#mostSearchLocationChart {
+    display: block;
+    box-sizing: border-box;
+    height: 250px;
+    width: 700px;
+}
+
+.table-container {
+    width: 100%;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px 0;
+}
+
+.route-management table, .account-management table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+}
+
+.route-management th, .route-management td, .account-management th, .account-management td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+.route-management th, .account-management th {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.route-management tr:nth-child(even), .account-management tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.route-management tr:hover, .account-management tr:hover {
+    background-color: #f1f1f1;
+}
+
+.account-management button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.account-management button:hover {
+    background-color: #0056b3;
+}
