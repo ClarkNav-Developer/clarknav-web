@@ -4,11 +4,13 @@ import { LayoutComponent } from './layout/layout.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FaresManagementComponent } from './components/fares-management/fares-management.component';
 import { RoutesManagementComponent } from './components/routes-management/routes-management.component';
+import { adminGuard } from '../auth/admin.guard'; // Import adminGuard
 
 const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
+    canActivate: [adminGuard], // Protect admin routes with adminGuard
     children: [
       { path: 'admin-dashboard', component: DashboardComponent },
       { path: 'fares-management', component: FaresManagementComponent },
