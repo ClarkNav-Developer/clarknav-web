@@ -81,6 +81,12 @@
     font-size: 14px;
   }
 
+  .no-planner a{
+    /* text-decoration: none; */
+    color: #0004ff;
+    text-decoration: underline;
+  }
+
   .list-planner-container {
     max-height: 400px; /* Set a maximum height */
     overflow-y: auto; /* Enable vertical scrolling */
@@ -390,6 +396,11 @@
     text-align: center;
     color: #777;
     font-size: 14px;
+  }
+
+  .no-planner-mobile a{
+    color: #0004ff;
+    text-decoration: underline;
   }
 
   .routes-container-mobile {
