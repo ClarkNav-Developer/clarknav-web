@@ -70,7 +70,7 @@ body {
     bottom: 1rem;
     width: 605px; 
     height: 444px; 
-    background-image: url('/public/bg-nav-300.png');
+    background-image: url('/public/bg-nav-300.webp');
     background-repeat: no-repeat;
     background-size: cover;
     opacity: 0.08; 
