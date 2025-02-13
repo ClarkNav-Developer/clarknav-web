@@ -348,6 +348,20 @@
         background-color: #dff0d8;
         border-color: #4cae4c
     }
+
+    .notice-box {
+        border: 1px solid #ffcc00;
+        background-color: #fff8e1;
+        padding: 10px;
+        margin: 15px;
+        text-align: center;
+    }
+
+    .notice-box p {
+        color: #8a6d3b;
+        font-size: 0.8em;
+        font-weight: 700;
+    }
 }
 
 @media screen and (max-width:767px) {
@@ -490,6 +504,26 @@
         cursor: pointer;
         width: 75%;
         box-sizing: border-box
+    }
+
+    .notice-container-mobile {
+        display: flex;
+        justify-content: center;
+    }
+
+    .notice-box-mobile {
+        border: 1px solid #ffcc00;
+        background-color: #fff8e1;
+        padding: 10px;
+        margin: 5px;
+        text-align: center;
+        width: 75%;
+    }
+
+    .notice-box-mobile p {
+        color: #8a6d3b;
+        font-size: 0.7em;
+        font-weight: 700;
     }
 
     .buttons-mobile button:hover,

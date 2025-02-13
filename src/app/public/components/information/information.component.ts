@@ -1,10 +1,11 @@
+// filepath: /d:/Documents/School Files/clarknav-web/src/app/public/components/information/information.component.ts
 import { Component } from '@angular/core';
 import { FloatingWindowService } from '../../../floating-window.service';
 
 @Component({
   selector: 'app-information',
   templateUrl: './information.component.html',
-  styleUrl: './information.component.css'
+  styleUrls: ['./information.component.css']
 })
 export class InformationComponent {
   
