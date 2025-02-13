@@ -1,3 +1,11 @@
+.form-group label,
+.form-group-remember-token label {
+    color: #666;
+    display: block;
+    font-weight: 500;
+    font-size: 14px
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -33,6 +41,12 @@
     transform: scale(.9)
 }
 
+.form-group,
+.form-group-remember-token {
+    margin-bottom: 15px;
+    text-align: left
+}
+
 .logo-placeholder {
     align-items: center;
     justify-content: center
@@ -64,33 +78,18 @@
     background: #f98100
 }
 
-.form-group {
-    margin-bottom: 15px;
-    text-align: left
-}
-
 .form-group label {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 5px;
-    display: block;
-    font-weight: 500
+    margin-bottom: 5px
 }
 
-.form-group-remember-token{
-    margin-bottom: 15px;
-    text-align: left;
+.form-group-remember-token {
     display: flex;
     align-items: center;
-    flex-direction: row;
+    flex-direction: row
 }
 
 .form-group-remember-token label {
-    font-size: 14px;
-    color: #666;
-    display: block;
-    font-weight: 500;
-    margin-left: 5px;
+    margin-left: 5px
 }
 
 .create-account-link,
@@ -155,49 +154,47 @@
     font-size: 24px
 }
 
-/* Desktop View */
-@media screen and (min-width: 768px) {
+@media screen and (min-width:768px) {
     .mobile-view {
-        display: none;
+        display: none
     }
 }
 
-/* Mobile View */
-@media screen and (max-width: 767px) {
+@media screen and (max-width:767px) {
     .desktop-view {
-        display: none;
+        display: none
     }
 
     .login-container {
         padding: 20px 40px;
         width: calc(100% - 40px);
         min-height: auto;
-        border-radius: 20px;
+        border-radius: 20px
     }
 
     .logo-placeholder .logo-image {
-        height: 6em;
+        height: 6em
     }
 
     .login-container h1 {
-        font-size: 18px;
+        font-size: 18px
     }
 
     .login-create-button {
         padding: 8px;
-        font-size: 14px;
+        font-size: 14px
     }
 
     .form-group input {
         padding: 10px;
-        font-size: 14px;
+        font-size: 14px
     }
 
     .password-eye input {
-        padding-right: 30px;
+        padding-right: 30px
     }
 
     .password-eye .material-icons {
-        font-size: 20px;
+        font-size: 20px
     }
 }
