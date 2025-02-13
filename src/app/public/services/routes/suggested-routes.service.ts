@@ -3,6 +3,7 @@ import { RoutesService } from './routes.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, throwError, catchError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { RouteUsage } from '../../../models/routeusage';
 
 @Injectable({
   providedIn: 'root'
@@ -65,6 +66,17 @@ export class SuggestedRoutesService {
       tap(response => console.log('Navigation history saved:', response)),
       catchError(error => {
         console.error('Error saving navigation history:', error);
+        return throwError(error);
+      })
+    );
+  }
+
+  storeRouteUsage(routeUsage: RouteUsage): Observable<RouteUsage> {
+    console.log('Storing route usage:', routeUsage); // Debugging log
+    return this.http.post<RouteUsage>(environment.routeUsagesUrl, routeUsage).pipe(
+      tap(response => console.log('Route usage saved:', response)),
+      catchError(error => {
+        console.error('Error saving route usage:', error);
         return throwError(error);
       })
     );

@@ -5,6 +5,7 @@ import { GoogleMapsLoaderService } from './google-maps-loader.service';
 import { MapService } from '../map/map.service';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
+import { LocationSearch } from '../../../models/locationsearch';
 
 declare var google: any;
 
@@ -16,7 +17,7 @@ export class LocationService {
   destination: google.maps.LatLngLiteral | null = null;
   currentLocationAddress = 'Loading...';
   destinationAddress = 'Loading...';
-  private locationSearchesUrl = environment.locationSearchesUrl;
+  public locationSearchesUrl = environment.locationSearchesUrl;
 
   constructor(
     private geocodingService: GeocodingService,
@@ -160,5 +161,9 @@ export class LocationService {
   private createLocationSearch(origin: string, destination: string): Observable<any> {
     const body = { origin, destination };
     return this.http.post(this.locationSearchesUrl, body);
+  }
+
+  getLocationSearches(): Observable<LocationSearch[]> {
+    return this.http.get<LocationSearch[]>(this.locationSearchesUrl);
   }
 }

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { RouteUsage } from '../../../models/routeusage';
 
 @Injectable({
   providedIn: 'root'
@@ -245,5 +247,9 @@ export class RoutesService {
       batches.push(waypoints.slice(i, i + 25));
     }
     return batches;
+  }
+
+  getRouteUsages(): Observable<RouteUsage[]> {
+    return this.http.get<RouteUsage[]>(environment.routeUsagesUrl);
   }
 }

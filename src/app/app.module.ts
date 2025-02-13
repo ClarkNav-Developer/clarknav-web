@@ -17,6 +17,8 @@ import { AnnouncementComponent } from './announcement/announcement.component';
 import { PublicModule } from './public/public.module';
 import { AdminModule } from './admin/admin.module';
 
+import { ToastrModule } from 'ngx-toastr';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,7 +35,8 @@ import { AdminModule } from './admin/admin.module';
     GoogleMapsModule,
     PublicModule,
     AdminModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ToastrModule.forRoot(), // ToastrModule added
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
   bootstrap: [AppComponent]

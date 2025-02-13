@@ -1,16 +1,21 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
+// Layout Components
 import { LayoutComponent } from './layout/layout.component';
+
+// Feature Components
 import { MapComponent } from './components/map/map.component';
-import { userGuard } from '../auth/user.guard';
+
+// Guards
+import { authGuard } from '../auth/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
-    canActivate: [userGuard], // Allow public routes for all users except admins
     children: [
-      { path: '', component: MapComponent },
+      { path: '', component: MapComponent }, // Set MapComponent as the default route
     ],
   },
 ];

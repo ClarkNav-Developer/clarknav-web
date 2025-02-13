@@ -11,6 +11,7 @@ import { RoutesService } from '../../services/routes/routes.service';
 import { Router } from '@angular/router';
 import { GoogleMapsLoaderService } from '../../services/geocoding/google-maps-loader.service';
 import { AuthService } from '../../../auth/auth.service';
+import { RouteUsage } from '../../../models/routeusage';
 
 declare var google: any;
 
@@ -258,15 +259,14 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showAllRoutes = false;
     this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
     this.navigationService.startRealTimeTracking(); // Start real-time tracking
-
-    // Check if the user is authenticated before saving navigation history
+  
+    // Save navigation history if the user is authenticated
     if (this.authService.isAuthenticated) {
-      // Save navigation history
       console.log('Saving navigation history with the following details:');
       console.log('Origin:', this.locationService.currentLocationAddress);
       console.log('Destination:', this.locationService.destinationAddress);
       console.log('Route Details:', { path: route.path, color: route.color });
-
+  
       this.suggestedRoutesService.saveNavigationHistory(
         this.locationService.currentLocationAddress,
         this.locationService.destinationAddress,
@@ -280,6 +280,29 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       console.log('User is not authenticated. Navigation history will not be saved.');
     }
+  
+    // Store route usage
+    const routeUsage: RouteUsage = {
+      created_at: new Date(),
+      route_type: route.type,
+      route_name: route.name,
+      route_id: route.routeId,
+      color: route.color,
+      origin: this.locationService.currentLocationAddress,
+      destination: this.locationService.destinationAddress
+    };
+  
+    console.log('Storing route usage with the following details:');
+    console.log('Route Usage:', routeUsage);
+  
+    this.suggestedRoutesService.storeRouteUsage(routeUsage).subscribe({
+      next: (response) => {
+        console.log('Route usage stored successfully:', response);
+      },
+      error: (error) => {
+        console.error('Error storing route usage:', error);
+      }
+    });
   }
 
   stopRealTimeTracking(): void {
