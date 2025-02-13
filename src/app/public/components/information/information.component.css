@@ -187,14 +187,20 @@
     align-items: center;
     z-index: 1000;
   }
-
+  
   .zoom-modal-content {
     max-width: 90%;
     max-height: 90%;
+    overflow: hidden; /* Ensure the content is clipped */
   }
-
+  
   .zoom-modal img {
     width: 100%;
     height: auto;
+    cursor: grab; /* Change cursor to indicate draggable */
+  }
+  
+  .zoom-modal img:active {
+    cursor: grabbing; /* Change cursor when dragging */
   }
 }
