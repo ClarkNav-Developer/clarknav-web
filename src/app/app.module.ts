@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { GoogleMapsModule } from '@angular/google-maps';
 
 import { AppComponent } from './app.component';
+import { HammerModule } from '@angular/platform-browser';
 
 import { PublicModule } from './public/public.module';
 import { AdminModule } from './admin/admin.module';
@@ -27,7 +28,8 @@ import { AdminModule } from './admin/admin.module';
     GoogleMapsModule,
     PublicModule,
     AdminModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HammerModule
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
   bootstrap: [AppComponent]
