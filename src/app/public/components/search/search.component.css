@@ -295,16 +295,17 @@
         font-weight: 400
     }
 
+    .location,
+    .notice-box p {
+        font-weight: 700
+    }
+
     .no-routes {
         padding: 20px;
         margin: 20px;
         text-align: center;
         color: #777;
         font-size: 14px
-    }
-
-    .location {
-        font-weight: 700
     }
 
     .duration {
@@ -350,17 +351,16 @@
     }
 
     .notice-box {
-        border: 1px solid #ffcc00;
+        border: 1px solid #fc0;
         background-color: #fff8e1;
         padding: 10px;
         margin: 15px;
-        text-align: center;
+        text-align: center
     }
 
     .notice-box p {
         color: #8a6d3b;
-        font-size: 0.8em;
-        font-weight: 700;
+        font-size: .8em
     }
 }
 
@@ -433,7 +433,7 @@
         align-items: center;
         gap: 8px;
         margin-bottom: 10px;
-        padding: 10px 0
+        padding: 5px 0
     }
 
     .mobile-logo img {
@@ -508,22 +508,23 @@
 
     .notice-container-mobile {
         display: flex;
-        justify-content: center;
+        justify-content: center
     }
 
     .notice-box-mobile {
-        border: 1px solid #ffcc00;
+        border: 1px solid #fc0;
         background-color: #fff8e1;
-        padding: 10px;
+        padding: 5px 10px;
         margin: 5px;
         text-align: center;
         width: 75%;
+        border-radius: 5px
     }
 
     .notice-box-mobile p {
         color: #8a6d3b;
-        font-size: 0.7em;
-        font-weight: 700;
+        font-size: .6em;
+        font-weight: 700
     }
 
     .buttons-mobile button:hover,
