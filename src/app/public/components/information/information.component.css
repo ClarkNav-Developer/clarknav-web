@@ -79,7 +79,7 @@
   }
 
   .header-mobile h2 {
-    margin-bottom: 10px;
+    margin-bottom: 10px
   }
 
   .content-mobile .tab-container {
@@ -100,7 +100,7 @@
     cursor: pointer;
     border: 1px solid #ccc;
     background-color: #f1f1f1;
-    font-size: 0.8em;
+    font-size: .8em
   }
 
   .content-mobile .tab.active {
@@ -116,8 +116,8 @@
     display: block
   }
 
-  .bus-stops,
   .bus-fares,
+  .bus-stops,
   .route-map,
   .schedule {
     display: flex;
@@ -136,6 +136,7 @@
     display: none
   }
 
+  .bus-fares img,
   .bus-stops img {
     width: 90%;
     border: none;
@@ -144,35 +145,28 @@
   }
 
   .bus-fares::-webkit-scrollbar {
-    display: none;
-  }
-
-  .bus-fares img {
-    width: 90%;
-    border: none;
-    margin: 0 auto;
-    border-radius: 10px;
+    display: none
   }
 
   .schedule::-webkit-scrollbar {
-    display: none;
+    display: none
   }
 
   .schedule img {
     width: 100%;
     border-radius: 10px;
-    margin: 0 auto;
+    margin: 0 auto
   }
 
   .route-map::-webkit-scrollbar {
-    display: none;
+    display: none
   }
 
   .route-map img {
     width: 100%;
     border: none;
     margin: 0 auto;
-    border-radius: 10px;
+    border-radius: 10px
   }
 
   .zoom-modal {
@@ -181,27 +175,27 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, .8);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1010;
+    z-index: 1010
   }
-  
+
   .zoom-modal-content {
     max-width: 90%;
     max-height: 90%;
-    overflow: hidden; /* Ensure the content is clipped */
-    border-radius: 10px;
+    overflow: hidden;
+    border-radius: 10px
   }
-  
+
   .zoom-modal img {
     width: 100%;
     height: auto;
-    cursor: grab; /* Change cursor to indicate draggable */
+    cursor: grab
   }
-  
+
   .zoom-modal img:active {
-    cursor: grabbing; /* Change cursor when dragging */
+    cursor: grabbing
   }
 }

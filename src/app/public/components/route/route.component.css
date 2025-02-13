@@ -56,15 +56,14 @@
         padding-bottom: 5px
     }
 
+    .clark-loop-box,
     .jeepney-container {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
         margin: 5px 0;
         padding: 10px;
-        justify-content: center;
-        border: 1px solid #ccc;
-        border-radius: 5px
+        justify-content: center
     }
 
     .route-list-box {
@@ -179,15 +178,14 @@
         padding-bottom: 5px
     }
 
+    .clark-loop-box-mobile,
     .jeepney-container-mobile {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
         margin: 5px 0;
         padding: 10px 0;
-        justify-content: center;
-        border: 1px solid #ccc;
-        border-radius: 5px
+        justify-content: center
     }
 
     .route-list-box-mobile {
