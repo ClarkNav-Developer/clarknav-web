@@ -1,218 +1,33 @@
-/* You can add global styles to this file, and also import other style files */
-/* @import '@angular/material/prebuilt-themes/pink-bluegrey.css'; */
+body,
+body .floating-window {
+  background-color: #fff;
+  color: #000;
+  transition: background-color .1s ease-in-out, color .1s ease-in-out
+}
+
+body,
+body .floating-window,
+body.dark-mode,
+body.dark-mode .floating-window,
+body.dark-mode .floating-window::before {
+  transition: background-color .1s ease-in-out, color .1s ease-in-out
+}
+
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: 'Montserrat', sans-serif;
+  font-family: Montserrat, sans-serif
 }
 
 body {
-  background-color: #ffffff;
-  color: #000000;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
-  overflow: hidden;
+  overflow: hidden
 }
 
-body .floating-window {
-  background-color: #ffffff;
-  color: #000000;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
-}
-
-body .floating-window::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: inherit;
-  backdrop-filter: blur(15px);
-  border-radius: inherit;
-  z-index: -1;
-  box-sizing: border-box;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
-}
-
-body .menu-list a {
-  color: #000000;
-  transition: color 0.1s ease-in-out;
-}
-
-body .menu-list a:hover {
-  color: #1976d2;
-  transition: color 0.1s ease-in-out;
-}
-
-body.dark-mode {
-  background-color: #121212;
-  color: #ffffff;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
-}
-
-body.dark-mode .floating-window {
-  background-color: #1e1e1e7c;
-  color: #ffffff;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
-}
-
-body.dark-mode .floating-window::before {
-  background-color: inherit;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
-}
-
-body.dark-mode .menu-list a.menu-list-button {
-  color: #ffffff;
-  transition: color 0.1s ease-in-out;
-}
-
-body.dark-mode .menu-list a:hover {
-  color: #90caf9;
-  transition: color 0.1s ease-in-out;
-}
-
-body.dark-mode .search-bar-container {
-  background-color: #1e1e1e7c;
-  transition: background-color 0.1s ease-in-out;
-}
-
-body.dark-mode .search-bar-container input {
-  background-color: #1e1e1e7c;
-  color: #dfdfdf;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
-}
-
-body.dark-mode .container {
-  background-color: #1e1e1e7c;
-  transition: background-color 0.1s ease-in-out;
-}
-
-body.dark-mode .container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: inherit;
-  backdrop-filter: blur(15px);
-  border-radius: inherit;
-  z-index: -1;
-  box-sizing: border-box;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
-}
-
-body.dark-mode .container input {
-  background-color: #1e1e1e7c;
-  color: #dfdfdf;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
-}
-
-body.dark-mode .container .reverse-button button {
-  background-color: rgb(0,0,0,0);
-  transition: background-color 0.1s ease-in-out;
-}
-
-body.dark-mode .transport-options svg {
-  fill: #e6e6e6;
-  transition: fill 0.1s ease-in-out;
-}
-
-body.dark-mode .transport-options button {
-  color: #e6e6e6;
-  transition: color 0.1s ease-in-out;
-}
-
-/* suggested routte style for dark mode */
-body.dark-mode .route-item svg {
-  fill: #e6e6e6;
-}
-
-body.dark-mode .route-item.selected {
-  background-color: #000000;
-  transition: background-color 0.1s ease-in-out;
-}
-
-/* route card style */
-body.dark-mode .route-item {
-  background-color: #4d4d4d;
-  transition: background-color 0.1s ease-in-out;
-}
-
-body.dark-mode .route-item .duration {
-  color: #e6e6e6;
-  transition: color 0.1s ease-in-out;
-}
-
-/* bottom-navigation style */
-body.dark-mode .bottom-nav .menu-container svg.menu-container-svg {
-  fill: white;
-  transition: fill 0.1s ease-in-out;
-}
-
-body.dark-mode .menu-container button.menu-container-button {
-  color: white;
-  transition: color 0.1s ease-in-out;
-}
-
-/* dark mode mobile style */
-
-/* search bar mobile */
-body.dark-mode .search-bar-container-mobile {
-  background-color: #1e1e1e7c;
-  transition: background-color 0.1s ease-in-out;
-}
-
-body.dark-mode .search-bar-container-mobile input {
-  background-color: #1e1e1e7c;
-  color: #dfdfdf;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
-}
-
-/* bottom navigation bar mobile */
-body.dark-mode .container-mobile {
-  background-color: #1e1e1e7c;
-  transition: background-color 0.1s ease-in-out;
-}
-
-body.dark-mode .bottom-nav-mobile .menu-container-mobile svg.menu-container-mobile-svg {
-  fill: white;
-  transition: fill 0.1s ease-in-out;
-}
-
-body.dark-mode .bottom-nav-mobile .menu-container-mobile button.menu-container-button {
-  color: white;
-  transition: color 0.1s ease-in-out;
-}
-
-body.dark-mode .menu-container-mobile[_ngcontent-ng-c2033211746] button[_ngcontent-ng-c2033211746] {
-  color: white;
-  transition: color 0.1s ease-in-out;
-}
-
-/* menu list style for mobile */
-body.dark-mode .menu-list-mobile a {
-  color: #ffffff;
-  transition: color 0.1s ease-in-out;
-}
-
-body.dark-mode .menu-list-mobile a.menu-list-button {
-  color: #ffffff;
-  transition: color 0.1s ease-in-out;
-}
-
-body.dark-mode .menu-list-mobile a:hover {
-  color: #90caf9;
-  transition: color 0.1s ease-in-out;
-}
-
-/* mobile navigation bar style */
-body.dark-mode .mobile-container {
-  background-color: #1e1e1e7c;
-  transition: top 0.5s ease-in-out;
-}
-
+body .floating-window::before,
+body.dark-mode .bottom-sheet-mobile.show::before,
+body.dark-mode .bottom-sheet-mobile:before,
+body.dark-mode .container::before,
 body.dark-mode .mobile-container::before {
   content: '';
   position: absolute;
@@ -225,116 +40,145 @@ body.dark-mode .mobile-container::before {
   border-radius: inherit;
   z-index: -1;
   box-sizing: border-box;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+  transition: background-color .1s ease-in-out, color .1s ease-in-out
 }
 
-body.dark-mode .mobile-container input {
+body .menu-list a {
+  color: #000;
+  transition: color .1s ease-in-out
+}
+
+body .menu-list a:hover {
+  color: #1976d2;
+  transition: color .1s ease-in-out
+}
+
+body.dark-mode {
+  background-color: #121212;
+  color: #fff
+}
+
+body.dark-mode .floating-window {
+  background-color: #1e1e1e7c;
+  color: #fff
+}
+
+body.dark-mode .floating-window::before {
+  background-color: inherit
+}
+
+body.dark-mode .bottom-nav-mobile .menu-container-mobile button.menu-container-button,
+body.dark-mode .menu-container button.menu-container-button,
+body.dark-mode .menu-container-mobile[_ngcontent-ng-c2033211746] button[_ngcontent-ng-c2033211746],
+body.dark-mode .menu-list a.menu-list-button,
+body.dark-mode .menu-list-mobile a,
+body.dark-mode .menu-list-mobile a.menu-list-button {
+  color: #fff;
+  transition: color .1s ease-in-out
+}
+
+body.dark-mode .menu-list a:hover,
+body.dark-mode .menu-list-mobile a:hover {
+  color: #90caf9;
+  transition: color .1s ease-in-out
+}
+
+body.dark-mode .container,
+body.dark-mode .container-mobile,
+body.dark-mode .navigation-status-container,
+body.dark-mode .search-bar-container,
+body.dark-mode .search-bar-container-mobile {
+  background-color: #1e1e1e7c;
+  transition: background-color .1s ease-in-out
+}
+
+body.dark-mode .container input,
+body.dark-mode .mobile-container input,
+body.dark-mode .search-bar-container input,
+body.dark-mode .search-bar-container-mobile input {
   background-color: #1e1e1e7c;
   color: #dfdfdf;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+  transition: background-color .1s ease-in-out, color .1s ease-in-out
 }
 
+body.dark-mode .current-loc-button button,
+body.dark-mode .info-button button {
+  background-color: #313131 !important;
+  border: 1px solid #000 !important
+}
+
+body.dark-mode .container .reverse-button button,
 body.dark-mode .mobile-container .mobile-reverse-button button {
-  background-color: rgb(0,0,0,0);
-  transition: background-color 0.1s ease-in-out;
+  background-color: rgb(0, 0, 0, 0);
+  transition: background-color .1s ease-in-out
 }
 
-/* bottom sheet dark mode style  */
-body.dark-mode .bottom-sheet-mobile {
+body.dark-mode .navigation-status-container svg,
+body.dark-mode .option-mobile svg,
+body.dark-mode .route-item-mobile svg,
+body.dark-mode .transport-options svg {
+  fill: #e6e6e6;
+  transition: fill .1s ease-in-out
+}
+
+body.dark-mode .route-item .duration,
+body.dark-mode .transport-options button {
+  color: #e6e6e6;
+  transition: color .1s ease-in-out
+}
+
+body.dark-mode .route-item svg {
+  fill: #e6e6e6
+}
+
+body.dark-mode .route-item.selected {
+  background-color: #000;
+  transition: background-color .1s ease-in-out
+}
+
+body.dark-mode .option-mobile,
+body.dark-mode .route-item,
+body.dark-mode .route-item-mobile {
+  background-color: #4d4d4d;
+  transition: background-color .1s ease-in-out
+}
+
+body.dark-mode .bottom-nav .menu-container svg.menu-container-svg,
+body.dark-mode .bottom-nav-mobile .menu-container-mobile svg.menu-container-mobile-svg {
+  fill: white;
+  transition: fill .1s ease-in-out
+}
+
+body.dark-mode .mobile-container {
   background-color: #1e1e1e7c;
+  transition: top .5s ease-in-out
 }
 
-body.dark-mode .bottom-sheet-mobile:before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: inherit;
-  backdrop-filter: blur(15px);
-  border-radius: inherit;
-  z-index: -1;
-  box-sizing: border-box;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+body.dark-mode .bottom-sheet-mobile {
+  background-color: #1e1e1e7c
 }
 
 body.dark-mode .bottom-sheet-mobile.show {
   background-color: #1e1e1e7c;
-  transition: bottom ease-in-out 0.5s;
+  transition: bottom .5s ease-in-out
 }
 
-body.dark-mode .bottom-sheet-mobile.show::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: inherit;
-  backdrop-filter: blur(15px);
-  border-radius: inherit;
-  z-index: -1;
-  box-sizing: border-box;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+body.dark-mode .info-button button {
+  transition: background-color .1s ease-in-out
 }
 
-body.dark-mode .option-mobile {
-  background-color: #4d4d4d;
-  transition: background-color 0.1s ease-in-out;
-}
-
-body.dark-mode .option-mobile svg {
-  fill: #e6e6e6;
-  transition: fill 0.1s ease-in-out;
-}
-
-body.dark-mode .route-item-mobile {
-  background-color: #4d4d4d;
-  transition: background-color 0.1s ease-in-out;
-}
-
-body.dark-mode .route-item-mobile svg {
-  fill: #e6e6e6;
-  transition: fill 0.1s ease-in-out;
-}
-
-/* mobile side nav style */
-body.dark-mode .info-button button{
-  background-color: #313131 !important;
-  transition: background-color 0.1s ease-in-out;
-  border: 1px solid #000000 !important;
-}
-
-body.dark-mode .info-button button svg{
-  fill: #ffffff;
-}
-
-body.dark-mode .current-loc-button button {
-  background-color: #313131 !important;
-  border: 1px solid #000000 !important;
+body.dark-mode .current-loc-button button svg,
+body.dark-mode .info-button button svg {
+  fill: #ffffff
 }
 
 body.dark-mode .current-loc-button button:active {
-  background-color: #1f1f1f !important;
-
+  background-color: #1f1f1f !important
 }
 
-
-body.dark-mode .current-loc-button button svg{
-  fill: #ffffff;
-}
-
-/* tab style for information component */
 body.dark-mode .content-mobile .tab {
   background-color: #4d4d4d !important;
-  transition: background-color 0.1s ease-in-out;
-}
-
-/* navigation container style*/
-body.dark-mode .navigation-status-container {
-  background-color: #1e1e1e7c;
-  transition: background-color 0.1s ease-in-out;
+  transition: background-color .1s ease-in-out
 }
 
 body.dark-mode .navigation-status-container::before {
@@ -350,10 +194,5 @@ body.dark-mode .navigation-status-container::before {
   border-radius: inherit;
   z-index: -1;
   box-sizing: border-box;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
-}
-
-body.dark-mode .navigation-status-container svg {
-  fill: #e6e6e6;
-  transition: fill 0.1s ease-in-out;
+  transition: background-color .1s ease-in-out, color .1s ease-in-out
 }

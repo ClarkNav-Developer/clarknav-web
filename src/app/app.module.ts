@@ -10,9 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { GoogleMapsModule } from '@angular/google-maps';
 
 import { AppComponent } from './app.component';
-import { JeepneyRouteComponent } from './jeepney-route/jeepney-route.component';
-import { BusRouteComponent } from './bus-route/bus-route.component';
-import { AnnouncementComponent } from './announcement/announcement.component';
+import { HammerModule } from '@angular/platform-browser';
 
 import { PublicModule } from './public/public.module';
 import { AdminModule } from './admin/admin.module';
@@ -21,10 +19,7 @@ import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    JeepneyRouteComponent,
-    BusRouteComponent,
-    AnnouncementComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -36,6 +31,7 @@ import { ToastrModule } from 'ngx-toastr';
     PublicModule,
     AdminModule,
     ReactiveFormsModule,
+    HammerModule,
     ToastrModule.forRoot(), // ToastrModule added
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],

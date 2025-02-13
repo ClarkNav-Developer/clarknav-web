@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { PublicRoutingModule } from './public-routing.module';
+import { PinchZoomDirective } from '../directives/pinch-zoom.directive';
 
 // Components
 import { AboutComponent } from './components/about/about.component';
@@ -51,6 +52,7 @@ import { TouristSpotComponent } from './components/tourist-spot/tourist-spot.com
     AccountComponent,
     InformationComponent,
     TouristSpotComponent,
+    PinchZoomDirective,
   ],
   imports: [
     CommonModule,

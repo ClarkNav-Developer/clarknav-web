@@ -4,7 +4,7 @@ import { FloatingWindowService } from '../../../floating-window.service';
 @Component({
   selector: 'app-information',
   templateUrl: './information.component.html',
-  styleUrl: './information.component.css'
+  styleUrls: ['./information.component.css']
 })
 export class InformationComponent {
   

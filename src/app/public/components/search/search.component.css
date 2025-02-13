@@ -1,11 +1,17 @@
 * {
-    font-family: 'Montserrat', sans-serif;
+    font-family: Montserrat, sans-serif
 }
 
-/* desktop view */
-@media screen and (min-width: 768px) {
-    .mobile-view {
-        display: none;
+@media screen and (min-width:768px) {
+
+    .container,
+    .search-bar-container {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, .1)
+    }
+
+    .mobile-view,
+    .route-item.hidden {
+        display: none
     }
 
     .search-container {
@@ -14,7 +20,7 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        top: 30px;
+        top: 30px
     }
 
     .search-bar-container {
@@ -22,13 +28,10 @@
         display: flex;
         align-items: center;
         border-radius: 15px;
-        background-color: rgb(255, 255, 255, 0.5);
+        background-color: rgb(255, 255, 255, .5);
         padding: 5px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         position: relative;
-        /* Ensure the pseudo-element is positioned relative to this container */
-        overflow: hidden;
-        /* Prevent content from overflowing */
+        overflow: hidden
     }
 
     .search-bar-container::before {
@@ -41,13 +44,12 @@
         background-color: inherit;
         backdrop-filter: blur(15px);
         z-index: -1;
-        box-sizing: border-box;
-        /* Ensure padding and border are included in the element's total width and height */
+        box-sizing: border-box
     }
 
     .search-bar-container img {
         height: 35px;
-        padding: 0 5px;
+        padding: 0 5px
     }
 
     .search-bar-container input {
@@ -55,28 +57,24 @@
         padding: 10px;
         border: none;
         border-radius: 8px;
-        background-color: rgb(0, 0, 0, 0);
+        background-color: rgb(0, 0, 0, 0)
     }
 
     .search-bar-container input:focus {
-        outline: none;
-        /* Remove the default outline */
+        outline: 0;
         border: none;
-        /* Remove the border */
-        box-shadow: none;
-        /* Remove any box shadow */
+        box-shadow: none
     }
 
     .container {
         width: 450px;
-        background-color: white;
+        background-color: #fff;
         border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         padding: 16px;
         position: fixed;
         top: 30px;
         left: 30px;
-        z-index: 1000;
+        z-index: 1000
     }
 
     .header {
@@ -84,64 +82,65 @@
         align-items: center;
         gap: 8px;
         margin-bottom: 16px;
-        padding: 16px 0;
+        padding: 16px 0
+    }
+
+    .icon-divider,
+    .routes-container {
+        flex-direction: column;
+        display: flex
     }
 
     .img-header img {
         width: 80px;
-        height: 80px;
+        height: 80px
     }
 
     .icon-divider {
-        display: flex;
-        flex-direction: column;
         align-items: center;
-        gap: 4px;
+        gap: 4px
     }
 
     .divider {
         width: 2px;
         height: 32px;
-        background-color: #ddd;
+        background-color: #ddd
     }
 
     .divider-horizontal {
-        border-top: 2px solid #ddd;
-        /* Change the thickness (3px) and color (#ccc) as needed */
-        /* margin: 20px 0;   */
+        border-top: 2px solid #ddd
     }
-
 
     .search-bar {
         display: flex;
         flex: 1;
         gap: 20px;
-        flex-direction: column;
+        flex-direction: column
     }
 
     .input {
         flex: 1;
         padding: 10px;
-        border: 1px solid #ACACAC;
-        border-radius: 8px;
+        border: 1px solid #acacac;
+        border-radius: 8px
     }
 
     .reverse-button {
         display: flex;
-        align-items: center;
+        align-items: center
     }
 
     .reverse-button button {
         padding: 5px;
         border: none;
-        background-color: white;
-        cursor: pointer;
+        background-color: #fff;
+        cursor: pointer
     }
 
     .transport-options {
         display: flex;
         justify-content: space-around;
-        margin: 8px;
+        margin: 8px
     }
 
     .option {
@@ -153,65 +152,47 @@
         border-radius: 4px;
         background-color: transparent;
         cursor: pointer;
-        font-size: 14px;
+        font-size: 14px
     }
-
-    /* .option.active {
-        background-color: #007bff;
-        color: white;
-    } */
 
     .suggested-routes {
         padding: 15px;
-        font-size: 14px;
+        font-size: 14px
     }
 
     .routes-container {
-        display: flex;
-        flex-direction: column;
-        overflow-y: auto;
         max-height: 30vh;
         overflow-y: auto;
-        /* Allow scrolling within the routes container */
-        scrollbar-width: none;
-        /* Hide scrollbar in Firefox */
+        scrollbar-width: none
     }
 
     .routes-container::-webkit-scrollbar {
-        display: none;
-        /* Hide scrollbar in WebKit browsers */
+        display: none
     }
-
 
     .route {
         padding: 12px;
         background-color: #f5f5f5;
         border: 1px solid #ddd;
-        border-radius: 4px;
+        border-radius: 4px
     }
 
-    /* Loading of routes style */
     .route-item {
-        margin: 0 15px;
+        margin: 0 15px 10px;
         padding: 10px;
         border: 1px solid #ddd;
         border-radius: 4px;
         background-color: #fafafa;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
         display: flex;
         flex-direction: column;
-        gap: 16px;
-        margin-bottom: 10px;
-    }
-
-    .route-item.hidden {
-        display: none;
+        gap: 16px
     }
 
     .route-color {
         width: 20px;
         height: 20px;
-        border-radius: 50%;
+        border-radius: 50%
     }
 
     .route-details {
@@ -219,129 +200,104 @@
         align-items: center;
         gap: 8px;
         width: 100%;
-        justify-content: space-evenly;
+        justify-content: space-evenly
     }
 
+    .destination-info,
     .origin-info {
         min-width: 20%;
         max-width: 40%;
         display: flex;
         flex-direction: row;
         gap: 10px;
-        align-items: center;
+        align-items: center
     }
 
+    .destination-info svg,
     .origin-info svg {
-        height: 30px;
+        height: 30px
     }
 
+    .destination-info span,
     .origin-info span {
-        width: 100%;
-    }
-
-    .destination-info {
-        min-width: 20%;
-        max-width: 40%;
-        display: flex;
-        flex-direction: row;
-        gap: 10px;
-        align-items: center;
-    }
-
-    .destination-info svg {
-        height: 30px;
-    }
-
-    .destination-info span {
-        width: 100%;
+        width: 100%
     }
 
     .route-footer {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        align-items: center;
+        align-items: center
     }
 
     .fare-info {
         display: flex;
         flex-direction: row;
         gap: 10px;
-        align-items: center;
+        align-items: center
     }
 
     .fare {
-        background-color: #32AA00;
+        background-color: #32aa00;
         border: none;
         border-radius: 10px;
-        color: white;
+        color: #fff;
         width: auto;
         display: flex;
         justify-content: center;
         padding: 3px 10px;
         font-size: small;
-        gap: 5px;
+        gap: 5px
     }
 
     .fare svg {
-        height: 10px;
+        height: 10px
     }
 
     .footer-extra-info {
-        right: 0;
+        right: 0
     }
 
     .disclaimer-info {
         display: flex;
-        justify-content: space-between;
+        justify-content: space-between
     }
 
     .disclaimer-info .left button {
-        background: transparent;
-        border: none;
+        background: 0 0;
+        border: none
     }
 
     .disclaimer-info .left svg:active {
-        fill: #28a745;
+        fill: #28a745
     }
 
-    .disclaimer-info .right{
+    .disclaimer-info .right {
         display: flex;
         flex-direction: row;
         gap: 10px;
         align-items: center;
-        justify-content: flex-end;
+        justify-content: flex-end
     }
 
+    .disclaimer-info .fare,
     .disclaimer-info p {
-        font-size: 10px;
+        font-size: 10px
     }
-
-    .disclaimer-info .fare {
-        font-size: 10px;
-    }
-
-    /* .fare {
-        display: flex;
-        flex-direction: column;
-        color: #32AA00;
-        font-size: 14px;
-    } */
 
     .route-details img,
     .route-details svg {
-        vertical-align: middle;
-        /* Ensures that images and SVGs align vertically */
+        vertical-align: middle
     }
 
     .route-details span {
         font-size: 16px;
-        font-weight: normal;
+        font-weight: 400
     }
 
-    .duration {
-        font-size: 12px;
-        color: #555;
+    .location,
+    .notice-box p {
+        font-weight: 700
     }
 
     .no-routes {
@@ -349,23 +305,19 @@
         margin: 20px;
         text-align: center;
         color: #777;
-        font-size: 14px;
-    }
-
-    .location {
-        font-weight: bold;
+        font-size: 14px
     }
 
     .duration {
         font-size: 12px;
-        color: #555;
+        color: #555
     }
 
     .buttons {
         display: flex;
         flex-direction: column;
         gap: 10px;
-        margin: 15px;
+        margin: 15px
     }
 
     .buttons button {
@@ -375,34 +327,48 @@
         border-radius: 5px;
         cursor: pointer;
         background-color: #007bff;
-        color: white;
+        color: #fff;
         width: 100%;
-        box-sizing: border-box;
+        box-sizing: border-box
     }
 
     .buttons button:hover {
-        background-color: #0056b3;
+        background-color: #0056b3
     }
 
     .navigate-button button {
         background-color: #28a745;
-        color: white;
+        color: #fff
     }
 
     .navigate-button button:hover {
-        background-color: #218838;
+        background-color: #218838
     }
 
     .route-item.selected {
         background-color: #dff0d8;
-        border-color: #4cae4c;
+        border-color: #4cae4c
+    }
+
+    .notice-box {
+        border: 1px solid #fc0;
+        background-color: #fff8e1;
+        padding: 10px;
+        margin: 15px;
+        text-align: center
+    }
+
+    .notice-box p {
+        color: #8a6d3b;
+        font-size: .8em
     }
 }
 
-/* mobile view */
-@media screen and (max-width: 767px) {
-    .desktop-view {
-        display: none;
+@media screen and (max-width:767px) {
+
+    .desktop-view,
+    .route-item-mobile.hidden {
+        display: none
     }
 
     .search-container-mobile {
@@ -411,7 +377,7 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        top: 20px;
+        top: 20px
     }
 
     .search-bar-container-mobile {
@@ -419,13 +385,11 @@
         display: flex;
         align-items: center;
         border-radius: 15px;
-        background-color: rgb(255, 255, 255, 0.5);
+        background-color: rgb(255, 255, 255, .5);
         padding: 5px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, .1);
         position: relative;
-        /* Ensure the pseudo-element is positioned relative to this container */
-        overflow: hidden;
-        /* Prevent content from overflowing */
+        overflow: hidden
     }
 
     .search-bar-container-mobile::before {
@@ -438,13 +402,12 @@
         background-color: inherit;
         backdrop-filter: blur(15px);
         z-index: -1;
-        box-sizing: border-box;
-        /* Ensure padding and border are included in the element's total width and height */
+        box-sizing: border-box
     }
 
     .search-bar-container-mobile img {
         height: 35px;
-        padding: 0 5px;
+        padding: 0 5px
     }
 
     .search-bar-container-mobile input {
@@ -452,36 +415,17 @@
         padding: 10px;
         border: none;
         border-radius: 8px;
-        background-color: rgb(0, 0, 0, 0);
+        background-color: rgb(0, 0, 0, 0)
     }
 
     .search-bar-container-mobile input:focus {
-        outline: none;
-        /* Remove the default outline */
+        outline: 0;
         border: none;
-        /* Remove the border */
-        box-shadow: none;
-        /* Remove any box shadow */
-    }
-
-    .mobile-container {
-        position: absolute;
-        z-index: 1000;
-        padding: 10px;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: calc(100% - 20px);
-        margin: 10px;
-        top: -100%;
-        /* Start above the screen */
-        transition: top 0.5s ease-in-out;
-        /* Animation for drop down */
+        box-shadow: none
     }
 
     .mobile-container.show {
-        top: 10px;
-        /* Adjust to the position you want it to drop to */
+        top: 10px
     }
 
     .mobile-header {
@@ -489,46 +433,59 @@
         align-items: center;
         gap: 8px;
         margin-bottom: 10px;
-        padding: 10px 0;
+        padding: 5px 0
     }
 
     .mobile-logo img {
         width: 80px;
-        height: 80px;
+        height: 80px
     }
 
     .mobile-icon-divider {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 4px;
+        gap: 4px
     }
 
     .mobile-divider {
         width: 2px;
         height: 32px;
-        background-color: #ddd;
+        background-color: #ddd
+    }
+
+    .bottom-sheet-mobile,
+    .mobile-container {
+        z-index: 901;
+        width: calc(100% - 20px);
+        position: absolute
     }
 
     .mobile-search-bar {
         display: flex;
         flex: 1;
         gap: 20px;
-        flex-direction: column;
+        flex-direction: column
     }
 
     .mobile-search-bar input {
         padding: 10px;
-        border: 1px solid #ACACAC;
+        border: 1px solid #acacac;
         border-radius: 8px;
-        width: 100%;
+        width: 100%
     }
 
     .mobile-reverse-button button {
         padding: 5px;
         border: none;
-        background-color: white;
-        cursor: pointer;
+        background-color: #fff;
+        cursor: pointer
+    }
+
+    .buttons-mobile button,
+    .option-mobile.active {
+        background-color: #007bff;
+        color: #fff
     }
 
     .buttons-mobile {
@@ -536,7 +493,7 @@
         flex-direction: column;
         gap: 5px;
         align-items: center;
-        padding-bottom: 5px;
+        padding-bottom: 5px
     }
 
     .buttons-mobile button {
@@ -545,69 +502,75 @@
         border: 1px solid #ccc;
         border-radius: 5px;
         cursor: pointer;
-        background-color: #007bff;
-        color: white;
         width: 75%;
-        box-sizing: border-box;
+        box-sizing: border-box
     }
 
-    .buttons-mobile button:hover {
-        background-color: #0056b3;
+    .notice-container-mobile {
+        display: flex;
+        justify-content: center
     }
 
-    /* bottom sheet style */
+    .notice-box-mobile {
+        border: 1px solid #fc0;
+        background-color: #fff8e1;
+        padding: 5px 10px;
+        margin: 5px;
+        text-align: center;
+        width: 75%;
+        border-radius: 5px
+    }
+
+    .notice-box-mobile p {
+        color: #8a6d3b;
+        font-size: .6em;
+        font-weight: 700
+    }
+
+    .buttons-mobile button:hover,
+    .navigation-button button:active {
+        background-color: #0056b3
+    }
+
     .bottom-sheet-mobile {
         --bottom-sheet-height: 50px;
-        position: absolute;
-        z-index: 901;
         bottom: 0;
-        width: calc(100% - 20px);
         margin: 0 10px;
-        background-color: white;
+        background-color: #fff;
         border-radius: 20px 20px 0 0;
-        box-shadow: 0px -4px 8px 4px rgba(0, 0, 0, 0.1);
-        transition: height 0.3s ease;
+        box-shadow: 0 -4px 8px 4px rgba(0, 0, 0, .1);
+        transition: height .3s;
         height: var(--bottom-sheet-height);
         padding: 20px;
         transform: translateY(100%);
         will-change: transform;
         touch-action: none;
-        /* Prevent default touch actions */
-        overscroll-behavior: none;
-        /* Prevent pull-to-refresh in Chrome */
-
+        overscroll-behavior: none
     }
 
     .bottom-sheet-mobile.show {
         bottom: 0;
-        transform: translateY(0);
+        transform: translateY(0)
     }
 
     .bottom-sheet-mobile.hide {
         bottom: -100%;
-        transform: translateY(100%);
+        transform: translateY(100%)
     }
 
     .bottom-sheet-mobile.minimized {
         height: 150px;
-        /* Adjust this value based on your minimum state */
-        transition: height 0.3s ease-in-out;
-        /* Smooth transition */
+        transition: height .3s ease-in-out
     }
 
     .mobile-container {
-        position: absolute;
-        z-index: 901;
         padding: 10px;
-        background-color: white;
+        background-color: #fff;
         border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: calc(100% - 20px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, .1);
         margin: 10px;
         top: -100%;
-        /* Start above the screen */
-        transition: top 0.5s ease-in-out;
-        /* Animation for drop down */
+        transition: top .5s ease-in-out
     }
 
     .drag-handle {
@@ -615,21 +578,18 @@
         height: 6px;
         background-color: #ccc;
         border-radius: 3px;
-        margin: 0 auto 15px auto;
+        margin: 0 auto 15px;
         cursor: grab;
-        touch-action: none;
-        /* Prevent default touch actions */
+        touch-action: none
     }
 
     .drag-handle:active {
-        cursor: grabbing;
+        cursor: grabbing
     }
 
-    /* Touch screen specific styles */
-    @media (pointer: coarse) {
+    @media (pointer:coarse) {
         .drag-handle {
-            touch-action: pan-y;
-            /* Allow vertical scrolling */
+            touch-action: pan-y
         }
     }
 
@@ -637,19 +597,19 @@
         position: absolute;
         top: 10px;
         right: 10px;
-        cursor: pointer;
+        cursor: pointer
     }
 
     .close-btn button {
         border: none;
-        background-color: transparent;
+        background-color: transparent
     }
 
     .transport-options-mobile {
         display: flex;
         justify-content: space-around;
         margin-bottom: 16px;
-        flex-wrap: wrap;
+        flex-wrap: wrap
     }
 
     .option-mobile {
@@ -660,56 +620,42 @@
         cursor: pointer;
         font-size: 14px;
         display: flex;
-        align-items: center;
+        align-items: center
     }
 
-    .option-mobile.active {
-        background-color: #007bff;
-        color: white;
+    .routes-container-mobile,
+    .routes-mobile {
+        flex-direction: column;
+        gap: 12px;
+        display: flex
     }
 
     .routes-mobile {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        overflow-x: auto;
+        overflow-x: auto
     }
 
     .content {
         min-height: 8vh;
         max-height: 35vh;
         overflow-y: scroll;
-        /* Allow vertical scrolling */
         scroll-behavior: smooth;
-        /* Smooth scrolling for better UX */
         scrollbar-width: none;
-        /* Hide scrollbar in Firefox */
-        -webkit-overflow-scrolling: touch;
-        /* Enable smooth scrolling on mobile devices */
+        -webkit-overflow-scrolling: touch
     }
 
     .content::-webkit-scrollbar {
-        display: none;
-        /* Hide scrollbar in WebKit browsers */
+        display: none
     }
 
     .routes-container-mobile {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
         overflow-y: auto;
-        /* Allow vertical scrolling */
         max-height: calc(100vh - 150px);
-        /* Ensure content fits within the screen */
         padding-bottom: 10px;
-        /* Optional padding for better spacing */
-        box-sizing: border-box;
-        /* Include padding in the height calculation */
+        box-sizing: border-box
     }
 
     .routes-container-mobile::-webkit-scrollbar {
-        display: none;
-        /* Hide scrollbar in WebKit browsers */
+        display: none
     }
 
     .route-item-mobile {
@@ -717,24 +663,18 @@
         border: 1px solid #ddd;
         border-radius: 4px;
         background-color: #fafafa;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
         display: flex;
         flex-direction: column;
         gap: 16px;
         margin: 8px 0;
-        box-sizing: border-box;
-        /* Prevent unexpected overflows */
-    }
-
-
-    .route-item-mobile.hidden {
-        display: none;
+        box-sizing: border-box
     }
 
     .route-color-mobile {
         width: 20px;
         height: 20px;
-        border-radius: 50%;
+        border-radius: 50%
     }
 
     .route-details-mobile {
@@ -742,10 +682,10 @@
         align-items: center;
         gap: 8px;
         width: 100%;
-        justify-content: space-evenly;
+        justify-content: space-evenly
     }
 
-    /* route items styles (origin, destination, duration) */
+    .destination-info-mobile,
     .origin-info-mobile {
         min-width: 20%;
         max-width: 50%;
@@ -753,17 +693,7 @@
         flex-direction: row;
         gap: 10px;
         align-items: center;
-        font-size: small;
-    }
-
-    .destination-info-mobile {
-        min-width: 20%;
-        max-width: 50%;
-        display: flex;
-        flex-direction: row;
-        gap: 10px;
-        align-items: center;
-        font-size: small;
+        font-size: small
     }
 
     .time-info-mobile {
@@ -771,84 +701,86 @@
         flex-direction: row;
         gap: 10px;
         align-items: center;
-        font-size: 10px;
+        font-size: 10px
     }
 
     .route-footer-mobile {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        align-items: center;
+        align-items: center
     }
 
+    .disclaimer-info-mobile .fare,
+    .disclaimer-info-mobile p,
     .estimated-time {
-        font-size: 10px;
+        font-size: 10px
     }
 
     .fare-info {
         display: flex;
         flex-direction: row;
         gap: 10px;
-        align-items: center;
+        align-items: center
     }
 
     .fare {
-        background-color: #32AA00;
+        background-color: #32aa00;
         border: none;
         border-radius: 10px;
-        color: white;
+        color: #fff;
         width: auto;
         display: flex;
         justify-content: center;
         padding: 3px 10px;
         font-size: small;
-        gap: 5px;
+        gap: 5px
     }
 
     .fare svg {
-        height: 10px;
+        height: 10px
+    }
+
+    .current-loc-button button,
+    .info-button button,
+    .navigation-button button {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        box-shadow: 0 2px 2px 1px rgba(0, 0, 0, .1)
     }
 
     .footer-extra-info-mobile {
-        right: 0;
+        right: 0
     }
 
     .disclaimer-info-mobile {
         display: flex;
-        justify-content: space-between;
+        justify-content: space-between
     }
 
     .disclaimer-info-mobile .left button {
-        background: transparent;
-        border: none;
+        background: 0 0;
+        border: none
     }
 
     .disclaimer-info-mobile .left svg:active {
-        fill: #28a745;
+        fill: #28a745
     }
 
-    .disclaimer-info-mobile .right{
+    .disclaimer-info-mobile .right {
         display: flex;
         flex-direction: row;
         gap: 10px;
         align-items: center;
-        justify-content: flex-end;
+        justify-content: flex-end
     }
 
-    .disclaimer-info-mobile p {
-        font-size: 10px;
-    }
-
-    .disclaimer-info-mobile .fare {
-        font-size: 10px;
-    }
-
-    /* navigation info styles */
     .navigation-status {
         z-index: 500;
         position: absolute;
         bottom: 75px;
-        width: 100%;
+        width: 100%
     }
 
     .navigation-status-container {
@@ -858,9 +790,9 @@
         width: calc(100% - 20px);
         margin: 0 10px;
         padding: 10px;
-        background-color: white;
+        background-color: #fff;
         border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, .1)
     }
 
     .end-navigation-button {
@@ -868,10 +800,10 @@
         align-items: center;
         width: 100%;
         justify-content: space-between;
-        background-color: none;
+        background-color: none
     }
 
-    .end-navigation-button button{
+    .end-navigation-button button {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -879,9 +811,8 @@
         border-radius: 5px;
         cursor: pointer;
         box-sizing: border-box;
-        background: transparent;
+        background: 0 0
     }
-
 
     .navigation-status-info {
         display: flex;
@@ -889,72 +820,43 @@
         align-items: center;
         gap: 10px;
         width: 100%;
-        justify-content: space-around;
+        justify-content: space-around
     }
 
-    /* side nav */
     .side-nav-mobile {
         z-index: 499;
         position: absolute;
         bottom: 120px;
-        right: 10px;
+        right: 10px
     }
 
     .side-nav-container-mobile {
         display: flex;
         flex-direction: column;
         gap: 15px;
-        align-items: center;
+        align-items: center
     }
 
+    .current-loc-button button,
     .info-button button {
         border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        display: flex;
         align-items: center;
         justify-content: center;
         padding: 0;
-        background-color: white;
-        border: 1px solid #ACACAC;
-        box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        border: 1px solid #acacac
     }
 
+    .current-loc-button button:active,
     .info-button button:active {
-        background-color: #ebebeb;
-    }
-
-    .current-loc-button button {
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-        background-color: white;
-        border: 1px solid #ACACAC;
-        box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, 0.1);
-    }
-
-    .current-loc-button button:active {
-        background-color: #ebebeb;
+        background-color: #ebebeb
     }
 
     .navigation-button button {
         border-radius: 10px;
-        width: 50px;
-        height: 50px;
-        display: flex;
         align-items: center;
         justify-content: center;
         background-color: #007bff;
-        border: none;
-        box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, 0.1);
+        border: none
     }
-
-    .navigation-button button:active {
-        background-color: #0056b3;
-    }
-
 }
