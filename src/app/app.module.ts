@@ -15,6 +15,8 @@ import { HammerModule } from '@angular/platform-browser';
 import { PublicModule } from './public/public.module';
 import { AdminModule } from './admin/admin.module';
 
+import { ToastrModule } from 'ngx-toastr';
+
 @NgModule({
   declarations: [
     AppComponent
@@ -29,7 +31,8 @@ import { AdminModule } from './admin/admin.module';
     PublicModule,
     AdminModule,
     ReactiveFormsModule,
-    HammerModule
+    HammerModule,
+    ToastrModule.forRoot(), // ToastrModule added
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
   bootstrap: [AppComponent]
