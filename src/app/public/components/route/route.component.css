@@ -73,7 +73,8 @@
         border: 1px solid #ccc;
         border-radius: 5px;
         justify-content: space-evenly;
-        flex-wrap: wrap
+        flex-wrap: wrap;
+        box-shadow: 0 2px 4px 0px rgba(0, 0, 0, .1)
     }
 
     .route-list-box a {
@@ -178,14 +179,22 @@
         padding-bottom: 5px
     }
 
-    .clark-loop-box-mobile,
     .jeepney-container-mobile {
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
+        gap: 15px;
         margin: 5px 0;
         padding: 10px 0;
         justify-content: center
+    }
+
+    .clark-loop-box-mobile {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        gap: 15px;
+        margin: 5px 0;
+        padding: 10px 0;
     }
 
     .route-list-box-mobile {
@@ -195,7 +204,9 @@
         border: 1px solid #ccc;
         border-radius: 5px;
         justify-content: space-evenly;
-        flex-wrap: wrap
+        flex-wrap: wrap;
+        box-shadow: 0 2px 3px 1px rgba(0, 0, 0, .1);
+        font-size: 0.8em;
     }
 
     .route-list-box-mobile a {
