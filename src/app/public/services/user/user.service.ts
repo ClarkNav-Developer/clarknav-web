@@ -8,16 +8,16 @@ import { environment } from '../../../../environments/environment';
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = environment.usersUrl;
+  private apiUrl = environment.usersUrl; // Should be base API URL
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl);
+    return this.http.get<User[]>(`${this.apiUrl}`);
   }
 
-  updateUser(user: User): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/${user.id}`, user);
+  updateUser(id: number, userData: any): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/${id}`, userData);
   }
 
   deleteUser(userId: number): Observable<void> {

@@ -12,9 +12,7 @@
                 </svg>
             </button>
             <div id="dropdownMenu" class="dropdown-content">
-                <a href="#">Link 1</a>
-                <a href="#">Link 2</a>
-                <a href="#">Link 3</a>
+                <a href="" (click)="logout($event)" style="color: red;">Logout</a>
             </div>
         </div>
     </div>
@@ -22,6 +20,13 @@
 
 <div class="body">
     <h1>Admin Dashboard</h1>
+
+    <!-- <div class="date-range">
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" [(ngModel)]="startDate" (change)="onDateRangeChange()">
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" [(ngModel)]="endDate" (change)="onDateRangeChange()">
+    </div> -->
 
     <!-- dashboard.component.html -->
     <div class="table-container">
