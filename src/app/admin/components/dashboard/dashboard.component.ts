@@ -1,16 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { of, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { Subject, Observable, of } from 'rxjs';
+import { switchMap, takeUntil, tap, catchError, finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+
 import { UserService } from '../../../public/services/user/user.service';
 import { RoutesService } from '../../../public/services/routes/routes.service';
 import { LocationService } from '../../../public/services/geocoding/location.service';
+import { CacheService } from '../../../public/services/caching/caching.service';
+import { AuthService } from '../../../auth/auth.service';
+import { ChartService } from './chart.service';
+
 import { RouteUsage } from '../../../models/routeusage';
 import { LocationSearch } from '../../../models/locationsearch';
 import { User } from '../../../models/user';
-import { ToastrService } from 'ngx-toastr';
-import { CacheService } from '../../../public/services/caching/caching.service';
-import { AuthService } from '../../../auth/auth.service';
-import { Router } from '@angular/router';
-import { ChartService } from './chart.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,19 +21,27 @@ import { ChartService } from './chart.service';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
-
+  private readonly destroy$ = new Subject<void>();
+  
+  // State management
   activeTab = 'overview';
-  isLoading = true;
+  isLoading = false;
   error: string | null = null;
+  
+  // Modal states
   showUserModal = false;
-  searchTerm = '';
-
+  showRegisterModal = false;
+  
+  // Data storage
   routeUsages: RouteUsage[] = [];
   locationSearches: LocationSearch[] = [];
   users: User[] = [];
   filteredUsers: User[] = [];
+  
+  // Form states
+  searchTerm = '';
   selectedUser: User | null = null;
+  newUser: Partial<User> = this.getInitialUserState();
 
   constructor(
     private userService: UserService,
@@ -40,107 +51,131 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private cacheService: CacheService,
     private authService: AuthService,
     private router: Router,
-    private chartService: ChartService // Add this line
-  ) { }
+    private chartService: ChartService
+  ) {}
 
   ngOnInit(): void {
-    this.setupDropdownMenu();
-    this.fetchDashboardData();
-    this.fetchUsers();
+    this.initializeDashboard();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    this.chartService.destroyCharts(); // Use ChartService to destroy charts
-  }
-
-  onSearchChange(): void {
-    this.filteredUsers = this.users.filter(user =>
-      user.first_name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      user.last_name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(this.searchTerm.toLowerCase())
-    );
-  }
-
-  // Update the switchTab method
-  switchTab(tab: string): void {
-    this.activeTab = tab;
     this.chartService.destroyCharts();
-
-    // Use Angular's change detection to ensure DOM updates
-    setTimeout(() => {
-      this.chartService.initializeCharts(
-        this.activeTab,
-        this.routeUsages,
-        this.locationSearches
-      );
-    }, 100); // Small delay to ensure DOM render
   }
 
-  async fetchDashboardData(): Promise<void> {
+  private initializeDashboard(): void {
+    this.setupDropdownMenu();
+    this.loadDashboardData();
+    this.loadUsers();
+  }
+
+  private getInitialUserState(): Partial<User> {
+    return {
+      first_name: '',
+      last_name: '',
+      email: '',
+      password: '',
+      passwordConfirmation: '',
+      isAdmin: false,
+      isUser: true
+    };
+  }
+
+  // Data loading methods
+  private async loadDashboardData(): Promise<void> {
+    this.isLoading = true;
+    const cacheKey = 'dashboardData';
+
     try {
-      this.isLoading = true;
-      const cacheKey = 'dashboardData';
-      const cachedData = await this.cacheService.get<{ routeUsages: RouteUsage[], locationSearches: LocationSearch[] }>(cacheKey).toPromise();
+      const cachedData = await this.cacheService.get<{
+        routeUsages: RouteUsage[],
+        locationSearches: LocationSearch[]
+      }>(cacheKey).toPromise();
 
       if (cachedData) {
-        console.log('Using cached dashboard data');
-        this.routeUsages = cachedData.routeUsages;
-        this.locationSearches = cachedData.locationSearches;
-        console.log('Dashboard data loaded from cache');
+        this.handleCachedDashboardData(cachedData);
       } else {
-        console.log('Fetching dashboard data from server');
-        const [routeUsages, locationSearches] = await Promise.all([
-          this.routesService.getRouteUsages().toPromise(),
-          this.locationService.getLocationSearches().toPromise()
-        ]);
-
-        this.routeUsages = routeUsages ?? [];
-        this.locationSearches = locationSearches ?? [];
-        this.cacheService.set(cacheKey, { routeUsages: this.routeUsages, locationSearches: this.locationSearches });
+        await this.fetchFreshDashboardData(cacheKey);
       }
 
-      this.chartService.initializeCharts(this.activeTab, this.routeUsages, this.locationSearches); // Use ChartService to initialize charts
+      this.initializeCharts();
     } catch (error) {
-      this.toastr.error('Failed to load dashboard data');
-      console.error('Dashboard data fetch error:', error);
+      this.handleDataLoadError('dashboard data', error);
     } finally {
       this.isLoading = false;
     }
   }
 
-  fetchUsers(): void {
+  private handleCachedDashboardData(cachedData: {
+    routeUsages: RouteUsage[],
+    locationSearches: LocationSearch[]
+  }): void {
+    this.routeUsages = cachedData.routeUsages;
+    this.locationSearches = cachedData.locationSearches;
+  }
+
+  async fetchFreshDashboardData(cacheKey: string): Promise<void> {
+    const [routeUsages, locationSearches] = await Promise.all([
+      this.routesService.getRouteUsages().toPromise(),
+      this.locationService.getLocationSearches().toPromise()
+    ]);
+
+    this.routeUsages = routeUsages ?? [];
+    this.locationSearches = locationSearches ?? [];
+    
+    this.cacheService.set(cacheKey, {
+      routeUsages: this.routeUsages,
+      locationSearches: this.locationSearches
+    });
+  }
+
+  private loadUsers(): void {
     const cacheKey = 'users';
+    
     this.cacheService.get<User[]>(cacheKey).pipe(
       switchMap(cachedData => {
         if (cachedData) {
-          console.log('Using cached user data');
-          this.users = cachedData;
-          this.filteredUsers = cachedData;
-          this.isLoading = false;
-          console.log('User data loaded from cache');
-          return of(cachedData);
-        } else {
-          console.log('Fetching user data from server');
-          return this.userService.getUsers().pipe(
-            tap(users => {
-              this.users = users;
-              this.filteredUsers = users;
-              this.cacheService.set(cacheKey, users);
-              this.isLoading = false;
-            })
-          );
+          return this.handleCachedUsers(cachedData);
         }
+        return this.fetchFreshUsers(cacheKey);
       }),
       takeUntil(this.destroy$)
     ).subscribe({
-      error: (error) => {
-        this.toastr.error('Failed to load users');
-        console.error('Error fetching users:', error);
-        this.isLoading = false;
-      }
+      error: error => this.handleDataLoadError('users', error)
     });
+  }
+
+  private handleCachedUsers(users: User[]): Observable<User[]> {
+    this.users = users;
+    this.filteredUsers = users;
+    return of(users);
+  }
+
+  private fetchFreshUsers(cacheKey: string): Observable<User[]> {
+    return this.userService.getUsers().pipe(
+      tap(users => {
+        this.users = users;
+        this.filteredUsers = users;
+        this.cacheService.set(cacheKey, users);
+      })
+    );
+  }
+
+  // UI Event Handlers
+  onSearchChange(): void {
+    const searchTerm = this.searchTerm.toLowerCase();
+    this.filteredUsers = this.users.filter(user =>
+      user.first_name.toLowerCase().includes(searchTerm) ||
+      user.last_name.toLowerCase().includes(searchTerm) ||
+      user.email.toLowerCase().includes(searchTerm)
+    );
+  }
+
+  switchTab(tab: string): void {
+    this.activeTab = tab;
+    this.chartService.destroyCharts();
+    setTimeout(() => this.initializeCharts(), 100);
   }
 
   editUser(user: User): void {
@@ -148,130 +183,206 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.showUserModal = true;
   }
 
-  // dashboard.component.ts
   saveUser(): void {
+    if (!this.validateUserUpdate()) {
+      return;
+    }
+
+    const userData = this.prepareUserData();
+    
+    this.userService.updateUser(this.selectedUser!.id!, userData).pipe(
+      tap(updatedUser => this.handleUserUpdateSuccess(updatedUser)),
+      catchError(error => {
+        this.toastr.error('Failed to update user');
+        console.error('Update error:', error);
+        throw error;
+      }),
+      finalize(() => this.selectedUser = null)
+    ).subscribe();
+  }
+
+  private validateUserUpdate(): boolean {
     if (!this.selectedUser?.id) {
       this.toastr.error('Invalid user data');
-      return;
+      return false;
     }
 
-    if (this.selectedUser.password !== this.selectedUser.passwordConfirmation) {
+    if (this.selectedUser.password && 
+        this.selectedUser.password !== this.selectedUser.passwordConfirmation) {
       this.toastr.error('Passwords do not match');
-      return;
+      return false;
     }
 
-    // Map to backend-compatible format
-    const userData = {
-      first_name: this.selectedUser.first_name,
-      last_name: this.selectedUser.last_name,
-      email: this.selectedUser.email,
-      is_admin: this.selectedUser.isAdmin,
-      is_user: this.selectedUser.isUser,
-      ...(this.selectedUser.password && { password: this.selectedUser.password })
+    return true;
+  }
+
+  private prepareUserData(): Partial<User> {
+    const userData: Partial<User> = {
+      first_name: this.selectedUser!.first_name,
+      last_name: this.selectedUser!.last_name,
+      email: this.selectedUser!.email,
+      isAdmin: this.selectedUser!.isAdmin,
+      isUser: this.selectedUser!.isUser
     };
 
-    this.userService.updateUser(this.selectedUser.id, userData)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (updatedUser) => {
-          // Update local state
-          const index = this.users.findIndex(u => u.id === updatedUser.id);
-          if (index > -1) {
-            this.users[index] = {
-              ...updatedUser,
-              // Map backend response to frontend format
-              isAdmin: updatedUser.isAdmin,
-              isUser: updatedUser.isUser
-            };
-            this.filteredUsers = [...this.users];
-          }
-          this.toastr.success('User updated successfully');
-          this.selectedUser = null;
-          this.cacheService.clear('users');
-        },
-        error: (error) => {
-          this.toastr.error('Failed to update user');
-          console.error('Update error:', error);
-        }
-      });
+    if (this.selectedUser!.password) {
+      userData.password = this.selectedUser!.password;
+    }
+
+    return userData;
   }
 
-  deleteUser(userId: number): void {
-    if (!userId) {
-      this.toastr.error('Invalid user ID');
+  private handleUserUpdateSuccess(updatedUser: User): void {
+    const index = this.users.findIndex(u => u.id === updatedUser.id);
+    if (index > -1) {
+      this.users[index] = {
+        ...updatedUser,
+        isAdmin: updatedUser.isAdmin,
+        isUser: updatedUser.isUser
+      };
+      this.filteredUsers = [...this.users];
+    }
+    this.toastr.success('User updated successfully');
+  }
+
+  deleteUser(id: number): void {
+    if (!this.validateUserDeletion(id)) {
       return;
     }
 
-    this.userService.deleteUser(userId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.users = this.users.filter(user => user.id !== userId);
-          this.filteredUsers = [...this.users];
-          this.toastr.success('User deleted successfully');
-          this.cacheService.clear('users');
-        },
-        error: (error) => {
-          this.toastr.error('Failed to delete user');
-          console.error('Delete error:', error);
-        }
-      });
+    this.userService.deleteUser(id).pipe(
+      tap(() => this.handleUserDeletionSuccess(id)),
+      catchError(error => {
+        this.toastr.error('Failed to delete user');
+        console.error('Delete error:', error);
+        throw error;
+      })
+    ).subscribe();
   }
 
-  toggleUserRole(role: 'isAdmin' | 'isUser'): void {
-    if (!this.selectedUser) return;
+  private validateUserDeletion(id: number): boolean {
+    if (!id) {
+      this.toastr.error('Invalid user ID');
+      return false;
+    }
 
+    return confirm('Are you sure you want to delete this user?');
+  }
+
+  private handleUserDeletionSuccess(id: number): void {
+    this.users = this.users.filter(user => user.id !== id);
+    this.filteredUsers = [...this.users];
+    this.toastr.success('User deleted successfully');
+  }
+
+  registerUser(): void {
+    if (!this.validateRegistration()) {
+      return;
+    }
+
+    const registrationData = this.prepareRegistrationData();
+
+    this.authService.register(registrationData).pipe(
+      tap(() => this.handleRegistrationSuccess()),
+      catchError(error => {
+        this.toastr.error('Registration failed: ' + 
+          (error.error.message || 'Please try again.'));
+        throw error;
+      })
+    ).subscribe();
+  }
+
+  private validateRegistration(): boolean {
+    if (!this.newUser?.first_name || !this.newUser?.last_name || 
+        !this.newUser?.email || !this.newUser?.password || 
+        !this.newUser?.passwordConfirmation) {
+      this.toastr.error('Please fill in all required fields.');
+      return false;
+    }
+
+    if (this.newUser.password !== this.newUser.passwordConfirmation) {
+      this.toastr.error('Passwords do not match.');
+      return false;
+    }
+
+    return true;
+  }
+
+  private prepareRegistrationData(): any {
+    return {
+      ...this.newUser,
+      password_confirmation: this.newUser.passwordConfirmation
+    };
+  }
+
+  private handleRegistrationSuccess(): void {
+    this.toastr.success('User registered successfully');
+    this.newUser = this.getInitialUserState();
+    this.showRegisterModal = false;
+    this.loadUsers();
+  }
+
+  toggleUserRole(role: 'isAdmin' | 'isUser', userType: 'newUser' | 'selectedUser'): void {
+    if (!this[userType]) return;
+
+    const user = this[userType];
     if (role === 'isAdmin') {
-      // If setting as admin, remove user role
-      if (this.selectedUser.isAdmin) {
-        this.selectedUser.isUser = false;
-      }
-    } else if (role === 'isUser') {
-      // If setting as regular user, remove admin role
-      if (this.selectedUser.isUser) {
-        this.selectedUser.isAdmin = false;
-      }
+      user.isAdmin = !user.isAdmin;
+      if (user.isAdmin) user.isUser = false;
+    } else {
+      user.isUser = !user.isUser;
+      if (user.isUser) user.isAdmin = false;
     }
   }
 
-  setupDropdownMenu() {
+  logout(event: Event): void {
+    event.preventDefault();
+    
+    this.authService.logout().pipe(
+      tap(() => {
+        this.toastr.success('Logged out successfully');
+        this.router.navigate(['/login']);
+      }),
+      catchError(error => {
+        this.toastr.error('Logout error');
+        console.error('Logout error:', error);
+        throw error;
+      })
+    ).subscribe();
+  }
+
+  private setupDropdownMenu(): void {
     const navButton = document.getElementById('navButton');
     const dropdownMenu = document.getElementById('dropdownMenu');
 
-    if (navButton && dropdownMenu) {
-      navButton.addEventListener('click', function () {
-        if (this.parentElement) {
-          this.parentElement.classList.toggle('show');
-        } else {
-          console.error('Parent element not found');
-        }
-      });
-
-      document.addEventListener('click', function (event) {
-        const nav = document.querySelector('.nav');
-        const navButton = document.getElementById('navButton');
-
-        if (nav && !nav.contains(event.target as Node)) {
-          nav.classList.remove('show');
-        }
-      });
-    } else {
+    if (!navButton || !dropdownMenu) {
       console.error('Nav button or dropdown menu not found');
+      return;
     }
-  }
 
-  logout(event: Event) {
-    event.preventDefault(); // Prevent the default link behavior
-    this.authService.logout().subscribe({
-      next: () => {
-        console.log('Logged out successfully');
-        this.toastr.success('Logged out successfully');
-        this.router.navigate(['/login']); // Redirect to /login
-      },
-      error: (error) => {
-        console.error('Logout error:', error);
-        this.toastr.error('Logout error');
+    navButton.addEventListener('click', function() {
+      this.parentElement?.classList.toggle('show');
+    });
+
+    document.addEventListener('click', function(event) {
+      const nav = document.querySelector('.nav');
+      if (nav && !nav.contains(event.target as Node)) {
+        nav.classList.remove('show');
       }
     });
+  }
+
+  private initializeCharts(): void {
+    this.chartService.initializeCharts(
+      this.activeTab,
+      this.routeUsages,
+      this.locationSearches
+    );
+  }
+
+  private handleDataLoadError(dataType: string, error: any): void {
+    this.toastr.error(`Failed to load ${dataType}`);
+    console.error(`Error fetching ${dataType}:`, error);
+    this.isLoading = false;
   }
 }
