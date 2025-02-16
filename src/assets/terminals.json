@@ -1,5 +1,5 @@
 {
-    "version": "1.0.1",
+    "version": "1.0.2",
     "jeepneys": [
       {
         "route_id": 1,
@@ -8,8 +8,8 @@
           {
             "terminal_name": "Bayanihan Jeepney Terminal",
             "coordinates": {
-              "lat": 15.167845251212512,
-              "lng": 120.58447172650088
+              "lat": 15.167786139228943,
+              "lng": 120.58433819587546
             }
           }
         ]
@@ -21,8 +21,8 @@
           {
             "terminal_name": "Bayanihan Jeepney Terminal",
             "coordinates": {
-              "lat": 15.167845251212512,
-              "lng": 120.58447172650088
+              "lat": 15.167786139228943,
+              "lng": 120.58433819587546
             }
           }
         ]
@@ -34,8 +34,8 @@
           {
             "terminal_name": "Bayanihan Jeepney Terminal",
             "coordinates": {
-              "lat": 15.167845251212512,
-              "lng": 120.58447172650088
+              "lat": 15.167786139228943,
+              "lng": 120.58433819587546
             }
           }
         ]
@@ -47,8 +47,8 @@
           {
             "terminal_name": "Bayanihan Jeepney Terminal",
             "coordinates": {
-              "lat": 15.167845251212512,
-              "lng": 120.58447172650088
+              "lat": 15.167786139228943,
+              "lng": 120.58433819587546
             }
           }
         ]
@@ -75,8 +75,8 @@
           {
             "terminal_name": "SM Flagpole Area",
             "coordinates": {
-              "lat": 15.166990332241307,
-              "lng": 120.58012455198933
+              "lat": 15.167865096726194,
+              "lng": 120.58457557136889
             }
           }
         ]
