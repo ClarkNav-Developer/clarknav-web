@@ -4,6 +4,7 @@ import { MapService } from '../map/map.service';
 import { RoutesService } from '../routes/routes.service';
 import { WebsocketService } from '../websocket/websocket.service';
 import { GoogleMapsLoaderService } from '../geocoding/google-maps-loader.service';
+import { FloatingWindowService } from '../../../floating-window.service';
 
 declare var google: any;
 
@@ -15,6 +16,7 @@ export class NavigationService {
   private watchId: number | null = null; // To store the ID of the watchPosition listener
   private userMarker: google.maps.Marker | null = null; // Marker for the user's current location
   private locationUpdateInterval: any = null; // Interval for updating the location
+  private destinationReached: boolean = false; // Flag to indicate if the destination is reached
 
   /*------------------------------------------
   Constants and Bounds
@@ -49,7 +51,8 @@ export class NavigationService {
     private http: HttpClient,
     private ngZone: NgZone,
     private websocketService: WebsocketService,
-    private googleMapsLoader: GoogleMapsLoaderService // Add this line
+    private googleMapsLoader: GoogleMapsLoaderService, // Add this line
+    private floatingWindowService: FloatingWindowService
   ) {
     this.googleMapsLoader.load().then(() => {
       this.clarkBounds = new google.maps.LatLngBounds(
@@ -184,27 +187,23 @@ export class NavigationService {
       return;
     }
 
-    // Watch the user's location
     this.watchId = navigator.geolocation.watchPosition(
       (position) => {
         this.ngZone.run(() => {
           const { latitude, longitude } = position.coords;
           const newLocation: google.maps.LatLngLiteral = { lat: latitude, lng: longitude };
 
-          console.log('Real-time location updated:', newLocation);
-
-          // Update current location
           this.currentLocation = newLocation;
 
-          // Update user marker on the map
           if (!this.userMarker) {
             this.userMarker = this.mapService.addMarker(newLocation, 'User', true);
           } else {
             this.userMarker.setPosition(new google.maps.LatLng(latitude, longitude));
           }
 
-          // Update real-time location on the map
           this.mapService.updateRealTimeLocation(newLocation);
+
+          this.checkProximityToDestination(newLocation);
         });
       },
       (error) => {
@@ -212,18 +211,37 @@ export class NavigationService {
         alert('Unable to fetch real-time location. Please ensure location services are enabled.');
       },
       {
-        enableHighAccuracy: true, // Use GPS if available for more accurate tracking
-        maximumAge: 0,           // Don't use cached positions
-        timeout: 10000,          // Timeout after 10 seconds
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 10000,
       }
     );
 
-    // Set an interval to refresh the location every 10 seconds
     this.locationUpdateInterval = setInterval(() => {
       if (this.currentLocation) {
         this.mapService.updateRealTimeLocation(this.currentLocation);
       }
-    }, 10000); // 10 seconds
+    }, 10000);
+  }
+
+  private checkProximityToDestination(currentLocation: google.maps.LatLngLiteral): void {
+    if (!this.destination) return;
+
+    const distanceToDestination = this.routesService.calculateDistance(currentLocation, this.destination);
+
+    if (distanceToDestination < 150 && !this.destinationReached) {
+      navigator.vibrate([200, 100, 200, 100, 200]); // Vibrate when nearing the destination
+      this.destinationReached = true;
+    }
+
+    if (distanceToDestination < 30) {
+      this.showDestinationReachedPopup();
+      this.stopRealTimeTracking();
+    }
+  }
+
+  private showDestinationReachedPopup(): void {
+    this.floatingWindowService.open('destination-reached');
   }
 
   /**

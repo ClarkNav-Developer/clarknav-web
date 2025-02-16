@@ -2,3 +2,5 @@
 <app-tourist-spot *ngIf="(floatingWindowService.visibleComponent$ | async) === 'tourist-spot'"
                   [touristSpot]="(floatingWindowService.data$ | async)">
 </app-tourist-spot>
+<app-destination-reached *ngIf="(floatingWindowService.visibleComponent$ | async) === 'destination-reached'">
+</app-destination-reached>

@@ -22,6 +22,7 @@ import { FloatingWindowService } from '../floating-window.service';
 import { MapStyleService } from './services/map/map-style.service';
 import { MapInstanceService } from './services/map/map-instance.service';
 import { TouristSpotComponent } from './components/tourist-spot/tourist-spot.component';
+import { DestinationReachedComponent } from './components/destination-reached/destination-reached.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { TouristSpotComponent } from './components/tourist-spot/tourist-spot.com
     InformationComponent,
     TouristSpotComponent,
     PinchZoomDirective,
+    DestinationReachedComponent,
   ],
   imports: [
     CommonModule,
@@ -70,6 +72,7 @@ import { TouristSpotComponent } from './components/tourist-spot/tourist-spot.com
     RouteComponent,
     AccountComponent,
     TouristSpotComponent,
+    DestinationReachedComponent,
   ]
 })
 export class PublicModule { }
