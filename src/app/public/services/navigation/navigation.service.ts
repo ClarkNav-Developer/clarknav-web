@@ -1,4 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
+import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { MapService } from '../map/map.service';
 import { RoutesService } from '../routes/routes.service';
@@ -17,6 +18,9 @@ export class NavigationService {
   private userMarker: google.maps.Marker | null = null; // Marker for the user's current location
   private locationUpdateInterval: any = null; // Interval for updating the location
   private destinationReached: boolean = false; // Flag to indicate if the destination is reached
+
+  private stopNavigationSubject = new Subject<void>();
+  stopNavigation$ = this.stopNavigationSubject.asObservable();
 
   /*------------------------------------------
   Constants and Bounds
@@ -265,5 +269,12 @@ export class NavigationService {
       clearInterval(this.locationUpdateInterval);
       this.locationUpdateInterval = null;
     }
+  }
+
+  /**
+   * Stop navigation.
+   */
+  triggerStopNavigation() {
+    this.stopNavigationSubject.next();
   }
 }

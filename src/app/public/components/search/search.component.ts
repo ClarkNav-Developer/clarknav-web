@@ -62,7 +62,11 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private googleMapsLoader: GoogleMapsLoaderService,
     private authService: AuthService // Add this line
-  ) { }
+  ) { 
+    this.navigationService.stopNavigation$.subscribe(() => {
+      this.stopNavigation();
+    });
+   }
 
   /*------------------------------------------
   Lifecycle Hooks

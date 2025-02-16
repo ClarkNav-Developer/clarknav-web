@@ -1,5 +1,6 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { FloatingWindowService } from '../../../floating-window.service';
+import { NavigationService } from '../../services/navigation/navigation.service';
 
 @Component({
   selector: 'app-destination-reached',
@@ -7,12 +8,16 @@ import { FloatingWindowService } from '../../../floating-window.service';
   styleUrls: ['./destination-reached.component.css']
 })
 export class DestinationReachedComponent {
-  @Output() closeAndStopNavigation = new EventEmitter<void>();
+  @Output() closeEvent = new EventEmitter<void>();
 
-  constructor(private floatingWindowService: FloatingWindowService) {}
+  constructor(
+    private floatingWindowService: FloatingWindowService,
+    private navigationService: NavigationService
+  ) {}
 
   close() {
     this.floatingWindowService.close();
-    this.closeAndStopNavigation.emit();
+    this.closeEvent.emit(); // Emit the event when the close button is clicked
+    this.navigationService.triggerStopNavigation(); // Trigger stop navigation
   }
 }
