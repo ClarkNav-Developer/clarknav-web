@@ -7,7 +7,6 @@ import { PinchZoomDirective } from '../directives/pinch-zoom.directive';
 
 // Components
 import { AboutComponent } from './components/about/about.component';
-import { FloatingWindowComponent } from './components/floating-window/floating-window.component';
 import { MapComponent } from './components/map/map.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
 import { SearchComponent } from './components/search/search.component';
@@ -42,9 +41,6 @@ import { TouristSpotComponent } from './components/tourist-spot/tourist-spot.com
     // Search Components
     SearchComponent,
 
-    // Floating Window Components
-    FloatingWindowComponent,
-
     // Other Components
     AboutComponent,
     PlannerComponent,
@@ -70,10 +66,10 @@ import { TouristSpotComponent } from './components/tourist-spot/tourist-spot.com
     MapComponent,
     SearchComponent,
     NavigationComponent,
-    FloatingWindowComponent,
     PlannerComponent,
     RouteComponent,
     AccountComponent,
+    TouristSpotComponent,
   ]
 })
 export class PublicModule { }

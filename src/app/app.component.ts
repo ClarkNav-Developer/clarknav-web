@@ -4,6 +4,7 @@ import { MapInstanceService } from './public/services/map/map-instance.service';
 import { MapStyleService } from './public/services/map/map-style.service';
 import { MapService } from './public/services/map/map.service';
 import { GoogleMapsLoaderService } from './public/services/geocoding/google-maps-loader.service';
+import { FloatingWindowService } from './floating-window.service';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,8 @@ export class AppComponent implements OnInit {
   constructor(
     private mapInstanceService: MapInstanceService,
     private mapStyleService: MapStyleService,
-    private googleMapsLoader: GoogleMapsLoaderService // Add this line
+    private googleMapsLoader: GoogleMapsLoaderService, // Add this line
+    public floatingWindowService: FloatingWindowService
   ) {}
 
   ngOnInit() {

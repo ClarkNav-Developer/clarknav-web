@@ -1,1 +1,11 @@
-<p>tourist-spot works!</p>
+<div class="desktop-view">
+    <!-- <div class="floating-overlay" (click)="close()"></div> -->
+    <div class="floating-window">
+        <button class="close-btn" (click)="close()">X</button>
+        <div class="content" *ngIf="touristSpot">
+            <img [src]="touristSpot.image" alt="{{ touristSpot.name }}" />
+            <h2>{{ touristSpot.name }}</h2>
+            <p>{{ touristSpot.description }}</p>
+        </div>
+    </div>
+</div>

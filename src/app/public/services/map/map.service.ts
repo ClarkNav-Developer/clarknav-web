@@ -3,6 +3,7 @@ import { RoutesService } from '../routes/routes.service';
 import { TerminalMarkerService } from '../custom-marker/terminal-marker.service';
 import { TouristSpotService } from '../custom-marker/tourist-spot.service';
 import { GoogleMapsLoaderService } from '../geocoding/google-maps-loader.service';
+import { FloatingWindowService } from '../../../floating-window.service';
 
 declare var google: any;
 
@@ -44,7 +45,8 @@ export class MapService {
     private routesService: RoutesService,
     private terminalMarkerService: TerminalMarkerService,
     private touristSpotService: TouristSpotService,
-    private googleMapsLoader: GoogleMapsLoaderService // Add this line
+    private googleMapsLoader: GoogleMapsLoaderService, // Add this line
+    private floatingWindowService: FloatingWindowService
   ) {
     this.loadIcons();
   }
@@ -259,7 +261,7 @@ initializeMap(map: any) {
           lat: spot.coordinates.latitude,
           lng: spot.coordinates.longitude,
         };
-        this.addTouristSpotMarker(location, spot.name, spot.marker);
+        this.addTouristSpotMarker(location, spot.name, spot.marker, spot);
       });
     } else {
       console.error('Invalid spots array:', spots);
@@ -274,12 +276,8 @@ initializeMap(map: any) {
     const data = localStorage.getItem('touristSpots');
     return data ? JSON.parse(data) : null;
   }
-
-  private addTouristSpotMarker(
-    location: google.maps.LatLngLiteral,
-    title: string,
-    icon: string
-  ) {
+  
+  private addTouristSpotMarker(location: google.maps.LatLngLiteral, title: string, icon: string, spotData: any) {
     const marker = new google.maps.Marker({
       position: location,
       map: this.map,
@@ -288,6 +286,11 @@ initializeMap(map: any) {
         scaledSize: new google.maps.Size(60, 60), // Adjust size as needed
       },
       title: title,
+    });
+
+    marker.addListener('click', () => {
+      this.floatingWindowService.open('tourist-spot');
+      this.floatingWindowService.setData(spotData);
     });
 
     this.touristSpotMarkers.push(marker);

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.4",
   "spots": [
     {
       "name": "Air Force City",
@@ -8,8 +8,8 @@
         "longitude": 120.5414346956833
       },
       "marker": "public/tourist-spot/Air-Force-City.svg",
-      "description": "A historical site showcasing the history of the Philippine Air Force.",
-      "image": "public/tourist-spot/images/air-force-city.png"
+      "description": "A military-themed park within Clark, Pampanga, showcasing retired aircraft, helicopters, and aviation memorabilia from the Philippine Air Force. Visitors can explore these historical aircraft up close and enjoy open spaces ideal for picnics and outdoor activities.",
+      "image": "public/tourist-spot/images/air-force-city.webp"
     },
     {
       "name": "Bicentennial Park",
@@ -18,8 +18,8 @@
         "longitude": 120.51569428318288
       },
       "marker": "public/tourist-spot/Bicentennial-Park.svg",
-      "description": "A beautiful park commemorating the bicentennial anniversary.",
-      "image": "public/tourist-spot/images/bicentenial-park.png"
+      "description": "A scenic park in Clark featuring lush green landscapes, jogging paths, and picnic areas, perfect for relaxation and leisure. The park is a popular spot for families, fitness enthusiasts, and community gatherings due to its serene atmosphere.",
+      "image": "public/tourist-spot/images/bicentenial-park.webp"
     },
     {
       "name": "Deco Central Showroom",
@@ -28,8 +28,8 @@
         "longitude": 120.5348104532023
       },
       "marker": "public/tourist-spot/Deco-Central-Showroom.svg",
-      "description": "A showroom displaying various decorative items.",
-      "image": "public/tourist-spot/images/deco-central.png"
+      "description": "A premier home improvement and furniture showroom in Clark offering a wide selection of high-quality interior and exterior decor. It serves as a one-stop shop for homeowners, designers, and contractors looking for stylish and functional pieces.",
+      "image": "public/tourist-spot/images/deco-central.webp"
     },
     {
       "name": "Aqua Planet",
@@ -38,8 +38,8 @@
         "longitude": 120.49904728557948
       },
       "marker": "public/tourist-spot/Aqua-Planet.svg",
-      "description": "A water park with various attractions and slides.",
-      "image": "public/tourist-spot/images/aqua-planet.png"
+      "description": "One of the largest water parks in the Philippines, featuring over 38 exhilarating water slides, wave pools, and interactive play areas. Located in Clark, it provides an exciting aquatic experience for visitors of all ages, making it a popular destination for family outings.",
+      "image": "public/tourist-spot/images/aqua-planet.webp"
     },
     {
       "name": "Children's Playground",
@@ -48,8 +48,8 @@
         "longitude": 120.51840679994044
       },
       "marker": "public/tourist-spot/Childrens-Playground.svg",
-      "description": "A playground designed for children with various play structures.",
-      "image": "public/tourist-spot/images/childrens-playground.jpg"
+      "description": "A vibrant play area in Clark designed for kids, featuring various slides, swings, and climbing structures. Surrounded by green spaces, it offers a safe and fun environment where children can enjoy outdoor activities.",
+      "image": "public/tourist-spot/images/childrens-playground.webp"
     },
     {
       "name": "El Kabayo",
@@ -58,8 +58,8 @@
         "longitude": 120.541596761018
       },
       "marker": "public/tourist-spot/El-Kabayo.svg",
-      "description": "A horse riding facility offering various equestrian activities.",
-      "image": "public/tourist-spot/images/el-kabayo.png"
+      "description": "A Western-style ranch and horseback riding facility in Clark that offers guided trail rides, horseback riding lessons, and cowboy-themed attractions. The site replicates an old American West town, making it a unique experience for adventure seekers and equestrian enthusiasts.",
+      "image": "public/tourist-spot/images/el-kabayo.webp"
     },
     {
       "name": "Clark International Speedway",
@@ -68,8 +68,8 @@
         "longitude": 120.5359003093877
       },
       "marker": "public/tourist-spot/Clark-International-Speedway.svg",
-      "description": "A speedway hosting various motorsport events.",
-      "image": "public/tourist-spot/images/clark-speedway.png"
+      "description": "A world-class motorsports venue in Clark, Pampanga, featuring a professional-grade racetrack for car and motorcycle racing events. It hosts local and international racing competitions, as well as track days for motorsports enthusiasts.",
+      "image": "public/tourist-spot/images/clark-speedway.webp"
     },
     {
       "name": "Clark Museum",
@@ -78,8 +78,8 @@
         "longitude": 120.5268649713241
       },
       "marker": "public/tourist-spot/Clark-Museum.svg",
-      "description": "A museum showcasing the history and culture of Clark.",
-      "image": "public/tourist-spot/images/clark-museum.png"
+      "description": "A cultural and historical museum showcasing the rich heritage of Clark, from its pre-colonial past to its transformation into an economic hub. It features interactive exhibits, artifacts, and multimedia presentations that highlight the area's military and aviation history.",
+      "image": "public/tourist-spot/images/clark-museum.webp"
     },
     {
       "name": "Clark Safari",
@@ -88,8 +88,8 @@
         "longitude": 120.49791544007869
       },
       "marker": "public/tourist-spot/Clark-Safari.svg",
-      "description": "A safari park with various animals and attractions.",
-      "image": "public/tourist-spot/images/clark-safari.png"
+      "description": "A wildlife park in Clark that houses a diverse collection of exotic animals, including lions, tigers, giraffes, and reptiles. Visitors can enjoy close encounters with these animals through guided tours, educational exhibits, and feeding sessions.",
+      "image": "public/tourist-spot/images/clark-safari.webp"
     },
     {
       "name": "Dinosaur Island",
@@ -98,8 +98,8 @@
         "longitude": 120.54589929450535
       },
       "marker": "public/tourist-spot/Dinosaur-Island.svg",
-      "description": "A theme park featuring life-sized dinosaur replicas.",
-      "image": "public/tourist-spot/images/dinosuar-island.png"
+      "description": "A prehistoric-themed park in Clark featuring life-sized animatronic dinosaurs, fossil exhibits, and interactive attractions. It offers an educational and immersive experience for visitors, making it a favorite destination for families and school trips.",
+      "image": "public/tourist-spot/images/dinosuar-island.webp"
     },
     {
       "name": "Fontana Casino",
@@ -108,8 +108,8 @@
         "longitude": 120.50850416381738
       },
       "marker": "public/tourist-spot/Fontana-Casino.svg",
-      "description": "A casino offering various gaming and entertainment options.",
-      "image": "public/tourist-spot/images/fontana-casino.png"
+      "description": "A luxurious casino within Fontana Leisure Park, offering a range of gaming options including slot machines, poker, and table games. The casino caters to both casual and high-stakes players in a sophisticated and entertaining atmosphere.",
+      "image": "public/tourist-spot/images/fontana-casino.webp"
     },
     {
       "name": "Fontana Water Park",
@@ -118,8 +118,8 @@
         "longitude": 120.51095373222407
       },
       "marker": "public/tourist-spot/Fontana-Water-Park.svg",
-      "description": "A water park with various pools and slides.",
-      "image": "public/tourist-spot/images/fontana-waterpark.png"
+      "description": "A sprawling water park inside Fontana Leisure Park, featuring giant slides, a wave pool, a lazy river, and kid-friendly play zones. It is a top destination for families looking for a refreshing and fun-filled water adventure.",
+      "image": "public/tourist-spot/images/fontana-waterpark.webp"
     },
     {
       "name": "Hann Casino & Resort",
@@ -128,8 +128,8 @@
         "longitude": 120.52477012493614
       },
       "marker": "public/tourist-spot/Hann-Casino-and-Resort.svg",
-      "description": "A luxury resort and casino offering various amenities.",
-      "image": "public/tourist-spot/images/hann.jpg"
+      "description": "A premium integrated resort and casino in Clark, offering world-class gaming, fine dining, luxury accommodations, and entertainment. It is known for its upscale ambiance and attracts both local and international high-rollers.",
+      "image": "public/tourist-spot/images/hann.webp"
     },
     {
       "name": "Midori Hotel & Casino",
@@ -138,8 +138,8 @@
         "longitude": 120.52148388427503
       },
       "marker": "public/tourist-spot/Midori-Hotel-and-Casino.svg",
-      "description": "A hotel and casino offering luxury accommodations and gaming.",
-      "image": "public/tourist-spot/images/midori.jpg"
+      "description": "A five-star hotel and casino in Clark that boasts modern architecture, elegant rooms, and a high-end gaming experience. It is a preferred destination for luxury travelers seeking relaxation, fine dining, and entertainment.",
+      "image": "public/tourist-spot/images/midori.webp"
     },
     {
       "name": "Nayong Pilipino",
@@ -148,8 +148,8 @@
         "longitude": 120.52976915419806
       },
       "marker": "public/tourist-spot/Nayong-Pilipino.svg",
-      "description": "A cultural park showcasing the heritage of the Philippines.",
-      "image": "public/tourist-spot/images/nayong-pilipino.png"
+      "description": "A cultural and heritage park in Clark that showcases replicas of historical sites, traditional Filipino houses, and indigenous villages. It provides visitors with a glimpse into the diverse cultures and traditions of the Philippines through exhibits and performances.",
+      "image": "public/tourist-spot/images/nayong-pilipino.webp"
     },
     {
       "name": "Clark Parade Grounds",
@@ -158,8 +158,8 @@
         "longitude": 120.52427578128665
       },
       "marker": "public/tourist-spot/Clark-Parade-Grounds.svg",
-      "description": "A large open space used for various events and activities.",
-      "image": "public/tourist-spot/images/clark-parade-ground.png"
+      "description": "A spacious open field in Clark often used for sports activities, community events, and military parades. The area features jogging and biking trails, making it a popular spot for fitness enthusiasts and casual visitors.",
+      "image": "public/tourist-spot/images/clark-parade-ground.webp"
     },
     {
       "name": "Royce Hotel & Casino",
@@ -168,7 +168,7 @@
         "longitude": 120.52994060974713
       },
       "marker": "public/tourist-spot/Royce-Hotel-and-Casino.svg",
-      "description": "A hotel and casino offering luxury accommodations and gaming.",
+      "description": "A stylish hotel and casino in Clark featuring comfortable accommodations, fine dining restaurants, and an exciting gaming floor. It offers a blend of leisure and entertainment for both business and recreational travelers.",
       "image": "public/tourist-spot/images/royce.webp"
     },
     {
@@ -178,7 +178,7 @@
         "longitude": 120.52498107507229
       },
       "marker": "public/tourist-spot/Widus-Hotel-Casino.svg",
-      "description": "A hotel and casino offering luxury accommodations and gaming.",
+      "description": "A modern resort and casino in Clark known for its elegant hotel rooms, upscale dining options, and lively gaming experience. It provides a relaxing yet sophisticated ambiance, attracting both tourists and business guests.",
       "image": "public/tourist-spot/images/widus.webp"
     }
   ]

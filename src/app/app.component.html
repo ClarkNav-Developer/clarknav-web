@@ -1,1 +1,4 @@
 <router-outlet></router-outlet>
+<app-tourist-spot *ngIf="(floatingWindowService.visibleComponent$ | async) === 'tourist-spot'"
+                  [touristSpot]="(floatingWindowService.data$ | async)">
+</app-tourist-spot>
