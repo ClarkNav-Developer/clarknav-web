@@ -153,21 +153,27 @@ initializeMap(map: any) {
   private loadAndDisplayTerminals() {
     this.loadIcons().then(() => {
       const cachedTerminals = localStorage.getItem('terminalsData');
-      if (cachedTerminals) {
-        console.log(
-          'Terminals loaded from cache:',
-          JSON.parse(cachedTerminals)
-        );
-        const data = JSON.parse(cachedTerminals);
-        this.processTerminalsData(data);
-      } else {
-        this.terminalMarkerService.getTerminals().subscribe((data: any) => {
+      this.terminalMarkerService.getTerminals().subscribe((data: any) => {
+        const serverVersion = data.version;
+  
+        if (cachedTerminals) {
+          const cachedData = JSON.parse(cachedTerminals);
+          if (cachedData.version === serverVersion) {
+            console.log('Terminals loaded from cache:', cachedData);
+            this.processTerminalsData(cachedData);
+          } else {
+            console.log('Fetching terminals from service');
+            console.log('Terminals response:', data); // Log the response
+            localStorage.setItem('terminalsData', JSON.stringify(data));
+            this.processTerminalsData(data);
+          }
+        } else {
           console.log('Fetching terminals from service');
           console.log('Terminals response:', data); // Log the response
           localStorage.setItem('terminalsData', JSON.stringify(data));
           this.processTerminalsData(data);
-        });
-      }
+        }
+      });
     });
   }
 
@@ -238,11 +244,13 @@ initializeMap(map: any) {
   --------------------------------------------*/
   loadAndDisplayTouristSpots() {
     const cachedData = this.getCachedTouristSpots();
-    if (cachedData && cachedData.spots) {
-      console.log('Tourist spots loaded from cache:', cachedData);
-      this.displayTouristSpots(cachedData.spots);
-    } else {
-      this.touristSpotService.getTouristSpots().subscribe((data: any) => {
+    this.touristSpotService.getTouristSpots().subscribe((data: any) => {
+      const serverVersion = data.version;
+  
+      if (cachedData && cachedData.version === serverVersion) {
+        console.log('Tourist spots loaded from cache:', cachedData);
+        this.displayTouristSpots(cachedData.spots);
+      } else {
         if (data && data.spots) {
           console.log('Tourist spots loaded from API:', data);
           this.cacheTouristSpots(data);
@@ -250,8 +258,8 @@ initializeMap(map: any) {
         } else {
           console.error('Invalid tourist spots data:', data);
         }
-      });
-    }
+      }
+    });
   }
 
   private displayTouristSpots(spots: any) {
@@ -271,7 +279,7 @@ initializeMap(map: any) {
   private cacheTouristSpots(data: any) {
     localStorage.setItem('touristSpots', JSON.stringify(data));
   }
-
+  
   private getCachedTouristSpots(): any {
     const data = localStorage.getItem('touristSpots');
     return data ? JSON.parse(data) : null;

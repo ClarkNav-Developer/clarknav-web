@@ -23,10 +23,9 @@ export class RoutesService {
   private readonly cacheKey = 'routes';
   private readonly versionKey = 'routesVersion';
   private routesLoadedSubject = new BehaviorSubject<boolean>(false);
+  private routesLoaded = false; // Add a flag to track if routes are already loaded
 
-  constructor(private http: HttpClient) {
-    this.loadRoutes();
-  }
+  constructor(private http: HttpClient) {}
 
   // ================================
   // Route Loading Methods
@@ -41,12 +40,17 @@ export class RoutesService {
   }
 
   loadRoutes() {
+
+    if (this.routesLoaded) {
+      return; // If routes are already loaded, do nothing
+    }
+
     const cachedVersion = localStorage.getItem(this.versionKey);
     const cachedRoutes = localStorage.getItem(this.cacheKey);
-
+  
     this.http.get<any>(this.routesUrl).subscribe(data => {
       const serverVersion = data.version;
-
+  
       if (cachedVersion !== serverVersion || !cachedRoutes) {
         this.jeepneyRoutes = data.routes.jeepney || [];
         this.busRoutes = data.routes.bus || [];
@@ -55,9 +59,17 @@ export class RoutesService {
         console.log('Routes loaded from server:', data);
       } else {
         const cachedData = JSON.parse(cachedRoutes);
-        this.jeepneyRoutes = cachedData.routes.jeepney || [];
-        this.busRoutes = cachedData.routes.bus || [];
-        console.log('Routes loaded from cache:', cachedData);
+        if (cachedData.version === serverVersion) {
+          this.jeepneyRoutes = cachedData.routes.jeepney || [];
+          this.busRoutes = cachedData.routes.bus || [];
+          console.log('Routes loaded from cache:', cachedData);
+        } else {
+          this.jeepneyRoutes = data.routes.jeepney || [];
+          this.busRoutes = data.routes.bus || [];
+          localStorage.setItem(this.cacheKey, JSON.stringify(data));
+          localStorage.setItem(this.versionKey, serverVersion);
+          console.log('Routes loaded from server:', data);
+        }
       }
       this.routesLoadedSubject.next(true); // Notify that routes are loaded
     });
