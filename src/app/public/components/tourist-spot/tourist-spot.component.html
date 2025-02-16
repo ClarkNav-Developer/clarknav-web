@@ -1,9 +1,9 @@
 <div class="desktop-view">
     <div class="floating-overlay" (click)="close()"></div>
-    <div class="floating-window">
+    <div class="floating-window" *ngIf="isVisible" @fadeInOut>
         <button class="close-btn" (click)="close()">X</button>
         <div class="content" *ngIf="touristSpot">
-            <img [src]="touristSpot.image" alt="{{ touristSpot.name }}" />
+            <img lazy="loading" [src]="touristSpot.image" alt="{{ touristSpot.name }}" />
             <h2>{{ touristSpot.name }}</h2>
             <p>{{ touristSpot.description }}</p>
         </div>
@@ -11,10 +11,10 @@
 </div>
 <div class="mobile-view">
     <div class="floating-overlay" (click)="close()"></div>
-    <div class="floating-window">
+    <div class="floating-window" *ngIf="isVisible" @fadeInOut>
         <button class="close-btn" (click)="close()">X</button>
         <div class="content-mobile" *ngIf="touristSpot">
-            <img [src]="touristSpot.image" alt="{{ touristSpot.name }}" />
+            <img lazy="loading" [src]="touristSpot.image" alt="{{ touristSpot.name }}" />
             <h2>{{ touristSpot.name }}</h2>
             <p>{{ touristSpot.description }}</p>
         </div>
