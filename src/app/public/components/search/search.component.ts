@@ -44,7 +44,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   private updateDurationInterval: any = null;
 
   private trackingInterval: any = null;
-  private speed: number = 60; // Assume a default speed of 60 km/h
   // Add a flag to check if a search has been performed
   searchPerformed = false;
   selectedTransportType: string = 'All'; // Track selected transport type
@@ -377,7 +376,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
           };
 
           if (this.currentLocation && this.destination) {
-            this.fareService.calculateRemainingDuration(this.currentLocation, this.destination, this.speed, (duration, arrivalTime) => {
+            this.fareService.calculateRemainingDuration(this.currentLocation, this.destination, (duration, arrivalTime) => {
               this.route.duration = duration;
               this.arrivalTime = arrivalTime;
               console.log('Updated duration:', duration); // Log the updated duration

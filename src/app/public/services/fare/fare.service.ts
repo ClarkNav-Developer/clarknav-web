@@ -38,6 +38,37 @@ export class FareService {
         origins: [currentLocation],
         destinations: [destination],
         travelMode: google.maps.TravelMode.DRIVING,
+        drivingOptions: {
+          departureTime: new Date(), // Uses real-time traffic
+          trafficModel: google.maps.TrafficModel.BEST_GUESS // Other options: PESSIMISTIC, OPTIMISTIC
+        }
+      },
+      (response: google.maps.DistanceMatrixResponse, status: google.maps.DistanceMatrixStatus) => {
+        if (status === 'OK' && response.rows[0].elements[0].status === 'OK') {
+          let durationText = response.rows[0].elements[0].duration_in_traffic?.text || response.rows[0].elements[0].duration.text;
+          durationText = durationText.replace(' mins', 'm').replace(' min', 'm');
+    
+          const durationInMinutes = parseInt(durationText.replace('m', ''), 10);
+          const currentTime = new Date();
+          const arrivalTime = new Date(currentTime.getTime() + durationInMinutes * 60000);
+          const arrivalTimeString = arrivalTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
+          callback(durationText, arrivalTimeString);
+        } else {
+          console.error('Error fetching duration: ', status);
+        }
+      }
+    );
+    
+  }
+
+  calculateRemainingDuration(currentLocation: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, callback: (duration: string, arrivalTime: string) => void): void {
+    const service = new google.maps.DistanceMatrixService();
+    service.getDistanceMatrix(
+      {
+        origins: [currentLocation],
+        destinations: [destination],
+        travelMode: google.maps.TravelMode.DRIVING,
       },
       (response: google.maps.DistanceMatrixResponse, status: google.maps.DistanceMatrixStatus) => {
         if (status === 'OK' && response.rows[0].elements[0].status === 'OK') {
@@ -56,26 +87,5 @@ export class FareService {
         }
       }
     );
-  }
-
-  calculateRemainingDuration(currentLocation: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, speed: number, callback: (duration: string, arrivalTime: string) => void): void {
-    this.websocketService.sendLocationUpdate(currentLocation);
-
-    this.websocketService.subscribeToRealTimeTracking((data) => {
-      const distanceInMeters = google.maps.geometry.spherical.computeDistanceBetween(
-        new google.maps.LatLng(data.lat, data.lng),
-        new google.maps.LatLng(destination.lat, destination.lng)
-      );
-      const distanceInKm = distanceInMeters / 1000;
-      const remainingDurationInMinutes = distanceInKm / speed * 60;
-      const remainingDurationText = `${Math.round(remainingDurationInMinutes)}m`;
-
-      // Calculate the estimated arrival time
-      const currentTime = new Date();
-      const arrivalTime = new Date(currentTime.getTime() + remainingDurationInMinutes * 60000);
-      const arrivalTimeString = arrivalTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-      callback(remainingDurationText, arrivalTimeString);
-    });
   }
 }
