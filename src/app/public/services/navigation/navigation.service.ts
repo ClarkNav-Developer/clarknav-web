@@ -238,7 +238,7 @@ export class NavigationService {
       this.destinationReached = true;
     }
 
-    if (distanceToDestination < 30) {
+    if (distanceToDestination < 20) {
       this.showDestinationReachedPopup();
       this.stopRealTimeTracking();
     }
