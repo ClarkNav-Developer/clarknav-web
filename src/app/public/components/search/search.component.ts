@@ -37,6 +37,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedRoute: any;
   highlightedRoute: any = null;
   route: any = { duration: null };
+  private isNavigationActive: boolean = false;
 
   // Time data
   currentTime: string = '';
@@ -327,21 +328,22 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
       this.showNavigationWindow = false;
       this.showNavigationStatus = true; // Show navigation status
       this.showSideNav = false; // Hide side-nav-mobile
-
+  
       // Hide the mobile container
       const mobileContainer = document.querySelector('.mobile-container');
       if (mobileContainer) {
         mobileContainer.classList.remove('show');
       }
-
+  
       // Hide the bottom sheet
       const bottomSheet = document.getElementById('bottomSheet');
       if (bottomSheet) {
         bottomSheet.style.height = '0';
         bottomSheet.classList.remove('show');
       }
-
+  
       // Start updating duration
+      this.isNavigationActive = true;
       this.startUpdatingDuration();
     } else {
       alert('Please select a route to start navigation.');
@@ -349,14 +351,17 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   stopNavigation(): void {
+    console.log('Stopping navigation...');
     this.navigationService.stopRealTimeTracking();
     this.mapService.clearMap(); // Clear all markers and routes rendered on the map
     this.mapService.removeRealTimeMarker(); // Remove the real-time marker
     this.showNavigationStatus = false; // Hide navigation status
     this.showSideNav = true; // Show side-nav-mobile
-
+  
     // Stop updating duration
+    this.isNavigationActive = false;
     this.stopUpdatingDuration();
+    console.log('Navigation stopped and duration update interval cleared.');
   }
 
   /*------------------------------------------
@@ -372,13 +377,13 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private startUpdatingDuration(): void {
     this.updateDurationInterval = setInterval(() => {
-      if (navigator.geolocation) {
+      if (this.isNavigationActive && navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
           this.currentLocation = {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           };
-
+  
           if (this.currentLocation && this.destination) {
             this.fareService.calculateRemainingDuration(this.currentLocation, this.destination, (duration, arrivalTime) => {
               this.route.duration = duration;
@@ -400,6 +405,9 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.updateDurationInterval) {
       clearInterval(this.updateDurationInterval);
       this.updateDurationInterval = null;
+      console.log('Duration update interval cleared.');
+    } else {
+      console.log('No duration update interval to clear.');
     }
   }
 
