@@ -17,7 +17,6 @@ export class LocationService {
   destination: google.maps.LatLngLiteral | null = null;
   currentLocationAddress = 'Loading...';
   destinationAddress = 'Loading...';
-  public locationSearchesUrl = environment.locationSearchesUrl;
 
   constructor(
     private geocodingService: GeocodingService,
@@ -160,10 +159,10 @@ export class LocationService {
 
   private createLocationSearch(origin: string, destination: string): Observable<any> {
     const body = { origin, destination };
-    return this.http.post(this.locationSearchesUrl, body);
+    return this.http.post(environment.locationSearches.storeLocationSearch, body);
   }
 
   getLocationSearches(): Observable<LocationSearch[]> {
-    return this.http.get<LocationSearch[]>(this.locationSearchesUrl);
+    return this.http.get<LocationSearch[]>(environment.locationSearches.getLocationSearches);
   }
 }

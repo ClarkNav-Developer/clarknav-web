@@ -2,21 +2,20 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { authGuard } from './auth/auth.guard';
 import { LoginComponent } from './admin/components/login/login.component'; // Import LoginComponent
+import { adminGuard } from './auth/admin.guard';
 
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () =>
-      import('./public/public.module').then((m) => m.PublicModule),
+    loadChildren: () => import('./public/public.module').then((m) => m.PublicModule),
   },
   {
     path: 'admin',
-    loadChildren: () =>
-      import('./admin/admin.module').then((m) => m.AdminModule),
-    canActivate: [authGuard], // Protect the admin routes with AuthGuard
+    loadChildren: () => import('./admin/admin.module').then((m) => m.AdminModule),
+    canActivate: [authGuard, adminGuard], // Add both guards
   },
-  { path: 'login', component: LoginComponent }, // Add login route here
-  { path: '**', redirectTo: '' }, // Wildcard route for a 404 page can be added here
+  { path: 'login', component: LoginComponent },
+  { path: '**', redirectTo: '' },
 ];
 
 @NgModule({

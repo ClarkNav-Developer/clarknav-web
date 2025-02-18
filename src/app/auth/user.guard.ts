@@ -9,14 +9,20 @@ export const userGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (!authService.isAuthenticated) {
-    return of(true); 
-  }
+  return authService.isAuthenticated.pipe(
+    map(isAuthenticated => {
+      if (!isAuthenticated) {
+        router.navigate(['/login']);
+        return false;
+      }
 
-  if (authService.getCurrentUser()?.isAdmin) {
-    router.navigate(['/admin/admin-dashboard']);
-    return false;
-  }
-
-  return of(true);
+      const currentUser = authService.currentUserSubject.value;
+      if (currentUser?.isUser) {
+        return true;
+      } else {
+        router.navigate(['/']);
+        return false;
+      }
+    })
+  );
 };

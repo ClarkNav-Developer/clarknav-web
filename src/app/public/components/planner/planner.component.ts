@@ -55,22 +55,13 @@ export class PlannerComponent implements OnInit {
   }
 
   private checkAuthentication(): void {
-    if (this.authService.isAuthenticated) {
-      this.isLoggedIn = true;
-      this.fetchSavedRoutes();
-    } else {
-      this.authService.getIdentity().subscribe({
-        next: (isAuthenticated) => {
-          this.isLoggedIn = isAuthenticated;
-          if (isAuthenticated) {
-            this.fetchSavedRoutes();
-          }
-        },
-        error: (error) => {
-          console.error('Error fetching user identity:', error);
-        }
-      });
-    }
+    this.authService.isAuthenticated.subscribe(isAuthenticated => {
+      console.log('Is Authenticated:', isAuthenticated); // Debugging: Check authentication state
+      this.isLoggedIn = isAuthenticated;
+      if (isAuthenticated) {
+        this.fetchSavedRoutes();
+      }
+    });
   }
 
   private geocodeAddresses(): void {
@@ -86,7 +77,11 @@ export class PlannerComponent implements OnInit {
   }
 
   private fetchSavedRoutes(): void {
-    this.http.get<any[]>(environment.customRoutesUrl).subscribe({
+    if (!this.isLoggedIn) {
+      return;
+    }
+
+    this.http.get<any[]>(environment.customRoutes.getCustomRoutes, { withCredentials: true }).subscribe({
       next: (routes) => {
         this.savedRoutes = routes;
       },
@@ -156,7 +151,7 @@ export class PlannerComponent implements OnInit {
       departure_date: this.routeData.departureDate,
     };
 
-    this.http.post(environment.customRoutesUrl, routePayload).subscribe({
+    this.http.post(environment.customRoutes.storeCustomRoute, routePayload, { withCredentials: true }).subscribe({
       next: (response) => {
         console.log('Route saved:', response);
         alert('Route successfully saved.');
@@ -176,7 +171,7 @@ export class PlannerComponent implements OnInit {
       return;
     }
 
-    this.http.delete(`${environment.customRoutesUrl}/${routeId}`).subscribe({
+    this.http.delete(`${environment.customRoutes.deleteCustomRoute}`, { withCredentials: true }).subscribe({
       next: () => {
         alert('Route deleted successfully.');
         this.fetchSavedRoutes();

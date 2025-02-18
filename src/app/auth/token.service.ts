@@ -14,10 +14,6 @@ export class TokenService {
     return localStorage.getItem('authToken');
   }
 
-  getRefreshToken(): string | null {
-    return localStorage.getItem('refreshToken');
-  }
-
   setTokens(token: string, refreshToken: string): void {
     localStorage.setItem('authToken', token);
     localStorage.setItem('refreshToken', refreshToken);
@@ -26,24 +22,5 @@ export class TokenService {
   clearTokens(): void {
     localStorage.removeItem('authToken');
     localStorage.removeItem('refreshToken');
-  }
-
-  refreshToken(): Observable<any> {
-    const refreshToken = this.getRefreshToken();
-    if (!refreshToken) {
-      return of(null);
-    }
-
-    return this.http.post<any>(environment.refreshUrl, { refresh_token: refreshToken }, { withCredentials: true }).pipe(
-      tap(response => {
-        if (response.token) {
-          this.setTokens(response.token, response.refresh_token);
-        }
-      }),
-      catchError(error => {
-        this.clearTokens();
-        return of(null);
-      })
-    );
   }
 }

@@ -250,6 +250,6 @@ export class RoutesService {
   }
 
   getRouteUsages(): Observable<RouteUsage[]> {
-    return this.http.get<RouteUsage[]>(environment.routeUsagesUrl);
+    return this.http.get<RouteUsage[]>(environment.routeUsages.getRouteUsages);
   }
 }

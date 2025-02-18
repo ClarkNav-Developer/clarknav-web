@@ -1,174 +1,281 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { catchError, map, shareReplay, tap } from 'rxjs/operators';
-import { User } from '../models/user';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, BehaviorSubject, catchError, throwError, map, tap, of, switchMap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
-import { TokenService } from './token.service';
+import { User } from '../models/user';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
-  private currentUser: User | null = null;
-  private apiUrl = environment.apiUrl;
-  public isAuthenticated = false;
-  private cachedIdentity: Observable<boolean> | null = null;
+  isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  currentUserSubject = new BehaviorSubject<User | null>(null);
+  private isEmailVerifiedSubject = new BehaviorSubject<boolean>(false);
+  private readonly STORAGE_KEY = 'user_session';
 
-  constructor(private http: HttpClient, private router: Router, private tokenService: TokenService) {
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {
     this.initializeAuthState();
   }
 
-  // Initialize authentication state
-  private initializeAuthState() {
-    const token = this.tokenService.getToken();
-    if (token) {
-      this.isAuthenticated = true;
-      this.getIdentity().subscribe({
-        next: (isAuthenticated) => {
-          if (!isAuthenticated) {
-            this.clearTokensAndLogout();
-          }
-        },
-        error: () => {
-          this.clearTokensAndLogout();
+  // Initialize auth state and get CSRF token
+  private initializeAuthState(): void {
+    this.getCsrfToken().subscribe({
+      next: () => {
+        const storedSession = sessionStorage.getItem(this.STORAGE_KEY);
+        if (storedSession) {
+          const session = JSON.parse(storedSession);
+          this.setAuthenticated(true, session.user);
+          this.isEmailVerifiedSubject.next(!!session.user.email_verified_at);
+          this.validateSession();
         }
-      });
-    }
+      },
+      error: (error) => {
+        console.error('Failed to get CSRF token:', error);
+        this.handleAuthenticationFailure();
+      }
+    });
   }
 
-  // Clear tokens and log out
-  private clearTokensAndLogout() {
-    this.tokenService.clearTokens();
-    this.isAuthenticated = false;
-    this.currentUser = null;
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('refreshToken');
+  // Get CSRF token from Laravel Sanctum
+  private getCsrfToken(): Observable<void> {
+    return this.http.get<void>(`${environment.webUrl}/sanctum/csrf-cookie`, {
+      withCredentials: true
+    });
+  }
+
+  // Validate current session
+  private validateSession(): void {
+    this.getAuthenticatedUser().subscribe({
+      next: (user) => {
+        if (!user) {
+          this.handleAuthenticationFailure();
+        }
+      },
+      error: () => this.handleAuthenticationFailure()
+    });
+  }
+
+  // Handle auth failure
+  private handleAuthenticationFailure(): void {
+    this.clearSession();
     this.router.navigate(['/login']);
   }
 
-  // Login method
-  login(email: string, password: string): Observable<any> {
-    const loginData = { email, password };
-    return this.http.post<any>(environment.loginUrl, loginData, { withCredentials: true }).pipe(
-      map(response => {
-        if (response.token && response.user) {
-          this.currentUser = response.user;
-          this.tokenService.setTokens(response.token, response.refresh_token);
-          localStorage.setItem('authToken', response.token);
-          localStorage.setItem('refreshToken', response.refresh_token);
-          this.isAuthenticated = true;
-          return response;
-        } else {
-          throw new Error('Login failed');
-        }
+  // Clear session data
+  private clearSession(): void {
+    sessionStorage.removeItem(this.STORAGE_KEY);
+    this.setAuthenticated(false, null);
+    this.isEmailVerifiedSubject.next(false);
+  }
+
+  // Update auth state
+  private setAuthenticated(isAuthenticated: boolean, user: User | null): void {
+    this.isAuthenticatedSubject.next(isAuthenticated);
+    this.currentUserSubject.next(user);
+  
+    if (isAuthenticated && user) {
+      sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify({ user }));
+      this.isEmailVerifiedSubject.next(!!user.email_verified_at);
+      console.log('User logged in:', user); // Debug log
+    }
+  }
+
+  // Login
+  login(email: string, password: string, rememberMe: boolean): Observable<any> {
+    return this.getCsrfToken().pipe(
+      switchMap(() => {
+        return this.http.post<any>(environment.auth.login, {
+          email,
+          password,
+          remember: rememberMe
+        }, { withCredentials: true }).pipe(
+          tap(response => {
+            console.log('Login API Response:', response); // Debug log
+            if (response && response.user) {
+              this.setAuthenticated(true, response.user);
+              this.handleRoleBasedRedirection(response.user);
+            }
+          }),
+          catchError(error => {
+            console.error('Login API Error:', error); // Debug log
+            throw error;
+          })
+        );
       }),
-      catchError(error => {
-        console.error('Login error occurred:', error);
-        alert('Login failed. Please check your credentials and try again.');
-        return of(null);
-      })
+      catchError(this.handleError('Login failed'))
     );
   }
 
-  // Logout method
+  // Register
+  register(user: Partial<User>): Observable<any> {
+    return this.getCsrfToken().pipe(
+      map(() => {
+        return this.http.post<any>(environment.auth.register, user, {
+          withCredentials: true
+        }).pipe(
+          tap(response => {
+            if (response && response.user) {
+              // Don't automatically authenticate after registration
+              // User needs to verify email first
+              this.router.navigate(['/verify-email']);
+            }
+          })
+        );
+      }),
+      catchError(this.handleError('Registration failed'))
+    );
+  }
+
+  // Send email verification notification
+  sendVerificationEmail(): Observable<any> {
+    return this.http.post<any>(`${environment.webUrl}/email/verification-notification`, {}, {
+      withCredentials: true
+    }).pipe(
+      catchError(this.handleError('Failed to send verification email'))
+    );
+  }
+
+  // Verify email
+  verifyEmail(id: string, hash: string): Observable<any> {
+    return this.http.get<any>(`${environment.webUrl}/verify-email/${id}/${hash}`, {
+      withCredentials: true
+    }).pipe(
+      tap(response => {
+        if (response && response.user) {
+          this.setAuthenticated(true, response.user);
+          this.isEmailVerifiedSubject.next(true);
+        }
+      }),
+      catchError(this.handleError('Email verification failed'))
+    );
+  }
+
+  // Logout
   logout(): Observable<any> {
-    return this.http.post<any>(environment.logoutUrl, {}, { withCredentials: true }).pipe(
+    return this.http.post<any>(environment.auth.logout, {}, {
+      withCredentials: true
+    }).pipe(
       tap(() => {
-        this.clearTokensAndLogout();
-        alert('You have been logged out successfully.');
+        this.clearSession();
+        this.router.navigate(['/login']);
       }),
-      catchError((error) => {
-        console.error('Logout error occurred:', error);
-        alert('An error occurred during logout. Please try again.');
-        return of(null);
-      })
+      catchError(this.handleError('Logout failed'))
     );
   }
 
-  // Get identity method
-  getIdentity(): Observable<boolean> {
-    if (!this.isAuthenticated) {
-      return of(false);
-    }
-
-    if (this.cachedIdentity) {
-      return this.cachedIdentity;
-    }
-
-    this.cachedIdentity = this.http.get<{ data: User; succeeded: boolean }>(`${environment.identityUrl}`, { withCredentials: true }).pipe(
-      map((response) => {
-        if (response.succeeded) {
-          this.currentUser = response.data;
-          this.isAuthenticated = true;
-          return true;
-        }
-        return false;
-      }),
-      catchError((error) => {
-        if (error.status === 401) {
-          this.clearTokensAndLogout();
-        }
-        return of(false);
-      }),
-      shareReplay(1)
-    );
-
-    return this.cachedIdentity;
-  }
-
-  // Clear cached identity
-  clearCachedIdentity() {
-    this.cachedIdentity = null;
-  }
-
-  // Get current user
-  getCurrentUser(): User | null {
-    return this.currentUser;
-  }
-
-  // Update credentials method
-  updateCredentials(updatedCredentials: {
-    first_name: string;
-    last_name: string;
-    current_password?: string;
-    new_password?: string;
-    new_password_confirmation?: string;
-  }): Observable<any> {
-    if (!this.currentUser || !this.currentUser.id) {
-      console.error('No current user or user ID is missing.');
-      return of(null);
-    }
-    const url = `${environment.updateUserUrl}/${this.currentUser.id}`;
-    return this.http.put<any>(url, updatedCredentials, { withCredentials: true }).pipe(
-      tap((response) => {
-        if (response.succeeded) {
-          this.currentUser = {
-            ...this.currentUser,
-            first_name: updatedCredentials.first_name,
-            last_name: updatedCredentials.last_name,
-          } as User;
+  // Get authenticated user
+  getAuthenticatedUser(): Observable<User> {
+    return this.http.get<User>(environment.user.getAuthenticatedUser, {
+      withCredentials: true
+    }).pipe(
+      tap(user => {
+        if (user) {
+          this.setAuthenticated(true, user);
         }
       }),
-      catchError((error) => {
-        console.error('An error occurred while updating your credentials.', error);
-        return of(null);
-      })
+      catchError(this.handleError('Failed to get authenticated user'))
     );
   }
 
-  // Register new user
-  register(user: any): Observable<any> {
-    return this.http.post<any>(environment.registerUrl, user, { withCredentials: true }).pipe(
-      tap((response) => {
-        console.log('Registration successful:', response);
+  // Update user
+  updateUser(user: Partial<User>): Observable<User> {
+    const currentUser = this.currentUserSubject.value;
+    if (!currentUser?.id) {
+      return throwError(() => new Error('No authenticated user'));
+    }
+
+    return this.http.put<User>(
+      environment.user.updateUser(currentUser.id),
+      user,
+      { withCredentials: true }
+    ).pipe(
+      tap(updatedUser => {
+        this.setAuthenticated(true, updatedUser);
       }),
-      catchError((error) => {
-        console.error('Registration error occurred:', error);
-        alert('Registration failed. Please check your details and try again.');
-        return of(null);
-      })
+      catchError(this.handleError('User update failed'))
     );
+  }
+
+  // Password reset request
+  forgotPassword(email: string): Observable<any> {
+    return this.getCsrfToken().pipe(
+      map(() => {
+        return this.http.post<any>(environment.auth.forgotPassword, { email }, {
+          withCredentials: true
+        });
+      }),
+      catchError(this.handleError('Password reset request failed'))
+    );
+  }
+
+  // Reset password
+  resetPassword(token: string, email: string, password: string, password_confirmation: string): Observable<any> {
+    return this.getCsrfToken().pipe(
+      map(() => {
+        return this.http.post<any>(environment.auth.resetPassword, {
+          token,
+          email,
+          password,
+          password_confirmation
+        }, { withCredentials: true });
+      }),
+      catchError(this.handleError('Password reset failed'))
+    );
+  }
+
+  // Role-based navigation
+  private handleRoleBasedRedirection(user: User): void {
+    if (!user.email_verified_at) {
+      this.router.navigate(['/verify-email']);
+    } else if (user.isAdmin) {
+      this.router.navigate(['/admin/admin-dashboard']);
+    } else if (user.isUser) {
+      this.router.navigate(['/']);
+    } else {
+      this.router.navigate(['/']);
+    }
+  }
+
+  // Role checks
+  isAdmin(): boolean {
+    return this.currentUserSubject.value?.isAdmin || false;
+  }
+
+  isUser(): boolean {
+    return this.currentUserSubject.value?.isUser || false;
+  }
+
+  // Access control
+  canAccessAdmin(): boolean {
+    return this.isAuthenticatedSubject.value && this.isAdmin() && this.isEmailVerifiedSubject.value;
+  }
+
+  canAccessUser(): boolean {
+    return this.isAuthenticatedSubject.value && this.isUser() && this.isEmailVerifiedSubject.value;
+  }
+
+  // Observable getters
+  get isAuthenticated(): Observable<boolean> {
+    return this.isAuthenticatedSubject.asObservable();
+  }
+
+  get currentUser(): Observable<User | null> {
+    return this.currentUserSubject.asObservable();
+  }
+
+  get isEmailVerified(): Observable<boolean> {
+    return this.isEmailVerifiedSubject.asObservable();
+  }
+
+  // Error handler
+  private handleError(operation: string) {
+    return (error: HttpErrorResponse) => {
+      console.error(`${operation}:`, error);
+      return throwError(() => new Error(`${operation}: ${error.message}`));
+    };
   }
 }

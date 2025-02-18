@@ -22,52 +22,116 @@
                                 (click)="togglePassword('password-desktop', 'password-icon-desktop')">visibility</span>
                         </div>
                         <div class="form-group-remember-token">
-                            <input type="checkbox" id="rememberMe-desktop" [formControlName]="'rememberMe'"> <label
+                            <input type="checkbox" id="rememberMe-desktop" formControlName="rememberMe"> <label
                                 for="rememberMe-desktop">Remember Me</label>
                         </div>
                         <div class="form-group">
                             <span class="error-message">{{ errorMessage }}</span>
                         </div>
                         <button type="submit" class="login-create-button">Login</button>
+                        <a class="forgot-password-link" (click)="onForgotPasswordClick()">Forgot Password?</a>
                     </form>
 
-                    <form *ngIf="!isLoginForm" [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
+                    <form *ngIf="!isLoginForm && !isForgotPasswordForm && !isResetPasswordForm" [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
                         <div class="form-group">
                             <label for="firstName">FIRST NAME</label>
-                            <input type="text" id="firstName-desktop" formControlName="firstName"
-                                placeholder="Juan Miguel" required>
+                            <input type="text" id="firstName-desktop" formControlName="first_name" placeholder="Juan Miguel" required>
+                            <div *ngIf="registerForm.get('first_name')?.invalid && registerForm.get('first_name')?.touched">
+                                First name is required and must be at least 2 characters long.
+                            </div>
                         </div>
+                    
                         <div class="form-group">
                             <label for="lastName">LAST NAME</label>
-                            <input type="text" id="lastName-desktop" formControlName="lastName" placeholder="Dela Cruz"
-                                required>
+                            <input type="text" id="lastName-desktop" formControlName="last_name" placeholder="Dela Cruz" required>
+                            <div *ngIf="registerForm.get('last_name')?.invalid && registerForm.get('last_name')?.touched">
+                                First name is required and must be at least 2 characters long.
+                            </div>
                         </div>
+                    
                         <div class="form-group">
                             <label for="email">EMAIL</label>
-                            <input type="email" id="email-desktop" formControlName="email"
+                            <input type="email" id="email-desktop" formControlName="email" placeholder="juandelacruz@gmail.com" required>
+                            <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+                                Please enter a valid email address.
+                            </div>
+                        </div>
+                    
+                        <div class="form-group password-eye">
+                            <label for="password">PASSWORD</label>
+                            <input type="password" id="password-desktop" formControlName="password" placeholder="••••••••" required>
+                            <span id="password-icon-desktop" class="material-icons" (click)="togglePassword('password-desktop', 'password-icon-desktop')">visibility</span>
+                            <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+                                Password must be at least 8 characters long and include uppercase, lowercase, numbers, and special characters.
+                            </div>
+                        </div>
+                    
+                        <div class="form-group password-eye">
+                            <label for="passwordConfirmation">CONFIRM PASSWORD</label>
+                            <input type="password" id="passwordConfirmation-desktop" formControlName="password_confirmation" placeholder="••••••••" required>
+                            <span id="password-confirmation-icon-desktop" class="material-icons" (click)="togglePassword('passwordConfirmation-desktop', 'password-confirmation-icon-desktop')">visibility</span>
+                            <div *ngIf="registerForm.get('password_confirmation')?.invalid && registerForm.get('password_confirmation')?.touched">
+                                Passwords do not match.
+                            </div>
+                        </div>
+                    
+                        <div class="form-group">
+                            <span class="error-message">{{ errorMessage }}</span>
+                        </div>
+                    
+                        <button class="login-create-button" type="submit">Create Account</button>
+                    </form>
+                    
+
+                    <form *ngIf="isForgotPasswordForm" [formGroup]="forgotPasswordForm" (ngSubmit)="onForgotPasswordSubmit()">
+                        <div class="form-group">
+                            <label for="forgotEmail">EMAIL</label>
+                            <input type="email" id="forgotEmail-desktop" formControlName="email"
+                                placeholder="juandelacruz@gmail.com" required>
+                        </div>
+                        <div class="form-group">
+                            <span class="error-message">{{ errorMessage }}</span>
+                        </div>
+                        <button type="submit" class="login-create-button">Send Reset Link</button>
+                        <a class="back-to-login-link" (click)="onLoginClick()">Back to Login</a>
+                    </form>
+
+                    <form *ngIf="isResetPasswordForm" [formGroup]="resetPasswordForm" (ngSubmit)="onResetPasswordSubmit()">
+                        <div class="form-group">
+                            <label for="resetToken">RESET TOKEN</label>
+                            <input type="text" id="resetToken-desktop" formControlName="token"
+                                placeholder="Enter your reset token" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="resetEmail">EMAIL</label>
+                            <input type="email" id="resetEmail-desktop" formControlName="email"
                                 placeholder="juandelacruz@gmail.com" required>
                         </div>
                         <div class="form-group password-eye">
-                            <label for="password">PASSWORD</label>
-                            <input type="password" id="password-desktop" formControlName="password"
+                            <label for="resetPassword">NEW PASSWORD</label>
+                            <input type="password" id="resetPassword-desktop" formControlName="password"
                                 placeholder="••••••••" required>
-                            <span id="password-icon-desktop" class="material-icons"
-                                (click)="togglePassword('password-desktop', 'password-icon-desktop')">visibility</span>
+                            <span id="reset-password-icon-desktop" class="material-icons"
+                                (click)="togglePassword('resetPassword-desktop', 'reset-password-icon-desktop')">visibility</span>
                         </div>
                         <div class="form-group password-eye">
-                            <label for="passwordConfirmation">CONFIRM PASSWORD</label>
-                            <input type="password" id="passwordConfirmation-desktop"
-                                formControlName="passwordConfirmation" placeholder="••••••••" required>
-                            <span id="password-confirmation-icon-desktop" class="material-icons"
-                                (click)="togglePassword('passwordConfirmation-desktop', 'password-confirmation-icon-desktop')">visibility</span>
+                            <label for="resetPasswordConfirmation">CONFIRM NEW PASSWORD</label>
+                            <input type="password" id="resetPasswordConfirmation-desktop"
+                                formControlName="password_confirmation" placeholder="••••••••" required>
+                            <span id="reset-password-confirmation-icon-desktop" class="material-icons"
+                                (click)="togglePassword('resetPasswordConfirmation-desktop', 'reset-password-confirmation-icon-desktop')">visibility</span>
                         </div>
-                        <button class="login-create-button" type="submit">Create Account</button>
+                        <div class="form-group">
+                            <span class="error-message">{{ errorMessage }}</span>
+                        </div>
+                        <button type="submit" class="login-create-button">Reset Password</button>
+                        <a class="back-to-login-link" (click)="onLoginClick()">Back to Login</a>
                     </form>
 
                     <div class="create-account">
                         <p class="account-text" *ngIf="isLoginForm">Don't have an account yet? <a
                                 class="create-account-link" (click)="onRegisterClick()">Create an Account</a></p>
-                        <p class="account-text" *ngIf="!isLoginForm">Already have an account? <a
+                        <p class="account-text" *ngIf="!isLoginForm && !isForgotPasswordForm && !isResetPasswordForm">Already have an account? <a
                                 class="create-account-link" (click)="onLoginClick()">Login</a></p>
                     </div>
                 </div>
@@ -77,7 +141,7 @@
 </div>
 
 <!-- Mobile View -->
-<div class="mobile-view">
+<!-- <div class="mobile-view">
     <div class="main-container">
         <div class="main-content">
             <div class="login-body">
@@ -153,4 +217,4 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->

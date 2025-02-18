@@ -48,6 +48,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   // Add a flag to check if a search has been performed
   searchPerformed = false;
   selectedTransportType: string = 'All'; // Track selected transport type
+  isLoggedIn: boolean = false; // Track authentication state
 
   constructor(
     private mapService: MapService,
@@ -89,6 +90,13 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.navigationService.stopRealTimeTracking();
     this.stopUpdatingDuration();
+  }
+
+  private checkAuthentication(): void {
+    this.authService.isAuthenticated.subscribe(isAuthenticated => {
+      console.log('Is Authenticated:', isAuthenticated); // Debugging: Check authentication state
+      this.isLoggedIn = isAuthenticated;
+    });
   }
 
   saveRoute(route: any): void {

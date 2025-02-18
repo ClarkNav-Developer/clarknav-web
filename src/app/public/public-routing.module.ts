@@ -8,7 +8,7 @@ import { LayoutComponent } from './layout/layout.component';
 import { MapComponent } from './components/map/map.component';
 
 // Guards
-import { authGuard } from '../auth/auth.guard';
+// import { authGuard } from '../auth/auth.guard';
 
 const routes: Routes = [
   {

@@ -9,6 +9,7 @@ import { environment } from '../../../../environments/environment';
 import { SuggestedRoutesService } from '../../services/routes/suggested-routes.service';
 import { MapService } from '../../services/map/map.service';
 import { GoogleMapsLoaderService } from '../../services/geocoding/google-maps-loader.service';
+import { User } from '../../../models/user';
 
 @Component({
   selector: 'app-account',
@@ -18,7 +19,7 @@ import { GoogleMapsLoaderService } from '../../services/geocoding/google-maps-lo
 export class AccountComponent implements OnInit {
   selectedMenuItem: string = 'account-settings';
   darkMode: boolean = false;
-  showMenuContent: boolean = true; // New state to track menu content visibility
+  showMenuContent: boolean = true;
 
   firstName: string = '';
   lastName: string = '';
@@ -27,17 +28,6 @@ export class AccountComponent implements OnInit {
   newPassword: string = '';
   newPasswordConfirmation: string = '';
 
-  bugReport: any = {
-    title: '',
-    category: '',
-    description: '',
-    steps: '',
-    expected: '',
-    actual: '',
-    device: '',
-    frequency: '',
-    screenshots: null
-  };
   feedback: any = {
     title: '',
     feature: '',
@@ -49,18 +39,13 @@ export class AccountComponent implements OnInit {
     status: 'UNDER_REVIEW'
   };
 
-  bugPriorities = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
-  bugStatuses = ['OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'];
-  deviceOSOptions = ['ANDROID', 'IOS', 'WINDOWS', 'MACOS', 'LINUX', 'OTHER'];
-  browserOptions = ['CHROME', 'SAFARI', 'FIREFOX', 'EDGE', 'OPERA', 'OTHER'];
-
   feedbackCategories = ['FEATURE_SUGGESTION', 'USABILITY_ISSUE', 'APP_PERFORMANCE', 'ROUTE_ACCURACY', 'GENERAL_EXPERIENCE', 'ADDITIONAL_SUGGESTIONS'];
   feedbackPriorities = ['LOW', 'MEDIUM', 'HIGH'];
   feedbackStatuses = ['UNDER_REVIEW', 'IN_PROGRESS', 'IMPLEMENTED', 'CLOSED'];
 
   navigationHistories: any[] = [];
   isLoggedIn: boolean = false;
-  private historiesFetched: boolean = false; // Flag to track if histories have been fetched
+  private historiesFetched: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -88,45 +73,35 @@ export class AccountComponent implements OnInit {
         });
       }
 
-      if (!this.authService.isAuthenticated) {
-        this.authService.getIdentity().subscribe({
-          next: (isAuthenticated) => {
-            this.isLoggedIn = isAuthenticated;
-            if (isAuthenticated) {
-              const currentUser = this.authService.getCurrentUser();
-              if (currentUser) {
-                this.firstName = currentUser.first_name;
-                this.lastName = currentUser.last_name;
-                this.email = currentUser.email;
-              }
-              this.fetchNavigationHistories();
-            }
-          },
-          error: (error) => {
-            console.error('Error fetching user identity:', error);
-          }
-        });
-      } else {
-        this.isLoggedIn = true;
-        const currentUser = this.authService.getCurrentUser();
-        if (currentUser) {
-          this.firstName = currentUser.first_name;
-          this.lastName = currentUser.last_name;
-          this.email = currentUser.email;
-        }
-        this.fetchNavigationHistories();
-      }
+      this.checkAuthentication();
     }).catch(error => {
       console.error('Error loading Google Maps API:', error);
     });
   }
 
-  fetchNavigationHistories() {
-    if (this.historiesFetched) {
+  private checkAuthentication(): void {
+    this.authService.isAuthenticated.subscribe(isAuthenticated => {
+      console.log('Is Authenticated:', isAuthenticated); // Debugging: Check authentication state
+      this.isLoggedIn = isAuthenticated;
+      if (isAuthenticated) {
+        this.authService.currentUser.subscribe(user => {
+          if (user) {
+            this.firstName = user.first_name;
+            this.lastName = user.last_name;
+            this.email = user.email;
+            this.fetchNavigationHistories();
+          }
+        });
+      }
+    });
+  }
+
+  private fetchNavigationHistories(): void {
+    if (!this.isLoggedIn || this.historiesFetched) {
       return;
     }
 
-    this.http.get(environment.navigationHistoriesUrl).subscribe({
+    this.http.get(environment.navigationHistories.getNavigationHistories, { withCredentials: true }).subscribe({
       next: (response) => {
         this.navigationHistories = response as any[];
         this.historiesFetched = true;
@@ -134,24 +109,27 @@ export class AccountComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error fetching navigation histories:', error);
+        if (error.status === 403) {
+          console.error('User is not authorized to access navigation histories.');
+          this.router.navigate(['/unauthorized']); // Redirect to unauthorized page
+        } else {
+          alert('Failed to fetch navigation histories.');
+        }
       }
     });
   }
 
   viewRoute(history: any) {
     console.log('Viewing route with the following details:', history);
-    this.mapService.clearMap(); // Clear any existing routes on the map
+    this.mapService.clearMap();
 
-    // Render the route on the map
     this.mapService.displayRouteSegments({ path: history.route_details.path, color: history.route_details.color });
 
-    // Ensure walking paths are displayed for the selected route
     const startWaypoint = history.route_details.path[0];
     const endWaypoint = history.route_details.path[history.route_details.path.length - 1];
     this.mapService.displayWalkingPath(startWaypoint, startWaypoint, history.route_details.color);
     this.mapService.displayWalkingPath(endWaypoint, endWaypoint, history.route_details.color);
 
-    // Center the map on the route
     this.mapService.map.setCenter(startWaypoint);
   }
 
@@ -162,7 +140,7 @@ export class AccountComponent implements OnInit {
 
   selectMenuItem(menuItem: string) {
     this.selectedMenuItem = menuItem;
-    this.showMenuContent = false; // Hide menu content when a menu item is selected
+    this.showMenuContent = false;
   }
 
   toggleDarkMode(event: Event) {
@@ -182,84 +160,30 @@ export class AccountComponent implements OnInit {
     }
   }
 
-  // New method to handle back button click
   showMenu() {
     this.showMenuContent = true;
   }
 
-  logout(event: Event) {
-    event.preventDefault(); // Prevent the default link behavior
+  logout(event: Event): void {
+    event.preventDefault();
+
     this.authService.logout().subscribe({
-      next: () => {
-        console.log('Logged out successfully');
-        this.router.navigate(['/login']); // Redirect to /login
-      },
-      error: (error) => {
-        console.error('Logout error:', error);
-      }
-    });
-  }
+        next: () => {
+            // Clear cookies on the client side
+            document.cookie = 'XSRF-TOKEN=; Path=/; Domain=localhost; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            document.cookie = 'laravel_session=; Path=/; Domain=localhost; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 
-  updateCredentials(event: Event) {
-    event.preventDefault();
-    const updatedCredentials: {
-      first_name: string;
-      last_name: string;
-      current_password?: string;
-      new_password?: string;
-      new_password_confirmation?: string;
-    } = {
-      first_name: this.firstName,
-      last_name: this.lastName,
-    };
-  
-    // Only include password fields if new password is provided
-    if (this.newPassword) {
-      updatedCredentials.current_password = this.currentPassword;
-      updatedCredentials.new_password = this.newPassword;
-      updatedCredentials.new_password_confirmation = this.newPasswordConfirmation;
-    }
-  
-    this.authService.updateCredentials(updatedCredentials).subscribe({
-      next: (response) => {
-        if (response) {
-          console.log('Credentials updated successfully');
-          alert('Credentials updated successfully');
-        } else {
-          console.error('Failed to update credentials');
-          alert('Failed to update credentials');
+            this.router.navigate(['/login']);
+        },
+        error: (error) => {
+            console.error('Logout error:', error);
         }
-      },
-      error: (error) => {
-        console.error('Error updating credentials:', error);
-        alert('Error updating credentials');
-      }
     });
-  }
-
-  onSubmitBugReport(event: Event) {
-    event.preventDefault();
-    const formData = new FormData();
-    for (const key in this.bugReport) {
-      if (this.bugReport.hasOwnProperty(key)) {
-        formData.append(key, this.bugReport[key]);
-      }
-    }
-    this.http.post(environment.bugReportsUrl, formData).subscribe({
-      next: (response) => {
-        console.log('Bug report submitted successfully', response);
-        alert('Bug report submitted successfully');
-      },
-      error: (error) => {
-        console.error('Error submitting bug report', error);
-        alert('Error submitting bug report');
-      }
-    });
-  }
+}
 
   onSubmitFeedback(event: Event) {
     event.preventDefault();
-    this.http.post(environment.feedbackUrl, this.feedback).subscribe({
+    this.http.post(environment.feedback.storeFeedback, this.feedback, { withCredentials: true }).subscribe({
       next: (response) => {
         console.log('Feedback submitted successfully', response);
         alert('Feedback submitted successfully');
@@ -271,10 +195,33 @@ export class AccountComponent implements OnInit {
     });
   }
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.bugReport.screenshots = input.files[0];
+  updateCredentials(event: Event) {
+    event.preventDefault();
+    if (this.newPassword !== this.newPasswordConfirmation) {
+      alert('New password and confirmation do not match.');
+      return;
     }
+
+    const updatedUser: Partial<User> = {
+      first_name: this.firstName,
+      last_name: this.lastName,
+      email: this.email,
+      password: this.newPassword,
+      password_confirmation: this.newPasswordConfirmation
+    };
+
+    this.authService.updateUser(updatedUser).subscribe({
+      next: (response) => {
+        console.log('User credentials updated successfully:', response);
+        alert('User credentials updated successfully.');
+        this.currentPassword = '';
+        this.newPassword = '';
+        this.newPasswordConfirmation = '';
+      },
+      error: (error) => {
+        console.error('Error updating user credentials:', error);
+        alert('Failed to update user credentials.');
+      }
+    });
   }
 }
