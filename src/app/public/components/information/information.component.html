@@ -15,30 +15,30 @@
                 <div class="bus-stops">
                     <h3>Bus Stops for Northbound</h3>
                     <img src="public/clark-loop-info/stops/clark-loop-northbound-stops.webp"
-                        alt="Clark Loop Stops for Northbound" (click)="openImage($event)" appPinchZoom>
+                        alt="Clark Loop Stops for Northbound" (click)="openImage($event)">
                     <h3>Bus Stops for Southbound</h3>
                     <img src="public/clark-loop-info/stops/clark-loop-southbound-stops.webp"
-                        alt="Clark Loop Stops for Southbound" (click)="openImage($event)" appPinchZoom>
+                        alt="Clark Loop Stops for Southbound" (click)="openImage($event)">
                 </div>
             </div>
             <div id="tab2" class="tab-content" [class.active]="activeTab === 'tab2'">
                 <div class="schedule">
-                    <h3>Clark Loop Weekday Schedule</h3>
-                    <img src="public/clark-loop-info/schedule/clark-loop-week-day-schedule.webp"
-                        alt="Clark Loop Weekday Schedule" (click)="openImage($event)" appPinchZoom>
-                    <h3>Clark Loop Saturday Schedule</h3>
-                    <img src="public/clark-loop-info/schedule/clark-loop-saturday-schedule.webp"
-                        alt="Clark Loop Saturday Schedule" (click)="openImage($event)" appPinchZoom>
-                    <h3>Clark Loop Sunday Schedule</h3>
-                    <img src="public/clark-loop-info/schedule/clark-loop-sunday-schedule.webp"
-                        alt="Clark Loop Sunday Schedule" (click)="openImage($event)" appPinchZoom>
+                    <h3>Clark Loop Northbound Weekday Schedule</h3>
+                    <img src="public/clark-loop-info/schedule/clark-loop-northbound-weekday-schedule.webp"
+                        alt="Clark Loop Northbound Weekday Schedule" (click)="openImage($event)">
+                    <h3>Clark Loop Southbound Weekday Schedule</h3>
+                    <img src="public/clark-loop-info/schedule/clark-loop-southbound-weekday-schedule.webp"
+                        alt="Clark Loop Southbound Weekday Schedule" (click)="openImage($event)">
+                    <h3>Clark Loop Weekend Schedule</h3>
+                    <img src="public/clark-loop-info/schedule/clark-loop-weekend-schedule.webp"
+                        alt="Clark Loop Weekend Schedule" (click)="openImage($event)">
                 </div>
             </div>
             <div id="tab3" class="tab-content" [class.active]="activeTab === 'tab3'">
                 <div class="route-map">
                     <h3>Clark Loop Route Map</h3>
                     <img src="public/clark-loop-info/route-map/clark-loop-route-map.webp" alt="Clark Loop Route Map"
-                         (click)="openImage($event)" appPinchZoom>
+                         (click)="openImage($event)">
                 </div>
             </div>
         </div>

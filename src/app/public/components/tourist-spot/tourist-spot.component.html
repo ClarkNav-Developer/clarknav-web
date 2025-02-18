@@ -3,7 +3,7 @@
     <div class="floating-window" *ngIf="isVisible" @fadeInOut>
         <button class="close-btn" (click)="close()">X</button>
         <div class="content" *ngIf="touristSpot">
-            <img lazy="loading" [src]="touristSpot.image" alt="{{ touristSpot.name }}" />
+            <img [src]="touristSpot.image" alt="{{ touristSpot.name }}" />
             <h2>{{ touristSpot.name }}</h2>
             <p>{{ touristSpot.description }}</p>
         </div>
@@ -14,7 +14,7 @@
     <div class="floating-window" *ngIf="isVisible" @fadeInOut>
         <button class="close-btn" (click)="close()">X</button>
         <div class="content-mobile" *ngIf="touristSpot">
-            <img lazy="loading" [src]="touristSpot.image" alt="{{ touristSpot.name }}" />
+            <img [src]="touristSpot.image" alt="{{ touristSpot.name }}" />
             <h2>{{ touristSpot.name }}</h2>
             <p>{{ touristSpot.description }}</p>
         </div>

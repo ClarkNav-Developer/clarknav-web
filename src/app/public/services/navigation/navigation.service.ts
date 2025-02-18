@@ -60,8 +60,8 @@ export class NavigationService {
   ) {
     this.googleMapsLoader.load().then(() => {
       this.clarkBounds = new google.maps.LatLngBounds(
-        new google.maps.LatLng(15.15350883733786, 120.4702890088466),
-        new google.maps.LatLng(15.24182812878962, 120.5925078185926)
+        new google.maps.LatLng(15.162840407081108, 120.4839781353996),
+        new google.maps.LatLng(15.236929259229278, 120.5849208008488)
       );
       this.websocketService.subscribeToRealTimeTracking((data) => {
         this.ngZone.run(() => {
