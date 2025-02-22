@@ -233,17 +233,12 @@ export class NavigationService {
 
     const distanceToDestination = this.routesService.calculateDistance(currentLocation, this.destination);
 
-    if (distanceToDestination < 200 && !this.destinationReached) {
-      navigator.vibrate([200, 100, 200, 100, 200]); // Vibrate when nearing the destination
-      this.destinationReached = true;
-    }
-
     if (distanceToDestination < 100 && !this.destinationReached) {
       navigator.vibrate([200, 100, 200, 100, 200]); // Vibrate when nearing the destination
       this.destinationReached = true;
     }
 
-    if (distanceToDestination < 20) {
+    if (distanceToDestination < 10) {
       this.showDestinationReachedPopup();
       this.stopRealTimeTracking();
     }

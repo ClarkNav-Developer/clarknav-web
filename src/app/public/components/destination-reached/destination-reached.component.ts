@@ -19,5 +19,6 @@ export class DestinationReachedComponent {
     this.floatingWindowService.close();
     this.closeEvent.emit(); // Emit the event when the close button is clicked
     this.navigationService.triggerStopNavigation(); // Trigger stop navigation
+    window.location.reload(); // Refresh the page to reset the navigation
   }
 }
