@@ -14,6 +14,7 @@ import { ChartService } from './chart.service';
 import { RouteUsage } from '../../../models/routeusage';
 import { LocationSearch } from '../../../models/locationsearch';
 import { User } from '../../../models/user';
+import { Feedback } from '../../../models/feedback'; // Import Feedback model
 
 @Component({
   selector: 'app-dashboard',
@@ -22,22 +23,24 @@ import { User } from '../../../models/user';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
-  
+
   // State management
   activeTab = 'overview';
   isLoading = false;
   error: string | null = null;
-  
+
   // Modal states
   showUserModal = false;
   showRegisterModal = false;
-  
+
   // Data storage
   routeUsages: RouteUsage[] = [];
   locationSearches: LocationSearch[] = [];
   users: User[] = [];
+  feedbacks: Feedback[] = []; // Add feedbacks array
   filteredUsers: User[] = [];
-  
+  selectedFeedback: Feedback | null = null;
+
   // Form states
   searchTerm = '';
   selectedUser: User | null = null;
@@ -52,7 +55,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private chartService: ChartService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initializeDashboard();
@@ -68,6 +71,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.setupDropdownMenu();
     this.loadDashboardData();
     this.loadUsers();
+    this.loadFeedbacks(); // Load feedbacks
   }
 
   private getInitialUserState(): Partial<User> {
@@ -123,7 +127,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.routeUsages = routeUsages ?? [];
     this.locationSearches = locationSearches ?? [];
-    
+
     this.cacheService.set(cacheKey, {
       routeUsages: this.routeUsages,
       locationSearches: this.locationSearches
@@ -132,7 +136,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private loadUsers(): void {
     const cacheKey = 'users';
-    
+
     this.cacheService.get<User[]>(cacheKey).pipe(
       switchMap(cachedData => {
         if (cachedData) {
@@ -158,6 +162,36 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.users = users;
         this.filteredUsers = users;
         this.cacheService.set(cacheKey, users);
+      })
+    );
+  }
+
+  private loadFeedbacks(): void {
+    const cacheKey = 'feedbacks';
+
+    this.cacheService.get<Feedback[]>(cacheKey).pipe(
+      switchMap(cachedData => {
+        if (cachedData) {
+          return this.handleCachedFeedbacks(cachedData);
+        }
+        return this.fetchFreshFeedbacks(cacheKey);
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe({
+      error: error => this.handleDataLoadError('feedbacks', error)
+    });
+  }
+
+  private handleCachedFeedbacks(feedbacks: Feedback[]): Observable<Feedback[]> {
+    this.feedbacks = feedbacks;
+    return of(feedbacks);
+  }
+
+  private fetchFreshFeedbacks(cacheKey: string): Observable<Feedback[]> {
+    return this.userService.getFeedbacks().pipe(
+      tap(feedbacks => {
+        this.feedbacks = feedbacks;
+        this.cacheService.set(cacheKey, feedbacks);
       })
     );
   }
@@ -189,7 +223,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     const userData = this.prepareUserData();
-    
+
     this.userService.updateUser(this.selectedUser!.id!, userData).pipe(
       tap(updatedUser => this.handleUserUpdateSuccess(updatedUser)),
       catchError(error => {
@@ -207,8 +241,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    if (this.selectedUser.password && 
-        this.selectedUser.password !== this.selectedUser.passwordConfirmation) {
+    if (this.selectedUser.password &&
+      this.selectedUser.password !== this.selectedUser.passwordConfirmation) {
       this.toastr.error('Passwords do not match');
       return false;
     }
@@ -285,7 +319,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.authService.register(registrationData).pipe(
       tap(() => this.handleRegistrationSuccess()),
       catchError(error => {
-        this.toastr.error('Registration failed: ' + 
+        this.toastr.error('Registration failed: ' +
           (error.error.message || 'Please try again.'));
         throw error;
       })
@@ -293,9 +327,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private validateRegistration(): boolean {
-    if (!this.newUser?.first_name || !this.newUser?.last_name || 
-        !this.newUser?.email || !this.newUser?.password || 
-        !this.newUser?.passwordConfirmation) {
+    if (!this.newUser?.first_name || !this.newUser?.last_name ||
+      !this.newUser?.email || !this.newUser?.password ||
+      !this.newUser?.passwordConfirmation) {
       this.toastr.error('Please fill in all required fields.');
       return false;
     }
@@ -337,7 +371,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   logout(event: Event): void {
     event.preventDefault();
-    
+
     this.authService.logout().pipe(
       tap(() => {
         this.toastr.success('Logged out successfully');
@@ -360,11 +394,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    navButton.addEventListener('click', function() {
+    navButton.addEventListener('click', function () {
       this.parentElement?.classList.toggle('show');
     });
 
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
       const nav = document.querySelector('.nav');
       if (nav && !nav.contains(event.target as Node)) {
         nav.classList.remove('show');
@@ -385,4 +419,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     console.error(`Error fetching ${dataType}:`, error);
     this.isLoading = false;
   }
+
+  // Method to open the feedback details modal
+  viewFeedbackDetails(feedback: Feedback): void {
+    this.selectedFeedback = feedback;
+  }
+
+  // Method to close the feedback details modal
+  closeFeedbackModal(): void {
+    this.selectedFeedback = null;
+  }
 }
+

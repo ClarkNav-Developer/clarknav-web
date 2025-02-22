@@ -299,9 +299,10 @@ tr:hover td {
     padding: 2.5rem;
     border-radius: 16px;
     width: 100%;
-    max-width: 500px;
+    max-width: 700px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     animation: modalSlideIn 0.3s ease-out;
+    overflow: hidden;
 }
 
 @keyframes modalSlideIn {
@@ -314,6 +315,87 @@ tr:hover td {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Modal Header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.2s;
+}
+
+.close-button:hover {
+    color: #000;
+}
+
+/* Feedback Details Grid */
+.feedback-details {
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #555;
+}
+
+.detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Modal Footer */
+.modal-footer {
+    padding: 16px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    text-align: right;
+}
+
+.btn-close {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-close:hover {
+    background-color: #5a6268;
 }
 
 .modal-content h2 {
