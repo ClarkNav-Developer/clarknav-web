@@ -88,6 +88,13 @@
     flex-direction: row
 }
 
+.form-group-button{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
 .form-group-remember-token label {
     margin-left: 5px
 }

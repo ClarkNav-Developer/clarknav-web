@@ -4,6 +4,15 @@ import { AuthService } from '../../../auth/auth.service';
 import { User } from '../../../models/user';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+
+enum FormState {
+    LOGIN = 'LOGIN',
+    REGISTER = 'REGISTER',
+    FORGOT_PASSWORD = 'FORGOT_PASSWORD',
+    RESET_PASSWORD = 'RESET_PASSWORD',
+    PASSWORD_CONFIRMATION = 'PASSWORD_CONFIRMATION'
+}
 
 @Component({
     selector: 'app-login',
@@ -15,18 +24,21 @@ export class LoginComponent implements OnInit, OnDestroy {
     registerForm!: FormGroup;
     forgotPasswordForm!: FormGroup;
     resetPasswordForm!: FormGroup;
-    isLoginForm: boolean = true;
-    isForgotPasswordForm: boolean = false;
-    isResetPasswordForm: boolean = false;
+    passwordConfirmForm!: FormGroup;
+    currentFormState: FormState = FormState.LOGIN;
     errorMessage: string = '';
     successMessage: string = '';
     loading: boolean = false;
+    verificationLinkSent: boolean = false;
     private destroy$ = new Subject<void>();
+
+    FormState = FormState;
 
     constructor(
         private fb: FormBuilder,
         private authService: AuthService,
-        private router: Router
+        private router: Router,
+        private route: ActivatedRoute
     ) {
         this.initializeForms();
     }
@@ -39,13 +51,13 @@ export class LoginComponent implements OnInit, OnDestroy {
         });
 
         this.registerForm = this.fb.group({
-            first_name: ['', [Validators.required, Validators.minLength(2)]],
-            last_name: ['', [Validators.required, Validators.minLength(2)]],
+            firstname: ['', [Validators.required, Validators.minLength(2)]],
+            lastname: ['', [Validators.required, Validators.minLength(2)]],
             email: ['', [Validators.required, Validators.email]],
             password: ['', [
                 Validators.required,
                 Validators.minLength(8),
-                Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+                Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/)
             ]],
             password_confirmation: ['', [Validators.required]]
         }, {
@@ -62,11 +74,15 @@ export class LoginComponent implements OnInit, OnDestroy {
             password: ['', [
                 Validators.required,
                 Validators.minLength(8),
-                Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+                Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/)
             ]],
             password_confirmation: ['', [Validators.required]]
         }, {
             validators: this.passwordMatchValidator
+        });
+
+        this.passwordConfirmForm = this.fb.group({
+            password: ['', [Validators.required, Validators.minLength(8)]]
         });
     }
 
@@ -81,21 +97,21 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        // Check if we're on the reset password route
+        // Existing logic for other routes
         if (window.location.pathname.includes('reset-password')) {
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
             const email = urlParams.get('email');
-
+    
             if (token && email) {
-                this.isResetPasswordForm = true;
-                this.isLoginForm = false;
-                this.isForgotPasswordForm = false;
+                this.currentFormState = FormState.RESET_PASSWORD;
                 this.resetPasswordForm.patchValue({ token, email });
             }
+        } else if (window.location.pathname.includes('confirm-password')) {
+            this.currentFormState = FormState.PASSWORD_CONFIRMATION;
         }
-
-        // Subscribe to auth state
+    
+        // Existing logic for authentication state
         this.authService.isAuthenticated
             .pipe(takeUntil(this.destroy$))
             .subscribe(isAuthenticated => {
@@ -103,14 +119,10 @@ export class LoginComponent implements OnInit, OnDestroy {
                     this.authService.currentUser
                         .pipe(takeUntil(this.destroy$))
                         .subscribe(user => {
-                            if (user?.email_verified_at) {
-                                if (user.isAdmin) {
-                                    this.router.navigate(['/admin/admin-dashboard']);
-                                } else {
-                                    this.router.navigate(['/']);
-                                }
+                            if (user?.isAdmin) {
+                                this.router.navigate(['/admin/admin-dashboard']);
                             } else {
-                                this.router.navigate(['/verify-email']);
+                                this.router.navigate(['/']);
                             }
                         });
                 }
@@ -125,32 +137,24 @@ export class LoginComponent implements OnInit, OnDestroy {
     onLoginSubmit(): void {
         this.errorMessage = '';
         this.successMessage = '';
-
+    
         if (this.loginForm.valid) {
             this.loading = true;
             const { email, password, rememberMe } = this.loginForm.value;
-
+        
             this.authService.login(email, password, rememberMe)
                 .pipe(takeUntil(this.destroy$))
                 .subscribe({
                     next: (response) => {
                         this.loading = false;
-                        console.log('Login response:', response); // Log the response
                         if (response && response.user) {
-                            if (!response.user.email_verified_at) {
-                                this.successMessage = 'Please verify your email address to continue.';
-                                this.router.navigate(['/verify-email']);
+                            if (response.user.isAdmin) {
+                                this.router.navigate(['/admin/admin-dashboard']);
                             } else {
-                                this.authService.currentUser.subscribe(user => {
-                                    if (user?.isAdmin) {
-                                        this.router.navigate(['/admin/admin-dashboard']);
-                                    } else {
-                                        this.router.navigate(['/']);
-                                    }
-                                });
+                                this.router.navigate(['/']);
                             }
                         } else if (response && response.message) {
-                            this.errorMessage = response.message; // Display backend error message
+                            this.errorMessage = response.message;
                         } else {
                             this.errorMessage = 'Invalid response from server. Please try again.';
                         }
@@ -158,7 +162,6 @@ export class LoginComponent implements OnInit, OnDestroy {
                     error: (error) => {
                         this.loading = false;
                         this.errorMessage = error.message || 'Login failed. Please check your credentials.';
-                        console.error('Login error:', error); // Log the error for debugging
                     }
                 });
         } else {
@@ -169,32 +172,29 @@ export class LoginComponent implements OnInit, OnDestroy {
     onRegisterSubmit(): void {
         this.errorMessage = '';
         this.successMessage = '';
-
+    
         if (this.registerForm.valid) {
-            console.log('Form values:', this.registerForm.value); // Log form values
             this.loading = true;
             const userData: Partial<User> = {
                 ...this.registerForm.value,
                 isAdmin: false,
                 isUser: true
             };
-
+    
             this.authService.register(userData)
                 .pipe(takeUntil(this.destroy$))
                 .subscribe({
-                    next: () => {
+                    next: (response) => {
                         this.loading = false;
-                        this.successMessage = 'Registration successful! Please check your email to verify your account.';
-                        this.router.navigate(['/verify-email']);
+                        this.successMessage = 'Registration successful!';
+                        this.currentFormState = FormState.LOGIN;
                     },
                     error: (error) => {
                         this.loading = false;
                         this.errorMessage = error.message || 'Registration failed. Please try again.';
-                        console.error('Registration error:', error); // Log the error for debugging
                     }
                 });
         } else {
-            console.log('Form validation errors:', this.registerForm.errors); // Log validation errors
             this.errorMessage = 'Please fill in all required fields correctly.';
         }
     }
@@ -217,7 +217,6 @@ export class LoginComponent implements OnInit, OnDestroy {
                     error: (error) => {
                         this.loading = false;
                         this.errorMessage = error.message || 'Failed to send password reset email.';
-                        console.error('Forgot password error:', error); // Log the error for debugging
                     }
                 });
         }
@@ -237,41 +236,106 @@ export class LoginComponent implements OnInit, OnDestroy {
                     next: () => {
                         this.loading = false;
                         this.successMessage = 'Password reset successful. Please login with your new password.';
-                        this.onLoginClick();
+                        this.currentFormState = FormState.LOGIN;
                     },
                     error: (error) => {
                         this.loading = false;
                         this.errorMessage = error.message || 'Failed to reset password.';
-                        console.error('Reset password error:', error); // Log the error for debugging
                     }
                 });
         }
     }
 
-    onRegisterClick(): void {
-        this.isLoginForm = false;
-        this.isForgotPasswordForm = false;
-        this.isResetPasswordForm = false;
-        this.clearMessages();
+    onPasswordConfirmSubmit(): void {
+        this.errorMessage = '';
+        this.successMessage = '';
+
+        if (this.passwordConfirmForm.valid) {
+            this.loading = true;
+            const { password } = this.passwordConfirmForm.value;
+
+            this.authService.confirmPassword(password)
+                .pipe(takeUntil(this.destroy$))
+                .subscribe({
+                    next: () => {
+                        this.loading = false;
+                        this.successMessage = 'Password confirmed successfully.';
+                        this.router.navigate(['/protected-route']);
+                    },
+                    error: (error) => {
+                        this.loading = false;
+                        this.errorMessage = error.message || 'Failed to confirm password.';
+                    }
+                });
+        } else {
+            this.errorMessage = 'Please enter your password.';
+        }
     }
 
-    onLoginClick(): void {
-        this.isLoginForm = true;
-        this.isForgotPasswordForm = false;
-        this.isResetPasswordForm = false;
-        this.clearMessages();
+    // verifyEmail(id: string, hash: string): void {
+    //     this.authService.verifyEmail(id, hash).subscribe({
+    //         next: (response) => {
+    //             this.successMessage = 'Email verified successfully. You can now log in.';
+    //             this.currentFormState = FormState.LOGIN;
+    //             // Optionally, log the user in automatically
+    //             this.authService.getAuthenticatedUser().subscribe(user => {
+    //                 if (user) {
+    //                     this.authService.setAuthenticated(true, user);
+    //                     this.router.navigate(['/']);
+    //                 }
+    //             });
+    //         },
+    //         error: (error) => {
+    //             this.errorMessage = error.message || 'Email verification failed. Please try again.';
+    //         }
+    //     });
+    // }
+
+    // resendVerificationEmail(): void {
+    //     this.loading = true;
+    //     this.errorMessage = '';
+    //     this.successMessage = '';
+
+    //     this.authService.sendVerificationEmail()
+    //         .pipe(takeUntil(this.destroy$))
+    //         .subscribe({
+    //             next: () => {
+    //                 this.loading = false;
+    //                 this.verificationLinkSent = true;
+    //                 this.successMessage = 'A new verification link has been sent to your email address.';
+    //             },
+    //             error: (error) => {
+    //                 this.loading = false;
+    //                 this.errorMessage = error.message || 'Failed to send verification email.';
+    //             }
+    //         });
+    // }
+
+    logout(): void {
+        this.authService.logout()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+                next: () => {
+                    this.currentFormState = FormState.LOGIN;
+                    this.router.navigate(['/login']);
+                },
+                error: (error) => {
+                    console.error('Logout error:', error);
+                    this.currentFormState = FormState.LOGIN;
+                    this.router.navigate(['/login']);
+                }
+            });
     }
 
-    onForgotPasswordClick(): void {
-        this.isLoginForm = false;
-        this.isForgotPasswordForm = true;
-        this.isResetPasswordForm = false;
+    setFormState(state: FormState): void {
+        this.currentFormState = state;
         this.clearMessages();
     }
 
     private clearMessages(): void {
         this.errorMessage = '';
         this.successMessage = '';
+        this.verificationLinkSent = false;
     }
 
     togglePassword(inputId: string, iconId: string): void {
@@ -287,13 +351,13 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
     }
 
-    // Form getters for template
     get loginEmail() { return this.loginForm.get('email'); }
     get loginPassword() { return this.loginForm.get('password'); }
-    get registerFirstName() { return this.registerForm.get('first_name'); }
-    get registerLastName() { return this.registerForm.get('last_name'); }
+    get registerFirstName() { return this.registerForm.get('firstname'); }
+    get registerLastName() { return this.registerForm.get('lastname'); }
     get registerEmail() { return this.registerForm.get('email'); }
     get registerPassword() { return this.registerForm.get('password'); }
     get registerPasswordConfirmation() { return this.registerForm.get('password_confirmation'); }
     get forgotEmail() { return this.forgotPasswordForm.get('email'); }
+    get confirmPassword() { return this.passwordConfirmForm.get('password'); }
 }

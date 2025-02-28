@@ -35,6 +35,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   selectedUser: User | null = null;
   newUser: Partial<User> = this.getInitialUserState();
 
+  isAdmin: boolean = false;
+  user: User | null = null;
+
   constructor(
     private userService: UserService,
     private locationService: LocationService,
@@ -56,29 +59,43 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.chartService.destroyCharts();
   }
 
-  private checkAuthentication(): void {
-    this.authService.getAuthenticatedUser().subscribe({
-      next: (user) => {
-        if (!user) {
-          this.router.navigate(['/login']);
-          return;
-        }
+  // private checkAuthentication(): void {
+  //   this.authService.getAuthenticatedUser().subscribe({
+  //     next: (user) => {
+  //       if (!user) {
+  //         this.router.navigate(['/login']);
+  //         return;
+  //       }
   
-        if (!user.isAdmin) {
-          this.router.navigate(['/']);
-          return;
-        }
+  //       if (!user.isAdmin) {
+  //         this.router.navigate(['/']);
+  //         return;
+  //       }
+  
+  //       this.initializeDashboard();
+  //     },
+  //     error: () => {
+  //       this.router.navigate(['/login']);
+  //     }
+  //   });
+  // }
 
-        // if (!user.isAdmin || !user.email_verified_at) {
-        //   this.router.navigate(['/']);
-        //   return;
-        // }
-  
-        this.initializeDashboard();
-      },
-      error: () => {
+  private checkAuthentication(): void {
+    this.authService.isAuthenticated.subscribe((isAuthenticated) => {
+      if (!isAuthenticated) {
         this.router.navigate(['/login']);
+        return;
       }
+
+      this.authService.currentUser.subscribe((user) => {
+        if (user && user.isAdmin) {
+          this.isAdmin = true;
+          this.user = user;
+          // this.initializeDashboard();
+        } else {
+          this.router.navigate(['/']);
+        }
+      });
     });
   }
 
@@ -90,8 +107,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private getInitialUserState(): Partial<User> {
     return {
-      first_name: '',
-      last_name: '',
+      firstname: '',
+      lastname: '',
       email: '',
       password: '',
       password_confirmation: '',
@@ -184,8 +201,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   onSearchChange(): void {
     const searchTerm = this.searchTerm.toLowerCase();
     this.filteredUsers = this.users.filter(user =>
-      user.first_name.toLowerCase().includes(searchTerm) ||
-      user.last_name.toLowerCase().includes(searchTerm) ||
+      user.firstname.toLowerCase().includes(searchTerm) ||
+      user.lastname.toLowerCase().includes(searchTerm) ||
       user.email.toLowerCase().includes(searchTerm)
     );
   }
@@ -236,8 +253,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private prepareUserData(): Partial<User> {
     const userData: Partial<User> = {
-      first_name: this.selectedUser!.first_name,
-      last_name: this.selectedUser!.last_name,
+      firstname: this.selectedUser!.firstname,
+      lastname: this.selectedUser!.lastname,
       email: this.selectedUser!.email,
       isAdmin: this.selectedUser!.isAdmin,
       isUser: this.selectedUser!.isUser
@@ -311,7 +328,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private validateRegistration(): boolean {
-    if (!this.newUser?.first_name || !this.newUser?.last_name || 
+    if (!this.newUser?.firstname || !this.newUser?.lastname || 
         !this.newUser?.email || !this.newUser?.password || 
         !this.newUser?.password_confirmation) {
       this.toastr.error('Please fill in all required fields.');

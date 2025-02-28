@@ -15,8 +15,8 @@
 
 export interface User {
     id?: number;
-    first_name: string;
-    last_name: string;
+    firstname: string;
+    lastname: string;
     email: string;
     password?: string; // Optional because it might not be returned in responses
     password_confirmation?: string; // Optional because it might not be returned in responses

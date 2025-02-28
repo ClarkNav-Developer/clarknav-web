@@ -1,0 +1,918 @@
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { AuthService } from '../../../auth/auth.service';
+import { User } from '../../../models/user';
+import { Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+
+enum FormState {
+    LOGIN = 'LOGIN',
+    REGISTER = 'REGISTER',
+    FORGOT_PASSWORD = 'FORGOT_PASSWORD',
+    RESET_PASSWORD = 'RESET_PASSWORD',
+    EMAIL_VERIFICATION = 'EMAIL_VERIFICATION',
+    PASSWORD_CONFIRMATION = 'PASSWORD_CONFIRMATION'
+}
+
+@Component({
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css']
+})
+export class LoginComponent implements OnInit, OnDestroy {
+    loginForm!: FormGroup;
+    registerForm!: FormGroup;
+    forgotPasswordForm!: FormGroup;
+    resetPasswordForm!: FormGroup;
+    passwordConfirmForm!: FormGroup;
+    currentFormState: FormState = FormState.LOGIN;
+    errorMessage: string = '';
+    successMessage: string = '';
+    loading: boolean = false;
+    verificationLinkSent: boolean = false;
+    private destroy$ = new Subject<void>();
+
+    FormState = FormState;
+
+    constructor(
+        private fb: FormBuilder,
+        private authService: AuthService,
+        private router: Router,
+        private route: ActivatedRoute
+    ) {
+        this.initializeForms();
+    }
+
+    private initializeForms(): void {
+        this.loginForm = this.fb.group({
+            email: ['', [Validators.required, Validators.email]],
+            password: ['', [Validators.required, Validators.minLength(8)]],
+            rememberMe: [false]
+        });
+
+        this.registerForm = this.fb.group({
+            firstname: ['', [Validators.required, Validators.minLength(2)]],
+            lastname: ['', [Validators.required, Validators.minLength(2)]],
+            email: ['', [Validators.required, Validators.email]],
+            password: ['', [
+                Validators.required,
+                Validators.minLength(8),
+                Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/)
+            ]],
+            password_confirmation: ['', [Validators.required]]
+        }, {
+            validators: this.passwordMatchValidator
+        });
+
+        this.forgotPasswordForm = this.fb.group({
+            email: ['', [Validators.required, Validators.email]]
+        });
+
+        this.resetPasswordForm = this.fb.group({
+            token: ['', [Validators.required]],
+            email: ['', [Validators.required, Validators.email]],
+            password: ['', [
+                Validators.required,
+                Validators.minLength(8),
+                Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/)
+            ]],
+            password_confirmation: ['', [Validators.required]]
+        }, {
+            validators: this.passwordMatchValidator
+        });
+
+        this.passwordConfirmForm = this.fb.group({
+            password: ['', [Validators.required, Validators.minLength(8)]]
+        });
+    }
+
+    private passwordMatchValidator(control: AbstractControl): { [key: string]: any } | null {
+        const password = control.get('password');
+        const confirmPassword = control.get('password_confirmation');
+
+        if (password && confirmPassword && password.value !== confirmPassword.value) {
+            return { 'passwordMismatch': true };
+        }
+        return null;
+    }
+
+    ngOnInit(): void {
+        // Handle email verification if the URL contains the verification route
+        this.route.params.subscribe(params => {
+            const id = params['id'];
+            const hash = params['hash'];
+            if (id && hash) {
+                this.verifyEmail(id, hash);
+            }
+        });
+    
+        // Existing logic for other routes
+        if (window.location.pathname.includes('reset-password')) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const email = urlParams.get('email');
+    
+            if (token && email) {
+                this.currentFormState = FormState.RESET_PASSWORD;
+                this.resetPasswordForm.patchValue({ token, email });
+            }
+        } else if (window.location.pathname.includes('confirm-password')) {
+            this.currentFormState = FormState.PASSWORD_CONFIRMATION;
+        }
+    
+        // Existing logic for authentication state
+        this.authService.isAuthenticated
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(isAuthenticated => {
+                if (isAuthenticated) {
+                    this.authService.currentUser
+                        .pipe(takeUntil(this.destroy$))
+                        .subscribe(user => {
+                            if (user?.email_verified_at) {
+                                if (user.isAdmin) {
+                                    this.router.navigate(['/admin/admin-dashboard']);
+                                } else {
+                                    this.router.navigate(['/']);
+                                }
+                            } else {
+                                this.currentFormState = FormState.EMAIL_VERIFICATION;
+                            }
+                        });
+                }
+            });
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
+    onLoginSubmit(): void {
+        this.errorMessage = '';
+        this.successMessage = '';
+
+        if (this.loginForm.valid) {
+            this.loading = true;
+            const { email, password, rememberMe } = this.loginForm.value;
+
+            this.authService.login(email, password, rememberMe)
+                .pipe(takeUntil(this.destroy$))
+                .subscribe({
+                    next: (response) => {
+                        this.loading = false;
+                        if (response && response.user) {
+                            if (!response.user.email_verified_at) {
+                                this.successMessage = 'Please verify your email address to continue.';
+                                this.currentFormState = FormState.EMAIL_VERIFICATION;
+                            } else {
+                                this.authService.getAuthenticatedUser().subscribe(user => {
+                                    if (user?.isAdmin) {
+                                        this.router.navigate(['/admin/admin-dashboard']);
+                                    } else {
+                                        this.router.navigate(['/']);
+                                    }
+                                });
+                            }
+                        } else if (response && response.message) {
+                            this.errorMessage = response.message;
+                        } else {
+                            this.errorMessage = 'Invalid response from server. Please try again.';
+                        }
+                    },
+                    error: (error) => {
+                        this.loading = false;
+                        this.errorMessage = error.message || 'Login failed. Please check your credentials.';
+                    }
+                });
+        } else {
+            this.errorMessage = 'Please fill in all required fields correctly.';
+        }
+    }
+
+    onRegisterSubmit(): void {
+        this.errorMessage = '';
+        this.successMessage = '';
+
+        if (this.registerForm.valid) {
+            this.loading = true;
+            const userData: Partial<User> = {
+                ...this.registerForm.value,
+                isAdmin: false,
+                isUser: true
+            };
+
+            this.authService.register(userData)
+                .pipe(takeUntil(this.destroy$))
+                .subscribe({
+                    next: (response) => {
+                        this.loading = false;
+                        this.successMessage = 'Registration successful! Please check your email to verify your account.';
+                        this.currentFormState = FormState.EMAIL_VERIFICATION;
+                        this.authService.sendVerificationEmail().subscribe();
+                    },
+                    error: (error) => {
+                        this.loading = false;
+                        this.errorMessage = error.message || 'Registration failed. Please try again.';
+                    }
+                });
+        } else {
+            this.errorMessage = 'Please fill in all required fields correctly.';
+        }
+    }
+
+    onForgotPasswordSubmit(): void {
+        this.errorMessage = '';
+        this.successMessage = '';
+
+        if (this.forgotPasswordForm.valid) {
+            this.loading = true;
+            const { email } = this.forgotPasswordForm.value;
+
+            this.authService.forgotPassword(email)
+                .pipe(takeUntil(this.destroy$))
+                .subscribe({
+                    next: () => {
+                        this.loading = false;
+                        this.successMessage = 'Password reset instructions have been sent to your email.';
+                    },
+                    error: (error) => {
+                        this.loading = false;
+                        this.errorMessage = error.message || 'Failed to send password reset email.';
+                    }
+                });
+        }
+    }
+
+    onResetPasswordSubmit(): void {
+        this.errorMessage = '';
+        this.successMessage = '';
+
+        if (this.resetPasswordForm.valid) {
+            this.loading = true;
+            const { token, email, password, password_confirmation } = this.resetPasswordForm.value;
+
+            this.authService.resetPassword(token, email, password, password_confirmation)
+                .pipe(takeUntil(this.destroy$))
+                .subscribe({
+                    next: () => {
+                        this.loading = false;
+                        this.successMessage = 'Password reset successful. Please login with your new password.';
+                        this.currentFormState = FormState.LOGIN;
+                    },
+                    error: (error) => {
+                        this.loading = false;
+                        this.errorMessage = error.message || 'Failed to reset password.';
+                    }
+                });
+        }
+    }
+
+    onPasswordConfirmSubmit(): void {
+        this.errorMessage = '';
+        this.successMessage = '';
+
+        if (this.passwordConfirmForm.valid) {
+            this.loading = true;
+            const { password } = this.passwordConfirmForm.value;
+
+            this.authService.confirmPassword(password)
+                .pipe(takeUntil(this.destroy$))
+                .subscribe({
+                    next: () => {
+                        this.loading = false;
+                        this.successMessage = 'Password confirmed successfully.';
+                        this.router.navigate(['/protected-route']);
+                    },
+                    error: (error) => {
+                        this.loading = false;
+                        this.errorMessage = error.message || 'Failed to confirm password.';
+                    }
+                });
+        } else {
+            this.errorMessage = 'Please enter your password.';
+        }
+    }
+
+    verifyEmail(id: string, hash: string): void {
+        this.authService.verifyEmail(id, hash).subscribe({
+            next: (response) => {
+                this.successMessage = 'Email verified successfully. You can now log in.';
+                this.currentFormState = FormState.LOGIN;
+                // Optionally, log the user in automatically
+                this.authService.getAuthenticatedUser().subscribe(user => {
+                    if (user) {
+                        this.authService.setAuthenticated(true, user);
+                        this.router.navigate(['/']);
+                    }
+                });
+            },
+            error: (error) => {
+                this.errorMessage = error.message || 'Email verification failed. Please try again.';
+            }
+        });
+    }
+
+    resendVerificationEmail(): void {
+        this.loading = true;
+        this.errorMessage = '';
+        this.successMessage = '';
+
+        this.authService.sendVerificationEmail()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+                next: () => {
+                    this.loading = false;
+                    this.verificationLinkSent = true;
+                    this.successMessage = 'A new verification link has been sent to your email address.';
+                },
+                error: (error) => {
+                    this.loading = false;
+                    this.errorMessage = error.message || 'Failed to send verification email.';
+                }
+            });
+    }
+
+    logout(): void {
+        this.authService.logout()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+                next: () => {
+                    this.currentFormState = FormState.LOGIN;
+                    this.router.navigate(['/login']);
+                },
+                error: (error) => {
+                    console.error('Logout error:', error);
+                    this.currentFormState = FormState.LOGIN;
+                    this.router.navigate(['/login']);
+                }
+            });
+    }
+
+    setFormState(state: FormState): void {
+        this.currentFormState = state;
+        this.clearMessages();
+    }
+
+    private clearMessages(): void {
+        this.errorMessage = '';
+        this.successMessage = '';
+        this.verificationLinkSent = false;
+    }
+
+    togglePassword(inputId: string, iconId: string): void {
+        const input = document.getElementById(inputId) as HTMLInputElement;
+        const icon = document.getElementById(iconId) as HTMLElement;
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.textContent = 'visibility_off';
+        } else {
+            input.type = 'password';
+            icon.textContent = 'visibility';
+        }
+    }
+
+    get loginEmail() { return this.loginForm.get('email'); }
+    get loginPassword() { return this.loginForm.get('password'); }
+    get registerFirstName() { return this.registerForm.get('firstname'); }
+    get registerLastName() { return this.registerForm.get('lastname'); }
+    get registerEmail() { return this.registerForm.get('email'); }
+    get registerPassword() { return this.registerForm.get('password'); }
+    get registerPasswordConfirmation() { return this.registerForm.get('password_confirmation'); }
+    get forgotEmail() { return this.forgotPasswordForm.get('email'); }
+    get confirmPassword() { return this.passwordConfirmForm.get('password'); }
+}
+
+
+<div class="desktop-view">
+    <div class="main-container">
+        <div class="main-content">
+            <div class="login-body">
+                <div class="login-container">
+                    <div class="logo-placeholder">
+                        <h1>Welcome to</h1>
+                        <img src="/public/bg-nav-900.webp" alt="Logo" class="logo-image" loading="lazy">
+                    </div>
+
+                    <!-- Login Form -->
+                    <form *ngIf="currentFormState === FormState.LOGIN" [formGroup]="loginForm"
+                        (ngSubmit)="onLoginSubmit()">
+                        <div class="form-group">
+                            <label for="email">EMAIL</label>
+                            <input type="email" id="email-desktop" formControlName="email"
+                                placeholder="juandelacruz@gmail.com" required>
+                        </div>
+                        <div class="form-group password-eye">
+                            <label for="password">PASSWORD</label>
+                            <input type="password" id="password-desktop" formControlName="password"
+                                placeholder="••••••••" required>
+                            <span id="password-icon-desktop" class="material-icons"
+                                (click)="togglePassword('password-desktop', 'password-icon-desktop')">visibility</span>
+                        </div>
+                        <div class="form-group-remember-token">
+                            <input type="checkbox" id="rememberMe-desktop" formControlName="rememberMe"> <label
+                                for="rememberMe-desktop">Remember Me</label>
+                        </div>
+                        <div class="form-group">
+                            <span class="error-message">{{ errorMessage }}</span>
+                        </div>
+                        <div class="form-group-button">
+                            <button type="submit" class="login-create-button">Login</button>
+                            <a class="forgot-password-link" (click)="setFormState(FormState.FORGOT_PASSWORD)">Forgot
+                                Password?</a>
+                        </div>
+                    </form>
+
+                    <!-- Register Form -->
+                    <form *ngIf="currentFormState === FormState.REGISTER" [formGroup]="registerForm"
+                        (ngSubmit)="onRegisterSubmit()">
+                        <div class="form-group">
+                            <label for="firstName">FIRST NAME</label>
+                            <input type="text" id="firstName-desktop" formControlName="firstname"
+                                placeholder="Juan Miguel" required>
+                            <div
+                                *ngIf="registerForm.get('firstname')?.invalid && registerForm.get('firstname')?.touched">
+                                First name is required and must be at least 2 characters long.
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName">LAST NAME</label>
+                            <input type="text" id="lastName-desktop" formControlName="lastname" placeholder="Dela Cruz"
+                                required>
+                            <div
+                                *ngIf="registerForm.get('lastname')?.invalid && registerForm.get('lastname')?.touched">
+                                Last name is required and must be at least 2 characters long.
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">EMAIL</label>
+                            <input type="email" id="email-desktop" formControlName="email"
+                                placeholder="juandelacruz@gmail.com" required>
+                            <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+                                Please enter a valid email address.
+                            </div>
+                        </div>
+
+                        <div class="form-group password-eye">
+                            <label for="password">PASSWORD</label>
+                            <input type="password" id="password-desktop" formControlName="password"
+                                placeholder="••••••••" required>
+                            <span id="password-icon-desktop" class="material-icons"
+                                (click)="togglePassword('password-desktop', 'password-icon-desktop')">visibility</span>
+                            <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+                                Password must be at least 8 characters long and include uppercase, lowercase, numbers,
+                                and special characters.
+                            </div>
+                        </div>
+
+                        <div class="form-group password-eye">
+                            <label for="passwordConfirmation">CONFIRM PASSWORD</label>
+                            <input type="password" id="passwordConfirmation-desktop"
+                                formControlName="password_confirmation" placeholder="••••••••" required>
+                            <span id="password-confirmation-icon-desktop" class="material-icons"
+                                (click)="togglePassword('passwordConfirmation-desktop', 'password-confirmation-icon-desktop')">visibility</span>
+                            <div
+                                *ngIf="registerForm.get('password_confirmation')?.invalid && registerForm.get('password_confirmation')?.touched">
+                                Passwords do not match.
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <span class="error-message">{{ successMessage }}</span>
+                            <span class="error-message">{{ errorMessage }}</span>
+                        </div>
+
+                        <button class="login-create-button" type="submit">Create Account</button>
+                    </form>
+
+                    <!-- Forgot Password Form -->
+                    <form *ngIf="currentFormState === FormState.FORGOT_PASSWORD" [formGroup]="forgotPasswordForm"
+                        (ngSubmit)="onForgotPasswordSubmit()">
+                        <div class="form-group">
+                            <label for="forgotEmail">EMAIL</label>
+                            <input type="email" id="forgotEmail-desktop" formControlName="email"
+                                placeholder="juandelacruz@gmail.com" required>
+                        </div>
+                        <div class="form-group">
+                            <span class="success-message">{{ successMessage }}</span>
+                            <span class="error-message">{{ errorMessage }}</span>
+                        </div>
+                        <div class="form-group-button">
+                            <button type="submit" class="login-create-button">Send Reset Link</button>
+                            <a class="back-to-login-link" (click)="setFormState(FormState.LOGIN)">Back to Login</a>
+                        </div>
+                    </form>
+
+                    <!-- Reset Password Form -->
+                    <form *ngIf="currentFormState === FormState.RESET_PASSWORD" [formGroup]="resetPasswordForm"
+                        (ngSubmit)="onResetPasswordSubmit()">
+                        <div class="form-group">
+                            <label for="resetToken">RESET TOKEN</label>
+                            <input type="text" id="resetToken-desktop" formControlName="token"
+                                placeholder="Enter your reset token" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="resetEmail">EMAIL</label>
+                            <input type="email" id="resetEmail-desktop" formControlName="email"
+                                placeholder="juandelacruz@gmail.com" required>
+                        </div>
+                        <div class="form-group password-eye">
+                            <label for="resetPassword">NEW PASSWORD</label>
+                            <input type="password" id="resetPassword-desktop" formControlName="password"
+                                placeholder="••••••••" required>
+                            <span id="reset-password-icon-desktop" class="material-icons"
+                                (click)="togglePassword('resetPassword-desktop', 'reset-password-icon-desktop')">visibility</span>
+                        </div>
+                        <div class="form-group password-eye">
+                            <label for="resetPasswordConfirmation">CONFIRM NEW PASSWORD</label>
+                            <input type="password" id="resetPasswordConfirmation-desktop"
+                                formControlName="password_confirmation" placeholder="••••••••" required>
+                            <span id="reset-password-confirmation-icon-desktop" class="material-icons"
+                                (click)="togglePassword('resetPasswordConfirmation-desktop', 'reset-password-confirmation-icon-desktop')">visibility</span>
+                        </div>
+                        <div class="form-group">
+                            <span class="error-message">{{ errorMessage }}</span>
+                        </div>
+                        <button type="submit" class="login-create-button">Reset Password</button>
+                        <a class="back-to-login-link" (click)="setFormState(FormState.LOGIN)">Back to Login</a>
+                    </form>
+
+                    <!-- Email Verification Form -->
+                    <div *ngIf="currentFormState === FormState.EMAIL_VERIFICATION" class="email-verification-container">
+                        <div class="form-group">
+                            <p class="verification-message">Thanks for signing up! Before getting started, could you
+                                verify your email address by clicking on the link we just emailed to you? If you didn't
+                                receive the email, we will gladly send you another.</p>
+                        </div>
+                    
+                        <div class="form-group" *ngIf="verificationLinkSent">
+                            <p class="success-message">A new verification link has been sent to the email address you
+                                provided during registration.</p>
+                        </div>
+                    
+                        <div class="form-group-button">
+                            <button type="button" class="login-create-button" (click)="resendVerificationEmail()">Resend
+                                Verification Email</button>
+                            <button type="button" class="back-to-login-link" (click)="logout()">Log Out</button>
+                        </div>
+                    </div>
+
+                    <!-- Password Confirmation Form -->
+                    <form *ngIf="currentFormState === FormState.PASSWORD_CONFIRMATION" [formGroup]="passwordConfirmForm"
+                        (ngSubmit)="onPasswordConfirmSubmit()">
+                        <div class="form-group">
+                            <p class="confirm-message">This is a secure area of the application. Please confirm your
+                                password before continuing.</p>
+                        </div>
+
+                        <div class="form-group password-eye">
+                            <label for="confirmPassword">PASSWORD</label>
+                            <input type="password" id="confirmPassword-desktop" formControlName="password"
+                                placeholder="••••••••" required>
+                            <span id="confirm-password-icon-desktop" class="material-icons"
+                                (click)="togglePassword('confirmPassword-desktop', 'confirm-password-icon-desktop')">visibility</span>
+                        </div>
+
+                        <div class="form-group">
+                            <span class="error-message">{{ errorMessage }}</span>
+                        </div>
+
+                        <div class="form-group-button">
+                            <button type="submit" class="login-create-button">Confirm</button>
+                        </div>
+                    </form>
+
+                    <div class="create-account">
+                        <p class="account-text" *ngIf="currentFormState === FormState.LOGIN">Don't have an account yet?
+                            <a class="create-account-link" (click)="setFormState(FormState.REGISTER)">Create an
+                                Account</a></p>
+                        <p class="account-text" *ngIf="currentFormState === FormState.REGISTER">Already have an account?
+                            <a class="create-account-link" (click)="setFormState(FormState.LOGIN)">Login</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, BehaviorSubject, catchError, throwError, map, tap, of, switchMap } from 'rxjs';
+import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
+import { User } from '../models/user';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+  isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  currentUserSubject = new BehaviorSubject<User | null>(null);
+  private isEmailVerifiedSubject = new BehaviorSubject<boolean>(false);
+  private readonly STORAGE_KEY = 'user_session';
+  private csrfTokenFetched = false;
+
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {
+    this.initializeAuthState();
+  }
+
+  // Initialize auth state and get CSRF token
+  private initializeAuthState(): void {
+    this.getCsrfToken().subscribe({
+      next: () => {
+        const storedSession = sessionStorage.getItem(this.STORAGE_KEY);
+        if (storedSession) {
+          const session = JSON.parse(storedSession);
+          this.setAuthenticated(true, session.user);
+          this.isEmailVerifiedSubject.next(!!session.user.email_verified_at);
+          this.validateSession();
+        }
+      },
+      error: (error) => {
+        console.error('Failed to get CSRF token:', error);
+        this.handleAuthenticationFailure();
+      }
+    });
+  }
+
+  // Get CSRF token from Laravel Sanctum
+  private getCsrfToken(): Observable<void> {
+    if (this.csrfTokenFetched) {
+      return of(undefined); // Prevent multiple CSRF token fetch requests
+    }
+    return this.http.get<void>(`${environment.webUrl}/sanctum/csrf-cookie`, { withCredentials: true }).pipe(
+      tap(() => this.csrfTokenFetched = true),
+      catchError(error => {
+        console.error('Failed to get CSRF token:', error);
+        return throwError(() => new Error('Failed to get CSRF token'));
+      })
+    );
+  }
+
+  // Validate current session
+  private validateSession(): void {
+    this.getAuthenticatedUser().subscribe({
+      next: (user) => {
+        if (!user) {
+          this.handleAuthenticationFailure();
+        }
+      },
+      error: () => this.handleAuthenticationFailure()
+    });
+  }
+
+  // Handle auth failure
+  private handleAuthenticationFailure(): void {
+    this.clearSession();
+    this.router.navigate(['/login']);
+  }
+
+  // Clear session data
+  private clearSession(): void {
+    sessionStorage.removeItem(this.STORAGE_KEY);
+    this.setAuthenticated(false, null);
+    this.isEmailVerifiedSubject.next(false);
+  }
+
+  // Update auth state
+  public setAuthenticated(isAuthenticated: boolean, user: User | null): void {
+    this.isAuthenticatedSubject.next(isAuthenticated);
+    this.currentUserSubject.next(user);
+
+    if (isAuthenticated && user) {
+      sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify({ user }));
+      this.isEmailVerifiedSubject.next(!!user.email_verified_at);
+      console.log('User logged in:', user); // Debug log
+    }
+  }
+
+  // Login
+  login(email: string, password: string, rememberMe: boolean): Observable<any> {
+    return this.getCsrfToken().pipe(
+      switchMap(() => {
+        return this.http.post<any>(environment.auth.login, {
+          email,
+          password,
+          remember: rememberMe
+        }, { withCredentials: true }).pipe(
+          tap(response => {
+            console.log('Login API Response:', response); // Debug log
+            if (response && response.user) {
+              this.setAuthenticated(true, response.user);
+              if (!response.user.email_verified_at) {
+                this.router.navigate(['/verify-email']);
+              } else {
+                this.handleRoleBasedRedirection(response.user);
+              }
+            }
+          }),
+          catchError(error => {
+            console.error('Login API Error:', error); // Debug log
+            throw error;
+          })
+        );
+      }),
+      catchError(this.handleError('Login failed'))
+    );
+  }
+
+  // Register
+  register(user: Partial<User>): Observable<any> {
+    return this.getCsrfToken().pipe(
+      switchMap(() => {
+        return this.http.post<any>(environment.auth.register, user, {
+          withCredentials: true
+        }).pipe(
+          tap(response => {
+            if (response && response.user) {
+              this.setAuthenticated(true, response.user);
+              if (!response.user.email_verified_at) {
+                this.router.navigate(['/verify-email']);
+              } else {
+                this.handleRoleBasedRedirection(response.user);
+              }
+            }
+          }),
+          catchError(this.handleError('Registration failed'))
+        );
+      })
+    );
+  }
+
+  // Send email verification notification
+  sendVerificationEmail(): Observable<any> {
+    return this.http.post<any>(`${environment.auth.emailVerificationNotification}`, {}, {
+      withCredentials: true
+    }).pipe(
+      catchError(this.handleError('Failed to send verification email'))
+    );
+  }
+
+  // Verify email
+  verifyEmail(id: string, hash: string): Observable<any> {
+    return this.http.get<any>(`${environment.auth.verifyEmail}/${id}/${hash}`, {
+      withCredentials: true
+    }).pipe(
+      tap(response => {
+        if (response && response.user) {
+          this.setAuthenticated(true, response.user);
+          this.isEmailVerifiedSubject.next(true);
+        }
+      }),
+      catchError(this.handleError('Email verification failed'))
+    );
+  }
+
+  // Logout
+  logout(): Observable<any> {
+    return this.http.post<any>(environment.auth.logout, {}, {
+      withCredentials: true
+    }).pipe(
+      tap(() => {
+        this.clearSession();
+        this.router.navigate(['/login']);
+      }),
+      catchError(this.handleError('Logout failed'))
+    );
+  }
+
+  // Get authenticated user
+  getAuthenticatedUser(): Observable<User> {
+    return this.http.get<User>(environment.user.getAuthenticatedUser, {
+      withCredentials: true
+    }).pipe(
+      tap(user => {
+        if (user) {
+          this.setAuthenticated(true, user);
+        }
+      }),
+      catchError(this.handleError('Failed to get authenticated user'))
+    );
+  }
+
+  // Update user
+  updateUser(user: Partial<User>): Observable<User> {
+    const currentUser = this.currentUserSubject.value;
+    if (!currentUser?.id) {
+      return throwError(() => new Error('No authenticated user'));
+    }
+
+    return this.http.put<User>(
+      environment.user.updateUser(currentUser.id),
+      user,
+      { withCredentials: true }
+    ).pipe(
+      tap(updatedUser => {
+        this.setAuthenticated(true, updatedUser);
+      }),
+      catchError(this.handleError('User update failed'))
+    );
+  }
+
+  // Password reset request
+  forgotPassword(email: string): Observable<any> {
+    return this.getCsrfToken().pipe(
+      switchMap(() => this.http.post(environment.auth.forgotPassword, { email }, { withCredentials: true })),
+      catchError((error) => {
+        console.error('Password reset request failed:', error);
+        return throwError(() => new Error('Password reset request failed'));
+      })
+    );
+  }
+
+
+  // Reset password
+  resetPassword(token: string, email: string, password: string, password_confirmation: string): Observable<any> {
+    return this.getCsrfToken().pipe(
+      map(() => {
+        return this.http.post<any>(environment.auth.resetPassword, {
+          token,
+          email,
+          password,
+          password_confirmation
+        }, { withCredentials: true });
+      }),
+      catchError(this.handleError('Password reset failed'))
+    );
+  }
+
+  // Add this method for resending verification email
+  resendVerificationEmail(): Observable<any> {
+    return this.http.post<any>(environment.auth.emailVerificationNotification, {}, {
+      withCredentials: true
+    }).pipe(
+      catchError(this.handleError('Failed to resend verification email'))
+    );
+  }
+
+  // Add this method for confirming password
+  confirmPassword(password: string): Observable<any> {
+    return this.getCsrfToken().pipe(
+      switchMap(() => {
+        return this.http.post<any>(environment.auth.confirmPassword, {
+          password
+        }, { withCredentials: true });
+      }),
+      catchError(this.handleError('Password confirmation failed'))
+    );
+  }
+
+  // Role-based navigation
+  private handleRoleBasedRedirection(user: User): void {
+    if (!user.email_verified_at) {
+      this.router.navigate(['/verify-email']);
+    } else if (user.isAdmin) {
+      this.router.navigate(['/admin/admin-dashboard']);
+    } else if (user.isUser) {
+      this.router.navigate(['/']);
+    } else {
+      this.router.navigate(['/']);
+    }
+  }
+
+  // Role checks
+  isAdmin(): boolean {
+    return this.currentUserSubject.value?.isAdmin || false;
+  }
+
+  isUser(): boolean {
+    return this.currentUserSubject.value?.isUser || false;
+  }
+
+  // Access control
+  canAccessAdmin(): boolean {
+    return this.isAuthenticatedSubject.value && this.isAdmin() && this.isEmailVerifiedSubject.value;
+  }
+
+  canAccessUser(): boolean {
+    return this.isAuthenticatedSubject.value && this.isUser() && this.isEmailVerifiedSubject.value;
+  }
+
+  // Observable getters
+  get isAuthenticated(): Observable<boolean> {
+    return this.isAuthenticatedSubject.asObservable();
+  }
+
+  get currentUser(): Observable<User | null> {
+    return this.currentUserSubject.asObservable();
+  }
+
+  get isEmailVerified(): Observable<boolean> {
+    return this.isEmailVerifiedSubject.asObservable();
+  }
+
+  // Error handler
+  private handleError(operation: string) {
+    return (error: HttpErrorResponse) => {
+      console.error(`${operation}:`, error);
+      return throwError(() => new Error(`${operation}: ${error.message}`));
+    };
+  }
+}

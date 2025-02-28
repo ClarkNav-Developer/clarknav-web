@@ -11,8 +11,9 @@ import { User } from '../models/user';
 export class AuthService {
   isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   currentUserSubject = new BehaviorSubject<User | null>(null);
-  private isEmailVerifiedSubject = new BehaviorSubject<boolean>(false);
+  // private isEmailVerifiedSubject = new BehaviorSubject<boolean>(false); // Remove this line
   private readonly STORAGE_KEY = 'user_session';
+  private csrfTokenFetched = false;
 
   constructor(
     private http: HttpClient,
@@ -29,7 +30,7 @@ export class AuthService {
         if (storedSession) {
           const session = JSON.parse(storedSession);
           this.setAuthenticated(true, session.user);
-          this.isEmailVerifiedSubject.next(!!session.user.email_verified_at);
+          // this.isEmailVerifiedSubject.next(!!session.user.email_verified_at); // Remove this line
           this.validateSession();
         }
       },
@@ -42,9 +43,20 @@ export class AuthService {
 
   // Get CSRF token from Laravel Sanctum
   private getCsrfToken(): Observable<void> {
-    return this.http.get<void>(`${environment.webUrl}/sanctum/csrf-cookie`, {
-      withCredentials: true
-    });
+    console.log('CSRF Token Fetch Attempt:', this.csrfTokenFetched); // Debug log
+    if (this.csrfTokenFetched) {
+      return of(undefined); // Prevent multiple CSRF token fetch requests
+    }
+    return this.http.get<void>(`${environment.webUrl}/sanctum/csrf-cookie`, { withCredentials: true }).pipe(
+      tap(() => {
+        this.csrfTokenFetched = true;
+        console.log('CSRF Token Fetched Successfully'); // Debug log
+      }),
+      catchError(error => {
+        console.error('Failed to get CSRF token:', error);
+        return throwError(() => new Error('Failed to get CSRF token'));
+      })
+    );
   }
 
   // Validate current session
@@ -69,17 +81,17 @@ export class AuthService {
   private clearSession(): void {
     sessionStorage.removeItem(this.STORAGE_KEY);
     this.setAuthenticated(false, null);
-    this.isEmailVerifiedSubject.next(false);
+    // this.isEmailVerifiedSubject.next(false); // Remove this line
   }
 
   // Update auth state
-  private setAuthenticated(isAuthenticated: boolean, user: User | null): void {
+  public setAuthenticated(isAuthenticated: boolean, user: User | null): void {
     this.isAuthenticatedSubject.next(isAuthenticated);
     this.currentUserSubject.next(user);
-  
+
     if (isAuthenticated && user) {
       sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify({ user }));
-      this.isEmailVerifiedSubject.next(!!user.email_verified_at);
+      // this.isEmailVerifiedSubject.next(!!user.email_verified_at); // Remove this line
       console.log('User logged in:', user); // Debug log
     }
   }
@@ -97,7 +109,11 @@ export class AuthService {
             console.log('Login API Response:', response); // Debug log
             if (response && response.user) {
               this.setAuthenticated(true, response.user);
-              this.handleRoleBasedRedirection(response.user);
+              // if (!response.user.email_verified_at) { // Remove this block
+              //   this.router.navigate(['/verify-email']);
+              // } else {
+                this.handleRoleBasedRedirection(response.user);
+              // }
             }
           }),
           catchError(error => {
@@ -113,46 +129,48 @@ export class AuthService {
   // Register
   register(user: Partial<User>): Observable<any> {
     return this.getCsrfToken().pipe(
-      map(() => {
+      switchMap(() => {
         return this.http.post<any>(environment.auth.register, user, {
           withCredentials: true
         }).pipe(
           tap(response => {
             if (response && response.user) {
-              // Don't automatically authenticate after registration
-              // User needs to verify email first
-              this.router.navigate(['/verify-email']);
+              this.setAuthenticated(true, response.user);
+              // if (!response.user.email_verified_at) { // Remove this block
+              //   this.router.navigate(['/verify-email']);
+              // } else {
+                this.handleRoleBasedRedirection(response.user);
+              // }
             }
-          })
+          }),
+          catchError(this.handleError('Registration failed'))
         );
-      }),
-      catchError(this.handleError('Registration failed'))
+      })
     );
   }
 
-  // Send email verification notification
-  sendVerificationEmail(): Observable<any> {
-    return this.http.post<any>(`${environment.webUrl}/email/verification-notification`, {}, {
-      withCredentials: true
-    }).pipe(
-      catchError(this.handleError('Failed to send verification email'))
-    );
-  }
+  // Remove email verification methods
+  // sendVerificationEmail(): Observable<any> {
+  //   return this.http.post<any>(`${environment.auth.emailVerificationNotification}`, {}, {
+  //     withCredentials: true
+  //   }).pipe(
+  //     catchError(this.handleError('Failed to send verification email'))
+  //   );
+  // }
 
-  // Verify email
-  verifyEmail(id: string, hash: string): Observable<any> {
-    return this.http.get<any>(`${environment.webUrl}/verify-email/${id}/${hash}`, {
-      withCredentials: true
-    }).pipe(
-      tap(response => {
-        if (response && response.user) {
-          this.setAuthenticated(true, response.user);
-          this.isEmailVerifiedSubject.next(true);
-        }
-      }),
-      catchError(this.handleError('Email verification failed'))
-    );
-  }
+  // verifyEmail(id: string, hash: string): Observable<any> {
+  //   return this.http.get<any>(`${environment.auth.verifyEmail}/${id}/${hash}`, {
+  //     withCredentials: true
+  //   }).pipe(
+  //     tap(response => {
+  //       if (response && response.user) {
+  //         this.setAuthenticated(true, response.user);
+  //         this.isEmailVerifiedSubject.next(true);
+  //       }
+  //     }),
+  //     catchError(this.handleError('Email verification failed'))
+  //   );
+  // }
 
   // Logout
   logout(): Observable<any> {
@@ -203,12 +221,11 @@ export class AuthService {
   // Password reset request
   forgotPassword(email: string): Observable<any> {
     return this.getCsrfToken().pipe(
-      map(() => {
-        return this.http.post<any>(environment.auth.forgotPassword, { email }, {
-          withCredentials: true
-        });
-      }),
-      catchError(this.handleError('Password reset request failed'))
+      switchMap(() => this.http.post(environment.auth.forgotPassword, { email }, { withCredentials: true })),
+      catchError((error) => {
+        console.error('Password reset request failed:', error);
+        return throwError(() => new Error('Password reset request failed'));
+      })
     );
   }
 
@@ -227,11 +244,33 @@ export class AuthService {
     );
   }
 
+  // Remove resend verification email method
+  // resendVerificationEmail(): Observable<any> {
+  //   return this.http.post<any>(environment.auth.emailVerificationNotification, {}, {
+  //     withCredentials: true
+  //   }).pipe(
+  //     catchError(this.handleError('Failed to resend verification email'))
+  //   );
+  // }
+
+  // Add this method for confirming password
+  confirmPassword(password: string): Observable<any> {
+    return this.getCsrfToken().pipe(
+      switchMap(() => {
+        return this.http.post<any>(environment.auth.confirmPassword, {
+          password
+        }, { withCredentials: true });
+      }),
+      catchError(this.handleError('Password confirmation failed'))
+    );
+  }
+
   // Role-based navigation
   private handleRoleBasedRedirection(user: User): void {
-    if (!user.email_verified_at) {
-      this.router.navigate(['/verify-email']);
-    } else if (user.isAdmin) {
+    // if (!user.email_verified_at) { // Remove this block
+    //   this.router.navigate(['/verify-email']);
+    // } else 
+    if (user.isAdmin) {
       this.router.navigate(['/admin/admin-dashboard']);
     } else if (user.isUser) {
       this.router.navigate(['/']);
@@ -251,11 +290,11 @@ export class AuthService {
 
   // Access control
   canAccessAdmin(): boolean {
-    return this.isAuthenticatedSubject.value && this.isAdmin() && this.isEmailVerifiedSubject.value;
+    return this.isAuthenticatedSubject.value && this.isAdmin(); // Remove email verification check
   }
 
   canAccessUser(): boolean {
-    return this.isAuthenticatedSubject.value && this.isUser() && this.isEmailVerifiedSubject.value;
+    return this.isAuthenticatedSubject.value && this.isUser(); // Remove email verification check
   }
 
   // Observable getters
@@ -267,9 +306,10 @@ export class AuthService {
     return this.currentUserSubject.asObservable();
   }
 
-  get isEmailVerified(): Observable<boolean> {
-    return this.isEmailVerifiedSubject.asObservable();
-  }
+  // Remove email verification observable getter
+  // get isEmailVerified(): Observable<boolean> {
+  //   return this.isEmailVerifiedSubject.asObservable();
+  // }
 
   // Error handler
   private handleError(operation: string) {

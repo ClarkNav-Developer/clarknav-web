@@ -86,8 +86,8 @@ export class AccountComponent implements OnInit {
       if (isAuthenticated) {
         this.authService.currentUser.subscribe(user => {
           if (user) {
-            this.firstName = user.first_name;
-            this.lastName = user.last_name;
+            this.firstName = user.firstname;
+            this.lastName = user.lastname;
             this.email = user.email;
             this.fetchNavigationHistories();
           }
@@ -203,8 +203,8 @@ export class AccountComponent implements OnInit {
     }
 
     const updatedUser: Partial<User> = {
-      first_name: this.firstName,
-      last_name: this.lastName,
+      firstname: this.firstName,
+      lastname: this.lastName,
       email: this.email,
       password: this.newPassword,
       password_confirmation: this.newPasswordConfirmation

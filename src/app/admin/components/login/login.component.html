@@ -8,7 +8,9 @@
                         <img src="/public/bg-nav-900.webp" alt="Logo" class="logo-image" loading="lazy">
                     </div>
 
-                    <form *ngIf="isLoginForm" [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
+                    <!-- Login Form -->
+                    <form *ngIf="currentFormState === FormState.LOGIN" [formGroup]="loginForm"
+                        (ngSubmit)="onLoginSubmit()">
                         <div class="form-group">
                             <label for="email">EMAIL</label>
                             <input type="email" id="email-desktop" formControlName="email"
@@ -28,75 +30,98 @@
                         <div class="form-group">
                             <span class="error-message">{{ errorMessage }}</span>
                         </div>
-                        <button type="submit" class="login-create-button">Login</button>
-                        <a class="forgot-password-link" (click)="onForgotPasswordClick()">Forgot Password?</a>
+                        <div class="form-group-button">
+                            <button type="submit" class="login-create-button">Login</button>
+                            <a class="forgot-password-link" (click)="setFormState(FormState.FORGOT_PASSWORD)">Forgot
+                                Password?</a>
+                        </div>
                     </form>
 
-                    <form *ngIf="!isLoginForm && !isForgotPasswordForm && !isResetPasswordForm" [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
+                    <!-- Register Form -->
+                    <form *ngIf="currentFormState === FormState.REGISTER" [formGroup]="registerForm"
+                        (ngSubmit)="onRegisterSubmit()">
                         <div class="form-group">
                             <label for="firstName">FIRST NAME</label>
-                            <input type="text" id="firstName-desktop" formControlName="first_name" placeholder="Juan Miguel" required>
-                            <div *ngIf="registerForm.get('first_name')?.invalid && registerForm.get('first_name')?.touched">
+                            <input type="text" id="firstName-desktop" formControlName="firstname"
+                                placeholder="Juan Miguel" required>
+                            <div
+                                *ngIf="registerForm.get('firstname')?.invalid && registerForm.get('firstname')?.touched">
                                 First name is required and must be at least 2 characters long.
                             </div>
                         </div>
-                    
+
                         <div class="form-group">
                             <label for="lastName">LAST NAME</label>
-                            <input type="text" id="lastName-desktop" formControlName="last_name" placeholder="Dela Cruz" required>
-                            <div *ngIf="registerForm.get('last_name')?.invalid && registerForm.get('last_name')?.touched">
-                                First name is required and must be at least 2 characters long.
+                            <input type="text" id="lastName-desktop" formControlName="lastname" placeholder="Dela Cruz"
+                                required>
+                            <div
+                                *ngIf="registerForm.get('lastname')?.invalid && registerForm.get('lastname')?.touched">
+                                Last name is required and must be at least 2 characters long.
                             </div>
                         </div>
-                    
+
                         <div class="form-group">
                             <label for="email">EMAIL</label>
-                            <input type="email" id="email-desktop" formControlName="email" placeholder="juandelacruz@gmail.com" required>
+                            <input type="email" id="email-desktop" formControlName="email"
+                                placeholder="juandelacruz@gmail.com" required>
                             <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
                                 Please enter a valid email address.
                             </div>
                         </div>
-                    
+
                         <div class="form-group password-eye">
                             <label for="password">PASSWORD</label>
-                            <input type="password" id="password-desktop" formControlName="password" placeholder="••••••••" required>
-                            <span id="password-icon-desktop" class="material-icons" (click)="togglePassword('password-desktop', 'password-icon-desktop')">visibility</span>
+                            <input type="password" id="password-desktop" formControlName="password"
+                                placeholder="••••••••" required>
+                            <span id="password-icon-desktop" class="material-icons"
+                                (click)="togglePassword('password-desktop', 'password-icon-desktop')">visibility</span>
                             <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
-                                Password must be at least 8 characters long and include uppercase, lowercase, numbers, and special characters.
+                                Password must be at least 8 characters long and include uppercase, lowercase, numbers,
+                                and special characters.
                             </div>
                         </div>
-                    
+
                         <div class="form-group password-eye">
                             <label for="passwordConfirmation">CONFIRM PASSWORD</label>
-                            <input type="password" id="passwordConfirmation-desktop" formControlName="password_confirmation" placeholder="••••••••" required>
-                            <span id="password-confirmation-icon-desktop" class="material-icons" (click)="togglePassword('passwordConfirmation-desktop', 'password-confirmation-icon-desktop')">visibility</span>
-                            <div *ngIf="registerForm.get('password_confirmation')?.invalid && registerForm.get('password_confirmation')?.touched">
+                            <input type="password" id="passwordConfirmation-desktop"
+                                formControlName="password_confirmation" placeholder="••••••••" required>
+                            <span id="password-confirmation-icon-desktop" class="material-icons"
+                                (click)="togglePassword('passwordConfirmation-desktop', 'password-confirmation-icon-desktop')">visibility</span>
+                            <div
+                                *ngIf="registerForm.get('password_confirmation')?.invalid && registerForm.get('password_confirmation')?.touched">
                                 Passwords do not match.
                             </div>
                         </div>
-                    
+
                         <div class="form-group">
+                            <span class="error-message">{{ successMessage }}</span>
                             <span class="error-message">{{ errorMessage }}</span>
                         </div>
-                    
+
                         <button class="login-create-button" type="submit">Create Account</button>
                     </form>
-                    
 
-                    <form *ngIf="isForgotPasswordForm" [formGroup]="forgotPasswordForm" (ngSubmit)="onForgotPasswordSubmit()">
+                    <!-- Forgot Password Form -->
+                    <form *ngIf="currentFormState === FormState.FORGOT_PASSWORD" [formGroup]="forgotPasswordForm"
+                        (ngSubmit)="onForgotPasswordSubmit()">
                         <div class="form-group">
                             <label for="forgotEmail">EMAIL</label>
                             <input type="email" id="forgotEmail-desktop" formControlName="email"
                                 placeholder="juandelacruz@gmail.com" required>
                         </div>
                         <div class="form-group">
+                            <span class="success-message">{{ successMessage }}</span>
                             <span class="error-message">{{ errorMessage }}</span>
                         </div>
-                        <button type="submit" class="login-create-button">Send Reset Link</button>
-                        <a class="back-to-login-link" (click)="onLoginClick()">Back to Login</a>
+                        <div class="form-group-button">
+                            <button type="submit" class="login-create-button">Send Reset Link</button>
+                            <a class="back-to-login-link" (click)="setFormState(FormState.LOGIN)">Back to Login</a>
+                        </div>
                     </form>
 
-                    <form *ngIf="isResetPasswordForm" [formGroup]="resetPasswordForm" (ngSubmit)="onResetPasswordSubmit()">
+                    <!-- Reset Password Form -->
+                    <form *ngIf="currentFormState === FormState.RESET_PASSWORD" [formGroup]="resetPasswordForm"
+                        (ngSubmit)="onResetPasswordSubmit()">
                         <div class="form-group">
                             <label for="resetToken">RESET TOKEN</label>
                             <input type="text" id="resetToken-desktop" formControlName="token"
@@ -125,14 +150,40 @@
                             <span class="error-message">{{ errorMessage }}</span>
                         </div>
                         <button type="submit" class="login-create-button">Reset Password</button>
-                        <a class="back-to-login-link" (click)="onLoginClick()">Back to Login</a>
+                        <a class="back-to-login-link" (click)="setFormState(FormState.LOGIN)">Back to Login</a>
+                    </form>
+
+                    <!-- Password Confirmation Form -->
+                    <form *ngIf="currentFormState === FormState.PASSWORD_CONFIRMATION" [formGroup]="passwordConfirmForm"
+                        (ngSubmit)="onPasswordConfirmSubmit()">
+                        <div class="form-group">
+                            <p class="confirm-message">This is a secure area of the application. Please confirm your
+                                password before continuing.</p>
+                        </div>
+
+                        <div class="form-group password-eye">
+                            <label for="confirmPassword">PASSWORD</label>
+                            <input type="password" id="confirmPassword-desktop" formControlName="password"
+                                placeholder="••••••••" required>
+                            <span id="confirm-password-icon-desktop" class="material-icons"
+                                (click)="togglePassword('confirmPassword-desktop', 'confirm-password-icon-desktop')">visibility</span>
+                        </div>
+
+                        <div class="form-group">
+                            <span class="error-message">{{ errorMessage }}</span>
+                        </div>
+
+                        <div class="form-group-button">
+                            <button type="submit" class="login-create-button">Confirm</button>
+                        </div>
                     </form>
 
                     <div class="create-account">
-                        <p class="account-text" *ngIf="isLoginForm">Don't have an account yet? <a
-                                class="create-account-link" (click)="onRegisterClick()">Create an Account</a></p>
-                        <p class="account-text" *ngIf="!isLoginForm && !isForgotPasswordForm && !isResetPasswordForm">Already have an account? <a
-                                class="create-account-link" (click)="onLoginClick()">Login</a></p>
+                        <p class="account-text" *ngIf="currentFormState === FormState.LOGIN">Don't have an account yet?
+                            <a class="create-account-link" (click)="setFormState(FormState.REGISTER)">Create an
+                                Account</a></p>
+                        <p class="account-text" *ngIf="currentFormState === FormState.REGISTER">Already have an account?
+                            <a class="create-account-link" (click)="setFormState(FormState.LOGIN)">Login</a></p>
                     </div>
                 </div>
             </div>

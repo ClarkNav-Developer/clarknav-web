@@ -1,19 +1,23 @@
 // const apiUrl = 'https://api.clarknav.com'; 
 
-const apiUrl = 'http://localhost:8000/api'; 
-const webUrl = 'http://localhost:8000';
+const apiUrl = 'http://localhost:8000/api';
+const webUrl = 'http://localhost:8000'
 
 export const environment = {
-    production: true,
-    googleMapsApiKey: 'AIzaSyBcBSQmpNYjVOZtWYCKuP8kka1M60sfbHo', 
+    production: false,
+    googleMapsApiKey: 'AIzaSyBcBSQmpNYjVOZtWYCKuP8kka1M60sfbHo',
     apiUrl: apiUrl,
     webUrl: webUrl,
     auth: {
-        login: `${webUrl}/login`,
-        register: `${webUrl}/register`,
-        forgotPassword: `${webUrl}/password/email`,
-        resetPassword: `${webUrl}/password/reset`,
-        logout: `${webUrl}/logout`,
+        login: `${apiUrl}/login`,
+        register: `${apiUrl}/register`,
+        forgotPassword: `${apiUrl}/forgot-password`,
+        resetPassword: `${apiUrl}/reset-password`,
+        logout: `${apiUrl}/logout`,
+        verifyEmail: `${apiUrl}/verify-email`,
+        confirmPassword: `${apiUrl}/confirm-password`,
+        updatePassword: `${apiUrl}/password`,
+        emailVerificationNotification: `${apiUrl}/email/verification-notification`,
     },
     user: {
         getUsers: `${apiUrl}/users`,
@@ -21,7 +25,7 @@ export const environment = {
         showUser: (id: number) => `${apiUrl}/users/${id}`,
         updateUser: (id: number) => `${apiUrl}/users/${id}`,
         deleteUser: (id: number) => `${apiUrl}/users/${id}`,
-        getAuthenticatedUser: `${apiUrl}/getAuthenticatedUser`,
+        getAuthenticatedUser: `${apiUrl}/user-role`,
     },
     feedback: {
         storeFeedback: `${apiUrl}/feedback`,
@@ -55,9 +59,8 @@ export const environment = {
         showCustomRoute: (id: number) => `${apiUrl}/custom-routes/${id}`,
         updateCustomRoute: (id: number) => `${apiUrl}/custom-routes/${id}`,
         deleteCustomRoute: (id: number) => `${apiUrl}/custom-routes/${id}`,
-    }
+    },
 };
-
 
 // new api key AIzaSyBcBSQmpNYjVOZtWYCKuP8kka1M60sfbHo
 // old api key AIzaSyDiudS4qTFzpF3NE-dx8PL-t8Rr6GI0RDo

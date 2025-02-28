@@ -12,9 +12,13 @@ const routes: Routes = [
   {
     path: 'admin',
     loadChildren: () => import('./admin/admin.module').then((m) => m.AdminModule),
-    canActivate: [authGuard, adminGuard], // Add both guards
+    canActivate: [authGuard], // Add both guards
   },
   { path: 'login', component: LoginComponent },
+  { path: 'reset-password', component: LoginComponent },
+  // { path: 'verify-email', component: LoginComponent },
+  // { path: 'verify-email/:id/:hash', component: LoginComponent },
+  { path: 'confirm-password', component: LoginComponent },
   { path: '**', redirectTo: '' },
 ];
 

@@ -10,11 +10,8 @@ const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
-    canActivate: [adminGuard], // Add admin guard here too
     children: [
       { path: 'admin-dashboard', component: DashboardComponent },
-      { path: 'fares-management', component: FaresManagementComponent },
-      { path: 'routes-management', component: RoutesManagementComponent },
     ]
   },
 ];
