@@ -1,4 +1,5 @@
 import { Component, Renderer2, OnInit, OnDestroy } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { FloatingWindowService } from '../../../floating-window.service';
 import { MapService } from '../../services/map/map.service';
 import { RoutesService } from '../../services/routes/routes.service';
@@ -14,11 +15,14 @@ import { Subscription } from 'rxjs';
 export class RouteComponent implements OnInit, OnDestroy {
   showRouteList: boolean = true;
   showBackground: boolean = true;
+  currentRouteId: string = '';
   currentRouteName: string = '';
   currentRouteType: string = '';
+  routeInfo: string = '';
   private routeCache: Map<string, any> = new Map();
   private routesLoadedSubscription!: Subscription;
   private routesLoaded: boolean = false;
+  private routeInfoMap: { [key: string]: string } = {};
 
   constructor(
     public floatingWindowService: FloatingWindowService,
@@ -26,7 +30,8 @@ export class RouteComponent implements OnInit, OnDestroy {
     private routesService: RoutesService,
     private suggestedRoutesService: SuggestedRoutesService,
     private locationService: LocationService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private http: HttpClient
   ) {
     this.loadCache();
   }
@@ -37,6 +42,11 @@ export class RouteComponent implements OnInit, OnDestroy {
       if (loaded) {
         // Routes are loaded, you can now render routes
       }
+    });
+
+    // Fetch the route information from the JSON file
+    this.http.get<{ [key: string]: string }>('/assets/route-info.json').subscribe(data => {
+      this.routeInfoMap = data;
     });
   }
 
@@ -128,18 +138,19 @@ export class RouteComponent implements OnInit, OnDestroy {
     const mainWaypoints = route.waypoints.map(this.routesService.parseWaypoint);
     const routeColor = route.color;
     this.mapService.displayRouteSegments({ path: mainWaypoints, color: routeColor });
-
+  
     // Display extension routes
     route.extensions?.forEach((extension: any) => {
       const extensionWaypoints = extension.waypoints.map(this.routesService.parseWaypoint);
       this.mapService.displayRouteSegments({ path: extensionWaypoints, color: routeColor });
     });
-
+  
+    this.currentRouteId = routeId; // Update the current route ID
     this.currentRouteName = route.routeName; // Update the current route name
     this.currentRouteType = routeId.startsWith('J') ? 'Jeepney' : 'Bus'; // Determine the route type
     this.showRouteList = false; // Hide the route list
     this.showBackground = false; // Hide the background
-
+  
     // Add class to move the floating window to the bottom
     const floatingWindow = document.querySelector('.floating-window');
     if (floatingWindow) {
@@ -188,5 +199,10 @@ export class RouteComponent implements OnInit, OnDestroy {
     if (floatingWindow) {
       this.renderer.removeClass(floatingWindow, 'bottom-position');
     }
+  }
+
+  showRouteInfo() {
+    this.routeInfo = this.routeInfoMap[this.currentRouteId] || 'No information available for this route.';
+    console.log(`Info button clicked for route ${this.currentRouteId}: ${this.routeInfo}`);
   }
 }
