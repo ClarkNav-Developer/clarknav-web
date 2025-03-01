@@ -1,4 +1,12 @@
 @media screen and (min-width:768px) {
+
+  .floating-window,
+  .history-bar {
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    box-shadow: 0 2px 4px 3px rgba(0, 0, 0, .1)
+  }
+
   .mobile-view {
     display: none
   }
@@ -7,13 +15,10 @@
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
     height: 600px;
     width: 600px;
-    overflow: hidden;
     padding: 20px;
     background: #fff;
-    box-shadow: 0 2px 4px 3px rgba(0, 0, 0, .1);
     border-radius: 20px;
     z-index: 1002
   }
@@ -39,7 +44,8 @@
     cursor: pointer
   }
 
-  .close-btn:hover {
+  .close-btn:hover,
+  .history-bar .close-btn:hover {
     background: #8b0000
   }
 
@@ -209,37 +215,26 @@
     position: fixed;
     bottom: 45px;
     left: 50%;
-    transform: translate(-50%, -50%);
-    /* height: 600px; */
     width: 400px;
-    overflow: hidden;
     padding: 20px;
     background: #fff;
-    box-shadow: 0 2px 4px 3px rgba(0, 0, 0, .1);
     border-radius: 20px;
-    z-index: 1002;
+    z-index: 1002
   }
 
   .history-bar .history-bar-container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between
   }
-  
+
   .history-bar .close-button {
-    /* position: absolute;
-    top: 15px;
-    right: 10px; */
     background: red;
     color: #fff;
     border: none;
     border-radius: 5px;
     padding: 5px 10px;
-    cursor: pointer;
-  }
-  
-  .history-bar .close-btn:hover {
-    background: #8b0000;
+    cursor: pointer
   }
 
   .feedback-container .content-info label,
@@ -542,33 +537,32 @@
     bottom: 45px;
     left: 50%;
     transform: translate(-50%, -50%);
-    /* height: 600px; */
     width: calc(100% - 20px);
     overflow: hidden;
     padding: 20px;
     background: #fff;
     box-shadow: 0 2px 4px 3px rgba(0, 0, 0, .1);
     border-radius: 20px;
-    z-index: 1002;
+    z-index: 1002
   }
 
   .history-bar .history-bar-container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between
   }
-  
+
   .history-bar .close-button {
     background: red;
     color: #fff;
     border: none;
     border-radius: 5px;
     padding: 5px 10px;
-    cursor: pointer;
+    cursor: pointer
   }
-  
+
   .history-bar .close-btn:hover {
-    background: #8b0000;
+    background: #8b0000
   }
 
   .feedback-container-mobile .content-info label,

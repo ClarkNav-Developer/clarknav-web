@@ -48,7 +48,8 @@
         cursor: pointer
     }
 
-    .close-btn:hover {
+    .close-btn:hover,
+    .display-routes-info-container button:hover {
         background: #8b0000
     }
 
@@ -74,7 +75,7 @@
         border-radius: 5px;
         justify-content: space-evenly;
         flex-wrap: wrap;
-        box-shadow: 0 2px 4px 0px rgba(0, 0, 0, .1)
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .1)
     }
 
     .route-list-box a {
@@ -115,6 +116,7 @@
         align-items: center
     }
 
+    .close-button,
     .display-routes-info-container button {
         background: red;
         color: #fff;
@@ -123,11 +125,7 @@
         padding: 5px 10px;
         cursor: pointer
     }
-    
-    .display-routes-info-container button:hover {
-        background: #8b0000;
-    }
-    /* Route Info Window */
+
     .route-info-window {
         position: fixed;
         top: 0;
@@ -137,121 +135,114 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 1000;
+        z-index: 1000
     }
-    
+
     .route-info-window.closing .route-info-window-overlay {
-        animation: fadeOut 0.3s ease-out;
+        animation: .3s ease-out fadeOut
     }
-    
+
     .route-info-content {
         width: 90%;
         max-width: 600px;
-        background: #ffffff;
+        background: #fff;
         border-radius: 20px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, .15);
         overflow: hidden;
         transform: translateY(0);
-        animation: slideUp 0.3s ease-out;
+        animation: .3s ease-out slideUp;
         position: relative;
-        z-index: 1001; /* Above the overlay */
+        z-index: 1001
     }
-    
+
     .route-info-window.closing .route-info-content {
-        animation: slideDown 0.3s ease-out;
+        animation: .3s ease-out slideDown
     }
-    
+
     .route-info-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 16px 20px;
-        /* background: #f8f9fa; */
-        border-bottom: 1px solid #eaeaea;
+        border-bottom: 1px solid #eaeaea
     }
-    
+
     .route-info-header h3 {
         margin: 0;
         font-size: 18px;
         color: #333;
-        font-weight: 600;
+        font-weight: 600
     }
-    
-    .close-button {
-        /* background: transparent;
-        border: none;
-        font-size: 24px;
-        color: #666;
-        cursor: pointer;
-        padding: 0;
-        margin: 0;
-        line-height: 1; */
-        background: red;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        padding: 5px 10px;
-        cursor: pointer;
-    }
-    
+
     .close-button:hover {
-        color: #333;
+        color: #333
     }
-    
+
     .route-info-body {
         padding: 20px;
         max-height: 60vh;
-        overflow-y: auto;
+        overflow-y: auto
     }
-    
+
     .route-info-body p {
         margin: 0;
         line-height: 1.6;
-        color: #444;
+        color: #444
     }
-    
+
     @keyframes fadeIn {
         from {
-            opacity: 0;
+            opacity: 0
         }
+
         to {
-            opacity: 1;
+            opacity: 1
         }
     }
-    
+
     @keyframes fadeOut {
         from {
-            opacity: 1;
+            opacity: 1
         }
+
         to {
-            opacity: 0;
+            opacity: 0
         }
     }
-    
+
     @keyframes slideUp {
         from {
             transform: translateY(30px);
-            opacity: 0;
+            opacity: 0
         }
+
         to {
             transform: translateY(0);
-            opacity: 1;
+            opacity: 1
         }
     }
-    
+
     @keyframes slideDown {
         from {
             transform: translateY(0);
-            opacity: 1;
+            opacity: 1
         }
+
         to {
             transform: translateY(30px);
-            opacity: 0;
+            opacity: 0
         }
     }
 }
 
 @media screen and (max-width:767px) {
+
+    .close-btn,
+    .close-button {
+        color: #fff;
+        cursor: pointer
+    }
+
     .desktop-view {
         display: none
     }
@@ -290,11 +281,17 @@
         top: 10px;
         right: 10px;
         background: red;
-        color: #fff;
         border: none;
         border-radius: 5px;
-        padding: 5px 10px;
-        cursor: pointer
+        padding: 5px 10px
+    }
+
+    .clark-loop-box-mobile,
+    .jeepney-container-mobile {
+        gap: 15px;
+        margin: 5px 0;
+        padding: 10px 0;
+        display: flex
     }
 
     .close-btn:hover {
@@ -306,21 +303,13 @@
     }
 
     .jeepney-container-mobile {
-        display: flex;
         flex-wrap: wrap;
-        gap: 15px;
-        margin: 5px 0;
-        padding: 10px 0;
         justify-content: center
     }
 
     .clark-loop-box-mobile {
-        display: flex;
         flex-wrap: wrap;
-        justify-content: space-evenly;
-        gap: 15px;
-        margin: 5px 0;
-        padding: 10px 0;
+        justify-content: space-evenly
     }
 
     .route-list-box-mobile {
@@ -332,7 +321,7 @@
         justify-content: space-evenly;
         flex-wrap: wrap;
         box-shadow: 0 2px 3px 1px rgba(0, 0, 0, .1);
-        font-size: 0.8em;
+        font-size: .8em
     }
 
     .route-list-box-mobile a {
@@ -382,10 +371,9 @@
         cursor: pointer;
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: center
     }
 
-    /* Route Info Window */
     .route-info-window {
         position: fixed;
         top: 0;
@@ -395,7 +383,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 1000;
+        z-index: 1000
     }
 
     .route-info-window-overlay {
@@ -404,117 +392,110 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        animation: fadeIn 0.3s ease-out;
+        background-color: rgba(0, 0, 0, .5);
+        animation: .3s ease-out fadeIn
     }
-    
+
     .route-info-window.closing .route-info-window-overlay {
-        animation: fadeOut 0.3s ease-out;
+        animation: .3s ease-out fadeOut
     }
-    
+
     .route-info-content {
         width: 90%;
         max-width: 600px;
-        background: #ffffff;
+        background: #fff;
         border-radius: 20px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, .15);
         overflow: hidden;
         transform: translateY(0);
-        animation: slideUp 0.3s ease-out;
+        animation: .3s ease-out slideUp;
         position: relative;
-        z-index: 1001; /* Above the overlay */
+        z-index: 1001
     }
-    
+
     .route-info-window.closing .route-info-content {
-        animation: slideDown 0.3s ease-out;
+        animation: .3s ease-out slideDown
     }
-    
+
     .route-info-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 16px 20px;
-        /* background: #f8f9fa; */
-        border-bottom: 1px solid #eaeaea;
+        border-bottom: 1px solid #eaeaea
     }
-    
+
     .route-info-header h3 {
         margin: 0;
         font-size: 18px;
         color: #333;
-        font-weight: 600;
+        font-weight: 600
     }
-    
+
     .close-button {
-        /* background: transparent;
-        border: none;
-        font-size: 24px;
-        color: #666;
-        cursor: pointer;
-        padding: 0;
-        margin: 0;
-        line-height: 1; */
         background: red;
-        color: #fff;
         border: none;
         border-radius: 5px;
-        padding: 5px 10px;
-        cursor: pointer;
+        padding: 5px 10px
     }
-    
+
     .close-button:hover {
-        color: #333;
+        color: #333
     }
-    
+
     .route-info-body {
         padding: 20px;
         max-height: 60vh;
-        overflow-y: auto;
+        overflow-y: auto
     }
-    
+
     .route-info-body p {
         margin: 0;
         line-height: 1.6;
-        color: #444;
+        color: #444
     }
-    
+
     @keyframes fadeIn {
         from {
-            opacity: 0;
+            opacity: 0
         }
+
         to {
-            opacity: 1;
+            opacity: 1
         }
     }
-    
+
     @keyframes fadeOut {
         from {
-            opacity: 1;
+            opacity: 1
         }
+
         to {
-            opacity: 0;
+            opacity: 0
         }
     }
-    
+
     @keyframes slideUp {
         from {
             transform: translateY(30px);
-            opacity: 0;
+            opacity: 0
         }
+
         to {
             transform: translateY(0);
-            opacity: 1;
+            opacity: 1
         }
     }
-    
+
     @keyframes slideDown {
         from {
             transform: translateY(0);
-            opacity: 1;
+            opacity: 1
         }
+
         to {
             transform: translateY(30px);
-            opacity: 0;
+            opacity: 0
         }
     }
 }

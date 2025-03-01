@@ -1,8 +1,7 @@
 body,
 body .floating-window {
   background-color: #fff;
-  color: #000;
-  transition: background-color .1s ease-in-out, color .1s ease-in-out
+  color: #000
 }
 
 body,
@@ -28,7 +27,9 @@ body .floating-window::before,
 body.dark-mode .bottom-sheet-mobile.show::before,
 body.dark-mode .bottom-sheet-mobile:before,
 body.dark-mode .container::before,
-body.dark-mode .mobile-container::before {
+body.dark-mode .history-bar::before,
+body.dark-mode .mobile-container::before,
+body.dark-mode .route-info-content::before {
   content: '';
   position: absolute;
   top: 0;
@@ -72,7 +73,8 @@ body.dark-mode .menu-container button.menu-container-button,
 body.dark-mode .menu-container-mobile[_ngcontent-ng-c2033211746] button[_ngcontent-ng-c2033211746],
 body.dark-mode .menu-list a.menu-list-button,
 body.dark-mode .menu-list-mobile a,
-body.dark-mode .menu-list-mobile a.menu-list-button {
+body.dark-mode .menu-list-mobile a.menu-list-button,
+body.dark-mode .route-info-content p {
   color: #fff;
   transition: color .1s ease-in-out
 }
@@ -85,7 +87,9 @@ body.dark-mode .menu-list-mobile a:hover {
 
 body.dark-mode .container,
 body.dark-mode .container-mobile,
+body.dark-mode .history-bar,
 body.dark-mode .navigation-status-container,
+body.dark-mode .route-info-content,
 body.dark-mode .search-bar-container,
 body.dark-mode .search-bar-container-mobile {
   background-color: #1e1e1e7c;
@@ -143,56 +147,10 @@ body.dark-mode .route-item-mobile {
   transition: background-color .1s ease-in-out
 }
 
-body.dark-mode .route-info-content{
-  background-color: #1e1e1e7c;
-  transition: background-color .1s ease-in-out
-}
-
 body.dark-mode .route-info-header h3 {
-  color: white !important;
+  color: #fff !important;
   transition: color .1s ease-in-out
 }
-
-body.dark-mode .route-info-content p {
-  color: white;
-  transition: color .1s ease-in-out
-}
-
-body.dark-mode .route-info-content::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: inherit;
-  backdrop-filter: blur(15px);
-  border-radius: inherit;
-  z-index: -1;
-  box-sizing: border-box;
-  transition: background-color .1s ease-in-out, color .1s ease-in-out
-}
-
-body.dark-mode .history-bar {
-  background-color: #1e1e1e7c;
-  transition: background-color .1s ease-in-out
-}
-
-body.dark-mode .history-bar::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: inherit;
-  backdrop-filter: blur(15px);
-  border-radius: inherit;
-  z-index: -1;
-  box-sizing: border-box;
-  transition: background-color .1s ease-in-out, color .1s ease-in-out
-}
-
 
 body.dark-mode .bottom-nav .menu-container svg.menu-container-svg,
 body.dark-mode .bottom-nav-mobile .menu-container-mobile svg.menu-container-mobile-svg {
@@ -214,6 +172,7 @@ body.dark-mode .bottom-sheet-mobile.show {
   transition: bottom .5s ease-in-out
 }
 
+body.dark-mode .content-mobile .tab,
 body.dark-mode .info-button button {
   transition: background-color .1s ease-in-out
 }
@@ -228,8 +187,7 @@ body.dark-mode .current-loc-button button:active {
 }
 
 body.dark-mode .content-mobile .tab {
-  background-color: #4d4d4d !important;
-  transition: background-color .1s ease-in-out
+  background-color: #4d4d4d !important
 }
 
 body.dark-mode .navigation-status-container::before {
