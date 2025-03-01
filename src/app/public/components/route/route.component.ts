@@ -6,11 +6,23 @@ import { RoutesService } from '../../services/routes/routes.service';
 import { LocationService } from '../../services/geocoding/location.service';
 import { SuggestedRoutesService } from '../../services/routes/suggested-routes.service';
 import { Subscription } from 'rxjs';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-route',
   templateUrl: './route.component.html',
-  styleUrls: ['./route.component.css']
+  styleUrls: ['./route.component.css'],
+  animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translate(-50%, -48%)' }),
+        animate('300ms ease-out', style({ opacity: 1, transform: 'translate(-50%, -50%)' }))
+      ]),
+      transition(':leave', [
+        animate('200ms ease-in', style({ opacity: 0, transform: 'translate(-50%, -52%)' }))
+      ])
+    ])
+  ]
 })
 export class RouteComponent implements OnInit, OnDestroy {
   showRouteList: boolean = true;
@@ -19,6 +31,7 @@ export class RouteComponent implements OnInit, OnDestroy {
   currentRouteName: string = '';
   currentRouteType: string = '';
   routeInfo: string = '';
+  isClosing: boolean = false;
   private routeCache: Map<string, any> = new Map();
   private routesLoadedSubscription!: Subscription;
   private routesLoaded: boolean = false;
@@ -138,19 +151,19 @@ export class RouteComponent implements OnInit, OnDestroy {
     const mainWaypoints = route.waypoints.map(this.routesService.parseWaypoint);
     const routeColor = route.color;
     this.mapService.displayRouteSegments({ path: mainWaypoints, color: routeColor });
-  
+
     // Display extension routes
     route.extensions?.forEach((extension: any) => {
       const extensionWaypoints = extension.waypoints.map(this.routesService.parseWaypoint);
       this.mapService.displayRouteSegments({ path: extensionWaypoints, color: routeColor });
     });
-  
+
     this.currentRouteId = routeId; // Update the current route ID
     this.currentRouteName = route.routeName; // Update the current route name
     this.currentRouteType = routeId.startsWith('J') ? 'Jeepney' : 'Bus'; // Determine the route type
     this.showRouteList = false; // Hide the route list
     this.showBackground = false; // Hide the background
-  
+
     // Add class to move the floating window to the bottom
     const floatingWindow = document.querySelector('.floating-window');
     if (floatingWindow) {
@@ -201,8 +214,121 @@ export class RouteComponent implements OnInit, OnDestroy {
     }
   }
 
+  private routeInfoHtmlMap: { [key: string]: string } = {
+    'J1': `
+      <p><strong>Jeepney Route 1</strong><br>
+      Bayanihan Terminal - Clark Freeport Zone Vice Versa - Mt. Pinatubo Co</p>
+      <br>
+      <p><strong>Places to visit in this route:</strong></p>
+      <p>Air Force City Park <br> 
+      Hann Casino Resort <br> 
+      Midori Hotel and Casino <br> 
+      Clark Safari and Adventure Park <br> 
+      Clark Aqua Planet <br> 
+      Deco Central Showroom <br> 
+      Nayong Pilipino <br> 
+      Fontana Casino <br> 
+      Fontana Water Park </p>
+    `,
+    'J2': `
+      <p><strong>Jeepney Route 2</strong><br>
+      Bayanihan Terminal - Clark Hostel</p>
+      <br>
+      <p><strong>Places to visit in this route:</strong></p>
+      <p>Bicentennial Park <br> 
+      Children's Playground <br> 
+      Clark Parade Grounds <br> 
+      Clark Museum <br> 
+      Royce Hotel & Casino <br> 
+      Fontana Casino <br> 
+      Fontana Water Park</p>
+    `,
+    'J3': `
+      <p><strong>Jeepney Route 3</strong><br>
+      Bayanihan Terminal - Picnic Ground - CFZ Vice Versa</p>
+      <br>
+      <p><strong>Places to visit in this route:</strong></p>
+      <p>Air Force City <br> 
+      Royce Hotel & Casino <br> 
+      Widus Hotel & Casino <br> 
+      Midori Hotel & Casino <br> 
+      El Kabayo <br> 
+      Clark International Speedway</p>
+    `,
+    'J5': `
+      <p><strong>Jeepney Route 5</strong><br>
+      Bayanihan Terminal - IE-5 - GGLC Vice Versa</p>
+      <br>
+      <p><strong>Places to visit in this route:</strong></p>
+      <p>The Medical City Clark</p>
+    `,
+    'J6': `
+      <p><strong>Jeepney Route 6</strong><br>
+      Mabalacat Public Market Terminal - PhilExcel Vice Versa</p>
+      <br>
+      <p><strong>Places to visit in this route:</strong></p>
+      <p>Dinosaur Island <br> 
+      El Kabayo <br> 
+      Hann Casino & Resort <br> 
+      Widus Hotel & Casino <br> 
+      Clark Museum <br> 
+      Clark Parade Grounds <br> 
+      Children's Playground <br> 
+      Bicentennial Park</p>
+    `,
+    'B1': `
+      <p><strong>Clark Loop Northbound</strong><br>
+      Bayanihan Terminal - Clark International Airport</p>
+      <br>
+      <p><strong>Places to visit in this route:</strong></p>
+      <p>Bicentennial Park <br> 
+      Children's Playground <br> 
+      Clark Parade Grounds <br> 
+      Clark Museum <br> 
+      Royce Hotel & Casino <br> 
+      Widus Hotel & Casino <br> 
+      Hann Casino & Resort <br> 
+      El Kabayo <br> 
+      Dinosaur Island <br> 
+      Clark International Airport</p>
+    `,
+    'B2': `
+      <p><strong>Clark Loop Southbound</strong><br>
+      Clark International Airport - Bayanihan Terminal</p>
+      <br>
+      <p><strong>Places to visit in this route:</strong></p>
+      <p>Bicentennial Park <br> 
+      Children's Playground <br> 
+      Clark Parade Grounds <br> 
+      Clark Museum <br> 
+      Royce Hotel & Casino <br> 
+      Widus Hotel & Casino <br> 
+      Hann Casino & Resort <br> 
+      El Kabayo <br> 
+      Dinosaur Island <br> 
+      Clark International Airport</p>
+    `
+  };
+
   showRouteInfo() {
-    this.routeInfo = this.routeInfoMap[this.currentRouteId] || 'No information available for this route.';
-    console.log(`Info button clicked for route ${this.currentRouteId}: ${this.routeInfo}`);
+    const routeInfo = this.routeInfoHtmlMap[this.currentRouteId];
+
+    if (routeInfo) {
+      this.routeInfo = routeInfo;
+      // Optionally add analytics tracking
+      console.log(`Info displayed for route ${this.currentRouteId}`);
+    } else {
+      this.routeInfo = '<p class="no-info">No information available for this route.</p>';
+    }
+  }
+
+  closeRouteInfo() {
+    this.isClosing = true;
+
+    // Wait for the animation to complete before clearing the content
+    setTimeout(() => {
+      this.routeInfo = '';
+      this.isClosing = false;
+    }, 300); // Same duration as your animation (0.3s = 300ms)
   }
 }
