@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../../../models/user';
 import { environment } from '../../../../environments/environment';
@@ -8,18 +8,37 @@ import { environment } from '../../../../environments/environment';
   providedIn: 'root'
 })
 export class UserService {
+  private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(environment.user.getUsers);
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<User[]>(`${this.apiUrl}/users`, { headers });
   }
 
-  updateUser(id: number, userData: Partial<User>): Observable<User> {
-    return this.http.put<User>(environment.user.updateUser(id), userData);
+  getUser(id: number): Observable<User> {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<User>(`${this.apiUrl}/users/${id}`, { headers });
+  }
+
+  updateUser(id: number, user: Partial<User>): Observable<User> {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.put<User>(`${this.apiUrl}/users/${id}`, user, { headers });
   }
 
   deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(environment.user.deleteUser(id));
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete<void>(`${this.apiUrl}/users/${id}`, { headers });
+  }
+
+  getUserRole(): Observable<{ isAdmin: boolean, isUser: boolean }> {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<{ isAdmin: boolean, isUser: boolean }>(`${this.apiUrl}/user-role`, { headers });
   }
 }

@@ -5,13 +5,14 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FaresManagementComponent } from './components/fares-management/fares-management.component';
 import { RoutesManagementComponent } from './components/routes-management/routes-management.component';
 import { adminGuard } from '../auth/admin.guard';
+import { authGuard } from '../auth/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
     children: [
-      { path: 'admin-dashboard', component: DashboardComponent },
+      { path: 'admin-dashboard', component: DashboardComponent, canActivate: [authGuard] },
     ]
   },
 ];

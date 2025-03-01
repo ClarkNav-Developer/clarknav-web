@@ -1,13 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, Observable, of } from 'rxjs';
-import { switchMap, takeUntil, tap, catchError, finalize } from 'rxjs/operators';
+import { switchMap, takeUntil, tap, catchError, finalize, take } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 import { UserService } from '../../../public/services/user/user.service';
 import { RoutesService } from '../../../public/services/routes/routes.service';
 import { LocationService } from '../../../public/services/geocoding/location.service';
-import { CacheService } from '../../../public/services/caching/caching.service';
 import { AuthService } from '../../../auth/auth.service';
 import { ChartService } from './chart.service';
 
@@ -43,7 +42,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private locationService: LocationService,
     private routesService: RoutesService,
     private toastr: ToastrService,
-    private cacheService: CacheService,
     private authService: AuthService,
     private router: Router,
     private chartService: ChartService
@@ -60,49 +58,45 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   // private checkAuthentication(): void {
-  //   this.authService.getAuthenticatedUser().subscribe({
-  //     next: (user) => {
-  //       if (!user) {
+  //   this.authService.isAuthenticated.pipe(
+  //     switchMap(isAuthenticated => {
+  //       if (!isAuthenticated) {
   //         this.router.navigate(['/login']);
-  //         return;
+  //         return of(null);
   //       }
-  
-  //       if (!user.isAdmin) {
+  //       return this.authService.currentUser.pipe(
+  //         take(1)
+  //       );
+  //     }),
+  //     takeUntil(this.destroy$)
+  //   ).subscribe(user => {
+  //     if (user) {
+  //       if (user.isAdmin) {
+  //         this.isAdmin = true;
+  //         this.user = user;
+  //         this.initializeDashboard();
+  //       } else {
   //         this.router.navigate(['/']);
-  //         return;
   //       }
-  
-  //       this.initializeDashboard();
-  //     },
-  //     error: () => {
+  //     } else {
   //       this.router.navigate(['/login']);
   //     }
   //   });
   // }
 
   private checkAuthentication(): void {
-    this.authService.isAuthenticated.subscribe((isAuthenticated) => {
-      if (!isAuthenticated) {
-        this.router.navigate(['/login']);
-        return;
+    this.authService.isAuthenticated.subscribe(isAuthenticated => {
+      console.log('Is Authenticated:', isAuthenticated); // Debugging: Check authentication state
+      if (isAuthenticated) {
+        this.initializeDashboard();
       }
-
-      this.authService.currentUser.subscribe((user) => {
-        if (user && user.isAdmin) {
-          this.isAdmin = true;
-          this.user = user;
-          // this.initializeDashboard();
-        } else {
-          this.router.navigate(['/']);
-        }
-      });
     });
   }
 
   private initializeDashboard(): void {
     this.setupDropdownMenu();
-    this.loadDashboardData();
-    this.loadUsers();
+    // this.loadDashboardData();
+    // this.loadUsers();
   }
 
   private getInitialUserState(): Partial<User> {
@@ -120,19 +114,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // Data loading methods
   private async loadDashboardData(): Promise<void> {
     this.isLoading = true;
-    const cacheKey = 'dashboardData';
 
     try {
-      const cachedData = await this.cacheService.get<{
-        routeUsages: RouteUsage[],
-        locationSearches: LocationSearch[]
-      }>(cacheKey).toPromise();
+      const [routeUsages, locationSearches] = await Promise.all([
+        this.routesService.getRouteUsages().toPromise(),
+        this.locationService.getLocationSearches().toPromise()
+      ]);
 
-      if (cachedData) {
-        this.handleCachedDashboardData(cachedData);
-      } else {
-        await this.fetchFreshDashboardData(cacheKey);
-      }
+      this.routeUsages = routeUsages ?? [];
+      this.locationSearches = locationSearches ?? [];
 
       this.initializeCharts();
     } catch (error) {
@@ -142,59 +132,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  private handleCachedDashboardData(cachedData: {
-    routeUsages: RouteUsage[],
-    locationSearches: LocationSearch[]
-  }): void {
-    this.routeUsages = cachedData.routeUsages;
-    this.locationSearches = cachedData.locationSearches;
-  }
-
-  async fetchFreshDashboardData(cacheKey: string): Promise<void> {
-    const [routeUsages, locationSearches] = await Promise.all([
-      this.routesService.getRouteUsages().toPromise(),
-      this.locationService.getLocationSearches().toPromise()
-    ]);
-
-    this.routeUsages = routeUsages ?? [];
-    this.locationSearches = locationSearches ?? [];
-    
-    this.cacheService.set(cacheKey, {
-      routeUsages: this.routeUsages,
-      locationSearches: this.locationSearches
-    });
-  }
-
   private loadUsers(): void {
-    const cacheKey = 'users';
-    
-    this.cacheService.get<User[]>(cacheKey).pipe(
-      switchMap(cachedData => {
-        if (cachedData) {
-          return this.handleCachedUsers(cachedData);
-        }
-        return this.fetchFreshUsers(cacheKey);
-      }),
-      takeUntil(this.destroy$)
-    ).subscribe({
-      error: error => this.handleDataLoadError('users', error)
-    });
-  }
-
-  private handleCachedUsers(users: User[]): Observable<User[]> {
-    this.users = users;
-    this.filteredUsers = users;
-    return of(users);
-  }
-
-  private fetchFreshUsers(cacheKey: string): Observable<User[]> {
-    return this.userService.getUsers().pipe(
+    this.userService.getUsers().pipe(
       tap(users => {
         this.users = users;
         this.filteredUsers = users;
-        this.cacheService.set(cacheKey, users);
-      })
-    );
+      }),
+      catchError(error => {
+        this.handleDataLoadError('users', error);
+        return of([]);
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe();
   }
 
   // UI Event Handlers
