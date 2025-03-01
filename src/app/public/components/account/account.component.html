@@ -1,6 +1,6 @@
 <div class="desktop-view">
-  <div class="floating-overlay" (click)="closeWindow($event)"></div>
-  <div class="floating-window">
+  <div class="floating-overlay" (click)="closeWindow($event)" *ngIf="!showHistoryBar"></div>
+  <div class="floating-window" *ngIf="!showHistoryBar">
     <button class="close-btn" (click)="closeWindow($event)">X</button>
     <div class="content">
       <div class="menu-list-container">
@@ -286,11 +286,17 @@
     </div>
 
   </div>
+  <div class="history-bar" *ngIf="showHistoryBar">
+    <div class="history-bar-container">
+      <h4>Showing history</h4>
+      <button class="close-button" (click)="closeHistoryBar()">X</button>
+    </div>
+  </div>
 </div>
 
 <div class="mobile-view">
-  <div class="floating-overlay" (click)="closeWindow($event)"></div>
-  <div class="floating-window">
+  <div class="floating-overlay" (click)="closeWindow($event)" *ngIf="!showHistoryBar"></div>
+  <div class="floating-window" *ngIf="!showHistoryBar">
     <h2 *ngIf="showMenuContent">Menu</h2>
     <button class="close-btn" (click)="closeWindow($event)">X</button>
     <div class="content-mobile" *ngIf="showMenuContent">
@@ -597,6 +603,13 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="history-bar" *ngIf="showHistoryBar">
+    <div class="history-bar-container">
+      <h4>Showing history</h4>
+      <button class="close-button" (click)="closeHistoryBar()">X</button>
     </div>
   </div>
 </div>

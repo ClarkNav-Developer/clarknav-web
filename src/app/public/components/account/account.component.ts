@@ -19,6 +19,7 @@ export class AccountComponent implements OnInit {
   selectedMenuItem: string = 'account-settings';
   darkMode: boolean = false;
   showMenuContent: boolean = true; // New state to track menu content visibility
+  showHistoryBar: boolean = false; // New state to track history bar visibility
 
   firstName: string = '';
   lastName: string = '';
@@ -153,6 +154,9 @@ export class AccountComponent implements OnInit {
 
     // Center the map on the route
     this.mapService.map.setCenter(startWaypoint);
+
+    // Hide the floating window and show the history bar
+    this.showHistoryBar = true;
   }
 
   closeWindow(event: Event) {
@@ -185,6 +189,12 @@ export class AccountComponent implements OnInit {
   // New method to handle back button click
   showMenu() {
     this.showMenuContent = true;
+  }
+
+  // New method to handle closing the history bar
+  closeHistoryBar() {
+    this.showHistoryBar = false;
+    this.mapService.clearMap();
   }
 
   logout(event: Event) {
