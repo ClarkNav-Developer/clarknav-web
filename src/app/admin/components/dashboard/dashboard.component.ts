@@ -1,54 +1,64 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, Observable, of } from 'rxjs';
-import { switchMap, takeUntil, tap, catchError, finalize, take } from 'rxjs/operators';
+import { switchMap, takeUntil, tap, catchError, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 import { UserService } from '../../../public/services/user/user.service';
 import { RoutesService } from '../../../public/services/routes/routes.service';
 import { LocationService } from '../../../public/services/geocoding/location.service';
+import { CacheService } from '../../../public/services/caching/caching.service';
 import { AuthService } from '../../../auth/auth.service';
 import { ChartService } from './chart.service';
 
 import { RouteUsage } from '../../../models/routeusage';
 import { LocationSearch } from '../../../models/locationsearch';
 import { User } from '../../../models/user';
+import { Feedback } from '../../../models/feedback';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
+
+  // State management
   activeTab = 'overview';
   isLoading = false;
   error: string | null = null;
+
+  // Modal states
   showUserModal = false;
   showRegisterModal = false;
+
+  // Data storage
   routeUsages: RouteUsage[] = [];
   locationSearches: LocationSearch[] = [];
   users: User[] = [];
+  feedbacks: Feedback[] = []; // Add feedbacks array
   filteredUsers: User[] = [];
+  selectedFeedback: Feedback | null = null;
+
+  // Form states
   searchTerm = '';
   selectedUser: User | null = null;
   newUser: Partial<User> = this.getInitialUserState();
-
-  isAdmin: boolean = false;
-  user: User | null = null;
 
   constructor(
     private userService: UserService,
     private locationService: LocationService,
     private routesService: RoutesService,
     private toastr: ToastrService,
+    private cacheService: CacheService,
     private authService: AuthService,
     private router: Router,
     private chartService: ChartService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    this.checkAuthentication();
+    this.initializeDashboard();
   }
 
   ngOnDestroy(): void {
@@ -57,46 +67,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.chartService.destroyCharts();
   }
 
-  // private checkAuthentication(): void {
-  //   this.authService.isAuthenticated.pipe(
-  //     switchMap(isAuthenticated => {
-  //       if (!isAuthenticated) {
-  //         this.router.navigate(['/login']);
-  //         return of(null);
-  //       }
-  //       return this.authService.currentUser.pipe(
-  //         take(1)
-  //       );
-  //     }),
-  //     takeUntil(this.destroy$)
-  //   ).subscribe(user => {
-  //     if (user) {
-  //       if (user.isAdmin) {
-  //         this.isAdmin = true;
-  //         this.user = user;
-  //         this.initializeDashboard();
-  //       } else {
-  //         this.router.navigate(['/']);
-  //       }
-  //     } else {
-  //       this.router.navigate(['/login']);
-  //     }
-  //   });
-  // }
-
-  private checkAuthentication(): void {
-    this.authService.isAuthenticated.subscribe(isAuthenticated => {
-      console.log('Is Authenticated:', isAuthenticated); // Debugging: Check authentication state
-      if (isAuthenticated) {
-        this.initializeDashboard();
-      }
-    });
-  }
-
   private initializeDashboard(): void {
     this.setupDropdownMenu();
-    // this.loadDashboardData();
-    // this.loadUsers();
+    this.loadDashboardData();
+    this.loadUsers();
+    this.loadFeedbacks(); // Load feedbacks
   }
 
   private getInitialUserState(): Partial<User> {
@@ -114,15 +89,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // Data loading methods
   private async loadDashboardData(): Promise<void> {
     this.isLoading = true;
+    const cacheKey = 'dashboardData';
 
     try {
-      const [routeUsages, locationSearches] = await Promise.all([
-        this.routesService.getRouteUsages().toPromise(),
-        this.locationService.getLocationSearches().toPromise()
-      ]);
+      const cachedData = await this.cacheService.get<{
+        routeUsages: RouteUsage[],
+        locationSearches: LocationSearch[]
+      }>(cacheKey).toPromise();
 
-      this.routeUsages = routeUsages ?? [];
-      this.locationSearches = locationSearches ?? [];
+      if (cachedData) {
+        this.handleCachedDashboardData(cachedData);
+      } else {
+        await this.fetchFreshDashboardData(cacheKey);
+      }
 
       this.initializeCharts();
     } catch (error) {
@@ -132,18 +111,89 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  private handleCachedDashboardData(cachedData: {
+    routeUsages: RouteUsage[],
+    locationSearches: LocationSearch[]
+  }): void {
+    this.routeUsages = cachedData.routeUsages;
+    this.locationSearches = cachedData.locationSearches;
+  }
+
+  async fetchFreshDashboardData(cacheKey: string): Promise<void> {
+    const [routeUsages, locationSearches] = await Promise.all([
+      this.routesService.getRouteUsages().toPromise(),
+      this.locationService.getLocationSearches().toPromise()
+    ]);
+
+    this.routeUsages = routeUsages ?? [];
+    this.locationSearches = locationSearches ?? [];
+
+    this.cacheService.set(cacheKey, {
+      routeUsages: this.routeUsages,
+      locationSearches: this.locationSearches
+    });
+  }
+
   private loadUsers(): void {
-    this.userService.getUsers().pipe(
+    const cacheKey = 'users';
+
+    this.cacheService.get<User[]>(cacheKey).pipe(
+      switchMap(cachedData => {
+        if (cachedData) {
+          return this.handleCachedUsers(cachedData);
+        }
+        return this.fetchFreshUsers(cacheKey);
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe({
+      error: error => this.handleDataLoadError('users', error)
+    });
+  }
+
+  private handleCachedUsers(users: User[]): Observable<User[]> {
+    this.users = users;
+    this.filteredUsers = users;
+    return of(users);
+  }
+
+  private fetchFreshUsers(cacheKey: string): Observable<User[]> {
+    return this.userService.getUsers().pipe(
       tap(users => {
         this.users = users;
         this.filteredUsers = users;
-      }),
-      catchError(error => {
-        this.handleDataLoadError('users', error);
-        return of([]);
+        this.cacheService.set(cacheKey, users);
+      })
+    );
+  }
+
+  private loadFeedbacks(): void {
+    const cacheKey = 'feedbacks';
+
+    this.cacheService.get<Feedback[]>(cacheKey).pipe(
+      switchMap(cachedData => {
+        if (cachedData) {
+          return this.handleCachedFeedbacks(cachedData);
+        }
+        return this.fetchFreshFeedbacks(cacheKey);
       }),
       takeUntil(this.destroy$)
-    ).subscribe();
+    ).subscribe({
+      error: error => this.handleDataLoadError('feedbacks', error)
+    });
+  }
+
+  private handleCachedFeedbacks(feedbacks: Feedback[]): Observable<Feedback[]> {
+    this.feedbacks = feedbacks;
+    return of(feedbacks);
+  }
+
+  private fetchFreshFeedbacks(cacheKey: string): Observable<Feedback[]> {
+    return this.userService.getFeedbacks().pipe(
+      tap(feedbacks => {
+        this.feedbacks = feedbacks;
+        this.cacheService.set(cacheKey, feedbacks);
+      })
+    );
   }
 
   // UI Event Handlers
@@ -173,7 +223,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     const userData = this.prepareUserData();
-    
+
     this.userService.updateUser(this.selectedUser!.id!, userData).pipe(
       tap(updatedUser => this.handleUserUpdateSuccess(updatedUser)),
       catchError(error => {
@@ -191,8 +241,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    if (this.selectedUser.password && 
-        this.selectedUser.password !== this.selectedUser.password_confirmation) {
+    if (this.selectedUser.password &&
+      this.selectedUser.password !== this.selectedUser.password_confirmation) {
       this.toastr.error('Passwords do not match');
       return false;
     }
@@ -269,7 +319,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.authService.register(registrationData).pipe(
       tap(() => this.handleRegistrationSuccess()),
       catchError(error => {
-        this.toastr.error('Registration failed: ' + 
+        this.toastr.error('Registration failed: ' +
           (error.error.message || 'Please try again.'));
         throw error;
       })
@@ -277,9 +327,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private validateRegistration(): boolean {
-    if (!this.newUser?.firstname || !this.newUser?.lastname || 
-        !this.newUser?.email || !this.newUser?.password || 
-        !this.newUser?.password_confirmation) {
+    if (!this.newUser?.firstname || !this.newUser?.lastname ||
+      !this.newUser?.email || !this.newUser?.password ||
+      !this.newUser?.password_confirmation) {
       this.toastr.error('Please fill in all required fields.');
       return false;
     }
@@ -321,7 +371,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   logout(event: Event): void {
     event.preventDefault();
-    
+
     this.authService.logout().pipe(
       tap(() => {
         this.toastr.success('Logged out successfully');
@@ -344,11 +394,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    navButton.addEventListener('click', function() {
+    navButton.addEventListener('click', function () {
       this.parentElement?.classList.toggle('show');
     });
 
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
       const nav = document.querySelector('.nav');
       if (nav && !nav.contains(event.target as Node)) {
         nav.classList.remove('show');
@@ -369,4 +419,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     console.error(`Error fetching ${dataType}:`, error);
     this.isLoading = false;
   }
+
+  // Method to open the feedback details modal
+  viewFeedbackDetails(feedback: Feedback): void {
+    this.selectedFeedback = feedback;
+  }
+
+  // Method to close the feedback details modal
+  closeFeedbackModal(): void {
+    this.selectedFeedback = null;
+  }
 }
+
