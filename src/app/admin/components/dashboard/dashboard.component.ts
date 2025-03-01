@@ -69,9 +69,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private initializeDashboard(): void {
     this.setupDropdownMenu();
-    this.loadDashboardData();
+    // this.loadDashboardData();
     this.loadUsers();
-    this.loadFeedbacks(); // Load feedbacks
+    // this.loadFeedbacks();
   }
 
   private getInitialUserState(): Partial<User> {

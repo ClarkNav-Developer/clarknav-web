@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../../../models/user';
 import { environment } from '../../../../environments/environment';
+import { Feedback } from '../../../models/feedback';
 
 @Injectable({
   providedIn: 'root'
@@ -40,5 +41,9 @@ export class UserService {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<{ isAdmin: boolean, isUser: boolean }>(`${this.apiUrl}/user-role`, { headers });
+  }
+
+  getFeedbacks(): Observable<Feedback[]> {
+    return this.http.get<Feedback[]>(environment.feedback.getFeedback);
   }
 }
