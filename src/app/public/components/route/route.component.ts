@@ -160,7 +160,7 @@ export class RouteComponent implements OnInit, OnDestroy {
 
     this.currentRouteId = routeId; // Update the current route ID
     this.currentRouteName = route.routeName; // Update the current route name
-    this.currentRouteType = routeId.startsWith('J') ? 'Jeepney' : 'Bus'; // Determine the route type
+    this.currentRouteType = routeId.startsWith('J') ? 'Jeepney' : routeId.startsWith('B') ? 'Bus' : 'Taxi'; // Determine the route type
     this.showRouteList = false; // Hide the route list
     this.showBackground = false; // Hide the background
 

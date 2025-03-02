@@ -1,11 +1,13 @@
 <div class="desktop-view">
     <div class="main-container">
         <div class="main-content">
+            <div class="body-overlay"></div>
             <div class="login-body">
                 <div class="login-container">
+                    <button class="back-btn" (click)="goToHomepage()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/></svg></button>
                     <div class="logo-placeholder">
-                        <h1>Welcome to</h1>
-                        <img src="/public/bg-nav-900.webp" alt="Logo" class="logo-image" loading="lazy">
+                        <!-- <h1>Welcome to</h1> -->
+                        <img src="public\bg-nav-300-multicolored.webp" alt="Logo" class="logo-image" loading="lazy">
                     </div>
 
                     <form *ngIf="isLoginForm" [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
@@ -80,11 +82,13 @@
 <div class="mobile-view">
     <div class="main-container">
         <div class="main-content">
+            <div class="body-overlay"></div>
             <div class="login-body">
                 <div class="login-container">
+                    <button class="back-btn" (click)="goToHomepage()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/></svg></button>
                     <div class="logo-placeholder">
-                        <h1>Welcome to</h1>
-                        <img src="/public/bg-nav-900.webp" alt="Logo" class="logo-image" loading="lazy">
+                        <!-- <h1>Welcome to</h1> -->
+                        <img src="public\bg-nav-300-multicolored.webp" alt="Logo" class="logo-image" loading="lazy">
                     </div>
 
                     <form *ngIf="isLoginForm" [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">

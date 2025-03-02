@@ -50,10 +50,11 @@ export class RoutesService {
   
     this.http.get<any>(this.routesUrl).subscribe(data => {
       const serverVersion = data.version;
-  
+
       if (cachedVersion !== serverVersion || !cachedRoutes) {
         this.jeepneyRoutes = data.routes.jeepney || [];
         this.busRoutes = data.routes.bus || [];
+        this.taxiRoutes = data.routes.taxi || []; // Load taxi routes
         localStorage.setItem(this.cacheKey, JSON.stringify(data));
         localStorage.setItem(this.versionKey, serverVersion);
         console.log('Routes loaded from server:', data);
@@ -62,10 +63,12 @@ export class RoutesService {
         if (cachedData.version === serverVersion) {
           this.jeepneyRoutes = cachedData.routes.jeepney || [];
           this.busRoutes = cachedData.routes.bus || [];
+          this.taxiRoutes = cachedData.routes.taxi || []; // Load taxi routes
           console.log('Routes loaded from cache:', cachedData);
         } else {
           this.jeepneyRoutes = data.routes.jeepney || [];
           this.busRoutes = data.routes.bus || [];
+          this.taxiRoutes = data.routes.taxi || []; // Load taxi routes
           localStorage.setItem(this.cacheKey, JSON.stringify(data));
           localStorage.setItem(this.versionKey, serverVersion);
           console.log('Routes loaded from server:', data);
@@ -91,7 +94,11 @@ export class RoutesService {
    * Get a route by its unique ID.
    */
   getRouteById(routeId: string) {
-    const allRoutes = [...this.jeepneyRoutes, ...this.busRoutes];
+    if (routeId === 'taxi') {
+      return { routeId: 'taxi', routeName: 'Taxi', type: 'Taxi' };
+    }
+
+    const allRoutes = [...this.jeepneyRoutes, ...this.busRoutes, ...this.taxiRoutes]; // Include taxi routes
     const route = allRoutes.find(route => route.routeId === routeId);
 
     // Log route details for debugging
