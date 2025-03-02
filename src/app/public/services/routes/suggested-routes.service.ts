@@ -35,26 +35,34 @@ export class SuggestedRoutesService {
     if (cachedRoutes) {
       return cachedRoutes;
     }
-  
+
     const startWaypoint = this.routesService.findNearestStop(currentLocation);
     const endWaypoint = this.routesService.findNearestStop(destination);
-  
+
     if (!startWaypoint || !endWaypoint) {
       return [];
     }
-  
-    const routes = this.routesService.findAllRoutePaths(startWaypoint, endWaypoint);
-  
+
+    const routes: Array<{ path: google.maps.LatLngLiteral[], color: string, routeId: string, name?: string }> = this.routesService.findAllRoutePaths(startWaypoint, endWaypoint);
+
+    // Add taxi route using Directions API
+    routes.push({
+      path: [currentLocation, destination],
+      color: '#088F8F', // Black color for taxi
+      routeId: 'taxi',
+      name: 'Taxi' // Set the name for the taxi route
+    });
+
     // Cache the routes
     this.cacheRoutes(key, routes);
-  
+
     // Return a flat array of routes with names
     return routes.map(route => ({
       path: route.path,
       color: route.color,
       start: startWaypoint,
       end: endWaypoint,
-      name: this.routesService.getRouteById(route.routeId)?.routeName || 'Unknown Route',
+      name: route.name || this.routesService.getRouteById(route.routeId)?.routeName || 'Unknown Route',
       routeId: route.routeId
     }));
   }
