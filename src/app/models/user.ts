@@ -11,4 +11,5 @@ export interface User {
     updated_at?: string; // Optional because it will be set by the backend
     token?: string; // Optional token for authenticated users
     rememberMe?: boolean; // Optional remember me property
+    role?: 'admin' | 'user';
 }

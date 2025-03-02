@@ -346,6 +346,36 @@ tr:hover td {
     color: #000;
 }
 
+/* Form Group Styles */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #64748b;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    background-color: #f8fafc;
+}
+
+.form-group select:focus {
+    outline: none;
+    border-color: #0284c7;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
 /* Feedback Details Grid */
 .feedback-details {
     padding: 16px;
@@ -374,6 +404,23 @@ tr:hover td {
 .detail-value {
     color: #333;
     text-align: right;
+}
+
+.detail-item select {
+    width: auto;
+    padding: 0.5rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    background-color: #f8fafc;
+}
+
+.detail-item select:focus {
+    outline: none;
+    border-color: #0284c7;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 /* Modal Footer */
@@ -584,5 +631,160 @@ tr:hover td {
         page-break-inside: avoid;
         box-shadow: none;
         border: 1px solid #e2e8f0;
+    }
+}
+
+/* Container Header */
+.container-header {
+    margin-bottom: 2rem;
+}
+
+.subtitle {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin-top: -1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Fare Grid Layout */
+.fare-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Fare Card Styling */
+.fare-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    border: 1px solid #f1f5f9;
+    transition: all 0.3s ease;
+}
+
+.fare-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.fare-card-header {
+    background: #f8fafc;
+    padding: 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.fare-card-header h3 {
+    margin: 0;
+    color: #1a1a1a;
+    font-weight: 500;
+    font-size: 1.25rem;
+}
+
+.fare-card-content {
+    padding: 1.5rem;
+}
+
+/* Transport Icons */
+.transport-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+}
+
+.jeepney-icon {
+    background: linear-gradient(45deg, #16a34a, #4ade80);
+}
+
+.bus-icon {
+    background: linear-gradient(45deg, #f59e0b, #fbbf24);
+    
+}
+
+.taxi-icon {
+    background: linear-gradient(45deg, #0284c7, #38bdf8);
+}
+
+/* Input with Currency Symbol */
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.currency-symbol {
+    position: absolute;
+    left: 12px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.input-with-icon input {
+    padding-left: 28px;
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 28px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    background-color: #f8fafc;
+}
+
+.input-with-icon input:focus {
+    outline: none;
+    border-color: #0284c7;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+.btn-cancel {
+    background-color: #f8fafc;
+    color: #64748b;
+}
+
+.btn-save {
+    background: #0284c7;
+    color: white;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .fare-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions button {
+        width: 100%;
+    }
+    
+    .btn-cancel {
+        order: 2;
+    }
+    
+    .btn-save {
+        order: 1;
     }
 }

@@ -28,4 +28,8 @@ export class UserService {
   deleteUser(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  updateFeedback(feedback: Feedback): Observable<Feedback> {
+    return this.http.put<Feedback>(`${environment.feedbackUrl}/${feedback.id}`, feedback);
+  }
 }

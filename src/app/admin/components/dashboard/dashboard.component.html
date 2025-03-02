@@ -40,14 +40,14 @@
 
         <div *ngIf="error" class="error-state">
             <p>{{ error }}</p>
-            <button (click)="fetchFreshDashboardData('dashboardData')">Retry</button>
+            <!-- <button (click)="fetchFreshDashboardData('dashboardData')">Retry</button> -->
         </div>
 
         <!-- Dashboard Content -->
         <div *ngIf="!isLoading && !error" class="dashboard-content">
             <!-- Navigation Tabs -->
             <nav class="dashboard-nav">
-                <button *ngFor="let tab of ['overview', 'trends', 'locations']" [class.active]="activeTab === tab"
+                <button *ngFor="let tab of ['overview', 'locations']" [class.active]="activeTab === tab"
                     (click)="switchTab(tab)">
                     {{ tab | titlecase }}
                 </button>
@@ -184,6 +184,108 @@
         </table>
     </div>
 
+    <!-- Redesigned Fare Management Section -->
+    <div class="table-container">
+        <div class="container-header">
+            <h2>Fare Management</h2>
+            <p class="subtitle">Configure base and additional fare rates for different transport types</p>
+        </div>
+
+        <form (ngSubmit)="updateFare()">
+            <div class="fare-grid">
+                <!-- Jeepney Section -->
+                <div class="fare-card">
+                    <div class="fare-card-header">
+                        <div class="transport-icon jeepney-icon">
+                            <i class="fas fa-bus-alt"></i>
+                        </div>
+                        <h3>Jeepney</h3>
+                    </div>
+                    <div class="fare-card-content">
+                        <div class="form-group">
+                            <label for="baseFareJeepney">Base Fare (First 4 km)</label>
+                            <div class="input-with-icon">
+                                <span class="currency-symbol">₱</span>
+                                <input id="baseFareJeepney" type="number" [(ngModel)]="fareConfig.jeepney.baseFare"
+                                    name="baseFareJeepney" required step="0.01" min="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="additionalFareJeepney">Additional Fare (per km)</label>
+                            <div class="input-with-icon">
+                                <span class="currency-symbol">₱</span>
+                                <input id="additionalFareJeepney" type="number"
+                                    [(ngModel)]="fareConfig.jeepney.additionalFare" name="additionalFareJeepney"
+                                    required step="0.01" min="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bus Section -->
+                <div class="fare-card">
+                    <div class="fare-card-header">
+                        <div class="transport-icon bus-icon">
+                            <i class="fas fa-bus"></i>
+                        </div>
+                        <h3>Bus</h3>
+                    </div>
+                    <div class="fare-card-content">
+                        <div class="form-group">
+                            <label for="baseFareBus">Base Fare (First 5 km)</label>
+                            <div class="input-with-icon">
+                                <span class="currency-symbol">₱</span>
+                                <input id="baseFareBus" type="number" [(ngModel)]="fareConfig.bus.baseFare"
+                                    name="baseFareBus" required step="0.01" min="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="additionalFareBus">Additional Fare (per km)</label>
+                            <div class="input-with-icon">
+                                <span class="currency-symbol">₱</span>
+                                <input id="additionalFareBus" type="number" [(ngModel)]="fareConfig.bus.additionalFare"
+                                    name="additionalFareBus" required step="0.01" min="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Taxi Section -->
+                <div class="fare-card">
+                    <div class="fare-card-header">
+                        <div class="transport-icon taxi-icon">
+                            <i class="fas fa-taxi"></i>
+                        </div>
+                        <h3>Taxi</h3>
+                    </div>
+                    <div class="fare-card-content">
+                        <div class="form-group">
+                            <label for="baseFareTaxi">Base Fare</label>
+                            <div class="input-with-icon">
+                                <span class="currency-symbol">₱</span>
+                                <input id="baseFareTaxi" type="number" [(ngModel)]="fareConfig.taxi.baseFare"
+                                    name="baseFareTaxi" required step="0.01" min="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="additionalFareTaxi">Additional Fare (per km)</label>
+                            <div class="input-with-icon">
+                                <span class="currency-symbol">₱</span>
+                                <input id="additionalFareTaxi" type="number"
+                                    [(ngModel)]="fareConfig.taxi.additionalFare" name="additionalFareTaxi" required
+                                    step="0.01" min="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-edit">Update Fare Configuration</button>
+            </div>
+        </form>
+    </div>
+
     <!-- Feedback Table -->
     <div class="table-container">
         <h2>Feedback Management</h2>
@@ -204,7 +306,7 @@
                     <td>{{ feedback.status }}</td>
                     <td>{{ feedback.created_at | date: 'shortDate' }}</td>
                     <td>
-                        <button class="btn btn-view" (click)="viewFeedbackDetails(feedback)">View Details</button>
+                        <button class="btn btn-edit" (click)="viewFeedbackDetails(feedback)">View Details</button>
                     </td>
                 </tr>
             </tbody>
@@ -247,6 +349,24 @@
                     <span class="detail-value">{{ selectedFeedback.suggestions }}</span>
                 </div>
                 <div class="detail-item">
+                    <span class="detail-label">Priority:</span>
+                    <select [(ngModel)]="selectedFeedback.priority" name="priority">
+                        <option *ngFor="let priority of getFeedbackPriorities()" [value]="priority">
+                            {{ priority }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">Status:</span>
+                    <select [(ngModel)]="selectedFeedback.status" name="status">
+                        <option *ngFor="let status of getFeedbackStatuses()" [value]="status">
+                            {{ status }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="detail-item">
                     <span class="detail-label">Created:</span>
                     <span class="detail-value">{{ selectedFeedback.created_at | date: 'shortDate' }}</span>
                 </div>
@@ -258,6 +378,7 @@
 
             <!-- Modal Footer -->
             <div class="modal-footer">
+                <button type="button" class="btn btn-save" (click)="updateFeedback()">Save Changes</button>
                 <button type="button" class="btn btn-close" (click)="closeFeedbackModal()">Close</button>
             </div>
         </div>
@@ -331,24 +452,17 @@
                 </div>
 
                 <div class="form-group">
-                    <div class="checkbox-group">
-                        <input id="newIsAdmin" type="checkbox" [(ngModel)]="newUser.isAdmin" name="new_isAdmin"
-                            (change)="toggleUserRole('isAdmin', 'newUser')">
-                        <label for="newIsAdmin">Administrator Access</label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="checkbox-group">
-                        <input id="newIsUser" type="checkbox" [(ngModel)]="newUser.isUser" name="new_isUser"
-                            (change)="toggleUserRole('isUser', 'newUser')">
-                        <label for="newIsUser">Standard User Access</label>
-                    </div>
+                    <label for="newUserRole">User Role</label>
+                    <select id="newUserRole" [(ngModel)]="newUser.role" name="new_role"
+                        (change)="onRoleChange('newUser')">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
                 </div>
 
                 <div class="button-group">
                     <button type="button" class="btn btn-cancel" (click)="showRegisterModal = false">Cancel</button>
-                    <button type="submit" class="btn btn-save">Register User</button>
+                    <button type="submit" class="btn btn-save" (click)="registerUser()">Register User</button>
                 </div>
             </form>
         </div>
@@ -374,20 +488,14 @@
                 </div>
 
                 <div class="form-group">
-                    <div class="checkbox-group">
-                        <input id="isAdmin" type="checkbox" [(ngModel)]="selectedUser.isAdmin" name="isAdmin"
-                            (change)="toggleUserRole('isAdmin', 'selectedUser')">
-                        <label for="isAdmin">Administrator Access</label>
-                    </div>
+                    <label for="editUserRole">User Role</label>
+                    <select id="editUserRole" [(ngModel)]="selectedUser.role" name="edit_role"
+                        (change)="onRoleChange('selectedUser')">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
                 </div>
 
-                <div class="form-group">
-                    <div class="checkbox-group">
-                        <input id="isUser" type="checkbox" [(ngModel)]="selectedUser.isUser" name="isUser"
-                            (change)="toggleUserRole('isUser', 'selectedUser')">
-                        <label for="isUser">Standard User Access</label>
-                    </div>
-                </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
@@ -402,7 +510,7 @@
 
                 <div class="button-group">
                     <button type="button" class="btn btn-cancel" (click)="selectedUser = null">Cancel</button>
-                    <button type="submit" class="btn btn-save">Save Changes</button>
+                    <button type="submit" class="btn btn-save" (click)="saveUser()">Save Changes</button>
                 </div>
             </form>
         </div>
