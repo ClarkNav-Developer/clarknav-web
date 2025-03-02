@@ -126,10 +126,10 @@ export class AccountComponent implements OnInit {
     if (this.historiesFetched) {
       return;
     }
-
+  
     this.http.get(environment.navigationHistoriesUrl).subscribe({
       next: (response) => {
-        this.navigationHistories = response as any[];
+        this.navigationHistories = (response as any[]).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
         this.historiesFetched = true;
         console.log('Navigation histories fetched successfully:', this.navigationHistories);
       },
