@@ -102,6 +102,9 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       alert('Please select a route to save.');
     }
+
+    // Show alert message
+    alert("The route has been saved to your route planner.");
   }
 
   /*------------------------------------------

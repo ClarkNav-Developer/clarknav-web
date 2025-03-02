@@ -226,7 +226,7 @@
     <div id="bottomSheet" class="bottom-sheet-mobile">
         <div class="drag-handle"></div>
         <div class="close-btn">
-            <button (click)="hideBottomSheet()"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
+            <button (click)="hideBottomSheet()" (click)="toggleMobileContainer()"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
                     viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
                     <path
                         d="m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z" />
@@ -311,11 +311,11 @@
                     <div class="footer-extra-info-mobile">
                         <div class="disclaimer-info-mobile">
                             <div class="left">
-                                <button (click)="saveRoute(route)"><svg xmlns="http://www.w3.org/2000/svg"
-                                    height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
-                                    <path
-                                        d="M220-150v-597.69Q220-778 241-799q21-21 51.31-21h375.38Q698-820 719-799q21 21 21 51.31V-150L480-261.54 220-150Zm60-92 200-86 200 86v-505.69q0-4.62-3.85-8.46-3.84-3.85-8.46-3.85H292.31q-4.62 0-8.46 3.85-3.85 3.84-3.85 8.46V-242Zm0-518h400-400Z" />
-                                </svg></button>
+                                <button (click)="saveRoute(route); $event.stopPropagation()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
+                                        <path d="M220-150v-597.69Q220-778 241-799q21-21 51.31-21h375.38Q698-820 719-799q21 21 21 51.31V-150L480-261.54 220-150Zm60-92 200-86 200 86v-505.69q0-4.62-3.85-8.46-3.84-3.85-8.46-3.85H292.31q-4.62 0-8.46 3.85-3.85 3.84-3.85 8.46V-242Zm0-518h400-400Z" />
+                                    </svg>
+                                </button>
                             </div>
                             <div class="right">
                                 <p>For Student/PWD/Senior Citizen discount</p>
