@@ -15,6 +15,7 @@ import { RouteUsage } from '../../../models/routeusage';
 import { LocationSearch } from '../../../models/locationsearch';
 import { User } from '../../../models/user';
 import { Feedback, FeedbackPriority, FeedbackStatus } from '../../../models/feedback';
+import { FareService } from '../../../public/services/fare/fare.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -60,11 +61,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private cacheService: CacheService,
     private authService: AuthService,
     private router: Router,
-    private chartService: ChartService
+    private chartService: ChartService,
+    private fareService: FareService
   ) {}
 
   ngOnInit(): void {
     this.initializeDashboard();
+    this.fareConfig = {...this.fareService.getFareConfig()};
   }
 
   ngOnDestroy(): void {
@@ -130,8 +133,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   updateFare(): void {
-    // Update fare configuration logic
-    this.toastr.success('Fare configuration updated successfully');
+    // Make a deep copy to ensure we're not dealing with references
+    const configToUpdate = JSON.parse(JSON.stringify(this.fareConfig));
+    
+    this.fareService.updateFareConfig(configToUpdate).subscribe(
+      () => {
+        alert('Fare configuration updated successfully');
+      },
+      error => {
+        alert('Failed to update fare configuration');
+        console.error('Update error:', error);
+      }
+    );
   }
 
   private loadUsers(): void {

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { WebsocketService } from '../websocket/websocket.service';
+import { of } from 'rxjs';
 
 declare var google: any;
 
@@ -7,9 +8,46 @@ declare var google: any;
   providedIn: 'root'
 })
 export class FareService {
-  constructor(private websocketService: WebsocketService) {}
+  constructor(private websocketService: WebsocketService) {
+    this.initializeFareConfig();
+  }
+
+  // Add these to your FareService
+  private _fareConfig = {
+    jeepney: { baseFare: 13, additionalFare: 1.80 },
+    bus: { baseFare: 15, additionalFare: 2.65 },
+    taxi: { baseFare: 40, additionalFare: 13.50 }
+  };
+
+  getFareConfig() {
+    return this._fareConfig;
+  }
+
+  updateFareConfig(fareConfig: any) {
+    // Update the internal configuration
+    this._fareConfig = { ...fareConfig };
+
+    // You may want to persist this in localStorage for session persistence
+    localStorage.setItem('fareConfig', JSON.stringify(this._fareConfig));
+
+    // Emit an event for other components to know about the change
+    this.websocketService.emit('fareConfigUpdated', this._fareConfig);
+
+    return of(true);
+  }
+
+  // Add this to constructor or ngOnInit of FareService
+  initializeFareConfig() {
+    // Try to load from localStorage if available
+    const savedConfig = localStorage.getItem('fareConfig');
+    if (savedConfig) {
+      this._fareConfig = JSON.parse(savedConfig);
+    }
+  }
 
   calculateFare(route: any): void {
+    // Always reference the current configuration
+    const config = this._fareConfig;
     let baseFare = 0;
     let additionalFare = 0;
     let studentBaseFare = 0;
@@ -17,28 +55,28 @@ export class FareService {
 
     switch (route.type) {
       case 'Jeepney':
-        baseFare = 13; // Base fare for first 4 kilometers
-        additionalFare = Math.max(0, route.distanceInKm - 4) * 1.80; // Rate for succeeding kilometers
-        studentBaseFare = 10.40; // Discounted base fare for first 4 kilometers
-        studentAdditionalFare = Math.max(0, route.distanceInKm - 4) * 1.44; // Discounted rate for succeeding kilometers
+        baseFare = config.jeepney.baseFare;
+        additionalFare = Math.max(0, route.distanceInKm - 4) * config.jeepney.additionalFare;
+        studentBaseFare = config.jeepney.baseFare * 0.8; // 20% discount
+        studentAdditionalFare = Math.max(0, route.distanceInKm - 4) * config.jeepney.additionalFare * 0.8;
         break;
       case 'Bus':
-        baseFare = 15; // Base fare for first 5 kilometers
-        additionalFare = Math.max(0, route.distanceInKm - 5) * 2.65; // Rate for succeeding kilometers
-        // studentBaseFare = 12; // Discounted base fare for first 5 kilometers
-        // studentAdditionalFare = Math.max(0, route.distanceInKm - 5) * 2.12; // Discounted rate for succeeding kilometers
+        baseFare = config.bus.baseFare;
+        additionalFare = Math.max(0, route.distanceInKm - 5) * config.bus.additionalFare;
+        studentBaseFare = config.bus.baseFare * 0.8;
+        studentAdditionalFare = Math.max(0, route.distanceInKm - 5) * config.bus.additionalFare * 0.8;
         break;
       case 'Taxi':
-        baseFare = 50; // Flag down rate
-        additionalFare = Math.max(0, route.distanceInKm) * 13.50; // Rate for succeeding kilometers
-        studentBaseFare = 50 * 0.8; // Discounted flag down rate (20% discount)
-        studentAdditionalFare = Math.max(0, route.distanceInKm) * 13.50 * 0.8; // Discounted rate for succeeding kilometers (20% discount)
+        baseFare = config.taxi.baseFare;
+        additionalFare = Math.max(0, route.distanceInKm) * config.taxi.additionalFare;
+        studentBaseFare = config.taxi.baseFare * 0.8;
+        studentAdditionalFare = Math.max(0, route.distanceInKm) * config.taxi.additionalFare * 0.8;
         break;
       default:
-        baseFare = 15; // Default base fare for first 5 kilometers
-        additionalFare = Math.max(0, route.distanceInKm - 5) * 2.65; // Default rate for succeeding kilometers
-        studentBaseFare = 12; // Default discounted base fare for first 5 kilometers
-        studentAdditionalFare = Math.max(0, route.distanceInKm - 5) * 2.12; // Default discounted rate for succeeding kilometers
+        baseFare = config.bus.baseFare;
+        additionalFare = Math.max(0, route.distanceInKm - 5) * config.bus.additionalFare;
+        studentBaseFare = config.bus.baseFare * 0.8;
+        studentAdditionalFare = Math.max(0, route.distanceInKm - 5) * config.bus.additionalFare * 0.8;
         break;
     }
 

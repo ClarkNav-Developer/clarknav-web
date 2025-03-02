@@ -17,7 +17,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     FaresManagementComponent,
     LoginComponent,
     RoutesManagementComponent,
-    SidebarComponent
+    SidebarComponent,
   ],
   imports: [
     CommonModule,

@@ -191,7 +191,7 @@
             <p class="subtitle">Configure base and additional fare rates for different transport types</p>
         </div>
 
-        <form (ngSubmit)="updateFare()">
+        <form>
             <div class="fare-grid">
                 <!-- Jeepney Section -->
                 <div class="fare-card">
@@ -281,7 +281,7 @@
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-edit">Update Fare Configuration</button>
+                <button type="submit" class="btn btn-edit" (click)="updateFare()">Update Fare Configuration</button>
             </div>
         </form>
     </div>
