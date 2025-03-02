@@ -55,6 +55,10 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  goToHomepage() {
+    this.router.navigate(['/']);
+  }
+
   togglePassword(fieldId: string, iconId: string) {
     const passwordInput = document.getElementById(fieldId) as HTMLInputElement;
     const passwordIcon = document.getElementById(iconId) as HTMLElement;

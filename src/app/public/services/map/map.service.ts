@@ -486,9 +486,7 @@ initializeMap(map: any) {
     color: string;
   }) {
     if (routePath.path.length < 2) {
-      console.error(
-        'Route path must have at least two waypoints to display a route.'
-      );
+      console.error('Route path must have at least two waypoints to display a route.');
       return;
     }
 
@@ -499,11 +497,6 @@ initializeMap(map: any) {
       const segment = { origin: path[i], destination: path[i + 1], color };
       this.displayRouteSegment(segment);
     }
-
-    // Add markers for each waypoint
-    // path.forEach((waypoint) => {
-    //   this.addMarker(waypoint, 'Waypoint');
-    // });
   }
 
   private displayRouteSegment({

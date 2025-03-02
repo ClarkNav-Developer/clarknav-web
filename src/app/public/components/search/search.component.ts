@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Renderer2, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Renderer2, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { MapService } from '../../services/map/map.service';
 import { NavigationService } from '../../services/navigation/navigation.service';
 import { SuggestedRoutesService } from '../../services/routes/suggested-routes.service';
@@ -62,7 +62,8 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     private routesService: RoutesService,
     private router: Router,
     private googleMapsLoader: GoogleMapsLoaderService,
-    private authService: AuthService // Add this line
+    private authService: AuthService, // Add this line
+    private cdr: ChangeDetectorRef // Add ChangeDetectorRef
   ) { 
     this.navigationService.stopNavigation$.subscribe(() => {
       this.stopNavigation();
@@ -193,11 +194,16 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         route.distanceInKm = this.fareService.calculateDistance(route);
         this.fareService.calculateDuration(this.currentLocation!, this.destination!, (duration, arrivalTime) => {
           route.duration = duration;
-          this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          this.arrivalTime = arrivalTime;
+          route.arrivalTime = arrivalTime;
+          console.log('Updated duration:', duration); // Log the updated duration
+          console.log('Updated arrival time:', arrivalTime); // Log the updated arrival time
         });
         this.fareService.calculateFare(route);
       });
+
+      // Set the current time when fetching suggested routes
+      const now = new Date();
+      this.currentTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
   }
 
@@ -205,9 +211,9 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     const route = this.routesService.getRouteById(routeId);
     if (!route) return 'Unknown';
 
+    if (route.routeId === 'taxi') return 'Taxi'; // Handle taxi route
     if (this.routesService.jeepneyRoutes.includes(route)) return 'Jeepney';
     if (this.routesService.busRoutes.includes(route)) return 'Bus';
-    if (this.routesService.taxiRoutes.includes(route)) return 'Taxi';
 
     return 'Unknown';
   }
@@ -328,20 +334,24 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
       this.showNavigationWindow = false;
       this.showNavigationStatus = true; // Show navigation status
       this.showSideNav = false; // Hide side-nav-mobile
-  
+
       // Hide the mobile container
       const mobileContainer = document.querySelector('.mobile-container');
       if (mobileContainer) {
         mobileContainer.classList.remove('show');
       }
-  
+
       // Hide the bottom sheet
       const bottomSheet = document.getElementById('bottomSheet');
       if (bottomSheet) {
         bottomSheet.style.height = '0';
         bottomSheet.classList.remove('show');
       }
-  
+
+      // Set the current time when navigation starts
+      const now = new Date();
+      this.currentTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
       // Start updating duration
       this.isNavigationActive = true;
       this.startUpdatingDuration();
@@ -357,6 +367,8 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.mapService.removeRealTimeMarker(); // Remove the real-time marker
     this.showNavigationStatus = false; // Hide navigation status
     this.showSideNav = true; // Show side-nav-mobile
+    this.isNavigationActive = false;
+    clearInterval(this.updateDurationInterval);
   
     // Stop updating duration
     this.isNavigationActive = false;
@@ -383,13 +395,14 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           };
-  
+
           if (this.currentLocation && this.destination) {
             this.fareService.calculateRemainingDuration(this.currentLocation, this.destination, (duration, arrivalTime) => {
               this.route.duration = duration;
-              this.arrivalTime = arrivalTime;
+              this.route.arrivalTime = arrivalTime;
               console.log('Updated duration:', duration); // Log the updated duration
               console.log('Updated arrival time:', arrivalTime); // Log the updated arrival time
+              this.cdr.detectChanges(); // Trigger change detection
             });
           }
         }, (error) => {
