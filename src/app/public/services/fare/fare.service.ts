@@ -10,12 +10,47 @@ export class FareService {
   constructor(private websocketService: WebsocketService) {}
 
   calculateFare(route: any): void {
-    const baseFare = 13;
-    const additionalFare = Math.max(0, route.distanceInKm - 4) * 1.8;
-    const totalFare = baseFare + additionalFare;
+    let baseFare = 0;
+    let additionalFare = 0;
+    let studentBaseFare = 0;
+    let studentAdditionalFare = 0;
 
-    route.fare = Math.ceil(totalFare);
-    route.studentFare = Math.ceil(totalFare * 0.8);
+    switch (route.type) {
+      case 'Jeepney':
+        baseFare = 13; // Base fare for first 4 kilometers
+        additionalFare = Math.max(0, route.distanceInKm - 4) * 1.80; // Rate for succeeding kilometers
+        studentBaseFare = 10.40; // Discounted base fare for first 4 kilometers
+        studentAdditionalFare = Math.max(0, route.distanceInKm - 4) * 1.44; // Discounted rate for succeeding kilometers
+        break;
+      case 'Bus':
+        baseFare = 15; // Base fare for first 5 kilometers
+        additionalFare = Math.max(0, route.distanceInKm - 5) * 2.65; // Rate for succeeding kilometers
+        // studentBaseFare = 12; // Discounted base fare for first 5 kilometers
+        // studentAdditionalFare = Math.max(0, route.distanceInKm - 5) * 2.12; // Discounted rate for succeeding kilometers
+        break;
+      case 'Taxi':
+        baseFare = 50; // Flag down rate
+        additionalFare = Math.max(0, route.distanceInKm) * 13.50; // Rate for succeeding kilometers
+        studentBaseFare = 50 * 0.8; // Discounted flag down rate (20% discount)
+        studentAdditionalFare = Math.max(0, route.distanceInKm) * 13.50 * 0.8; // Discounted rate for succeeding kilometers (20% discount)
+        break;
+      default:
+        baseFare = 15; // Default base fare for first 5 kilometers
+        additionalFare = Math.max(0, route.distanceInKm - 5) * 2.65; // Default rate for succeeding kilometers
+        studentBaseFare = 12; // Default discounted base fare for first 5 kilometers
+        studentAdditionalFare = Math.max(0, route.distanceInKm - 5) * 2.12; // Default discounted rate for succeeding kilometers
+        break;
+    }
+
+    const totalFare = baseFare + additionalFare;
+    const totalStudentFare = studentBaseFare + studentAdditionalFare;
+
+    route.fare = this.roundToNearest25Centavos(totalFare);
+    route.studentFare = this.roundToNearest25Centavos(totalStudentFare);
+  }
+
+  private roundToNearest25Centavos(amount: number): number {
+    return Math.round(amount * 4) / 4;
   }
 
   calculateDistance(route: any): number {

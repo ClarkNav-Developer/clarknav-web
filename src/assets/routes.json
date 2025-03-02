@@ -1,10 +1,10 @@
 {
-  "version": "1.0.6",
+  "version": "1.0.7",
   "routes": {
     "jeepney": [
       {
         "routeId": "J1",
-        "routeName": "Route 1 Green",
+        "routeName": "Jeepney Route 1 Green",
         "description": "Bayanihan Terminal - Mt. Pinatubo Comm.",
         "color": "#228B22",
         "waypoints": [
@@ -72,7 +72,7 @@
       },
       {
         "routeId": "J2",
-        "routeName": "Route 2 Beige",
+        "routeName": "Jeepney Route 2 Beige",
         "description": "Bayanihan Terminal - Clark Hostel",
         "color": "#D4B895",
         "waypoints": [
@@ -134,7 +134,7 @@
       },
       {
         "routeId": "J3",
-        "routeName": "Route 3 Blue",
+        "routeName": "Jeepney Route 3 Blue",
         "description": "Bayanihan Terminal - Picnic Ground",
         "color": "#1d58c6",
         "waypoints": [
@@ -219,7 +219,7 @@
       },
       {
         "routeId": "J5",
-        "routeName": "Route 5 Red",
+        "routeName": "Jeepney Route 5 Red",
         "description": "Bayanihan Terminal - IE-5 - GGLC",
         "color": "#CE0000",
         "waypoints": [
@@ -250,7 +250,7 @@
       },
       {
         "routeId": "J6",
-        "routeName": "Route 6 Yellow",
+        "routeName": "Jeepney Route 6 Yellow",
         "description": "Mabalacat Public Market Terminal - Philexcel",
         "color": "#FFDE21",
         "waypoints": [
