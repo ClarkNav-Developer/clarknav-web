@@ -51,23 +51,21 @@ export class BottomSheetService {
 
     const currentY = this.getClientY(event);
     const deltaY = this.startY - currentY;
-    const newHeight = Math.min(window.innerHeight, Math.max(300, this.startHeight + deltaY));
+    const newHeight = Math.min(window.innerHeight, Math.max(150, this.startHeight + deltaY));
     this.updateBottomSheetHeight(bottomSheet, newHeight);
   }
 
   private endDrag(bottomSheet: HTMLElement): void {
-    this.isDragging = false;
-
-    const finalHeight = parseInt(bottomSheet.style.height || '0', 10);
-    const threshold = window.innerHeight / 2;
-
-    if (finalHeight > threshold) {
-      this.snapToHeight(bottomSheet, '50vh');
-    } else if (finalHeight < 200) {
-      this.snapToHeight(bottomSheet, '50px');
-    } else {
-      this.snapToHeight(bottomSheet, '300px');
-    }
+      this.isDragging = false;
+  
+      const finalHeight = parseInt(bottomSheet.style.height || '0', 10);
+      const threshold = window.innerHeight / 2;
+  
+      if (finalHeight > threshold) {
+        this.snapToHeight(bottomSheet, '50vh');
+      } else {
+        this.snapToHeight(bottomSheet, '150px'); // Set height to 150px when dragged down
+      }
   }
 
   private snapToHeight(bottomSheet: HTMLElement, height: string): void {
@@ -85,13 +83,14 @@ export class BottomSheetService {
   }
 
   public toggleBottomSheet(): void {
-    const mobileBottomSheet = document.querySelector('.bottom-sheet-mobile');
-    if (mobileBottomSheet) {
-      if (mobileBottomSheet.classList.contains('hide')) {
-        mobileBottomSheet.classList.remove('hide');
+      const mobileBottomSheet = document.querySelector('.bottom-sheet-mobile');
+      if (mobileBottomSheet) {
+        if (mobileBottomSheet.classList.contains('hide')) {
+          mobileBottomSheet.classList.remove('hide');
+        }
+        mobileBottomSheet.classList.toggle('show');
+        (mobileBottomSheet as HTMLElement).style.height = '50vh'; // Set initial height to 50vh
       }
-      mobileBottomSheet.classList.toggle('show');
-    }
   }
 
   public hideBottomSheet(mapService: MapService): void {
