@@ -39,11 +39,11 @@ export class SuggestedRoutesService {
     const startWaypoint = this.routesService.findNearestStop(currentLocation);
     const endWaypoint = this.routesService.findNearestStop(destination);
   
-    if (!startWaypoint || !endWaypoint) {
-      return [];
-    }
+    const routes: Array<{ path: google.maps.LatLngLiteral[], color: string, routeId: string, name?: string, description?: string }> = [];
   
-    const routes: Array<{ path: google.maps.LatLngLiteral[], color: string, routeId: string, name?: string, description?: string }> = this.routesService.findAllRoutePaths(startWaypoint, endWaypoint);
+    if (startWaypoint && endWaypoint) {
+      routes.push(...this.routesService.findAllRoutePaths(startWaypoint, endWaypoint));
+    }
   
     // Add taxi route using Directions API
     routes.push({
@@ -52,6 +52,15 @@ export class SuggestedRoutesService {
       routeId: 'taxi',
       name: 'Taxi', // Set the name for the taxi route
       description: 'Direct taxi route'
+    });
+  
+    // Add walking route using Directions API
+    routes.push({
+      path: [currentLocation, destination],
+      color: '#8400ff', // Purple color for walking
+      routeId: 'walking',
+      name: 'Walking', // Set the name for the walking route
+      description: 'Direct walking route'
     });
   
     // Cache the routes

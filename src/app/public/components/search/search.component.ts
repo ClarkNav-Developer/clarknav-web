@@ -145,24 +145,25 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /*------------------------------------------
   Route and Navigation Logic
-  --------------------------------------------*/
+  --------------------------------------------*/  
   navigateToDestination(): void {
     if (!this.currentLocation || !this.destination) {
       alert('Please set both your current location and destination.');
       return;
     }
-
+  
     this.locationService.resolveAddresses();
     this.fetchSuggestedRoutes();
     this.navigationService.currentLocation = this.currentLocation;
     this.navigationService.destination = this.destination;
-    // this.navigationService.navigateToDestination();
-
+    this.navigationService.selectedTransportType = this.selectedTransportType; // Pass the selected transport type
+    this.navigationService.navigateToDestination();
+  
     this.isBottomSheetVisible = true;
     this.searchPerformed = true;
   }
 
-  fetchSuggestedRoutes() {
+    fetchSuggestedRoutes() {
     if (this.currentLocation && this.destination) {
       const key = JSON.stringify({ currentLocation: this.currentLocation, destination: this.destination });
       const cachedRoutes = localStorage.getItem(key);
@@ -211,13 +212,15 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getTransportType(routeId: string): string {
+    if (routeId === 'taxi') return 'Taxi'; // Handle taxi route
+    if (routeId === 'walking') return 'Walking'; // Ensure walking route is identified
+  
     const route = this.routesService.getRouteById(routeId);
     if (!route) return 'Unknown';
-
-    if (route.routeId === 'taxi') return 'Taxi'; // Handle taxi route
+  
     if (this.routesService.jeepneyRoutes.includes(route)) return 'Jeepney';
     if (this.routesService.busRoutes.includes(route)) return 'Bus';
-
+  
     return 'Unknown';
   }
 

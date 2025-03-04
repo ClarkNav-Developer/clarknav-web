@@ -72,6 +72,12 @@ export class FareService {
         studentBaseFare = config.taxi.baseFare * 0.8;
         studentAdditionalFare = Math.max(0, route.distanceInKm) * config.taxi.additionalFare * 0.8;
         break;
+      case 'Walking':
+        // baseFare = config.taxi.baseFare;
+        // additionalFare = Math.max(0, route.distanceInKm) * config.taxi.additionalFare;
+        // studentBaseFare = config.taxi.baseFare * 0.8;
+        // studentAdditionalFare = Math.max(0, route.distanceInKm) * config.taxi.additionalFare * 0.8;
+        break;
       default:
         baseFare = config.bus.baseFare;
         additionalFare = Math.max(0, route.distanceInKm - 5) * config.bus.additionalFare;

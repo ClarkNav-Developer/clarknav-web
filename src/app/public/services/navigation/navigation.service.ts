@@ -18,6 +18,7 @@ export class NavigationService {
   private userMarker: google.maps.Marker | null = null; // Marker for the user's current location
   private locationUpdateInterval: any = null; // Interval for updating the location
   private destinationReached: boolean = false; // Flag to indicate if the destination is reached
+  selectedTransportType: string = 'All';
 
   private stopNavigationSubject = new Subject<void>();
   stopNavigation$ = this.stopNavigationSubject.asObservable();
@@ -101,50 +102,57 @@ export class NavigationService {
   /**
    * Main function to navigate to the destination.
    */
-  navigateToDestination(): void {
+    navigateToDestination(): void {
     if (!this.validateLocations()) return;
-
+  
     this.mapService.clearMap();
-
+  
+    if (this.selectedTransportType === 'Walking') {
+      this.mapService.displayWalkingPath(this.currentLocation!, this.destination!, '#000000'); // Use black color for walking path
+      this.mapService.enableAutoCenter();
+      this.mapService.centerMapOnRealTimeLocation();
+      return;
+    }
+  
     const nearestStartWaypoint = this.routesService.findNearestStop(this.currentLocation!);
     const nearestEndWaypoint = this.routesService.findNearestStop(this.destination!);
-
+  
     if (!nearestStartWaypoint || !nearestEndWaypoint) {
       alert('No nearby waypoints found for either current location or destination.');
       return;
     }
-
+  
     console.log('Nearest start waypoint:', nearestStartWaypoint);
     console.log('Nearest end waypoint:', nearestEndWaypoint);
-
+  
     // Use route color for walking path
     const routePaths = this.routesService.findAllRoutePaths(nearestStartWaypoint, nearestEndWaypoint);
     const routePath = routePaths.length > 0 ? routePaths[0] : { path: [], color: '' };
-
+  
     if (routePath.path.length === 0) {
       alert('No route found connecting the selected stops.');
       return;
     }
-
+  
     // Display walking path from current location to the nearest start waypoint
     this.mapService.displayWalkingPath(this.currentLocation!, nearestStartWaypoint, routePath.color);
-
+  
     // Display the initial route segments
     this.mapService.displayRouteSegments({ path: routePath.path, color: routePath.color });
-
+  
     const finalDestination = this.routesService.isNearby(
       this.destination!,
       routePath.path[routePath.path.length - 1]
     )
       ? this.destination!
       : routePath.path[routePath.path.length - 1];
-
+  
     // Display walking path from the end of the route path to the destination
     this.mapService.displayWalkingPath(finalDestination, this.destination!, routePath.color);
-
+  
     // Set the initial route path in the MapService with the route color
     this.mapService.setCurrentRoutePath(routePath.path, routePath.color);
-
+  
     // Enable auto-centering and center the map on the user's real-time location
     this.mapService.enableAutoCenter();
     this.mapService.centerMapOnRealTimeLocation();

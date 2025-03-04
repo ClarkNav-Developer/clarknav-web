@@ -382,7 +382,7 @@ initializeMap(map: any) {
       polylineOptions: {
         strokeColor: color,
         strokeOpacity: 1.0,
-        strokeWeight: 5,
+        strokeWeight: 7,
       },
     });
     directionsRenderer.setDirections(result);
@@ -542,19 +542,19 @@ initializeMap(map: any) {
       new google.maps.LatLng(origin.lat, origin.lng),
       new google.maps.LatLng(destination.lat, destination.lng)
     );
-
+  
     const request = {
       origin,
       destination,
       travelMode: google.maps.TravelMode.WALKING,
     };
-
+  
     const cachedResponse = this.getCachedResponse(request);
     if (cachedResponse) {
       this.renderWalkingDirections(cachedResponse, color);
       return;
     }
-
+  
     if (distance < 50) {
       this.renderStaticWalkingPath(origin, destination, color);
     } else {
@@ -594,19 +594,19 @@ initializeMap(map: any) {
       destination,
       travelMode: google.maps.TravelMode.WALKING,
     };
-
+  
     const cachedResponse = this.getCachedResponse(request);
     if (cachedResponse) {
       this.renderWalkingDirections(cachedResponse, color);
       return;
     }
-
+  
     this.directionsService.route(request, (result: any, status: any) => {
-      if (status === google.maps.DirectionsStatus.OK) {
-        this.cacheResponse(request, result);
+      if (status === 'OK') {
         this.renderWalkingDirections(result, color);
+        this.cacheResponse(request, result);
       } else {
-        console.error('Walking directions request failed: ', status);
+        console.error('Error fetching walking directions:', status);
       }
     });
   }
@@ -615,9 +615,9 @@ initializeMap(map: any) {
     const renderer = new google.maps.DirectionsRenderer({
       map: this.map,
       preserveViewport: true,
-      suppressMarkers: true, // Disable default markers
+      suppressMarkers: true,
       polylineOptions: {
-        strokeColor: 'transparent', // No solid line, walking icons only
+        strokeColor: 'transparent',
         strokeWeight: 0,
         icons: [
           { icon: this.getWalkingIcon(color), offset: '0', repeat: '15px' },
@@ -626,7 +626,7 @@ initializeMap(map: any) {
     });
     renderer.setDirections(result);
     this.routeRenderers.push(renderer);
-
+  
     // Add markers for the walking path endpoints
     const route = result.routes[0].legs[0];
     this.addWalkingPathMarker(route.start_location, 'Start', color);
@@ -669,6 +669,8 @@ initializeMap(map: any) {
       strokeOpacity: 1,
       scale: 3,
       strokeColor: color,
+      strokeWeight: 2, // Adjust the weight for better visibility
+      strokeDasharray: [5, 5], // Create a dashed effect
     };
   }
 }
