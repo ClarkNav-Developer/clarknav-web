@@ -32,20 +32,33 @@ export class LocationService {
         this.destination,
         this.currentLocation,
       ];
-
+  
       const currentLocationInput = document.getElementById(
         'current-location-box'
       ) as HTMLInputElement;
       const destinationInput = document.getElementById(
         'search-box'
       ) as HTMLInputElement;
-
+  
+      const currentLocationInputMobile = document.getElementById(
+        'current-location-box-mobile'
+      ) as HTMLInputElement;
+      const destinationInputMobile = document.getElementById(
+        'search-box-mobile'
+      ) as HTMLInputElement;
+  
       if (currentLocationInput && destinationInput) {
         const tempValue = currentLocationInput.value;
         currentLocationInput.value = destinationInput.value;
         destinationInput.value = tempValue;
       }
-
+  
+      if (currentLocationInputMobile && destinationInputMobile) {
+        const tempValueMobile = currentLocationInputMobile.value;
+        currentLocationInputMobile.value = destinationInputMobile.value;
+        destinationInputMobile.value = tempValueMobile;
+      }
+  
       this.resolveAddresses();
     } else {
       alert('Both current location and destination must be set to reverse.');
