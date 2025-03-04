@@ -63,8 +63,8 @@ export class FareService {
       case 'Bus':
         baseFare = config.bus.baseFare;
         additionalFare = Math.max(0, route.distanceInKm - 5) * config.bus.additionalFare;
-        studentBaseFare = config.bus.baseFare * 0.8;
-        studentAdditionalFare = Math.max(0, route.distanceInKm - 5) * config.bus.additionalFare * 0.8;
+        // studentBaseFare = config.bus.baseFare * 0.8;
+        // studentAdditionalFare = Math.max(0, route.distanceInKm - 5) * config.bus.additionalFare * 0.8;
         break;
       case 'Taxi':
         baseFare = config.taxi.baseFare;

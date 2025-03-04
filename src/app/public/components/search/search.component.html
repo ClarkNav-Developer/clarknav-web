@@ -333,7 +333,10 @@
     <div class="navigation-status" *ngIf="showNavigationStatus" [class.show]="showNavigationStatus">
         <div class="navigation-status-container">
             <div class="end-navigation-button">
-                <h4>{{ route.name }}</h4>
+                <div class="navigation-status-header">
+                    <h4>{{ route.name }}</h4>
+                    <p>{{ route.description }}</p>
+                </div>
                 <button (click)="stopNavigation()"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
                         viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
                         <path
