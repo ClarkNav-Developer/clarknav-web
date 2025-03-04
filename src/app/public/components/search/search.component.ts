@@ -266,6 +266,22 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  selectRouteForDesktop(route: any): void {
+    if (this.selectedRoute === route) {
+      this.selectedRoute = null;
+      this.route = { duration: null };
+      this.showAllRoutes = true;
+      this.renderRoutesOnMap(); // Render all routes
+      console.log('Cleared selected route and rendered all routes.');
+    } else {
+      this.selectedRoute = route;
+      this.route = route;
+      this.showAllRoutes = false;
+      this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
+      console.log('Selected route:', route);
+    }
+  }
+
   selectRoute(route: any): void {
     this.selectedRoute = route;
     this.route = route;

@@ -81,7 +81,7 @@
             <div *ngIf="searchPerformed" class="routes">
                 <h3 class="suggested-routes">Suggested Routes</h3>
                 <div *ngIf="suggestedRoutes?.length && suggestedRoutes.length > 0" class="routes-container">
-                    <div *ngFor="let route of suggestedRoutes" class="route-item" (click)="selectRoute(route)"
+                    <div *ngFor="let route of suggestedRoutes" class="route-item" (click)="selectRouteForDesktop(route)"
                         (mouseover)="highlightRoute(route)" (mouseleave)="clearHighlight()"
                         [class.selected]="route === selectedRoute"
                         [class.opacity]="highlightedRoute && route !== highlightedRoute">
