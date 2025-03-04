@@ -35,34 +35,36 @@ export class SuggestedRoutesService {
     if (cachedRoutes) {
       return cachedRoutes;
     }
-
+  
     const startWaypoint = this.routesService.findNearestStop(currentLocation);
     const endWaypoint = this.routesService.findNearestStop(destination);
-
+  
     if (!startWaypoint || !endWaypoint) {
       return [];
     }
-
-    const routes: Array<{ path: google.maps.LatLngLiteral[], color: string, routeId: string, name?: string }> = this.routesService.findAllRoutePaths(startWaypoint, endWaypoint);
-
+  
+    const routes: Array<{ path: google.maps.LatLngLiteral[], color: string, routeId: string, name?: string, description?: string }> = this.routesService.findAllRoutePaths(startWaypoint, endWaypoint);
+  
     // Add taxi route using Directions API
     routes.push({
       path: [currentLocation, destination],
-      color: '#088F8F', // Black color for taxi
+      color: '#088F8F', // Blue Green color for taxi
       routeId: 'taxi',
-      name: 'Taxi' // Set the name for the taxi route
+      name: 'Taxi', // Set the name for the taxi route
+      description: 'Direct taxi route'
     });
-
+  
     // Cache the routes
     this.cacheRoutes(key, routes);
-
-    // Return a flat array of routes with names
+  
+    // Return a flat array of routes with names and descriptions
     return routes.map(route => ({
       path: route.path,
       color: route.color,
       start: startWaypoint,
       end: endWaypoint,
       name: route.name || this.routesService.getRouteById(route.routeId)?.routeName || 'Unknown Route',
+      description: route.description || this.routesService.getRouteById(route.routeId)?.description || 'No description available',
       routeId: route.routeId
     }));
   }

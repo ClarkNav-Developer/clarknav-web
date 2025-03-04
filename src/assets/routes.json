@@ -1,5 +1,5 @@
 {
-  "version": "1.0.7",
+  "version": "1.0.9",
   "routes": {
     "jeepney": [
       {
@@ -363,6 +363,7 @@
       {
         "routeId": "B1",
         "routeName": "Clark Loop Northbound",
+        "description": "Bayanihan Terminal - Clark International Airport",
         "direction": "northbound",
         "color": "#1d58c6",
         "waypoints": [
@@ -409,6 +410,7 @@
       {
         "routeId": "B2",
         "routeName": "Clark Loop Southbound",
+        "description": "Clark International Airport - Bayanihan Terminal",
         "direction": "southbound",
         "color": "#F98100",
         "waypoints": [

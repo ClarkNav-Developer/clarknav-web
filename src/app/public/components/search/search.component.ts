@@ -166,32 +166,32 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.currentLocation && this.destination) {
       const key = JSON.stringify({ currentLocation: this.currentLocation, destination: this.destination });
       const cachedRoutes = localStorage.getItem(key);
-
+  
       if (cachedRoutes) {
         this.suggestedRoutes = JSON.parse(cachedRoutes);
       } else {
         // Get suggested routes
         const routes = this.suggestedRoutesService.getSuggestedRoutes(this.currentLocation, this.destination);
-
+  
         // Assign transport type based on `routes.json` category
         this.suggestedRoutes = routes.map((route: any) => ({
           ...route,
-          type: this.getTransportType(route.routeId) // Assign transport type
+          type: this.getTransportType(route.routeId)
         }));
-
+  
         localStorage.setItem(key, JSON.stringify(this.suggestedRoutes));
       }
-
+  
       // Filter routes based on selected transport type
       if (this.selectedTransportType !== 'All') {
         this.suggestedRoutes = this.suggestedRoutes.filter(route => route.type === this.selectedTransportType);
       }
-
+  
       // Display message if no routes are found
       if (this.suggestedRoutes.length === 0) {
         console.log("No suggested routes found. Please check your input.");
       }
-
+  
       // Calculate distance, duration, and fare for each route
       this.suggestedRoutes.forEach(route => {
         route.distanceInKm = this.fareService.calculateDistance(route);
@@ -203,7 +203,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         });
         this.fareService.calculateFare(route);
       });
-
+  
       // Set the current time when fetching suggested routes
       const now = new Date();
       this.currentTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
