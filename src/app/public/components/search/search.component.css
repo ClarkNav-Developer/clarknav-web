@@ -819,6 +819,14 @@
         justify-content: flex-end
     }
 
+    .no-routes-mobile {
+        padding: 20px;
+        margin: 20px;
+        text-align: center;
+        color: #777;
+        font-size: 14px
+    }
+
     .navigation-status {
         z-index: 500;
         position: absolute;
