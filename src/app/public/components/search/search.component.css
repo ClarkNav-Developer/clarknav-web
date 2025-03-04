@@ -271,8 +271,21 @@
     }
 
     .disclaimer-info .left button {
+        display: flex;
         background: 0 0;
-        border: none
+        align-items: center;
+        font-size: 0.7em;
+        color: white;
+        gap: 2px;
+        border: solid 1px #f98100;
+        border-radius: 20px;
+        padding: 3px 8px;
+        background: #1d58c6;
+        cursor: pointer
+    }
+
+    .disclaimer-info .left button:hover {
+        background: #004da0
     }
 
     .disclaimer-info .left svg:active {
@@ -777,8 +790,21 @@
     }
 
     .disclaimer-info-mobile .left button {
+        display: flex;
         background: 0 0;
-        border: none
+        align-items: center;
+        font-size: 0.7em;
+        color: white;
+        gap: 2px;
+        border: solid 1px #f98100;
+        border-radius: 20px;
+        padding: 3px 8px;
+        background: #1d58c6;
+        cursor: pointer
+    }
+
+    .disclaimer-info-mobile .left button:hover {
+        background: #004da0
     }
 
     .disclaimer-info-mobile .left svg:active {
