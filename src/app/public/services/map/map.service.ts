@@ -291,7 +291,7 @@ initializeMap(map: any) {
       map: this.map,
       icon: {
         url: icon,
-        scaledSize: new google.maps.Size(60, 60), // Adjust size as needed
+        scaledSize: new google.maps.Size(40, 40), // Adjust size as needed
       },
       title: title,
     });
