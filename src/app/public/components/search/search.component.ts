@@ -157,7 +157,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.navigationService.currentLocation = this.currentLocation;
     this.navigationService.destination = this.destination;
     this.navigationService.selectedTransportType = this.selectedTransportType; // Pass the selected transport type
-    this.navigationService.navigateToDestination();
+    // this.navigationService.navigateToDestination();
   
     this.isBottomSheetVisible = true;
     this.searchPerformed = true;
