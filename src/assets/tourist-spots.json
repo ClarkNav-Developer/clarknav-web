@@ -1,5 +1,5 @@
 {
-  "version": "1.0.6",
+  "version": "1.0.7",
   "spots": [
     {
       "name": "Air Force City",
@@ -100,26 +100,6 @@
       "marker": "public/tourist-spot/Dinosaur-Island.svg",
       "description": "A prehistoric-themed park in Clark featuring life-sized animatronic dinosaurs, fossil exhibits, and interactive attractions. It offers an educational and immersive experience for visitors, making it a favorite destination for families and school trips.",
       "image": "public/tourist-spot/images/dinosuar-island.webp"
-    },
-    {
-      "name": "Fontana Casino",
-      "coordinates": {
-        "latitude": 15.194349259242717,
-        "longitude": 120.50850416381738
-      },
-      "marker": "public/tourist-spot/Fontana-Casino.svg",
-      "description": "A luxurious casino within Fontana Leisure Park, offering a range of gaming options including slot machines, poker, and table games. The casino caters to both casual and high-stakes players in a sophisticated and entertaining atmosphere.",
-      "image": "public/tourist-spot/images/fontana-casino.webp"
-    },
-    {
-      "name": "Fontana Water Park",
-      "coordinates": {
-        "latitude": 15.193821901145046,
-        "longitude": 120.51095373222407
-      },
-      "marker": "public/tourist-spot/Fontana-Water-Park.svg",
-      "description": "A sprawling water park inside Fontana Leisure Park, featuring giant slides, a wave pool, a lazy river, and kid-friendly play zones. It is a top destination for families looking for a refreshing and fun-filled water adventure.",
-      "image": "public/tourist-spot/images/fontana-waterpark.webp"
     },
     {
       "name": "Hann Casino & Resort",
