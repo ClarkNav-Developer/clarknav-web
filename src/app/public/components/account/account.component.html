@@ -33,6 +33,9 @@
             <span class="slider"></span>
           </label>
         </div>
+        <div class="menu-list">
+          <a href="" class="menu-list-button" (click)="selectMenuItem('about'); $event.preventDefault()">About</a>
+        </div>
 
         <!-- Show Logout if logged in, else show Create Account & Login -->
         <div class="menu-list" *ngIf="isLoggedIn; else guestOptions">
@@ -282,6 +285,18 @@
             </div>
           </div>
         </div>
+
+        <div *ngIf="selectedMenuItem === 'about'" class="about-container">
+          <div class="header-info">
+            <h2>About</h2>
+          </div>
+          <div class="content-info">
+            <div class="info">
+              
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -334,6 +349,11 @@
             <input type="checkbox" (change)="toggleDarkMode($event)" [checked]="darkMode">
             <span class="slider"></span>
           </label>
+        </div>
+
+        <div class="menu-list-mobile">
+          <a href="" class="menu-list-button"
+            (click)="selectMenuItem('about-mobile'); $event.preventDefault()">About</a>
         </div>
 
         <!-- Show Logout if logged in, else show Create Account & Login -->
@@ -603,6 +623,21 @@
           </div>
         </div>
       </div>
+
+      <div *ngIf="selectedMenuItem === 'about-mobile'" class="about-container-mobile">
+        <div class="header-info">
+          <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
+              viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
+              <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
+            </svg></button>
+          <h2>About</h2>
+        </div>
+        <div class="content-info">
+          <div class="info">
+            
+          </div>
+        </div>
+        
     </div>
   </div>
 

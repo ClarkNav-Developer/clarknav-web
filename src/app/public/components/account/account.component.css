@@ -642,4 +642,28 @@
   .faqs-container-mobile .content-info h5 {
     margin: 5px 0
   }
+
+  .about-container-mobile {
+    padding-top: 30px;
+  }
+
+  .about-container-mobile .header-info {
+    margin-bottom: 20px;
+  }
+
+  .about-container-mobile .content-info {
+    padding-bottom: 20px;
+    height: 52vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .about-container-mobile .content-info::-webkit-scrollbar {
+    display: none;
+  }
+
+  .about-container-mobile .content-info p {
+    margin: 5px 0 0 5px;
+    font-size: .8em;
+  }
 }
