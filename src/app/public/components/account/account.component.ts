@@ -234,15 +234,15 @@ export class AccountComponent implements OnInit {
       next: (response) => {
         if (response) {
           console.log('Credentials updated successfully');
-          alert('Credentials updated successfully');
+          toastr.info('Credentials updated successfully');
         } else {
           console.error('Failed to update credentials');
-          alert('Failed to update credentials');
+          toastr.info('Failed to update credentials');
         }
       },
       error: (error) => {
         console.error('Error updating credentials:', error);
-        alert('Error updating credentials');
+        toastr.error('Error updating credentials');
       }
     });
   }
@@ -258,11 +258,11 @@ export class AccountComponent implements OnInit {
     this.http.post(environment.bugReportsUrl, formData).subscribe({
       next: (response) => {
         console.log('Bug report submitted successfully', response);
-        alert('Bug report submitted successfully');
+        toastr.success('Bug report submitted successfully');
       },
       error: (error) => {
         console.error('Error submitting bug report', error);
-        alert('Error submitting bug report');
+        toastr.error('Error submitting bug report');
       }
     });
   }
@@ -272,11 +272,11 @@ export class AccountComponent implements OnInit {
     this.http.post(environment.feedbackUrl, this.feedback).subscribe({
       next: (response) => {
         console.log('Feedback submitted successfully', response);
-        alert('Feedback submitted successfully');
+        toastr.success('Feedback submitted successfully');
       },
       error: (error) => {
         console.error('Error submitting feedback:', error);
-        alert('Error submitting feedback');
+        toastr.error('Error submitting feedback');
       }
     });
   }

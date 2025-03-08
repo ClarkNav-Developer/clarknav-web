@@ -92,7 +92,7 @@ export class PlannerComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error fetching routes:', error);
-        alert('Failed to fetch saved routes.');
+        toastr.error('Failed to fetch saved routes.');
       }
     });
   }
@@ -106,7 +106,7 @@ export class PlannerComponent implements OnInit {
     const selectedDateTime = new Date(`${this.routeData.departureDate}T${this.routeData.departureTime}`);
 
     if (selectedDateTime < new Date()) {
-      alert('Departure time must be in the future!');
+      toastr.info('Departure time must be in the future!');
       this.arrivalTime = '';
       return;
     }
@@ -140,7 +140,7 @@ export class PlannerComponent implements OnInit {
 
   saveRouteToDatabase(): void {
     if (!this.routeData.departureTime || !this.routeData.departureDate) {
-      alert('Please enter both departure time and date before saving.');
+      toastr.info('Please enter both departure time and date before saving.');
       return;
     }
 
@@ -159,38 +159,38 @@ export class PlannerComponent implements OnInit {
     this.http.post(environment.customRoutesUrl, routePayload).subscribe({
       next: (response) => {
         console.log('Route saved:', response);
-        alert('Route successfully saved.');
+        toastr.success('Route successfully saved.');
         this.fetchSavedRoutes();
         this.routeData = null;
       },
       error: (error) => {
         console.error('Error saving route:', error);
-        alert('Failed to save route.');
+        toastr.error('Failed to save route.');
       }
     });
   }
 
   markRouteAsDone(routeId: string): void {
     if (!routeId) {
-      alert('Invalid route ID');
+      toastr.error('Invalid route ID');
       return;
     }
 
     this.http.delete(`${environment.customRoutesUrl}/${routeId}`).subscribe({
       next: () => {
-        alert('Route deleted successfully.');
+        toastr.success('Route deleted successfully.');
         this.fetchSavedRoutes();
       },
       error: (error) => {
         console.error('Error deleting route:', error);
-        alert('Failed to delete route. Please check your network and try again.');
+        toastr.error('Failed to delete route. Please check your network and try again.');
       }
     });
   }
 
   resetRoute(): void {
     this.isRouteCompleted = false;
-    alert('Route has been reset!');
+    toastr.info('Route has been reset!');
   }
 
   validateRoute(): void {
@@ -198,15 +198,15 @@ export class PlannerComponent implements OnInit {
     const endWaypoint = this.routesService.findNearestStop(this.routeData.end);
 
     if (!startWaypoint || !endWaypoint) {
-      alert('No nearby waypoints found for either origin or destination.');
+      toastr.info('No nearby waypoints found for either origin or destination.');
       return;
     }
 
     const routes = this.routesService.findAllRoutePaths(startWaypoint, endWaypoint);
     if (routes.length === 0) {
-      alert('No route found for the adjusted details.');
+      toastr.info('No route found for the adjusted details.');
     } else {
-      alert('Route is valid.');
+      toastr.info('Route is valid.');
     }
   }
 }

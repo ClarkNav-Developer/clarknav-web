@@ -61,7 +61,7 @@ export class LocationService {
   
       this.resolveAddresses();
     } else {
-      alert('Both current location and destination must be set to reverse.');
+      toastr.info('Both current location and destination must be set to reverse.');
     }
   }
 
@@ -104,11 +104,11 @@ export class LocationService {
             },
             (error) => {
               console.error('Error fetching location', error);
-              alert('Unable to fetch your current location.');
+              toastr.error('Unable to fetch your current location.');
             }
           );
         } else {
-          alert('Geolocation is not supported by your browser.');
+          toastr.info('Geolocation is not supported by your browser.');
         }
       })
       .catch((error) => {

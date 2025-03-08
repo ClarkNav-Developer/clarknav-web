@@ -118,7 +118,7 @@ export class NavigationService {
     const nearestEndWaypoint = this.routesService.findNearestStop(this.destination!);
   
     if (!nearestStartWaypoint || !nearestEndWaypoint) {
-      alert('No nearby waypoints found for either current location or destination.');
+      toastr.error('No nearby waypoints found for either current location or destination.');
       return;
     }
   
@@ -130,7 +130,7 @@ export class NavigationService {
     const routePath = routePaths.length > 0 ? routePaths[0] : { path: [], color: '' };
   
     if (routePath.path.length === 0) {
-      alert('No route found connecting the selected stops.');
+      toastr.error('No route found connecting the selected stops.');
       return;
     }
   
@@ -167,15 +167,15 @@ export class NavigationService {
    */
   private validateLocations(): boolean {
     if (!this.currentLocation || !this.destination) {
-      alert('Please set both current location and destination.');
+      toastr.error('Please set both current location and destination.');
       return false;
     }
     if (!this.isWithinClarkBounds(this.currentLocation)) {
-      alert('Your current location is not within Clark bounds.');
+      toastr.error('Your current location is not within Clark bounds.');
       return false;
     }
     if (!this.isWithinClarkBounds(this.destination)) {
-      alert('Your destination is not within Clark bounds.');
+      toastr.error('Your destination is not within Clark bounds.');
       return false;
     }
     return true;
@@ -195,7 +195,7 @@ export class NavigationService {
    */
   startRealTimeTracking(): void {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser.');
+      toastr.info('Geolocation is not supported by your browser.');
       return;
     }
 
@@ -220,7 +220,7 @@ export class NavigationService {
       },
       (error) => {
         console.error('Error fetching real-time location:', error);
-        alert('Unable to fetch real-time location. Please ensure location services are enabled.');
+        toastr.error('Unable to fetch real-time location. Please ensure location services are enabled.');
       },
       {
         enableHighAccuracy: true,

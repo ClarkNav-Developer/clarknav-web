@@ -66,7 +66,7 @@ export class AuthService {
       }),
       catchError(error => {
         console.error('Login error occurred:', error);
-        alert('Login failed. Please check your credentials and try again.');
+        toastr.error('Login failed. Please check your credentials and try again.');
         return of(null);
       })
     );
@@ -77,11 +77,11 @@ export class AuthService {
     return this.http.post<any>(environment.logoutUrl, {}, { withCredentials: true }).pipe(
       tap(() => {
         this.clearTokensAndLogout();
-        alert('You have been logged out successfully.');
+        toastr.success('You have been logged out successfully.');
       }),
       catchError((error) => {
         console.error('Logout error occurred:', error);
-        alert('An error occurred during logout. Please try again.');
+        toastr.error('An error occurred during logout. Please try again.');
         return of(null);
       })
     );
@@ -166,7 +166,7 @@ export class AuthService {
       }),
       catchError((error) => {
         console.error('Registration error occurred:', error);
-        alert('Registration failed. Please check your details and try again.');
+        toastr.error('Registration failed. Please check your details and try again.');
         return of(null);
       })
     );

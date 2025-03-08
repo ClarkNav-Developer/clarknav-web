@@ -135,11 +135,11 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     if (route) {
       this.router.navigate(['/planner'], { state: { route } });
     } else {
-      alert('Please select a route to save.');
+      toastr.info('Please select a route to save.');
     }
 
     // Show alert message
-    alert("The route has been saved to your route planner.");
+    toastr.success("The route has been saved to your route planner.");
   }
 
   /*------------------------------------------
@@ -192,7 +192,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   --------------------------------------------*/  
   navigateToDestination(): void {
     if (!this.currentLocation || !this.destination) {
-      alert('Please set both your current location and destination.');
+      toastr.info('Please set both your current location and destination.');
       return;
     }
   
@@ -437,7 +437,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
       this.isNavigationActive = true;
       this.startUpdatingDuration();
     } else {
-      alert('Please select a route to start navigation.');
+      toastr.info('Please select a route to start navigation.');
     }
   }
 

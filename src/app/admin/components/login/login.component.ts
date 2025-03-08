@@ -83,7 +83,7 @@ export class LoginComponent implements OnInit {
 
   onLoginSubmit() {
     if (this.loginForm.invalid) {
-      this.errorMessage = 'Please fill in all required fields correctly.';
+      toastr.info('Please fill in all required fields correctly.');
       return;
     }
 
@@ -110,31 +110,31 @@ export class LoginComponent implements OnInit {
                   this.router.navigate(['']);
                 }
               } else {
-                this.errorMessage = 'Failed to retrieve user identity.';
+                toastr.error('Failed to retrieve user identity.');
               }
             },
             error: () => {
-              this.errorMessage = 'Error fetching user identity.';
+              toastr.error('Error fetching user identity.');
             }
           });
         }
       },
       error: (error) => {
-        this.errorMessage = 'Invalid email or password.';
+        toastr.error('Invalid email or password.');
       }
     });
   }
 
   onRegisterSubmit() {
     if (this.registerForm.invalid) {
-      this.errorMessage = 'Please fill in all required fields correctly.';
+      toastr.info('Please fill in all required fields correctly.');
       return;
     }
 
     const { firstName, lastName, email, password, passwordConfirmation } = this.registerForm.value;
 
     if (password !== passwordConfirmation) {
-      this.errorMessage = 'Passwords do not match.';
+      toastr.info('Passwords do not match.');
       return;
     }
 
@@ -154,11 +154,11 @@ export class LoginComponent implements OnInit {
 
     this.authService.register(registrationData).subscribe({
       next: (response) => {
-        alert('Registration successful');
+        toastr.success('Registration successful');
         this.onLoginClick();
       },
       error: (error) => {
-        this.errorMessage = 'Registration failed: ' + (error.error.message || 'Please try again.');
+        toastr.error('Registration failed: ' + (error.error.message || 'Please try again.'));
       }
     });
   }
