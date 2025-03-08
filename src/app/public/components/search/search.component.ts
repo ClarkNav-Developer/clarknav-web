@@ -1,4 +1,5 @@
 import { Component, OnInit, AfterViewInit, Renderer2, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MapService } from '../../services/map/map.service';
 import { NavigationService } from '../../services/navigation/navigation.service';
 import { SuggestedRoutesService } from '../../services/routes/suggested-routes.service';
@@ -18,7 +19,37 @@ declare var google: any;
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
-  styleUrls: ['./search.component.css']
+  styleUrls: ['./search.component.css'],
+  animations: [
+    trigger('slideInOut', [
+      state('in', style({
+        transform: 'translateX(0)'
+      })),
+      state('out', style({
+        transform: 'translateX(-110%)'
+      })),
+      transition('out => in', [
+        animate('200ms ease-in')
+      ]),
+      transition('in => out', [
+        animate('200ms ease-out')
+      ])
+    ]),
+    trigger('slideUpDown', [
+      state('down', style({
+        transform: 'translateY(0)'
+      })),
+      state('up', style({
+        transform: 'translateY(-170%)'
+      })),
+      transition('down => up', [
+        animate('200ms ease-in')
+      ]),
+      transition('up => down', [
+        animate('200ms ease-out')
+      ])
+    ])
+  ]
 })
 export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   // Locations and addresses
@@ -31,6 +62,9 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   showNavigationStatus = false;
   showAllRoutes = true;
   showSideNav: boolean = true;
+  containerState: string = 'out';
+  searchContainerState: string = 'down';
+  searchContainerMobileState: string = 'down';
 
   // Route data
   suggestedRoutes: any[] = [];
@@ -128,6 +162,15 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   openInformationComponent() {
     this.floatingWindowService.open('information');
+  }
+
+  toggleContainer(): void {
+    this.containerState = this.containerState === 'in' ? 'out' : 'in';
+    this.searchContainerState = this.searchContainerState === 'down' ? 'up' : 'down';
+  }
+
+  toggleSearchContainerMobile(): void {
+    this.searchContainerMobileState = this.searchContainerMobileState === 'down' ? 'up' : 'down';
   }
 
   /*------------------------------------------

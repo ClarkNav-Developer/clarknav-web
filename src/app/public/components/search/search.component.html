@@ -1,18 +1,20 @@
 <!-- desktop view -->
 <div class="desktop-view">
-    <div class="search-container">
+    <div class="search-container" [@slideUpDown]="searchContainerState">
         <div class="search-bar-container">
             <img src="public\no-bg-icon-2.webp" alt="ClarkNav Logo" loading="lazy">
             <input type="text" id="search-box-2" placeholder="Search" />
-            <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#CCCCCC">
+            <!-- <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#CCCCCC">
                 <path
                     d="M792-120.67 532.67-380q-30 25.33-69.64 39.67Q423.39-326 378.67-326q-108.44 0-183.56-75.17Q120-476.33 120-583.33t75.17-182.17q75.16-75.17 182.5-75.17 107.33 0 182.16 75.17 74.84 75.17 74.84 182.27 0 43.23-14 82.9-14 39.66-40.67 73l260 258.66-48 48Zm-414-272q79.17 0 134.58-55.83Q568-504.33 568-583.33q0-79-55.42-134.84Q457.17-774 378-774q-79.72 0-135.53 55.83-55.8 55.84-55.8 134.84t55.8 134.83q55.81 55.83 135.53 55.83Z" />
-            </svg>
+            </svg> -->
+            <button class="directions" (click)="toggleContainer()"><svg _ngcontent-ng-c1347132672="" xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="35px" fill="#007bff" class="ng-tns-c1347132672-0"><path _ngcontent-ng-c1347132672="" d="M340-380h40v-120h180v71.54L651.54-520 560-612.31V-540H372.31q-13.73 0-23.02 9.2T340-508v128Zm140.15 249.23q-12.07 0-23.85-4.85-11.78-4.84-21.53-14.53L150.15-434.77q-9.69-9.66-14.53-21.33-4.85-11.67-4.85-23.75 0-12.07 4.85-23.85 4.84-11.78 14.53-21.53l284.62-284.62q9.66-9.69 21.33-14.53 11.67-4.85 23.75-4.85 12.07 0 23.85 4.85 11.78 4.84 21.53 14.53l284.62 284.62q9.69 9.66 14.53 21.33 4.85 11.67 4.85 23.75 0 12.07-4.85 23.85-4.84 11.78-14.53 21.53L525.23-150.15q-9.66 9.69-21.33 14.53-11.67 4.85-23.75 4.85Z" class="ng-tns-c1347132672-0"></path></svg></button>
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" [@slideInOut]="containerState">
         <div class="search-panel">
+            <button class="close-button" (click)="toggleContainer()">X</button>
             <div class="header">
                 <div class="img-header">
                     <img src="/public/no-bg-icon-4.webp" alt="logo" loading="lazy" />
@@ -216,7 +218,7 @@
 
             <div class="buttons">
                 <!-- <button (click)="useMyLocation()">Use My Location</button> -->
-                <button (click)="navigateToDestination()">Navigate</button>
+                <button (click)="navigateToDestination()">Search</button>
                 <!-- Add this button somewhere appropriate in your HTML -->
                 <!-- <button (click)="stopRealTimeTracking()">Stop Real-Time Tracking</button> -->
                 <!-- <button (click)="centerMap()">Center Map on My Location</button> -->
@@ -230,7 +232,7 @@
 
 <!-- mobile view -->
 <div class="mobile-view">
-    <div class="search-container-mobile">
+    <div class="search-container-mobile" [@slideUpDown]="searchContainerMobileState">
         <div class="search-bar-container-mobile">
             <img src="public\no-bg-icon-3.webp" alt="ClarkNav Logo" loading="lazy">
             <input type="text" id="search-box-mobile-2" placeholder="Search" />
@@ -276,7 +278,7 @@
             </div>
         </div>
         <div class="buttons-mobile">
-            <button (click)="navigateToDestination(); toggleBottomSheet()">Navigate</button>
+            <button (click)="navigateToDestination(); toggleBottomSheet();">Navigate</button>
         </div>
         <div class="notice-container-mobile">
             <div class="notice-box-mobile">
@@ -288,7 +290,7 @@
     <div id="bottomSheet" class="bottom-sheet-mobile">
         <div class="drag-handle"></div>
         <div class="close-btn">
-            <button (click)="hideBottomSheet()" (click)="toggleMobileContainer()"><svg xmlns="http://www.w3.org/2000/svg"
+            <button (click)="hideBottomSheet(); toggleMobileContainer(); toggleSearchContainerMobile()"><svg xmlns="http://www.w3.org/2000/svg"
                     height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
                     <path
                         d="m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z" />
@@ -330,7 +332,7 @@
             <h3>Suggested Routes</h3>
             <div class="routes-container-mobile">
                 <div *ngFor="let route of suggestedRoutes" class="route-item-mobile" (click)="selectRoute(route)"
-                    (click)="startNavigation()" [class.selected]="route === selectedRoute"
+                    (click)="startNavigation(); toggleSearchContainerMobile()" [class.selected]="route === selectedRoute"
                     [class.opacity]="highlightedRoute && route !== highlightedRoute">
 
                     <div class="route-header-mobile">
@@ -440,7 +442,7 @@
                     <h4>{{ route.name }}</h4>
                     <p>{{ route.description }}</p>
                 </div>
-                <button (click)="stopNavigation()">
+                <button (click)="stopNavigation(); toggleSearchContainerMobile()">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
                         <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
                     </svg>
