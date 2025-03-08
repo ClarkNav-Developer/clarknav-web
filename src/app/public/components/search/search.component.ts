@@ -243,7 +243,8 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
       // Calculate distance, duration, and fare for each route
       this.suggestedRoutes.forEach(route => {
         route.distanceInKm = this.fareService.calculateDistance(route);
-        this.fareService.calculateDuration(this.currentLocation!, this.destination!, (duration, arrivalTime) => {
+        const transportMode = route.type === 'Walking' ? google.maps.TravelMode.WALKING : google.maps.TravelMode.DRIVING;
+        this.fareService.calculateDuration(this.currentLocation!, this.destination!, transportMode, (duration, arrivalTime) => {
           route.duration = duration;
           route.arrivalTime = arrivalTime;
           console.log('Updated duration:', duration); // Log the updated duration

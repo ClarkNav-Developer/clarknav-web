@@ -113,7 +113,8 @@ export class PlannerComponent implements OnInit {
 
     this.routeData.distanceInKm = this.fareService.calculateDistance(this.routeData);
 
-    this.fareService.calculateDuration(this.routeData.start, this.routeData.end, (duration, _) => {
+    const transportMode = google.maps.TravelMode.DRIVING; // or any other appropriate mode
+    this.fareService.calculateDuration(this.routeData.start, this.routeData.end, transportMode, (duration, _) => {
       this.routeData.duration = duration;
 
       let durationMinutes = 0;

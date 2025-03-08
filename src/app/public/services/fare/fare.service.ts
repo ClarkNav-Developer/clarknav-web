@@ -110,24 +110,33 @@ export class FareService {
     return totalDistance / 1000; // Convert to kilometers
   }
 
-  calculateDuration(currentLocation: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, callback: (duration: string, arrivalTime: string) => void): void {
+  calculateDuration(currentLocation: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral, transportMode: google.maps.TravelMode, callback: (duration: string, arrivalTime: string) => void): void {
     const service = new google.maps.DistanceMatrixService();
     service.getDistanceMatrix(
       {
         origins: [currentLocation],
         destinations: [destination],
-        travelMode: google.maps.TravelMode.DRIVING,
-        drivingOptions: {
+        travelMode: transportMode,
+        drivingOptions: transportMode === google.maps.TravelMode.DRIVING ? {
           departureTime: new Date(), // Uses real-time traffic
           trafficModel: google.maps.TrafficModel.BEST_GUESS // Other options: PESSIMISTIC, OPTIMISTIC
-        }
+        } : undefined
       },
       (response: google.maps.DistanceMatrixResponse, status: google.maps.DistanceMatrixStatus) => {
         if (status === 'OK' && response.rows[0].elements[0].status === 'OK') {
-          let durationText = response.rows[0].elements[0].duration_in_traffic?.text || response.rows[0].elements[0].duration.text;
-          durationText = durationText.replace(' mins', 'm').replace(' min', 'm');
+          let durationText = response.rows[0].elements[0].duration.text;
+          durationText = durationText.replace(' mins', 'm').replace(' min', 'm').replace(' hours', 'h').replace(' hour', 'h');
 
-          const durationInMinutes = parseInt(durationText.replace('m', ''), 10);
+          const durationParts = durationText.split(' ');
+          let durationInMinutes = 0;
+          durationParts.forEach(part => {
+            if (part.includes('h')) {
+              durationInMinutes += parseInt(part.replace('h', ''), 10) * 60;
+            } else if (part.includes('m')) {
+              durationInMinutes += parseInt(part.replace('m', ''), 10);
+            }
+          });
+
           const currentTime = new Date();
           const arrivalTime = new Date(currentTime.getTime() + durationInMinutes * 60000);
           const arrivalTimeString = arrivalTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
