@@ -153,6 +153,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   --------------------------------------------*/
   toggleMobileContainer(): void {
     this.bottomSheetService.toggleMobileContainer();
+    this.mapService.clearMarkers(); // Clear the markers on the map
   }
 
   toggleBottomSheet(): void {
@@ -179,7 +180,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   toggleSearchContainerMobile(): void {
     this.searchContainerMobileState = this.searchContainerMobileState === 'down' ? 'up' : 'down';
-    this.mapService.clearMarkers(); // Clear the markers on the map
   }
 
   /*------------------------------------------
@@ -201,6 +201,8 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   navigateToDestination(): void {
     if (!this.currentLocation || !this.destination) {
       toastr.info('Please set both your current location and destination.');
+      this.bottomSheetService.toggleBottomSheet(); // Move this line inside the valid condition
+
       return;
     }
   
@@ -209,9 +211,8 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.navigationService.currentLocation = this.currentLocation;
     this.navigationService.destination = this.destination;
     this.navigationService.selectedTransportType = this.selectedTransportType; // Pass the selected transport type
-    // this.navigationService.navigateToDestination();
   
-    this.isBottomSheetVisible = true;
+    // this.isBottomSheetVisible = true;
     this.searchPerformed = true;
   }
 
