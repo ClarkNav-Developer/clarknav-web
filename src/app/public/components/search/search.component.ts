@@ -507,7 +507,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   /*------------------------------------------
   Autocomplete Initialization
   --------------------------------------------*/
-  private initializeAutocomplete(): void {
+    private initializeAutocomplete(): void {
     const inputs = [
       'search-box',
       'search-box-2',
@@ -516,29 +516,35 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
       'current-location-box',
       'current-location-box-mobile',
     ].map(id => document.getElementById(id) as HTMLInputElement);
-
+  
+    // Define the bounds for Clark and Mabalacat
+    const clarkMabalacatBounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(15.160, 120.500), // Southwest corner
+      new google.maps.LatLng(15.230, 120.600)  // Northeast corner
+    );
+  
     inputs.forEach(input => {
       if (input) {
         const autocomplete = new google.maps.places.Autocomplete(input, {
           componentRestrictions: { country: 'PH' },
-          bounds: this.navigationService.clarkBounds,
+          bounds: clarkMabalacatBounds,
           strictBounds: true,
         });
-
+  
         autocomplete.addListener('place_changed', () => {
           const place = autocomplete.getPlace();
-          if (place.geometry) {
+          if (place.geometry && clarkMabalacatBounds.contains(place.geometry.location)) {
             const location = {
               lat: place.geometry.location.lat(),
               lng: place.geometry.location.lng(),
             };
-
+  
             // Extract the place name
             const placeName = place.name || 'Unknown Place';
-
+  
             // Set the input value to the place name
             input.value = placeName;
-
+  
             // Determine which input field is being used and set the corresponding location
             if (input.id.includes('current')) {
               this.currentLocation = location;
@@ -550,22 +556,23 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
               this.destination = location;
               this.locationService.destination = location;
             }
-
+  
             // Resolve addresses and add marker for the selected location
             this.locationService.resolveAddresses();
             this.mapService.addMarker(location, input.id.includes('current') ? 'Your Location' : 'Destination');
             this.mapService.map.setCenter(location);
-
+  
             // Fetch suggested routes if both currentLocation and destination are set
             if (this.currentLocation && this.destination) {
               this.fetchSuggestedRoutes();
             }
-
-            // Update the searchPerformed flag
-            this.searchPerformed = !!this.currentLocation && !!this.destination;
+          } else {
+            // Clear the input if the place is outside the bounds
+            input.value = '';
+            alert('Please select a location within the vicinity of Clark only.');
           }
         });
-
+  
         // Add event listener to update searchPerformed flag when input changes
         input.addEventListener('input', () => {
           this.searchPerformed = !!this.currentLocation && !!this.destination;
