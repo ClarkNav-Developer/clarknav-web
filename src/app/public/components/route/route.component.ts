@@ -216,98 +216,112 @@ export class RouteComponent implements OnInit, OnDestroy {
 
   private routeInfoHtmlMap: { [key: string]: string } = {
     'J1': `
-      <p><strong>Jeepney Route 1</strong><br>
-      Bayanihan Terminal - Clark Freeport Zone Vice Versa - Mt. Pinatubo Co</p>
-      <br>
-      <p><strong>Places to visit in this route:</strong></p>
-      <p>Air Force City Park <br> 
-      Hann Casino Resort <br> 
-      Midori Hotel and Casino <br> 
-      Clark Safari and Adventure Park <br> 
-      Clark Aqua Planet <br> 
-      Deco Central Showroom <br> 
-      Nayong Pilipino <br> 
-      Fontana Casino <br> 
-      Fontana Water Park </p>
-    `,
+        <img class="jeep-image" src="public/Jeep-Loop-Icon/Jeepney-Route-1-Green.svg" alt="Jeepney Route 1" style="width: 100%; height: auto;">
+        <br>
+        <p><strong>Jeepney Route 1</strong><br>
+        Bayanihan Terminal - Clark Freeport Zone Vice Versa - Mt. Pinatubo Co</p>
+        <br>
+        <p><strong>Places to visit in this route:</strong></p>
+        <p>Air Force City Park <br> 
+        Hann Casino Resort <br> 
+        Midori Hotel and Casino <br> 
+        Clark Safari and Adventure Park <br> 
+        Clark Aqua Planet <br> 
+        Deco Central Showroom <br> 
+        Nayong Pilipino <br> 
+        Fontana Casino <br> 
+        Fontana Water Park </p>
+      `,
     'J2': `
-      <p><strong>Jeepney Route 2</strong><br>
-      Bayanihan Terminal - Clark Hostel</p>
-      <br>
-      <p><strong>Places to visit in this route:</strong></p>
-      <p>Bicentennial Park <br> 
-      Children's Playground <br> 
-      Clark Parade Grounds <br> 
-      Clark Museum <br> 
-      Royce Hotel & Casino <br> 
-      Fontana Casino <br> 
-      Fontana Water Park</p>
-    `,
+        <img src="public/Jeep-Loop-Icon/Jeepney-Route-2-Beige.svg" alt="Jeepney Route 2" style="width: 100%; height: auto;">
+        <br>
+        <p><strong>Jeepney Route 2</strong><br>
+        Bayanihan Terminal - Clark Hostel</p>
+        <br>
+        <p><strong>Places to visit in this route:</strong></p>
+        <p>Bicentennial Park <br> 
+        Children's Playground <br> 
+        Clark Parade Grounds <br> 
+        Clark Museum <br> 
+        Royce Hotel & Casino <br> 
+        Fontana Casino <br> 
+        Fontana Water Park</p>
+      `,
     'J3': `
-      <p><strong>Jeepney Route 3</strong><br>
-      Bayanihan Terminal - Picnic Ground - CFZ Vice Versa</p>
-      <br>
-      <p><strong>Places to visit in this route:</strong></p>
-      <p>Air Force City <br> 
-      Royce Hotel & Casino <br> 
-      Widus Hotel & Casino <br> 
-      Midori Hotel & Casino <br> 
-      El Kabayo <br> 
-      Clark International Speedway</p>
-    `,
+        <img src="public/Jeep-Loop-Icon/Jeepney-Route-3-Blue.svg" alt="Jeepney Route 3" style="width: 100%; height: auto;">
+        <br>
+        <p><strong>Jeepney Route 3</strong><br>
+        Bayanihan Terminal - Picnic Ground - CFZ Vice Versa</p>
+        <br>
+        <p><strong>Places to visit in this route:</strong></p>
+        <p>Air Force City <br> 
+        Royce Hotel & Casino <br> 
+        Widus Hotel & Casino <br> 
+        Midori Hotel & Casino <br> 
+        El Kabayo <br> 
+        Clark International Speedway</p>
+      `,
     'J5': `
-      <p><strong>Jeepney Route 5</strong><br>
-      Bayanihan Terminal - IE-5 - GGLC Vice Versa</p>
-      <br>
-      <p><strong>Places to visit in this route:</strong></p>
-      <p>The Medical City Clark</p>
-    `,
+        <img src="public/Jeep-Loop-Icon/Jeepney-Route-5-Red.svg" alt="Jeepney Route 5" style="width: 100%; height: auto;">
+        <br>
+        <p><strong>Jeepney Route 5</strong><br>
+        Bayanihan Terminal - IE-5 - GGLC Vice Versa</p>
+        <br>
+        <p><strong>Places to visit in this route:</strong></p>
+        <p>The Medical City Clark</p>
+      `,
     'J6': `
-      <p><strong>Jeepney Route 6</strong><br>
-      Mabalacat Public Market Terminal - PhilExcel Vice Versa</p>
-      <br>
-      <p><strong>Places to visit in this route:</strong></p>
-      <p>Dinosaur Island <br> 
-      El Kabayo <br> 
-      Hann Casino & Resort <br> 
-      Widus Hotel & Casino <br> 
-      Clark Museum <br> 
-      Clark Parade Grounds <br> 
-      Children's Playground <br> 
-      Bicentennial Park</p>
-    `,
+        <img src="public/Jeep-Loop-Icon/Jeepney-Route-5-Yellow.svg" alt="Jeepney Route 6" style="width: 100%; height: auto;">
+        <br>
+        <p><strong>Jeepney Route 6</strong><br>
+        Mabalacat Public Market Terminal - PhilExcel Vice Versa</p>
+        <br>
+        <p><strong>Places to visit in this route:</strong></p>
+        <p>Dinosaur Island <br> 
+        El Kabayo <br> 
+        Hann Casino & Resort <br> 
+        Widus Hotel & Casino <br> 
+        Clark Museum <br> 
+        Clark Parade Grounds <br> 
+        Children's Playground <br> 
+        Bicentennial Park</p>
+      `,
     'B1': `
-      <p><strong>Clark Loop Northbound</strong><br>
-      Bayanihan Terminal - Clark International Airport</p>
-      <br>
-      <p><strong>Places to visit in this route:</strong></p>
-      <p>Bicentennial Park <br> 
-      Children's Playground <br> 
-      Clark Parade Grounds <br> 
-      Clark Museum <br> 
-      Royce Hotel & Casino <br> 
-      Widus Hotel & Casino <br> 
-      Hann Casino & Resort <br> 
-      El Kabayo <br> 
-      Dinosaur Island <br> 
-      Clark International Airport</p>
-    `,
+        <img src="public/Jeep-Loop-Icon/Clark-Loop-Northbound.svg" alt="Clark Loop Northbound" style="width: 100%; height: auto;">
+        <br>
+        <p><strong>Clark Loop Northbound</strong><br>
+        Bayanihan Terminal - Clark International Airport</p>
+        <br>
+        <p><strong>Places to visit in this route:</strong></p>
+        <p>Bicentennial Park <br> 
+        Children's Playground <br> 
+        Clark Parade Grounds <br> 
+        Clark Museum <br> 
+        Royce Hotel & Casino <br> 
+        Widus Hotel & Casino <br> 
+        Hann Casino & Resort <br> 
+        El Kabayo <br> 
+        Dinosaur Island <br> 
+        Clark International Airport</p>
+      `,
     'B2': `
-      <p><strong>Clark Loop Southbound</strong><br>
-      Clark International Airport - Bayanihan Terminal</p>
-      <br>
-      <p><strong>Places to visit in this route:</strong></p>
-      <p>Bicentennial Park <br> 
-      Children's Playground <br> 
-      Clark Parade Grounds <br> 
-      Clark Museum <br> 
-      Royce Hotel & Casino <br> 
-      Widus Hotel & Casino <br> 
-      Hann Casino & Resort <br> 
-      El Kabayo <br> 
-      Dinosaur Island <br> 
-      Clark International Airport</p>
-    `
+        <img src="public/Jeep-Loop-Icon/Clark-Loop-Southbound.svg" alt="Clark Loop Southbound" style="width: 100%; height: auto;">
+        <br>
+        <p><strong>Clark Loop Southbound</strong><br>
+        Clark International Airport - Bayanihan Terminal</p>
+        <br>
+        <p><strong>Places to visit in this route:</strong></p>
+        <p>Bicentennial Park <br> 
+        Children's Playground <br> 
+        Clark Parade Grounds <br> 
+        Clark Museum <br> 
+        Royce Hotel & Casino <br> 
+        Widus Hotel & Casino <br> 
+        Hann Casino & Resort <br> 
+        El Kabayo <br> 
+        Dinosaur Island <br> 
+        Clark International Airport</p>
+      `
   };
 
   showRouteInfo() {

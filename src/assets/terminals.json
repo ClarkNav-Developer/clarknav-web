@@ -1,5 +1,5 @@
 {
-    "version": "1.0.2",
+    "version": "1.0.3",
     "jeepneys": [
       {
         "route_id": 1,
@@ -73,7 +73,7 @@
         "route_name": "Clark Loop Northbound",
         "terminals": [
           {
-            "terminal_name": "SM Flagpole Area",
+            "terminal_name": "Bayanihan Terminal",
             "coordinates": {
               "lat": 15.167865096726194,
               "lng": 120.58457557136889
