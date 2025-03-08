@@ -28,6 +28,7 @@
     "ngx-toastr": "^19.0.0",
     "rxjs": "~7.8.0",
     "socket.io-client": "^4.8.1",
+    "toastr": "^2.1.4",
     "tslib": "^2.3.0",
     "web-animations-js": "^2.3.2",
     "zone.js": "~0.14.10"
@@ -39,6 +40,7 @@
     "@types/google.maps": "^3.58.1",
     "@types/hammerjs": "^2.0.46",
     "@types/jasmine": "~5.1.0",
+    "@types/toastr": "^2.1.43",
     "browserslist": "^4.24.4",
     "jasmine-core": "~5.2.0",
     "karma": "~6.4.0",

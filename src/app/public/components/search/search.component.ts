@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit, Renderer2, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import * as toastr from 'toastr';
 import { MapService } from '../../services/map/map.service';
 import { NavigationService } from '../../services/navigation/navigation.service';
 import { SuggestedRoutesService } from '../../services/routes/suggested-routes.service';
@@ -97,7 +98,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private googleMapsLoader: GoogleMapsLoaderService,
     private authService: AuthService, // Add this line
-    private cdr: ChangeDetectorRef // Add ChangeDetectorRef
+    private cdr: ChangeDetectorRef, // Add ChangeDetectorRef
   ) { 
     this.navigationService.stopNavigation$.subscribe(() => {
       this.stopNavigation();
@@ -506,8 +507,8 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /*------------------------------------------
   Autocomplete Initialization
-  --------------------------------------------*/
-    private initializeAutocomplete(): void {
+  --------------------------------------------*/   
+  private initializeAutocomplete(): void {
     const inputs = [
       'search-box',
       'search-box-2',
@@ -517,8 +518,8 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
       'current-location-box-mobile',
     ].map(id => document.getElementById(id) as HTMLInputElement);
   
-    // Define the bounds for Clark and Mabalacat
-    const clarkMabalacatBounds = new google.maps.LatLngBounds(
+    // Define the bounds for Clark
+    const clarkBounds = new google.maps.LatLngBounds(
       new google.maps.LatLng(15.160, 120.500), // Southwest corner
       new google.maps.LatLng(15.230, 120.600)  // Northeast corner
     );
@@ -527,13 +528,13 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
       if (input) {
         const autocomplete = new google.maps.places.Autocomplete(input, {
           componentRestrictions: { country: 'PH' },
-          bounds: clarkMabalacatBounds,
+          bounds: clarkBounds,
           strictBounds: true,
         });
   
         autocomplete.addListener('place_changed', () => {
           const place = autocomplete.getPlace();
-          if (place.geometry && clarkMabalacatBounds.contains(place.geometry.location)) {
+          if (place.geometry && clarkBounds.contains(place.geometry.location)) {
             const location = {
               lat: place.geometry.location.lat(),
               lng: place.geometry.location.lng(),
@@ -569,7 +570,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
           } else {
             // Clear the input if the place is outside the bounds
             input.value = '';
-            alert('Please select a location within the vicinity of Clark only.');
+            toastr.info('Please select a location within Clark only.');
           }
         });
   
