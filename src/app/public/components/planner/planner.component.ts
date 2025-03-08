@@ -140,6 +140,11 @@ export class PlannerComponent implements OnInit {
   }
 
   saveRouteToDatabase(): void {
+    if (!this.authService.isAuthenticated) {
+      toastr.error('You must be logged in to save a route to the planner.');
+      return;
+    }
+
     if (!this.routeData.departureTime || !this.routeData.departureDate) {
       toastr.info('Please enter both departure time and date before saving.');
       return;

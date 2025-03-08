@@ -133,14 +133,19 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   saveRoute(route: any): void {
+    if (!this.authService.isAuthenticated) {
+      console.error('Save route failed: User is not logged in.');
+      toastr.error('You must be logged in to save a route to the planner.');
+      return;
+    }
+  
     if (route) {
       this.router.navigate(['/planner'], { state: { route } });
+      toastr.success('The route has been saved to your route planner.');
     } else {
+      console.error('Save route failed: No route selected.');
       toastr.info('Please select a route to save.');
     }
-
-    // Show alert message
-    toastr.success("The route has been saved to your route planner.");
   }
 
   /*------------------------------------------
