@@ -56,6 +56,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   // Locations and addresses
   currentLocation: google.maps.LatLngLiteral | null = null;
   destination: google.maps.LatLngLiteral | null = null;
+  private currentMarker: google.maps.Marker | null = null; // Add this line
 
   // UI state
   showNavigationWindow = false;
@@ -168,10 +169,12 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   toggleContainer(): void {
     this.containerState = this.containerState === 'in' ? 'out' : 'in';
     this.searchContainerState = this.searchContainerState === 'down' ? 'up' : 'down';
+    this.mapService.clearMarkers(); // Clear the markers on the map
   }
 
   toggleSearchContainerMobile(): void {
     this.searchContainerMobileState = this.searchContainerMobileState === 'down' ? 'up' : 'down';
+    this.mapService.clearMarkers(); // Clear the markers on the map
   }
 
   /*------------------------------------------
@@ -560,7 +563,14 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   
             // Resolve addresses and add marker for the selected location
             this.locationService.resolveAddresses();
-            this.mapService.addMarker(location, input.id.includes('current') ? 'Your Location' : 'Destination');
+            
+            // Remove the current marker if it exists
+            if (this.currentMarker) {
+              this.currentMarker.setMap(null);
+            }
+            
+            // Add a new marker for the selected location
+            this.currentMarker = this.mapService.addMarker(location, input.id.includes('current') ? 'Your Location' : 'Destination');
             this.mapService.map.setCenter(location);
   
             // Fetch suggested routes if both currentLocation and destination are set
