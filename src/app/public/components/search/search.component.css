@@ -62,14 +62,19 @@
         box-shadow: none
     }
 
-    .directions{
+    .directions {
         background-color: transparent;
         border: none;
         cursor: pointer;
     }
 
-    .directions button svg {
-        color: blue;
+    .directions svg {
+        fill: #007bff;
+        transition: fill 0.3s ease;
+    }
+
+    .directions:hover svg {
+        fill: #0056b3;
     }
 
     .container {
@@ -84,8 +89,8 @@
     }
 
     .container .close-button {
-        position: fixed; 
-        top: 10px; 
+        position: fixed;
+        top: 10px;
         right: 10px;
         border: none;
         background-color: transparent;
@@ -213,7 +218,7 @@
         flex-direction: column;
         gap: 16px
     }
-    
+
     .route-header {
         display: flex;
         flex-direction: column;

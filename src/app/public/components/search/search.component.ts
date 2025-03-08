@@ -539,26 +539,30 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
             // Set the input value to the place name
             input.value = placeName;
 
+            // Determine which input field is being used and set the corresponding location
             if (input.id.includes('current')) {
               this.currentLocation = location;
               this.locationService.currentLocation = location;
+            } else if (input.id.includes('search-box-2') || input.id.includes('search-box-mobile-2')) {
+              this.destination = location;
+              this.locationService.destination = location;
             } else {
               this.destination = location;
               this.locationService.destination = location;
             }
 
-            // Only resolve addresses if both currentLocation and destination are set
+            // Resolve addresses and add marker for the selected location
+            this.locationService.resolveAddresses();
+            this.mapService.addMarker(location, input.id.includes('current') ? 'Your Location' : 'Destination');
+            this.mapService.map.setCenter(location);
+
+            // Fetch suggested routes if both currentLocation and destination are set
             if (this.currentLocation && this.destination) {
-              this.locationService.resolveAddresses(); // Ensure address is resolved after location selection
-              this.mapService.addMarker(location, input.id.includes('current') ? 'Your Location' : 'Destination');
-              this.mapService.map.setCenter(location);
-
-              // Fetch suggested routes immediately after setting the locations
               this.fetchSuggestedRoutes();
-
-              // Update the searchPerformed flag
-              this.searchPerformed = !!this.currentLocation && !!this.destination;
             }
+
+            // Update the searchPerformed flag
+            this.searchPerformed = !!this.currentLocation && !!this.destination;
           }
         });
 
