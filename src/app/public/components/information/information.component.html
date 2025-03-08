@@ -8,8 +8,9 @@
         <div class="content">
             <div class="tab-container">
                 <div class="tab" [class.active]="activeTab === 'tab1'" (click)="openTab('tab1')">Bus Stops</div>
-                <div class="tab" [class.active]="activeTab === 'tab2'" (click)="openTab('tab2')">Schedule</div>
-                <div class="tab" [class.active]="activeTab === 'tab3'" (click)="openTab('tab3')">Route Map</div>
+                <div class="tab" [class.active]="activeTab === 'tab2'" (click)="openTab('tab2')">Fares</div>
+                <div class="tab" [class.active]="activeTab === 'tab3'" (click)="openTab('tab3')">Schedule</div>
+                <div class="tab" [class.active]="activeTab === 'tab4'" (click)="openTab('tab4')">Route Map</div>
             </div>
             <div id="tab1" class="tab-content" [class.active]="activeTab === 'tab1'">
                 <div class="bus-stops">
@@ -22,6 +23,16 @@
                 </div>
             </div>
             <div id="tab2" class="tab-content" [class.active]="activeTab === 'tab2'">
+                <div class="bus-fares">
+                    <h3>Clark Loop Northbound Fares</h3>
+                    <img src="public/clark-loop-info/fares/clark-loop-northbound-fare.webp"
+                        alt="Clark Loop Fares for Northbound" (click)="openImage($event)">
+                    <h3>Clark Loop Southbound Fares</h3>
+                    <img src="public/clark-loop-info/fares/clark-loop-southbound-fare.webp"
+                        alt="Clark Loop Fares for Southbound" (click)="openImage($event)">
+                </div>
+            </div>
+            <div id="tab3" class="tab-content" [class.active]="activeTab === 'tab3'">
                 <div class="schedule">
                     <h3>Clark Loop Northbound Weekday Schedule</h3>
                     <img src="public/clark-loop-info/schedule/clark-loop-northbound-weekday-schedule.webp"
@@ -34,11 +45,11 @@
                         alt="Clark Loop Weekend Schedule" (click)="openImage($event)">
                 </div>
             </div>
-            <div id="tab3" class="tab-content" [class.active]="activeTab === 'tab3'">
+            <div id="tab4" class="tab-content" [class.active]="activeTab === 'tab4'">
                 <div class="route-map">
                     <h3>Clark Loop Route Map</h3>
                     <img src="public/clark-loop-info/route-map/clark-loop-route-map.webp" alt="Clark Loop Route Map"
-                         (click)="openImage($event)">
+                        (click)="openImage($event)">
                 </div>
             </div>
         </div>
