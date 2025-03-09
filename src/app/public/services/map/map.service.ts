@@ -21,6 +21,7 @@ export class MapService {
   private terminalMarkers: google.maps.Marker[] = [];
   private touristSpotMarkers: any[] = [];
   private directionsCache = new Map<string, any>();
+  public currentMarker: google.maps.Marker | null = null;
 
   private routeColors = {
     J1: '#228B22',

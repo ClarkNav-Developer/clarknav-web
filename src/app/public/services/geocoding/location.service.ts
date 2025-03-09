@@ -99,7 +99,13 @@ export class LocationService {
               }
               this.resolveAddresses();
   
-              this.mapService.addMarker(this.currentLocation, 'My Location', true);
+              // Remove the current marker if it exists
+              if (this.mapService.currentMarker) {
+                this.mapService.currentMarker.setMap(null);
+              }
+
+              // Add a new marker for the current location
+              this.mapService.currentMarker = this.mapService.addMarker(this.currentLocation, 'My Location', true);
               this.mapService.map.panTo(this.currentLocation);
             },
             (error) => {
