@@ -326,7 +326,8 @@
         <!-- History - Visible only if logged in -->
         <div class="menu-list-mobile" *ngIf="isLoggedIn">
           <a href="" class="menu-list-button"
-            (click)="selectMenuItem('history-mobile'); $event.preventDefault()">History</a>
+            [class.disabled]="isNavigationActive"
+            (click)="onHistoryButtonClick($event); $event.preventDefault()">History</a>
         </div>
 
         <!-- <div class="menu-list-mobile">

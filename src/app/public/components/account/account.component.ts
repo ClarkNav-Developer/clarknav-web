@@ -9,6 +9,7 @@ import { environment } from '../../../../environments/environment';
 import { SuggestedRoutesService } from '../../services/routes/suggested-routes.service';
 import { MapService } from '../../services/map/map.service';
 import { GoogleMapsLoaderService } from '../../services/geocoding/google-maps-loader.service';
+import { NavigationService } from '../../services/navigation/navigation.service';
 
 @Component({
   selector: 'app-account',
@@ -61,6 +62,7 @@ export class AccountComponent implements OnInit {
 
   navigationHistories: any[] = [];
   isLoggedIn: boolean = false;
+  isNavigationActive: boolean = false;
   private historiesFetched: boolean = false; // Flag to track if histories have been fetched
 
   constructor(
@@ -72,10 +74,14 @@ export class AccountComponent implements OnInit {
     private mapInstanceService: MapInstanceService,
     private suggestedRoutesService: SuggestedRoutesService,
     private mapService: MapService,
-    private googleMapsLoader: GoogleMapsLoaderService
+    private googleMapsLoader: GoogleMapsLoaderService,
+    private navigationService: NavigationService
   ) {
     const savedMode = localStorage.getItem('darkMode');
     this.darkMode = savedMode === 'true';
+    this.navigationService.isNavigationActive$.subscribe(isActive => {
+      this.isNavigationActive = isActive;
+    });
   }
 
   ngOnInit() {
@@ -139,6 +145,16 @@ export class AccountComponent implements OnInit {
     });
   }
 
+  // History Controls
+  onHistoryButtonClick(event: Event) {
+    if (this.isNavigationActive) {
+      event.preventDefault();
+      toastr.warning('Viewing of History is disabled during navigation.');
+    } else {
+      this.selectMenuItem('history-mobile');
+    }
+  }
+
   viewRoute(history: any) {
     console.log('Viewing route with the following details:', history);
     this.mapService.clearMap(); // Clear any existing routes on the map
@@ -169,6 +185,7 @@ export class AccountComponent implements OnInit {
     this.showMenuContent = false; // Hide menu content when a menu item is selected
   }
 
+  // Dark Mode Toggle
   toggleDarkMode(event: Event) {
     const isChecked = (event.target as HTMLInputElement).checked;
     this.darkMode = isChecked;
@@ -197,6 +214,7 @@ export class AccountComponent implements OnInit {
     this.mapService.clearMap();
   }
 
+  // Logout Method
   logout(event: Event) {
     event.preventDefault(); // Prevent the default link behavior
     this.authService.logout().subscribe({
@@ -210,6 +228,7 @@ export class AccountComponent implements OnInit {
     });
   }
 
+  // Credentials Controls
   updateCredentials(event: Event) {
     event.preventDefault();
     const updatedCredentials: {
