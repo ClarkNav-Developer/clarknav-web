@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { MapService } from '../map/map.service';
 import { RoutesService } from '../routes/routes.service';
@@ -22,6 +22,9 @@ export class NavigationService {
 
   private stopNavigationSubject = new Subject<void>();
   stopNavigation$ = this.stopNavigationSubject.asObservable();
+
+  private isNavigationActiveSubject = new BehaviorSubject<boolean>(false);
+  isNavigationActive$ = this.isNavigationActiveSubject.asObservable();
 
   /*------------------------------------------
   Constants and Bounds
@@ -234,6 +237,8 @@ export class NavigationService {
         this.mapService.updateRealTimeLocation(this.currentLocation);
       }
     }, 10000);
+
+    this.isNavigationActiveSubject.next(true);
   }
 
   private checkProximityToDestination(currentLocation: google.maps.LatLngLiteral): void {
@@ -277,6 +282,8 @@ export class NavigationService {
       clearInterval(this.locationUpdateInterval);
       this.locationUpdateInterval = null;
     }
+
+    this.isNavigationActiveSubject.next(false);
   }
 
   /**

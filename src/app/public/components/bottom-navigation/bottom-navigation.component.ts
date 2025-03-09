@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FloatingWindowService } from '../../../floating-window.service';
+import { NavigationService } from '../../services/navigation/navigation.service';
 
 @Component({
   selector: 'app-bottom-navigation',
@@ -7,14 +8,29 @@ import { FloatingWindowService } from '../../../floating-window.service';
   styleUrls: ['./bottom-navigation.component.css']
 })
 export class BottomNavigationComponent {
-  constructor(public floatingWindowService: FloatingWindowService) {}
+  isNavigationActive: boolean = false;
+
+  constructor(
+    public floatingWindowService: FloatingWindowService,
+    private navigationService: NavigationService
+  ) {}
+
+  ngOnInit(): void {
+    this.navigationService.isNavigationActive$.subscribe(isActive => {
+      this.isNavigationActive = isActive;
+    });
+  }
 
   openPlannerComponent() {
     this.floatingWindowService.open('planner');
   }
 
   openRouteComponent() {
-    this.floatingWindowService.open('route');
+    if (this.isNavigationActive) {
+      toastr.warning('Routes is disabled during navigation.');
+    } else {
+      this.floatingWindowService.open('route');
+    }
   }
 
   openAccountComponent() {
