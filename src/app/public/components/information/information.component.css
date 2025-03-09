@@ -1,6 +1,10 @@
 @media screen and (min-width:768px) {
   .mobile-view {
-    display: none
+    display: none;
+  }
+
+  .desktop-view {
+    display: block;
   }
 
   .floating-window {
@@ -13,7 +17,7 @@
     padding: 20px;
     background: #fff;
     box-shadow: 0 2px 4px 3px rgba(0, 0, 0, .1);
-    border-radius: 20px
+    border-radius: 20px;
   }
 
   .floating-overlay {
@@ -22,13 +26,148 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 999
+    background: rgba(0, 0, 0, .5);
+    z-index: 999;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: red;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  .close-btn:hover {
+    background: #8b0000;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .header h2 {
+    margin-bottom: 10px;
+  }
+
+  .content .tab-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .content .tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 8px;
+    margin: 3px;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    font-size: 0.8em;
+    box-shadow: 0 2px 4px 1px rgba(0, 0, 0, .1);
+  }
+
+  .content .tab.active {
+    background-color: #fff;
+  }
+
+  .content .tab-content {
+    display: none;
+    padding: 10px;
+  }
+
+  .content .tab-content.active {
+    display: block;
+  }
+
+  .bus-fares,
+  .bus-stops,
+  .route-map,
+  .schedule {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    padding: 0 10px;
+    overflow-y: auto;
+    min-height: 50vh;
+    max-height: 55vh;
+    border: none;
+    scrollbar-width: none;
+  }
+
+  .bus-stops::-webkit-scrollbar,
+  .bus-fares::-webkit-scrollbar,
+  .schedule::-webkit-scrollbar,
+  .route-map::-webkit-scrollbar {
+    display: none;
+  }
+
+  .bus-fares img,
+  .bus-stops img,
+  .schedule img,
+  .route-map img {
+    width: 90%;
+    border: none;
+    margin: 0 auto;
+    border-radius: 10px;
+  }
+
+  .zoom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1010;
+  }
+
+  .zoom-modal-content {
+    max-width: 50%;
+    max-height: 100%;
+    overflow: hidden;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .zoom-modal img {
+    max-width: 100%;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    cursor: grab;
+    pointer-events: none; /* Disable dragging */
+  }
+
+  .zoom-modal img:active {
+    cursor: grabbing;
   }
 }
 
 @media screen and (max-width:767px) {
   .desktop-view {
-    display: none
+    display: none;
+  }
+
+  .mobile-view {
+    display: block;
   }
 
   .floating-window {
@@ -43,7 +182,7 @@
     background: #fff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
     border-radius: 8px;
-    z-index: 1000
+    z-index: 1000;
   }
 
   .floating-overlay {
@@ -53,7 +192,7 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, .5);
-    z-index: 999
+    z-index: 999;
   }
 
   .close-btn {
@@ -65,27 +204,27 @@
     border: none;
     border-radius: 5px;
     padding: 5px 10px;
-    cursor: pointer
+    cursor: pointer;
   }
 
   .close-btn:hover {
-    background: #8b0000
+    background: #8b0000;
   }
 
   .content-mobile {
     display: flex;
     flex-direction: column;
-    overflow-y: auto
+    overflow-y: auto;
   }
 
   .header-mobile h2 {
-    margin-bottom: 10px
+    margin-bottom: 10px;
   }
 
   .content-mobile .tab-container {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap
+    flex-wrap: wrap;
   }
 
   .content-mobile .tab {
@@ -105,16 +244,16 @@
   }
 
   .content-mobile .tab.active {
-    background-color: #fff
+    background-color: #fff;
   }
 
   .content-mobile .tab-content {
     display: none;
-    padding: 10px
+    padding: 10px;
   }
 
   .content-mobile .tab-content.active {
-    display: block
+    display: block;
   }
 
   .bus-fares,
@@ -130,11 +269,14 @@
     min-height: 50vh;
     max-height: 55vh;
     border: none;
-    scrollbar-width: none
+    scrollbar-width: none;
   }
 
-  .bus-stops::-webkit-scrollbar {
-    display: none
+  .bus-stops::-webkit-scrollbar,
+  .bus-fares::-webkit-scrollbar,
+  .schedule::-webkit-scrollbar,
+  .route-map::-webkit-scrollbar {
+    display: none;
   }
 
   .bus-fares img,
@@ -142,32 +284,32 @@
     width: 90%;
     border: none;
     margin: 0 auto;
-    border-radius: 10px
+    border-radius: 10px;
   }
 
   .bus-fares::-webkit-scrollbar {
-    display: none
+    display: none;
   }
 
   .schedule::-webkit-scrollbar {
-    display: none
+    display: none;
   }
 
   .schedule img {
     width: 100%;
     border-radius: 10px;
-    margin: 0 auto
+    margin: 0 auto;
   }
 
   .route-map::-webkit-scrollbar {
-    display: none
+    display: none;
   }
 
   .route-map img {
     width: 100%;
     border: none;
     margin: 0 auto;
-    border-radius: 10px
+    border-radius: 10px;
   }
 
   .zoom-modal {
@@ -180,23 +322,25 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1010
+    z-index: 1010;
   }
 
   .zoom-modal-content {
     max-width: 90%;
     max-height: 90%;
     overflow: hidden;
-    border-radius: 10px
+    border-radius: 10px;
   }
 
   .zoom-modal img {
-    width: 100%;
+    max-width: 100%;
+    max-height: 90vh; /* Set a maximum height */
+    width: auto;
     height: auto;
-    cursor: grab
+    cursor: grab;
   }
 
   .zoom-modal img:active {
-    cursor: grabbing
+    cursor: grabbing;
   }
 }

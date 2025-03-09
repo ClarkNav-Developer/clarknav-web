@@ -177,6 +177,22 @@ body.dark-mode .info-button button {
   transition: background-color .1s ease-in-out
 }
 
+body.dark-mode .content .tab.active {
+  background-color: #4d4d4d !important
+}
+
+body.dark-mode .content .tab {
+  background-color: #303030 !important
+}
+
+body.dark-mode .content-mobile .tab.active {
+  background-color: #4d4d4d !important
+}
+
+body.dark-mode .content-mobile .tab {
+  background-color: #303030 !important
+}
+
 body.dark-mode .current-loc-button button svg,
 body.dark-mode .info-button button svg {
   fill: #ffffff
@@ -184,10 +200,6 @@ body.dark-mode .info-button button svg {
 
 body.dark-mode .current-loc-button button:active {
   background-color: #1f1f1f !important
-}
-
-body.dark-mode .content-mobile .tab {
-  background-color: #4d4d4d !important
 }
 
 body.dark-mode .navigation-status-container::before {

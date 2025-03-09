@@ -26,6 +26,9 @@
                 </div>
             </div>
         </div>
+        <!-- Information Component -->
+        <div *ngIf="(floatingWindowService.visibleComponent$ | async) === 'information'" class="floating-overlay"></div>
+        <app-information *ngIf="(floatingWindowService.visibleComponent$ | async) === 'information'"></app-information>
     </div>
 </div>
 
@@ -54,6 +57,9 @@
                 </div>
             </div>
         </div>
+        <!-- Information Component -->
+        <div *ngIf="(floatingWindowService.visibleComponent$ | async) === 'information'" class="floating-overlay"></div>
+        <app-information *ngIf="(floatingWindowService.visibleComponent$ | async) === 'information'"></app-information>
     </div>
 </div>
 
