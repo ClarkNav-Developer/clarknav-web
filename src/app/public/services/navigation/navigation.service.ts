@@ -13,6 +13,8 @@ declare var google: any;
   providedIn: 'root',
 })
 export class NavigationService {
+  // Wake lock API to prevent the screen from turning off
+  private wakeLock: any = null;
 
   private watchId: number | null = null; // To store the ID of the watchPosition listener
   private userMarker: google.maps.Marker | null = null; // Marker for the user's current location
@@ -76,6 +78,69 @@ export class NavigationService {
     }).catch(error => {
       console.error('Error loading Google Maps API:', error);
     });
+
+    document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
+  }
+
+  /*------------------------------------------
+  Wake Lock API
+  --------------------------------------------*/
+  private async requestWakeLock() {
+    try {
+      if (document.visibilityState === 'visible' && !this.wakeLock) {
+        console.log('Requesting wake lock...');
+        this.wakeLock = await navigator.wakeLock.request('screen');
+        this.wakeLock.addEventListener('release', () => {
+          console.log('Wake Lock was released');
+          // Attempt to re-acquire the wake lock
+          this.requestWakeLock();
+        });
+        console.log('Wake Lock is active');
+      } else {
+        console.log('Page is not visible or wake lock is already active, wake lock not requested');
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(`${err.name}, ${err.message}`);
+        // Handle specific wake lock errors
+        if (err.name === 'NotAllowedError') {
+          console.error('Wake Lock permission denied.');
+        } else if (err.name === 'NotSupportedError') {
+          console.error('Wake Lock API is not supported on this device.');
+        } else {
+          console.error('An unknown error occurred while requesting Wake Lock.');
+        }
+      } else {
+        console.error('An unexpected error occurred:', err);
+      }
+    }
+  }
+
+  private releaseWakeLock() {
+    if (this.wakeLock !== null) {
+      console.log('Releasing wake lock...');
+      this.wakeLock.release()
+        .then(() => {
+          this.wakeLock = null;
+          console.log('Wake Lock was released');
+        })
+        .catch((err: unknown) => {
+          if (err instanceof Error) {
+        console.error('Error releasing Wake Lock:', err.message);
+          } else {
+        console.error('An unexpected error occurred while releasing Wake Lock:', err);
+          }
+        });
+    }
+  }
+
+  private handleVisibilityChange() {
+    console.log(`Visibility changed: ${document.visibilityState}`);
+    if (document.visibilityState === 'visible') {
+      this.requestWakeLock();
+    } else {
+      this.releaseWakeLock();
+    }
   }
 
   /*------------------------------------------
@@ -238,6 +303,9 @@ export class NavigationService {
       }
     }, 10000);
 
+    // Request wake lock to prevent the screen from turning off
+    this.requestWakeLock();
+
     this.isNavigationActiveSubject.next(true);
   }
 
@@ -282,6 +350,8 @@ export class NavigationService {
       clearInterval(this.locationUpdateInterval);
       this.locationUpdateInterval = null;
     }
+    // Release the wake lock
+    this.releaseWakeLock();
 
     this.isNavigationActiveSubject.next(false);
   }
