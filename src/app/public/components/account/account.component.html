@@ -287,12 +287,49 @@
         </div>
 
         <div *ngIf="selectedMenuItem === 'about'" class="about-container">
+          <app-animated-background class="animated-background"></app-animated-background>
+
           <div class="header-info">
             <h2>About</h2>
           </div>
           <div class="content-info">
             <div class="info">
               
+              <!-- Logo Section -->
+              <div class="logo-section">
+                <div class="app-logo">
+                  <img src="public\circle-logo.webp" alt="ClarkNav Logo" style="width: 100%;">
+                  <h2>ClarkNav</h2>
+                </div>
+              </div>
+              
+              <!-- Team Section -->
+              <div class="team-section">
+                <h4>Our Team</h4>
+                <div class="team-members">
+                  <div class="team-member">
+                    <div class="member-avatar"><img src="public\team-member\sean.webp" alt="Sean Warner Datu" style="width: 100%; border-radius: 100px;"></div>
+                    <div class="member-name">Warner Datu</div>
+                  </div>
+                  <div class="team-member">
+                    <div class="member-avatar"><img src="public\team-member\jazper.webp" alt="Jazper Garcia" style="width: 100%; border-radius: 100px;"></div>
+                    <div class="member-name">Jazper Garcia</div>
+                  </div>
+                  <div class="team-member">
+                    <div class="member-avatar"><img src="public\team-member\kenj.webp" alt="Kenji Jaculbia" style="width: 100%; border-radius: 100px;"></div>
+                    <div class="member-name">Kenji Jaculbia</div>
+                  </div>
+                  <div class="team-member">
+                    <div class="member-avatar"><img src="public\team-member\jenna.webp" alt="Jenna Ella Pangilinan" style="width: 100%; border-radius: 100px;"></div>
+                    <div class="member-name">Jenna Ella Pangilinan</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Copyright Section -->
+              <div class="copyright">
+                <h5>© 2025 ClarkNav. All rights reserved.</h5>
+              </div>
             </div>
           </div>
         </div>
@@ -626,6 +663,7 @@
       </div>
 
       <div *ngIf="selectedMenuItem === 'about-mobile'" class="about-container-mobile">
+        <app-animated-background class="animated-background"></app-animated-background>
         <div class="header-info">
           <button class="back-btn-menu-mobile" (click)="showMenu()"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
               viewBox="0 -960 960 960" width="24px" fill="#CCCCCC">
@@ -636,8 +674,44 @@
         <div class="content-info">
           <div class="info">
             
+            <!-- Logo Section -->
+            <div class="logo-section">
+              <div class="app-logo">
+                <img src="public\circle-logo.webp" alt="ClarkNav Logo" style="width: 100%;">
+                <h4>ClarkNav</h4>
+              </div>
+            </div>
+            
+            <!-- Team Section -->
+            <div class="team-section">
+              <h4>Our Team</h4>
+              <div class="team-members">
+                <div class="team-member">
+                  <div class="member-avatar"><img src="public\team-member\sean.webp" alt="Sean Warner Datu" style="width: 100%; border-radius: 100px;"></div>
+                  <div class="member-name">Warner Datu</div>
+                </div>
+                <div class="team-member">
+                  <div class="member-avatar"><img src="public\team-member\jazper.webp" alt="Jazper Garcia" style="width: 100%; border-radius: 100px;"></div>
+                  <div class="member-name">Jazper Garcia</div>
+                </div>
+                <div class="team-member">
+                  <div class="member-avatar"><img src="public\team-member\kenj.webp" alt="Kenji Jaculbia" style="width: 100%; border-radius: 100px;"></div>
+                  <div class="member-name">Kenji Jaculbia</div>
+                </div>
+                <div class="team-member">
+                  <div class="member-avatar"><img src="public\team-member\jenna.webp" alt="Jenna Ella Pangilinan" style="width: 100%; border-radius: 100px;"></div>
+                  <div class="member-name">Jenna Ella Pangilinan</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Copyright Section -->
+            <div class="copyright">
+              <h5>© 2025 ClarkNav. All rights reserved.</h5>
+            </div>
           </div>
         </div>
+      </div>
         
     </div>
   </div>
