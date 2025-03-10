@@ -35,16 +35,32 @@ export class SuggestedRoutesService {
     if (cachedRoutes) {
       return cachedRoutes;
     }
-  
+
     const startWaypoint = this.routesService.findNearestStop(currentLocation);
     const endWaypoint = this.routesService.findNearestStop(destination);
-  
+
     const routes: Array<{ path: google.maps.LatLngLiteral[], color: string, routeId: string, name?: string, description?: string }> = [];
-  
+
     if (startWaypoint && endWaypoint) {
-      routes.push(...this.routesService.findAllRoutePaths(startWaypoint, endWaypoint));
+      const allRoutes = this.routesService.findAllRoutePaths(startWaypoint, endWaypoint);
+
+      // Filter routes based on direction
+      const filteredRoutes = allRoutes.filter(route => {
+        const isNorthbound = route.routeId === 'B1';
+        const isSouthbound = route.routeId === 'B2';
+
+        if (isNorthbound) {
+          return startWaypoint.lat < endWaypoint.lat;
+        } else if (isSouthbound) {
+          return startWaypoint.lat > endWaypoint.lat;
+        }
+
+        return true;
+      });
+
+      routes.push(...filteredRoutes);
     }
-  
+
     // Add taxi route using Directions API
     routes.push({
       path: [currentLocation, destination],
@@ -53,7 +69,7 @@ export class SuggestedRoutesService {
       name: 'Taxi', // Set the name for the taxi route
       description: 'Direct taxi route'
     });
-  
+
     // Add walking route using Directions API
     routes.push({
       path: [currentLocation, destination],
@@ -62,10 +78,10 @@ export class SuggestedRoutesService {
       name: 'Walking', // Set the name for the walking route
       description: 'Direct walking route'
     });
-  
+
     // Cache the routes
     this.cacheRoutes(key, routes);
-  
+
     // Return a flat array of routes with names and descriptions
     return routes.map(route => ({
       path: route.path,
