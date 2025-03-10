@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { GoogleMapsLoaderService } from '../../services/geocoding/google-maps-loader.service';
 import { AuthService } from '../../../auth/auth.service';
 import { RouteUsage } from '../../../models/routeusage';
+import { SideNavService } from '../../services/side-nav/side-nav.service';
 
 declare var google: any;
 
@@ -100,6 +101,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     private googleMapsLoader: GoogleMapsLoaderService,
     private authService: AuthService, // Add this line
     private cdr: ChangeDetectorRef, // Add ChangeDetectorRef
+    private sideNavService: SideNavService // Add SideNavService
   ) { 
     this.navigationService.stopNavigation$.subscribe(() => {
       this.stopNavigation();
@@ -116,6 +118,9 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
       this.bottomSheetService.setRenderer(this.renderer);
       this.locationService.resolveAddresses();
       this.startUpdatingDuration();
+      this.sideNavService.sideNavVisible$.subscribe(visible => {
+        this.showSideNav = visible;
+      });
     }).catch(error => {
       console.error('Error loading Google Maps API:', error);
     });
