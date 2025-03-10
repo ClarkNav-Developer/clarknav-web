@@ -266,16 +266,16 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getTransportType(routeId: string): string {
-    if (routeId === 'taxi') return 'Taxi'; // Handle taxi route
-    if (routeId === 'walking') return 'Walking'; // Ensure walking route is identified
+      if (routeId === 'taxi') return 'Taxi'; // Handle taxi route
+      if (routeId === 'walking') return 'Walking'; // Ensure walking route is identified
   
-    const route = this.routesService.getRouteById(routeId);
-    if (!route) return 'Unknown';
+      const route = this.routesService.getRouteById(routeId);
+      if (!route) return 'Unknown';
   
-    if (this.routesService.jeepneyRoutes.includes(route)) return 'Jeepney';
-    if (this.routesService.busRoutes.includes(route)) return 'Bus';
+      if (this.routesService.jeepneyRoutes.includes(route)) return 'Jeepney';
+      if (this.routesService.busRoutes.includes(route)) return 'Bus';
   
-    return 'Unknown';
+      return 'Unknown';
   }
 
   // getSvgPath(routeType: string): string {
@@ -339,19 +339,63 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   selectRouteForDesktop(route: any): void {
-    if (this.selectedRoute === route) {
-      this.selectedRoute = null;
-      this.route = { duration: null };
-      this.showAllRoutes = true;
-      this.renderRoutesOnMap(); // Render all routes
-      console.log('Cleared selected route and rendered all routes.');
-    } else {
-      this.selectedRoute = route;
-      this.route = route;
-      this.showAllRoutes = false;
-      this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
-      console.log('Selected route:', route);
-    }
+      if (this.selectedRoute === route) {
+          this.selectedRoute = null;
+          this.route = { duration: null };
+          this.showAllRoutes = true;
+          this.renderRoutesOnMap(); // Render all routes
+          console.log('Cleared selected route and rendered all routes.');
+      } else {
+          this.selectedRoute = route;
+          this.route = route;
+          this.showAllRoutes = false;
+          this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
+          console.log('Selected route:', route);
+  
+          // Save navigation history if the user is authenticated
+          if (this.authService.isAuthenticated) {
+              console.log('Saving navigation history with the following details:');
+              console.log('Origin:', this.locationService.currentLocationAddress);
+              console.log('Destination:', this.locationService.destinationAddress);
+              console.log('Route Details:', { path: route.path, color: route.color });
+  
+              this.suggestedRoutesService.saveNavigationHistory(
+                  this.locationService.currentLocationAddress,
+                  this.locationService.destinationAddress,
+                  { path: route.path, color: route.color },
+                  true
+              ).subscribe(response => {
+                  console.log('Navigation history saved:', response);
+              }, error => {
+                  console.error('Error saving navigation history:', error);
+              });
+          } else {
+              console.log('User is not authenticated. Navigation history will not be saved.');
+          }
+  
+          // Store route usage
+          const routeUsage: RouteUsage = {
+              created_at: new Date(),
+              route_type: route.type,
+              route_name: route.name,
+              route_id: route.routeId,
+              color: route.color,
+              origin: this.locationService.currentLocationAddress,
+              destination: this.locationService.destinationAddress
+          };
+  
+          console.log('Storing route usage with the following details:');
+          console.log('Route Usage:', routeUsage);
+  
+          this.suggestedRoutesService.storeRouteUsage(routeUsage).subscribe({
+              next: (response) => {
+                  console.log('Route usage stored successfully:', response);
+              },
+              error: (error) => {
+                  console.error('Error storing route usage:', error);
+              }
+          });
+      }
   }
 
   selectRoute(route: any): void {

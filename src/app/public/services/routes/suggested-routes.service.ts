@@ -11,7 +11,7 @@ import { RouteUsage } from '../../../models/routeusage';
 export class SuggestedRoutesService {
   private routeCache = new Map<string, any>();
 
-  constructor(private routesService: RoutesService, private http: HttpClient) {}
+  constructor(private routesService: RoutesService, private http: HttpClient) { }
 
   private getCacheKey(currentLocation: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral): string {
     return JSON.stringify({ currentLocation, destination });
@@ -35,16 +35,16 @@ export class SuggestedRoutesService {
     if (cachedRoutes) {
       return cachedRoutes;
     }
-  
+
     const startWaypoint = this.routesService.findNearestStop(currentLocation);
     const endWaypoint = this.routesService.findNearestStop(destination);
-  
+
     const routes: Array<{ path: google.maps.LatLngLiteral[], color: string, routeId: string, name?: string, description?: string }> = [];
-  
+
     if (startWaypoint && endWaypoint) {
       routes.push(...this.routesService.findAllRoutePaths(startWaypoint, endWaypoint));
     }
-  
+
     // Add taxi route using Directions API
     routes.push({
       path: [currentLocation, destination],
@@ -53,7 +53,7 @@ export class SuggestedRoutesService {
       name: 'Taxi', // Set the name for the taxi route
       description: 'Direct taxi route'
     });
-  
+
     // Add walking route using Directions API
     routes.push({
       path: [currentLocation, destination],
@@ -62,10 +62,10 @@ export class SuggestedRoutesService {
       name: 'Walking', // Set the name for the walking route
       description: 'Direct walking route'
     });
-  
+
     // Cache the routes
     this.cacheRoutes(key, routes);
-  
+
     // Return a flat array of routes with names and descriptions
     return routes.map(route => ({
       path: route.path,

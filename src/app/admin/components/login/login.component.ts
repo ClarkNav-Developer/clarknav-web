@@ -5,13 +5,15 @@ import { User } from '../../../models/user';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 enum FormState {
     LOGIN = 'LOGIN',
     REGISTER = 'REGISTER',
     FORGOT_PASSWORD = 'FORGOT_PASSWORD',
     RESET_PASSWORD = 'RESET_PASSWORD',
-    PASSWORD_CONFIRMATION = 'PASSWORD_CONFIRMATION'
+    PASSWORD_CONFIRMATION = 'PASSWORD_CONFIRMATION',
+    RESEND_VERIFICATION = 'RESEND_VERIFICATION'
 }
 
 @Component({
@@ -25,6 +27,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     forgotPasswordForm!: FormGroup;
     resetPasswordForm!: FormGroup;
     passwordConfirmForm!: FormGroup;
+    resendVerificationForm!: FormGroup; // Add this line
+
     currentFormState: FormState = FormState.LOGIN;
     lastFormState: FormState = FormState.LOGIN; // Add this property
     errorMessage: string = '';
@@ -40,7 +44,8 @@ export class LoginComponent implements OnInit, OnDestroy {
         private fb: FormBuilder,
         private authService: AuthService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private toastr: ToastrService
     ) {
         this.initializeForms();
     }
@@ -49,11 +54,11 @@ export class LoginComponent implements OnInit, OnDestroy {
         // Login form with better validation messages
         this.loginForm = this.fb.group({
             email: ['', [
-                Validators.required, 
+                Validators.required,
                 Validators.email
             ]],
             password: ['', [
-                Validators.required, 
+                Validators.required,
                 Validators.minLength(8)
             ]],
             rememberMe: [false]
@@ -62,15 +67,15 @@ export class LoginComponent implements OnInit, OnDestroy {
         // Register form with improved validation feedback
         this.registerForm = this.fb.group({
             firstname: ['', [
-                Validators.required, 
+                Validators.required,
                 Validators.minLength(2)
             ]],
             lastname: ['', [
-                Validators.required, 
+                Validators.required,
                 Validators.minLength(2)
             ]],
             email: ['', [
-                Validators.required, 
+                Validators.required,
                 Validators.email
             ]],
             password: ['', [
@@ -89,7 +94,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         // Forgot password form
         this.forgotPasswordForm = this.fb.group({
             email: ['', [
-                Validators.required, 
+                Validators.required,
                 Validators.email
             ]]
         });
@@ -100,7 +105,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                 Validators.required
             ]],
             email: ['', [
-                Validators.required, 
+                Validators.required,
                 Validators.email
             ]],
             password: ['', [
@@ -118,8 +123,16 @@ export class LoginComponent implements OnInit, OnDestroy {
         // Password confirmation form
         this.passwordConfirmForm = this.fb.group({
             password: ['', [
-                Validators.required, 
+                Validators.required,
                 Validators.minLength(8)
+            ]]
+        });
+
+        // Resend verification form
+        this.resendVerificationForm = this.fb.group({
+            email: ['', [
+                Validators.required,
+                Validators.email
             ]]
         });
     }
@@ -141,19 +154,18 @@ export class LoginComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe(params => {
                 if (params['verified'] === 'true') {
-                    this.successMessage = 'Your email has been successfully verified. You can now log in.';
-                    this.showToastForSeconds(5);
+                    this.toastr.success('Your email has been successfully verified. You can now log in.');
                 }
-        
+
                 const token = params['token'];
                 const email = params['email'];
-        
+
                 if (token && email) {
                     this.currentFormState = FormState.RESET_PASSWORD;
                     this.resetPasswordForm.patchValue({ token, email });
                 }
             });
-        
+
         // Redirect if already authenticated
         this.authService.getIdentity()
             .pipe(takeUntil(this.destroy$))
@@ -169,7 +181,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                     }
                 }
             });
-        
+
         // Load saved credentials if "Remember Me" was checked
         const savedEmail = localStorage.getItem('rememberMeEmail');
         const savedPassword = localStorage.getItem('rememberMePassword');
@@ -181,6 +193,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             });
         }
     }
+
 
     ngOnDestroy(): void {
         this.destroy$.next();
@@ -198,15 +211,15 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     onLoginSubmit(): void {
         this.clearMessages();
-
+    
         if (this.loginForm.invalid) {
             this.markFormGroupTouched(this.loginForm);
             return;
         }
-
+    
         this.loading = true;
         const { email, password, rememberMe } = this.loginForm.value;
-
+    
         // Handle "Remember Me" functionality
         if (rememberMe) {
             localStorage.setItem('rememberMeEmail', email);
@@ -215,8 +228,8 @@ export class LoginComponent implements OnInit, OnDestroy {
             localStorage.removeItem('rememberMeEmail');
             localStorage.removeItem('rememberMePassword');
         }
-
-        this.authService.login(email, password)
+    
+        this.authService.login(email, password, rememberMe)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: (response) => {
@@ -228,26 +241,30 @@ export class LoginComponent implements OnInit, OnDestroy {
                             this.router.navigate(['/']);
                         }
                     } else {
-                        this.errorMessage = 'Invalid response from server. Please try again.';
-                        this.showToastForSeconds(5);
+                        this.toastr.error('Invalid response from server. Please try again.');
                     }
                 },
                 error: (error) => {
                     this.loading = false;
-                    this.errorMessage = error.message || 'Login failed. Please check your credentials.';
-                    this.showToastForSeconds(5);
+                    if (error.status === 403 && error.error.error === 'Email not verified') {
+                        this.currentFormState = FormState.RESEND_VERIFICATION;
+                        this.resendVerificationForm.patchValue({ email });
+                        this.toastr.error('Email not verified. Please check your email for the verification link or resend it.');
+                    } else {
+                        this.toastr.error(error.message || 'Login failed. Please check your credentials.');
+                    }
                 }
             });
     }
 
     onRegisterSubmit(): void {
         this.clearMessages();
-
+    
         if (this.registerForm.invalid) {
             this.markFormGroupTouched(this.registerForm);
             return;
         }
-
+    
         this.loading = true;
         const userData: Partial<User> = {
             first_name: this.registerForm.value.firstname,
@@ -258,100 +275,119 @@ export class LoginComponent implements OnInit, OnDestroy {
             isAdmin: false,
             isUser: true
         };
-
+    
         this.authService.register(userData)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: () => {
                     this.loading = false;
-                    this.successMessage = 'Registration successful! Please check your email to verify your account.';
-                    this.showToastForSeconds(5);
+                    this.toastr.success('Registration successful! Please check your email to verify your account.');
                     this.currentFormState = FormState.LOGIN;
                 },
                 error: (error) => {
                     this.loading = false;
-                    this.errorMessage = error.message || 'Registration failed. Please try again.';
-                    this.showToastForSeconds(5);
+                    this.toastr.error(error.message || 'Registration failed. Please try again.');
                 }
             });
     }
 
     onForgotPasswordSubmit(): void {
         this.clearMessages();
-
+    
         if (this.forgotPasswordForm.invalid) {
             this.markFormGroupTouched(this.forgotPasswordForm);
             return;
         }
-
+    
         this.loading = true;
         const { email } = this.forgotPasswordForm.value;
-
+    
         this.authService.forgotPassword(email)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: () => {
                     this.loading = false;
-                    this.successMessage = 'Password reset instructions have been sent to your email.';
-                    this.showToastForSeconds(5);
+                    this.toastr.success('Password reset instructions have been sent to your email.');
                 },
                 error: (error) => {
                     this.loading = false;
-                    this.errorMessage = error.message || 'Failed to send password reset email.';
-                    this.showToastForSeconds(5);
+                    this.toastr.error(error.message || 'Failed to send password reset email.');
                 }
             });
     }
 
     onResetPasswordSubmit(): void {
         this.clearMessages();
-
+    
         if (this.resetPasswordForm.invalid) {
             this.markFormGroupTouched(this.resetPasswordForm);
             return;
         }
-
+    
         this.loading = true;
         const { token, email, password, password_confirmation } = this.resetPasswordForm.value;
-
+    
         this.authService.resetPassword(token, email, password, password_confirmation)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: () => {
                     this.loading = false;
-                    this.successMessage = 'Password reset successful. Please login with your new password.';
-                    this.showToastForSeconds(5);
+                    this.toastr.success('Password reset successful. Please login with your new password.');
                     this.currentFormState = FormState.LOGIN;
                 },
                 error: (error) => {
                     this.loading = false;
-                    this.errorMessage = error.message || 'Failed to reset password.';
-                    this.showToastForSeconds(5);
+                    this.toastr.error(error.message || 'Failed to reset password.');
                 }
             });
     }
+    
 
     verifyEmail(token: string, email: string): void {
         this.authService.verifyEmail(token, email)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: () => {
-                    this.successMessage = 'Email verified successfully. You can now log in.';
-                    this.showToastForSeconds(5);
+                    this.toastr.success('Email verified successfully. You can now log in.');
                     this.currentFormState = FormState.LOGIN;
                 },
                 error: (error) => {
-                    this.errorMessage = error.message || 'Failed to verify email. Please try again.';
-                    this.showToastForSeconds(5);
+                    this.toastr.error(error.message || 'Failed to verify email. Please try again.');
                 }
             });
     }
 
-    showToastForSeconds(seconds: number): void {
-        setTimeout(() => {
-            this.clearMessages();
-        }, seconds * 1000);
+    onResendVerificationSubmit(): void {
+        this.clearMessages();
+    
+        if (this.resendVerificationForm.invalid) {
+            this.markFormGroupTouched(this.resendVerificationForm);
+            return;
+        }
+    
+        this.loading = true;
+        const { email } = this.resendVerificationForm.value;
+    
+        this.authService.resendVerification(email)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+                next: () => {
+                    this.loading = false;
+                    this.verificationLinkSent = true;
+                    this.toastr.success('A new verification link has been sent to the email address you provided during registration.');
+                },
+                error: (error) => {
+                    this.loading = false;
+                    this.toastr.error(error.message || 'Failed to resend verification email. Please try again.');
+                }
+            });
     }
+
+    // showToastForSeconds(seconds: number): void {
+    //     setTimeout(() => {
+    //         this.clearMessages();
+    //     }, seconds * 1000);
+    // }
 
     logout(): void {
         this.authService.logout()
@@ -397,7 +433,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     markFormGroupTouched(formGroup: FormGroup) {
         Object.values(formGroup.controls).forEach(control => {
             control.markAsTouched();
-            
+
             if (control instanceof FormGroup) {
                 this.markFormGroupTouched(control);
             }
@@ -414,11 +450,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     get registerPasswordConfirmation() { return this.registerForm.get('password_confirmation'); }
     get forgotEmail() { return this.forgotPasswordForm.get('email'); }
     get confirmPassword() { return this.passwordConfirmForm.get('password'); }
-    
+    get resendEmail() { return this.resendVerificationForm.get('email'); }
+
     // Helper method to get validation error messages
     getErrorMessage(control: AbstractControl | null): string {
         if (!control || !control.errors || !control.touched) return '';
-        
+
         if (control.errors['required']) return 'This field is required';
         if (control.errors['email']) return 'Please enter a valid email address';
         if (control.errors['minlength']) {
@@ -432,7 +469,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             return 'Invalid format';
         }
         if (control.errors['passwordMismatch']) return 'Passwords must match';
-        
+
         return 'Invalid input';
     }
 }

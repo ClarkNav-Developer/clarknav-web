@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { Subject, Observable, of } from 'rxjs';
 import { switchMap, takeUntil, tap, catchError, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -22,7 +22,7 @@ import { FareService } from '../../../public/services/fare/fare.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly destroy$ = new Subject<void>();
 
   // State management
@@ -41,6 +41,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   feedbacks: Feedback[] = [];
   filteredUsers: User[] = [];
   selectedFeedback: Feedback | null = null;
+  userFirstName: string = '';
 
   // Form states
   searchTerm = '';
@@ -68,6 +69,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initializeDashboard();
     this.fareConfig = {...this.fareService.getFareConfig()};
+  }
+
+  ngAfterViewInit(): void {
+    this.setupNavigation();
+    this.initializeCharts();
   }
 
   ngOnDestroy(): void {
@@ -361,19 +367,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
   
 
   logout(event: Event): void {
-    event.preventDefault();
-
-    this.authService.logout().pipe(
-      tap(() => {
-        this.toastr.success('Logged out successfully');
-        this.router.navigate(['/login']);
-      }),
-      catchError(error => {
-        this.toastr.error('Logout error');
-        console.error('Logout error:', error);
-        throw error;
-      })
-    ).subscribe();
+      event.preventDefault();
+  
+      this.authService.logout().pipe(
+          tap(() => {
+              this.router.navigate(['/login']);
+          }),
+          catchError(error => {
+              this.toastr.error('Logout error');
+              console.error('Logout error:', error);
+              throw error;
+          })
+      ).subscribe();
   }
 
   private setupDropdownMenu(): void {
@@ -453,5 +458,40 @@ export class DashboardComponent implements OnInit, OnDestroy {
       isAdmin: false,
       isUser: true
     };
+  }
+
+  private setupNavigation(): void {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const contentSections = document.querySelectorAll('.content-section');
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        // Remove active class from all links
+        navLinks.forEach(link => link.classList.remove('active'));
+
+        // Add active class to the clicked link
+        (e.target as HTMLElement).classList.add('active');
+
+        // Hide all content sections
+        contentSections.forEach(section => (section as HTMLElement).style.display = 'none');
+
+        // Show the target content section
+        const target = (e.target as HTMLElement).getAttribute('data-target');
+        if (target) {
+          const targetSection = document.getElementById(target);
+          if (targetSection) {
+            targetSection.style.display = 'block';
+          }
+        }
+      });
+    });
+
+    // Show the default section (Dashboard) on page load
+    const defaultLink = document.querySelector('.nav-link.active');
+    if (defaultLink) {
+      (defaultLink as HTMLElement).click();
+    }
   }
 }
