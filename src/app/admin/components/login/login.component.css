@@ -1,4 +1,4 @@
-.form-group label,
+/* .form-group label,
 .form-group-remember-token label {
     color: #666;
     display: block;
@@ -214,5 +214,423 @@
 
     .password-eye .material-icons {
         font-size: 20px
+    }
+} */
+
+
+/* new css */
+
+/* Login Component Styles */
+.desktop-view {
+    min-height: 100vh;
+    display: flex;
+    background-color: #f5f5f5;
+}
+
+.main-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-content {
+    width: 100%;
+    position: relative;
+}
+
+.login-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url('/public/login-bg.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.login-container {
+    background: #ffffff;
+    border-radius:35px;
+    box-shadow: 0 4px 20px #0003;
+    width: 500px;
+    padding: 3rem;
+    position: relative;
+}
+
+.back-btn {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover svg {
+    fill: #1d58c6;
+}
+
+.logo-placeholder {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.logo-image {
+    max-width: 250px;
+    height: auto;
+}
+
+/* Form Styles */
+.form-container {
+    width: 100%;
+}
+
+.form-title {
+    color: #585858;
+    text-align: center;
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.form-subtitle {
+    color: #acacac;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0;
+}
+
+.form-group-half {
+    flex: 1;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #585858;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 12px;
+    color: #acacac;
+    display: flex;
+    align-items: center;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    border-radius: 20px;
+    background-color: #eee;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: #1d58c6;
+    box-shadow: 0 0 0 1px #1d58c6;
+}
+
+.password-eye {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #acacac;
+    font-size: 1.25rem;
+}
+
+.password-toggle:hover {
+    color: #1d58c6;
+}
+
+.error-text {
+    color: #f44336;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+/* Checkbox styling */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.form-group-remember-token {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 28px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #585858;
+    user-select: none;
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    left: 0;
+    height: 18px;
+    width: 18px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.checkbox-container:hover input~.checkmark {
+    background-color: #f9f9f9;
+}
+
+.checkbox-container input:checked~.checkmark {
+    background-color: #f98100;
+    border-color: #d16c00;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkbox-container input:checked~.checkmark:after {
+    display: block;
+}
+
+.checkbox-container .checkmark:after {
+    left: 5px;
+    top: 0px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.forgot-password-link {
+    color: #1d58c6;
+    text-decoration: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.forgot-password-link:hover {
+    color: #f98100;
+    text-decoration: none;
+}
+
+/* Button styles */
+.form-group-button {
+    margin-bottom: 1.5rem;
+}
+
+.login-create-button {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #1d58c6;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-create-button:hover {
+    background-color: #f98100;
+}
+
+.login-create-button:disabled {
+    background-color: #acacac;
+    cursor: not-allowed;
+}
+
+/* Create account link */
+.create-account {
+    text-align: center;
+}
+
+.account-text {
+    color: #585858;
+    font-size: 0.95rem;
+}
+
+.create-account-link,
+.back-to-login-link {
+    color: #1d58c6;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.create-account-link:hover,
+.back-to-login-link:hover {
+    color: #f98100;
+    text-decoration: none;
+}
+
+/* Toast notifications */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 300px;
+    max-width: 450px;
+    animation: slideIn 0.3s ease;
+}
+
+.toast-success {
+    background-color: #e8f5e9;
+    border-left: 4px solid #4caf50;
+}
+
+.toast-error {
+    background-color: #ffebee;
+    border-left: 4px solid #f44336;
+}
+
+.toast-icon {
+    margin-right: 0.75rem;
+}
+
+.toast-success .toast-icon {
+    color: #4caf50;
+}
+
+.toast-error .toast-icon {
+    color: #f44336;
+}
+
+.toast-message {
+    flex: 1;
+    color: #585858;
+    font-size: 0.95rem;
+}
+
+.toast-close {
+    background: transparent;
+    border: none;
+    color: #585858;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 0.5rem;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.toast-close:hover {
+    opacity: 1;
+}
+
+/* Loading spinner */
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #ffffff;
+    animation: spin 1s ease-in-out infinite;
+    display: inline-block;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .login-container {
+        width: 90%;
+        padding: 1.5rem;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .toast {
+        min-width: auto;
+        width: calc(100% - 40px);
     }
 }

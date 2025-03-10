@@ -4,7 +4,7 @@ export interface User {
     last_name: string;
     email: string;
     password?: string; // Optional because it won't be included in responses
-    passwordConfirmation?: string; // Optional because it won't be included in responses
+    password_confirmation?: string; // Optional because it won't be included in responses
     isAdmin: boolean;
     isUser: boolean;
     created_at?: string; // Optional because it will be set by the backend

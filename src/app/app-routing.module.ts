@@ -16,6 +16,7 @@ const routes: Routes = [
     canActivate: [authGuard], // Protect the admin routes with AuthGuard
   },
   { path: 'login', component: LoginComponent }, // Add login route here
+  { path: 'reset-password', component: LoginComponent },
   { path: '**', redirectTo: '' }, // Wildcard route for a 404 page can be added here
 ];
 

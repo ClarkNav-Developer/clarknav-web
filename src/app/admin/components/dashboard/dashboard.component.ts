@@ -216,7 +216,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   editUser(user: User): void {
-    this.selectedUser = { ...user, password: '', passwordConfirmation: '' };
+    this.selectedUser = { ...user, password: '', password_confirmation: '' };
     this.showUserModal = true;
   }
 
@@ -242,7 +242,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    if (this.selectedUser.password && this.selectedUser.password !== this.selectedUser.passwordConfirmation) {
+    if (this.selectedUser.password && this.selectedUser.password !== this.selectedUser.password_confirmation) {
       this.toastr.error('Passwords do not match');
       return false;
     }
@@ -320,12 +320,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private validateRegistration(): boolean {
     if (!this.newUser?.first_name || !this.newUser?.last_name ||
       !this.newUser?.email || !this.newUser?.password ||
-      !this.newUser?.passwordConfirmation) {
+      !this.newUser?.password_confirmation) {
       this.toastr.error('Please fill in all required fields.');
       return false;
     }
 
-    if (this.newUser.password !== this.newUser.passwordConfirmation) {
+    if (this.newUser.password !== this.newUser.password_confirmation) {
       this.toastr.error('Passwords do not match.');
       return false;
     }
@@ -336,7 +336,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private prepareRegistrationData(): any {
     return {
       ...this.newUser,
-      password_confirmation: this.newUser.passwordConfirmation
+      password_confirmation: this.newUser.password_confirmation
     };
   }
 
@@ -449,7 +449,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       last_name: '',
       email: '',
       password: '',
-      passwordConfirmation: '',
+      password_confirmation: '',
       isAdmin: false,
       isUser: true
     };

@@ -1,6 +1,6 @@
-const apiUrl = 'https://api.clarknav.com'; 
+// const apiUrl = 'https://api.clarknav.com'; 
 
-// const apiUrl = 'http://localhost:8000'; 
+const apiUrl = 'http://localhost:8000'; 
 
 export const environment = {
     production: true,
@@ -16,6 +16,11 @@ export const environment = {
     identityUrl: `${apiUrl}/api/auth/get-identity`,
     updateUserUrl: `${apiUrl}/api/auth/update-credentials`,
     refreshUrl: `${apiUrl}/api/auth/refresh`,
+
+    forgotPasswordUrl: `${apiUrl}/api/auth/forgot-password`,
+    resetPasswordUrl: `${apiUrl}/api/auth/reset-password`,
+    verifyEmailUrl: `${apiUrl}/api/auth/verify-email`,
+
 
     bugReportsUrl: `${apiUrl}/api/bug-reports`,
     feedbackUrl: `${apiUrl}/api/feedback`,
