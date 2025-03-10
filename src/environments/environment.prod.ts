@@ -20,7 +20,7 @@ export const environment = {
     forgotPasswordUrl: `${apiUrl}/api/auth/forgot-password`,
     resetPasswordUrl: `${apiUrl}/api/auth/reset-password`,
     verifyEmailUrl: `${apiUrl}/api/auth/verify-email`,
-
+    resendEmailUrl: `${apiUrl}/api/auth/resend-verification`,
 
     bugReportsUrl: `${apiUrl}/api/bug-reports`,
     feedbackUrl: `${apiUrl}/api/feedback`,

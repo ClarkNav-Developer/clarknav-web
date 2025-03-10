@@ -61,8 +61,8 @@ export class AuthService {
   }
 
   // Login method
-  login(email: string, password: string): Observable<any> {
-    const loginData = { email, password };
+  login(email: string, password: string, rememberMe: boolean): Observable<any> {
+    const loginData = { email, password, remember_me: rememberMe };
     return this.http
       .post<any>(environment.loginUrl, loginData, { withCredentials: true })
       .pipe(
@@ -80,10 +80,8 @@ export class AuthService {
         }),
         catchError((error) => {
           console.error('Login error occurred:', error);
-          toastr.error(
-            'Login failed. Please check your credentials and try again.'
-          );
-          return of(null);
+          // Propagate the error instead of returning `of(null)`
+          throw error;
         })
       );
   }
@@ -229,5 +227,21 @@ export class AuthService {
     return this.http
       .post<any>(`${environment.verifyEmailUrl}`, { token, email })
       .pipe(catchError(this.handleError('Email verification failed')));
+  }
+
+
+  resendVerification(email: string): Observable<any> {
+    return this.http
+      .post<any>(`${environment.resendEmailUrl}`, { email })
+      .pipe(
+        tap((response) => {
+          console.log('Verification email resent successfully:', response);
+        }),
+        catchError((error) => {
+          console.error('Resend verification error occurred:', error);
+          toastr.error('Failed to resend verification email. Please try again.');
+          return of(null);
+        })
+      );
   }
 }

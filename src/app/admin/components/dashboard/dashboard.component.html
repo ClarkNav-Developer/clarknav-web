@@ -1,518 +1,637 @@
-<!-- Dashboard Header -->
-<div class="header">
-    <div class="navbar">
-        <div class="logo">
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
             <img src="public/bg-nav-300.webp" alt="logo">
         </div>
-        <div class="nav">
-            <button id="navButton" class="nav-button">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                    fill="currentColor">
-                    <path
-                        d="M247.85-260.62q51-36.69 108.23-58.03Q413.31-340 480-340t123.92 21.35q57.23 21.34 108.23 58.03 39.62-41 63.73-96.84Q800-413.31 800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 66.69 24.12 122.54 24.11 55.84 63.73 96.84ZM480.02-460q-50.56 0-85.29-34.71Q360-529.42 360-579.98q0-50.56 34.71-85.29Q429.42-700 479.98-700q50.56 0 85.29 34.71Q600-630.58 600-580.02q0 50.56-34.71 85.29Q530.58-460 480.02-460ZM480-120q-75.31 0-141-28.04t-114.31-76.65Q176.08-273.31 148.04-339 120-404.69 120-480t28.04-141q28.04-65.69 76.65-114.31 48.62-48.61 114.31-76.65Q404.69-840 480-840t141 28.04q65.69 28.04 114.31 76.65 48.61 48.62 76.65 114.31Q840-555.31 840-480t-28.04 141q-28.04 65.69-76.65 114.31-48.62 48.61-114.31 76.65Q555.31-120 480-120Z" />
-                </svg>
-            </button>
-            <div id="dropdownMenu" class="dropdown-content">
-                <a href="" class="dropdown-link" (click)="logout($event)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                        <polyline points="16 17 21 12 16 7"></polyline>
-                        <line x1="21" y1="12" x2="9" y2="12"></line>
-                    </svg>
-                    <span>Logout</span>
-                </a>
+
+        <div class="nav-sections">
+            <div class="nav-section-title">Main</div>
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" data-target="dashboard">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-target="route-management">
+                        <i class="fas fa-route"></i>
+                        <span>Routes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-target="fare-management">
+                        <i class="fas fa-coins"></i>
+                        <span>Fare Management</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-section-title">Administration</div>
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-target="user-management">
+                        <i class="fas fa-users"></i>
+                        <span>User Management</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-target="feedback-management">
+                        <i class="fas fa-comment-alt"></i>
+                        <span>Feedback</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-target="account-settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-title">
+                <h1>Admin Dashboard</h1>
+                <div class="header-subtitle">Welcome back, Administrator</div>
             </div>
-        </div>
-    </div>
-</div>
+            <div class="user-profile">
+                <div class="nav">
+                    <button id="navButton" class="nav-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                            fill="currentColor">
+                            <path
+                                d="M247.85-260.62q51-36.69 108.23-58.03Q413.31-340 480-340t123.92 21.35q57.23 21.34 108.23 58.03 39.62-41 63.73-96.84Q800-413.31 800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 66.69 24.12 122.54 24.11 55.84 63.73 96.84ZM480.02-460q-50.56 0-85.29-34.71Q360-529.42 360-579.98q0-50.56 34.71-85.29Q429.42-700 479.98-700q50.56 0 85.29 34.71Q600-630.58 600-580.02q0 50.56-34.71 85.29Q530.58-460 480.02-460ZM480-120q-75.31 0-141-28.04t-114.31-76.65Q176.08-273.31 148.04-339 120-404.69 120-480t28.04-141q28.04-65.69 76.65-114.31 48.62-48.61 114.31-76.65Q404.69-840 480-840t141 28.04q65.69 28.04 114.31 76.65 48.61 48.62 76.65 114.31Q840-555.31 840-480t-28.04 141q-28.04 65.69-76.65 114.31-48.62 48.61-114.31 76.65Q555.31-120 480-120Z" />
+                        </svg>
+                    </button>
+                    <div id="dropdownMenu" class="dropdown-content">
+                        <a href="" class="dropdown-link" (click)="logout($event)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </div>
+                <!-- <div class="user-info">
+                    <span class="user-name">Admin User</span>
+                    <span class="user-role">Administrator</span>
+                </div> -->
+            </div>
+        </header>
 
-<div class="body">
-    <h1>Admin Dashboard</h1>
+        <!-- Dashboard Overview -->
+        <section id="dashboard" class="content-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Dashboard Overview</h2>
+                    <div class="section-subtitle">
+                        Transit system performance and analytics
+                    </div>
+                </div>
+            </div>
 
-    <!-- dashboard.component.html -->
-    <div class="table-container">
-        <!-- Loading and Error States -->
-        <div *ngIf="isLoading" class="loading-state">
-            <div class="spinner"></div>
-            <p>Loading dashboard data...</p>
-        </div>
-
-        <div *ngIf="error" class="error-state">
-            <p>{{ error }}</p>
-            <!-- <button (click)="fetchFreshDashboardData('dashboardData')">Retry</button> -->
-        </div>
-
-        <!-- Dashboard Content -->
-        <div *ngIf="!isLoading && !error" class="dashboard-content">
-            <!-- Navigation Tabs -->
-            <nav class="dashboard-nav">
-                <button *ngFor="let tab of ['overview', 'locations']" [class.active]="activeTab === tab"
-                    (click)="switchTab(tab)">
-                    {{ tab | titlecase }}
+            <div class="dashboard-tabs">
+                <button class="dashboard-tab" [class.active]="activeTab === 'overview'" (click)="switchTab('overview')">
+                    Overview
                 </button>
-            </nav>
+                <!-- <button class="dashboard-tab" [class.active]="activeTab === 'trends'" (click)="switchTab('trends')">Trends</button> -->
+                <button class="dashboard-tab" [class.active]="activeTab === 'locations'" (click)="switchTab('locations')">Locations</button>
+            </div>
 
-            <!-- Overview Section -->
-            <section *ngIf="activeTab === 'overview'" class="dashboard-section">
+            <div class="section-content" *ngIf="activeTab === 'overview'">
                 <div class="chart-grid">
                     <div class="chart-card">
                         <h3>Transport Types</h3>
-                        <canvas id="transportType"></canvas>
+                        <div class="chart-placeholder">
+                            <!-- <span>Transport Type Chart</span> -->
+                            <canvas id="transportType"></canvas>
+                        </div>
                     </div>
                     <div class="chart-card">
                         <h3>Popular Routes</h3>
-                        <canvas id="popularRoutes"></canvas>
+                        <div class="chart-placeholder">
+                            <canvas id="popularRoutes"></canvas>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <!-- Trends Section -->
-            <section *ngIf="activeTab === 'trends'" class="dashboard-section">
-                <div class="chart-card full-width">
+            <!-- <div class="section-content" *ngIf="activeTab === 'trends'">
+                <div class="chart-card" style="width: 100%">
                     <h3>Usage Trends</h3>
-                    <canvas id="routeUsageTrends"></canvas>
+                    <div class="chart-placeholder">
+                        <canvas id="routeUsageTrends"></canvas>
+                    </div>
                 </div>
-            </section>
+            </div> -->
 
-            <!-- Locations Section -->
-            <section *ngIf="activeTab === 'locations'" class="dashboard-section">
+            <div class="section-content" *ngIf="activeTab === 'locations'">
                 <div class="chart-grid">
                     <div class="chart-card">
                         <h3>Popular Origins</h3>
-                        <canvas id="originChart"></canvas>
+                        <div class="chart-placeholder">
+                            <canvas id="originChart"></canvas>
+                        </div>
                     </div>
                     <div class="chart-card">
                         <h3>Popular Destinations</h3>
-                        <canvas id="destinationChart"></canvas>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </div>
-
-    <div class="table-container">
-        <h2>Route Management</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Route ID</th>
-                    <th>Route Name</th>
-                    <th>Description</th>
-                    <th>Color</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>J1</td>
-                    <td>Jeepney Route 1 Green</td>
-                    <td>Bayanihan Terminal - Mt. Pinatubo Comm.</td>
-                    <td>
-                        <div class="color-cell">
-                            <div class="color-preview" style="background-color: #228B22"></div>
-                            Green
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>J2</td>
-                    <td>Jeepney Route 2 Beige</td>
-                    <td>Bayanihan Terminal - Clark Hostel</td>
-                    <td>
-                        <div class="color-cell">
-                            <div class="color-preview" style="background-color: #D4B895"></div>
-                            Beige
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>J3</td>
-                    <td>Jeepney Route 3 Blue</td>
-                    <td>Bayanihan Terminal - Picnic Ground</td>
-                    <td>
-                        <div class="color-cell">
-                            <div class="color-preview" style="background-color: #1d58c6"></div>
-                            Blue
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>J5</td>
-                    <td>Jeepney Route 5 Red</td>
-                    <td>Bayanihan Terminal - IE-5 - GGLC</td>
-                    <td>
-                        <div class="color-cell">
-                            <div class="color-preview" style="background-color: #CE0000"></div>
-                            Red
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>J6</td>
-                    <td>Jeepney Route 6 Yellow</td>
-                    <td>Mabalacat Public Market Terminal - Philexcel</td>
-                    <td>
-                        <div class="color-cell">
-                            <div class="color-preview" style="background-color: #FFDE21"></div>
-                            Yellow
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>B1</td>
-                    <td>Clark Loop Northbound</td>
-                    <td>Bayanihan Terminal - Clark International Airport</td>
-                    <td>
-                        <div class="color-cell">
-                            <div class="color-preview" style="background-color: #1d58c6"></div>
-                            Blue
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>B2</td>
-                    <td>Clark Loop Southbound</td>
-                    <td>Clark International Airport - Bayanihan Terminal</td>
-                    <td>
-                        <div class="color-cell">
-                            <div class="color-preview" style="background-color: #F98100"></div>
-                            Orange
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Redesigned Fare Management Section -->
-    <div class="table-container">
-        <div class="container-header">
-            <h2>Fare Management</h2>
-            <p class="subtitle">Configure base and additional fare rates for different transport types</p>
-        </div>
-
-        <form>
-            <div class="fare-grid">
-                <!-- Jeepney Section -->
-                <div class="fare-card">
-                    <div class="fare-card-header">
-                        <div class="transport-icon jeepney-icon">
-                            <i class="fas fa-bus-alt"></i>
-                        </div>
-                        <h3>Jeepney</h3>
-                    </div>
-                    <div class="fare-card-content">
-                        <div class="form-group">
-                            <label for="baseFareJeepney">Base Fare (First 4 km)</label>
-                            <div class="input-with-icon">
-                                <span class="currency-symbol">₱</span>
-                                <input id="baseFareJeepney" type="number" [(ngModel)]="fareConfig.jeepney.baseFare"
-                                    name="baseFareJeepney" required step="0.01" min="0">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="additionalFareJeepney">Additional Fare (per km)</label>
-                            <div class="input-with-icon">
-                                <span class="currency-symbol">₱</span>
-                                <input id="additionalFareJeepney" type="number"
-                                    [(ngModel)]="fareConfig.jeepney.additionalFare" name="additionalFareJeepney"
-                                    required step="0.01" min="0">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bus Section -->
-                <div class="fare-card">
-                    <div class="fare-card-header">
-                        <div class="transport-icon bus-icon">
-                            <i class="fas fa-bus"></i>
-                        </div>
-                        <h3>Bus</h3>
-                    </div>
-                    <div class="fare-card-content">
-                        <div class="form-group">
-                            <label for="baseFareBus">Base Fare (First 5 km)</label>
-                            <div class="input-with-icon">
-                                <span class="currency-symbol">₱</span>
-                                <input id="baseFareBus" type="number" [(ngModel)]="fareConfig.bus.baseFare"
-                                    name="baseFareBus" required step="0.01" min="0">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="additionalFareBus">Additional Fare (per km)</label>
-                            <div class="input-with-icon">
-                                <span class="currency-symbol">₱</span>
-                                <input id="additionalFareBus" type="number" [(ngModel)]="fareConfig.bus.additionalFare"
-                                    name="additionalFareBus" required step="0.01" min="0">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Taxi Section -->
-                <div class="fare-card">
-                    <div class="fare-card-header">
-                        <div class="transport-icon taxi-icon">
-                            <i class="fas fa-taxi"></i>
-                        </div>
-                        <h3>Taxi</h3>
-                    </div>
-                    <div class="fare-card-content">
-                        <div class="form-group">
-                            <label for="baseFareTaxi">Base Fare</label>
-                            <div class="input-with-icon">
-                                <span class="currency-symbol">₱</span>
-                                <input id="baseFareTaxi" type="number" [(ngModel)]="fareConfig.taxi.baseFare"
-                                    name="baseFareTaxi" required step="0.01" min="0">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="additionalFareTaxi">Additional Fare (per km)</label>
-                            <div class="input-with-icon">
-                                <span class="currency-symbol">₱</span>
-                                <input id="additionalFareTaxi" type="number"
-                                    [(ngModel)]="fareConfig.taxi.additionalFare" name="additionalFareTaxi" required
-                                    step="0.01" min="0">
-                            </div>
+                        <div class="chart-placeholder">
+                            <canvas id="destinationChart"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <div class="form-actions">
-                <button type="submit" class="btn btn-edit" (click)="updateFare()">Update Fare Configuration</button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Feedback Table -->
-    <div class="table-container">
-        <h2>Feedback Management</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Priority</th>
-                    <th>Status</th>
-                    <th>Created</th>
-                    <th>View</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let feedback of feedbacks">
-                    <td>{{ feedback.title }}</td>
-                    <td>{{ feedback.priority }}</td>
-                    <td>{{ feedback.status }}</td>
-                    <td>{{ feedback.created_at | date: 'shortDate' }}</td>
-                    <td>
-                        <button class="btn btn-edit" (click)="viewFeedbackDetails(feedback)">View Details</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Feedback Details Modal -->
-    <div *ngIf="selectedFeedback" class="modal">
-        <div class="modal-content">
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h2>Feedback Details</h2>
-                <button class="close-button" (click)="closeFeedbackModal()">&times;</button>
+        <!-- Route Management -->
+        <section id="route-management" class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">Route Management</h2>
             </div>
 
-            <!-- Feedback Details Grid -->
-            <div class="feedback-details">
-                <div class="detail-item">
-                    <span class="detail-label">Title:</span>
-                    <span class="detail-value">{{ selectedFeedback.title }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Feature:</span>
-                    <span class="detail-value">{{ selectedFeedback.feature }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Usability:</span>
-                    <span class="detail-value">{{ selectedFeedback.usability }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Performance:</span>
-                    <span class="detail-value">{{ selectedFeedback.performance }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Experience:</span>
-                    <span class="detail-value">{{ selectedFeedback.experience }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Suggestions:</span>
-                    <span class="detail-value">{{ selectedFeedback.suggestions }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Priority:</span>
-                    <select [(ngModel)]="selectedFeedback.priority" name="priority">
-                        <option *ngFor="let priority of getFeedbackPriorities()" [value]="priority">
-                            {{ priority }}
-                        </option>
-                    </select>
-                </div>
-
-                <div class="detail-item">
-                    <span class="detail-label">Status:</span>
-                    <select [(ngModel)]="selectedFeedback.status" name="status">
-                        <option *ngFor="let status of getFeedbackStatuses()" [value]="status">
-                            {{ status }}
-                        </option>
-                    </select>
-                </div>
-
-                <div class="detail-item">
-                    <span class="detail-label">Created:</span>
-                    <span class="detail-value">{{ selectedFeedback.created_at | date: 'shortDate' }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Updated:</span>
-                    <span class="detail-value">{{ selectedFeedback.updated_at | date: 'shortDate' }}</span>
+            <div class="section-content">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Route ID</th>
+                                <th>Route Name</th>
+                                <th>Description</th>
+                                <th>Color</th>
+                                <!-- <th>Actions</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>J1</td>
+                                <td>Jeepney Route 1 Green</td>
+                                <td>Bayanihan Terminal - Mt. Pinatubo Comm.</td>
+                                <td>
+                                    <div class="color-cell">
+                                        <div class="color-preview" style="background-color: #228b22"></div>
+                                        Green
+                                    </div>
+                                </td>
+                                <!-- <td>
+                                    <button class="btn btn-edit">Edit</button>
+                                    <button class="btn btn-delete">Delete</button>
+                                </td> -->
+                            </tr>
+                            <tr>
+                                <td>J2</td>
+                                <td>Jeepney Route 2 Beige</td>
+                                <td>Bayanihan Terminal - Clark Hostel</td>
+                                <td>
+                                    <div class="color-cell">
+                                        <div class="color-preview" style="background-color: #d4b895"></div>
+                                        Beige
+                                    </div>
+                                </td>
+                                <!-- <td>
+                                    <button class="btn btn-edit">Edit</button>
+                                    <button class="btn btn-delete">Delete</button>
+                                </td> -->
+                            </tr>
+                            <tr>
+                                <td>J3</td>
+                                <td>Jeepney Route 3 Blue</td>
+                                <td>Bayanihan Terminal - Picnic Ground</td>
+                                <td>
+                                    <div class="color-cell">
+                                        <div class="color-preview" style="background-color: #1d58c6"></div>
+                                        Blue
+                                    </div>
+                                </td>
+                                <!-- <td>
+                                    <button class="btn btn-edit">Edit</button>
+                                    <button class="btn btn-delete">Delete</button>
+                                </td> -->
+                            </tr>
+                            <tr>
+                                <td>J5</td>
+                                <td>Jeepney Route 5 Red</td>
+                                <td>Bayanihan Terminal - IE-5 - GGLC</td>
+                                <td>
+                                    <div class="color-cell">
+                                        <div class="color-preview" style="background-color: #ce0000"></div>
+                                        Red
+                                    </div>
+                                </td>
+                                <!-- <td>
+                                    <button class="btn btn-edit">Edit</button>
+                                    <button class="btn btn-delete">Delete</button>
+                                </td> -->
+                            </tr>
+                            <tr>
+                                <td>J6</td>
+                                <td>Jeepney Route 6 Yellow</td>
+                                <td>Mabalacat Public Market Terminal - Philexcel</td>
+                                <td>
+                                    <div class="color-cell">
+                                        <div class="color-preview" style="background-color: #FFDE21"></div>
+                                        Yellow
+                                    </div>
+                                </td>
+                                <!-- <td>
+                                    <button class="btn btn-edit">Edit</button>
+                                    <button class="btn btn-delete">Delete</button>
+                                </td> -->
+                            </tr>
+                            <tr>
+                                <td>B1</td>
+                                <td>Clark Loop Northbound</td>
+                                <td>Bayanihan Terminal - Clark International Airport</td>
+                                <td>
+                                    <div class="color-cell">
+                                        <div class="color-preview" style="background-color: #1d58c6"></div>
+                                        Blue
+                                    </div>
+                                </td>
+                                <!-- <td>
+                                    <button class="btn btn-edit">Edit</button>
+                                    <button class="btn btn-delete">Delete</button>
+                                </td> -->
+                            </tr>
+                            <tr>
+                                <td>B2</td>
+                                <td>Clark Loop Southbound</td>
+                                <td>Clark International Airport - Bayanihan Terminal</td>
+                                <td>
+                                    <div class="color-cell">
+                                        <div class="color-preview" style="background-color: #F98100"></div>
+                                        Orange
+                                    </div>
+                                </td>
+                                <!-- <td>
+                                    <button class="btn btn-edit">Edit</button>
+                                    <button class="btn btn-delete">Delete</button>
+                                </td> -->
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+        </section>
 
-            <!-- Modal Footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-save" (click)="updateFeedback()">Save Changes</button>
-                <button type="button" class="btn btn-close" (click)="closeFeedbackModal()">Close</button>
+        <!-- Fare Management Section -->
+        <section id="fare-management" class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">Fare Management</h2>
+                <p class="section-subtitle">Configure base and additional fare rates for different transport types</p>
+            </div>
+
+            <div class="section-content">
+                <form>
+                    <div class="fare-grid">
+                        <!-- Jeepney Section -->
+                        <div class="fare-card">
+                            <div class="fare-card-header">
+                                <div class="transport-icon jeepney-icon">
+                                    <i class="fas fa-bus-alt"></i>
+                                </div>
+                                <h3>Jeepney</h3>
+                            </div>
+                            <div class="fare-card-content">
+                                <div class="form-group">
+                                    <label for="baseFareJeepney">Base Fare (First 4 km)</label>
+                                    <div class="input-with-icon">
+                                        <span class="currency-symbol">₱</span>
+                                        <input id="baseFareJeepney" type="number" [(ngModel)]="fareConfig.jeepney.baseFare"
+                                            name="baseFareJeepney" required step="0.01" min="0">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="additionalFareJeepney">Additional Fare (per km)</label>
+                                    <div class="input-with-icon">
+                                        <span class="currency-symbol">₱</span>
+                                        <input id="additionalFareJeepney" type="number"
+                                            [(ngModel)]="fareConfig.jeepney.additionalFare" name="additionalFareJeepney"
+                                            required step="0.01" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bus Section -->
+                        <div class="fare-card">
+                            <div class="fare-card-header">
+                                <div class="transport-icon bus-icon">
+                                    <i class="fas fa-bus"></i>
+                                </div>
+                                <h3>Bus</h3>
+                            </div>
+                            <div class="fare-card-content">
+                                <div class="form-group">
+                                    <label for="baseFareBus">Base Fare (First 5 km)</label>
+                                    <div class="input-with-icon">
+                                        <span class="currency-symbol">₱</span>
+                                        <input id="baseFareBus" type="number" [(ngModel)]="fareConfig.bus.baseFare"
+                                            name="baseFareBus" required step="0.01" min="0">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="additionalFareBus">Additional Fare (per km)</label>
+                                    <div class="input-with-icon">
+                                        <span class="currency-symbol">₱</span>
+                                        <input id="additionalFareBus" type="number" [(ngModel)]="fareConfig.bus.additionalFare"
+                                            name="additionalFareBus" required step="0.01" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Taxi Section -->
+                        <div class="fare-card">
+                            <div class="fare-card-header">
+                                <div class="transport-icon taxi-icon">
+                                    <i class="fas fa-taxi"></i>
+                                </div>
+                                <h3>Taxi</h3>
+                            </div>
+                            <div class="fare-card-content">
+                                <div class="form-group">
+                                    <label for="baseFareTaxi">Base Fare</label>
+                                    <div class="input-with-icon">
+                                        <span class="currency-symbol">₱</span>
+                                        <input id="baseFareTaxi" type="number" [(ngModel)]="fareConfig.taxi.baseFare"
+                                            name="baseFareTaxi" required step="0.01" min="0">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="additionalFareTaxi">Additional Fare (per km)</label>
+                                    <div class="input-with-icon">
+                                        <span class="currency-symbol">₱</span>
+                                        <input id="additionalFareTaxi" type="number"
+                                            [(ngModel)]="fareConfig.taxi.additionalFare" name="additionalFareTaxi" required
+                                            step="0.01" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-edit" (click)="updateFare()">Update Fare Configuration</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Feedback Management Section -->
+        <section id="feedback-management" class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">Feedback Management</h2>
+            </div>
+
+            <div class="section-content">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let feedback of feedbacks">
+                                <td>{{ feedback.title }}</td>
+                                <td>{{ feedback.priority }}</td>
+                                <td>{{ feedback.status }}</td>
+                                <td>{{ feedback.created_at | date: 'shortDate' }}</td>
+                                <td>
+                                    <button class="btn btn-edit" (click)="viewFeedbackDetails(feedback)">View Details</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feedback Details Modal -->
+        <div *ngIf="selectedFeedback" class="modal">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h2>Feedback Details</h2>
+                    <button class="close-button" (click)="closeFeedbackModal()">&times;</button>
+                </div>
+
+                <!-- Feedback Details Grid -->
+                <div class="feedback-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Title:</span>
+                        <span class="detail-value">{{ selectedFeedback.title }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Feature:</span>
+                        <span class="detail-value">{{ selectedFeedback.feature }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Usability:</span>
+                        <span class="detail-value">{{ selectedFeedback.usability }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Performance:</span>
+                        <span class="detail-value">{{ selectedFeedback.performance }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Experience:</span>
+                        <span class="detail-value">{{ selectedFeedback.experience }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Suggestions:</span>
+                        <span class="detail-value">{{ selectedFeedback.suggestions }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Priority:</span>
+                        <select [(ngModel)]="selectedFeedback.priority" name="priority">
+                            <option *ngFor="let priority of getFeedbackPriorities()" [value]="priority">
+                                {{ priority }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Status:</span>
+                        <select [(ngModel)]="selectedFeedback.status" name="status">
+                            <option *ngFor="let status of getFeedbackStatuses()" [value]="status">
+                                {{ status }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Created:</span>
+                        <span class="detail-value">{{ selectedFeedback.created_at | date: 'shortDate' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Updated:</span>
+                        <span class="detail-value">{{ selectedFeedback.updated_at | date: 'shortDate' }}</span>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-save" (click)="updateFeedback()">Save Changes</button>
+                    <button type="button" class="btn btn-close" (click)="closeFeedbackModal()">Close</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="table-container">
-        <h2>Account Management</h2>
-        <button class="btn btn-add" (click)="showRegisterModal = true">+</button>
-        <table>
-            <thead>
-                <tr>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Email</th>
-                    <th>Admin</th>
-                    <th>User</th>
-                    <th>Created</th>
-                    <th>Updated</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let user of users">
-                    <td>{{ user.first_name }}</td>
-                    <td>{{ user.last_name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td><input type="checkbox" [(ngModel)]="user.isAdmin" disabled></td>
-                    <td><input type="checkbox" [(ngModel)]="user.isUser" disabled></td>
-                    <td>{{ user.created_at | date: 'shortDate' }}</td>
-                    <td>{{ user.updated_at | date: 'shortDate' }}</td>
-                    <td>
-                        <button class="btn btn-edit" (click)="editUser(user)">Edit</button>
-                        <button class="btn btn-delete" (click)="user.id && deleteUser(user.id)" [disabled]="!user.id">
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div *ngIf="showRegisterModal" class="modal">
-        <div class="modal-content">
-            <h2>Register New User</h2>
-            <form (ngSubmit)="registerUser()">
-                <div class="form-group">
-                    <label for="newFirstName">First Name</label>
-                    <input id="newFirstName" type="text" [(ngModel)]="newUser.first_name" name="new_first_name"
-                        required>
+        <!-- Account Management Section -->
+        <section id="user-management" class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">Account Management</h2>
+                <div class="section-actions">
+                    <button class="btn btn-add" (click)="showRegisterModal = true">+</button>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="newLastName">Last Name</label>
-                    <input id="newLastName" type="text" [(ngModel)]="newUser.last_name" name="new_last_name" required>
+            <div class="section-content">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Admin</th>
+                                <th>User</th>
+                                <th>Created</th>
+                                <th>Updated</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let user of users">
+                                <td>{{ user.first_name }}</td>
+                                <td>{{ user.last_name }}</td>
+                                <td>{{ user.email }}</td>
+                                <td><input type="checkbox" [(ngModel)]="user.isAdmin" disabled></td>
+                                <td><input type="checkbox" [(ngModel)]="user.isUser" disabled></td>
+                                <td>{{ user.created_at | date: 'shortDate' }}</td>
+                                <td>{{ user.updated_at | date: 'shortDate' }}</td>
+                                <td>
+                                    <button class="btn btn-edit" (click)="editUser(user)">Edit</button>
+                                    <button class="btn btn-delete" (click)="user.id && deleteUser(user.id)" [disabled]="!user.id">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
+        </section>
 
-                <div class="form-group">
-                    <label for="newEmail">Email</label>
-                    <input id="newEmail" type="email" [(ngModel)]="newUser.email" name="new_email" required>
-                </div>
+        <!-- User Registration Modal -->
+        <div *ngIf="showRegisterModal" class="modal">
+            <div class="modal-content">
+                <h2>Register New User</h2>
+                <form (ngSubmit)="registerUser()">
+                    <div class="form-group">
+                        <label for="newFirstName">First Name</label>
+                        <input id="newFirstName" type="text" [(ngModel)]="newUser.first_name" name="new_first_name"
+                            required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="newPassword">Password</label>
-                    <input id="newPassword" type="password" [(ngModel)]="newUser.password" name="new_password" required>
-                </div>
+                    <div class="form-group">
+                        <label for="newLastName">Last Name</label>
+                        <input id="newLastName" type="text" [(ngModel)]="newUser.last_name" name="new_last_name" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="newPasswordConfirmation">Confirm Password</label>
-                    <input id="newPasswordConfirmation" type="password" [(ngModel)]="newUser.password_confirmation"
-                        name="new_password_confirmation" required>
-                </div>
+                    <div class="form-group">
+                        <label for="newEmail">Email</label>
+                        <input id="newEmail" type="email" [(ngModel)]="newUser.email" name="new_email" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="newUserRole">User Role</label>
-                    <select id="newUserRole" [(ngModel)]="newUser.role" name="new_role"
-                        (change)="onRoleChange('newUser')">
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label for="newPassword">Password</label>
+                        <input id="newPassword" type="password" [(ngModel)]="newUser.password" name="new_password" required>
+                    </div>
 
-                <div class="button-group">
-                    <button type="button" class="btn btn-cancel" (click)="showRegisterModal = false">Cancel</button>
-                    <button type="submit" class="btn btn-save" (click)="registerUser()">Register User</button>
-                </div>
-            </form>
+                    <div class="form-group">
+                        <label for="newPasswordConfirmation">Confirm Password</label>
+                        <input id="newPasswordConfirmation" type="password" [(ngModel)]="newUser.password_confirmation"
+                            name="new_password_confirmation" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="newUserRole">User Role</label>
+                        <select id="newUserRole" [(ngModel)]="newUser.role" name="new_role"
+                            (change)="onRoleChange('newUser')">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-cancel" (click)="showRegisterModal = false">Cancel</button>
+                        <button type="submit" class="btn btn-save" (click)="registerUser()">Register User</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <div *ngIf="selectedUser" class="modal">
-        <div class="modal-content">
-            <h2>Edit User</h2>
-            <form (ngSubmit)="saveUser()">
-                <div class="form-group">
-                    <label for="firstName">First Name</label>
-                    <input id="firstName" type="text" [(ngModel)]="selectedUser.first_name" name="first_name" required>
-                </div>
+        <!-- User Edit Modal -->
+        <div *ngIf="selectedUser" class="modal">
+            <div class="modal-content">
+                <h2>Edit User</h2>
+                <form (ngSubmit)="saveUser()">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input id="firstName" type="text" [(ngModel)]="selectedUser.first_name" name="first_name" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="lastName">Last Name</label>
-                    <input id="lastName" type="text" [(ngModel)]="selectedUser.last_name" name="last_name" required>
-                </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input id="lastName" type="text" [(ngModel)]="selectedUser.last_name" name="last_name" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input id="email" type="email" [(ngModel)]="selectedUser.email" name="email" required>
-                </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input id="email" type="email" [(ngModel)]="selectedUser.email" name="email" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="editUserRole">User Role</label>
-                    <select id="editUserRole" [(ngModel)]="selectedUser.role" name="edit_role"
-                        (change)="onRoleChange('selectedUser')">
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label for="editUserRole">User Role</label>
+                        <select id="editUserRole" [(ngModel)]="selectedUser.role" name="edit_role"
+                            (change)="onRoleChange('selectedUser')">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
 
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input id="password" type="password" [(ngModel)]="selectedUser.password" name="password">
+                    </div>
 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input id="password" type="password" [(ngModel)]="selectedUser.password" name="password">
-                </div>
+                    <div class="form-group">
+                        <label for="password_confirmation">Confirm Password</label>
+                        <input id="password_confirmation" type="password" [(ngModel)]="selectedUser.password_confirmation"
+                            name="password_confirmation">
+                    </div>
 
-                <div class="form-group">
-                    <label for="password_confirmation">Confirm Password</label>
-                    <input id="password_confirmation" type="password" [(ngModel)]="selectedUser.password_confirmation"
-                        name="password_confirmation">
-                </div>
-
-                <div class="button-group">
-                    <button type="button" class="btn btn-cancel" (click)="selectedUser = null">Cancel</button>
-                    <button type="submit" class="btn btn-save" (click)="saveUser()">Save Changes</button>
-                </div>
-            </form>
+                    <div class="button-group">
+                        <button type="button" class="btn btn-cancel" (click)="selectedUser = null">Cancel</button>
+                        <button type="submit" class="btn btn-save" (click)="saveUser()">Save Changes</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
+    </main>
 </div>

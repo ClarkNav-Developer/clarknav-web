@@ -11,7 +11,7 @@ import { RouteUsage } from '../../../models/routeusage';
 export class SuggestedRoutesService {
   private routeCache = new Map<string, any>();
 
-  constructor(private routesService: RoutesService, private http: HttpClient) {}
+  constructor(private routesService: RoutesService, private http: HttpClient) { }
 
   private getCacheKey(currentLocation: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral): string {
     return JSON.stringify({ currentLocation, destination });
