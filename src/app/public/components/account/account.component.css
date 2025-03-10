@@ -41,7 +41,8 @@
     border: none;
     border-radius: 5px;
     padding: 5px 10px;
-    cursor: pointer
+    cursor: pointer;
+    z-index: 1
   }
 
   .close-btn:hover,
