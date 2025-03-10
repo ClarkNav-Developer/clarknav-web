@@ -42,7 +42,23 @@ export class SuggestedRoutesService {
     const routes: Array<{ path: google.maps.LatLngLiteral[], color: string, routeId: string, name?: string, description?: string }> = [];
 
     if (startWaypoint && endWaypoint) {
-      routes.push(...this.routesService.findAllRoutePaths(startWaypoint, endWaypoint));
+      const allRoutes = this.routesService.findAllRoutePaths(startWaypoint, endWaypoint);
+
+      // Filter routes based on direction
+      const filteredRoutes = allRoutes.filter(route => {
+        const isNorthbound = route.routeId === 'B1';
+        const isSouthbound = route.routeId === 'B2';
+
+        if (isNorthbound) {
+          return startWaypoint.lat < endWaypoint.lat;
+        } else if (isSouthbound) {
+          return startWaypoint.lat > endWaypoint.lat;
+        }
+
+        return true;
+      });
+
+      routes.push(...filteredRoutes);
     }
 
     // Add taxi route using Directions API

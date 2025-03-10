@@ -23,6 +23,7 @@ import { MapStyleService } from './services/map/map-style.service';
 import { MapInstanceService } from './services/map/map-instance.service';
 import { TouristSpotComponent } from './components/tourist-spot/tourist-spot.component';
 import { DestinationReachedComponent } from './components/destination-reached/destination-reached.component';
+import { AnimatedBackgroundComponent } from './components/animated-background/animated-background.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { DestinationReachedComponent } from './components/destination-reached/de
     TouristSpotComponent,
     PinchZoomDirective,
     DestinationReachedComponent,
+    AnimatedBackgroundComponent,
   ],
   imports: [
     CommonModule,
