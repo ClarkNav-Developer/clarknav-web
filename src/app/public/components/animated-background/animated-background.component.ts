@@ -13,35 +13,15 @@ export class AnimatedBackgroundComponent implements AfterViewInit, OnDestroy {
   private lastRenderTime = 0;
   private readonly frameRate = 30; // Target frame rate
   private isLowTierMobile = false;
-  testFallback: boolean = false;
-
-  private checkCanvasSupport(): boolean {
-    const canvas = document.createElement('canvas');
-    return !!(canvas.getContext && canvas.getContext('2d'));
-  }
 
   ngAfterViewInit(): void {
-    const hasCanvasSupport = this.checkCanvasSupport();
-    
-    if (this.testFallback) {
-      this.applyFallbackBlur();
-      this.setRandomBlobPositions();
-    } else {
-      if (!hasCanvasSupport) {
-        // Add class to parent element to trigger the CSS fallback
-        if (this.canvasRef.nativeElement.parentElement) {
-          this.canvasRef.nativeElement.parentElement.classList.add('no-canvas-support');
-        }
-      } else {
-        this.isLowTierMobile = this.checkIfLowTierMobile();
-        const canvas = this.canvasRef.nativeElement;
-        this.ctx = canvas.getContext('2d')!;
-        this.resizeCanvas();
-        this.initBlobs();
-        if (!this.isLowTierMobile) {
-          this.animate();
-        }
-      }
+    this.isLowTierMobile = this.checkIfLowTierMobile();
+    const canvas = this.canvasRef.nativeElement;
+    this.ctx = canvas.getContext('2d')!;
+    this.resizeCanvas();
+    this.initBlobs();
+    if (!this.isLowTierMobile) {
+      this.animate();
     }
   }
 
@@ -58,12 +38,38 @@ export class AnimatedBackgroundComponent implements AfterViewInit, OnDestroy {
         new Blob('rgba(249, 129, 0, 0.5)', 30, 140, 0.4, this.canvasRef.nativeElement),
         new Blob('rgba(29, 88, 198, 0.5)', 30, 150, 0.45, this.canvasRef.nativeElement)
       ];
-    } else {
+    } else if (this.isMidTierMobile()) {
       this.blobs = [
         new Blob('rgba(249, 129, 0, 0.5)', 60, 280, 0.8, this.canvasRef.nativeElement),
-        new Blob('rgba(29, 88, 198, 0.5)', 60, 300, 0.9, this.canvasRef.nativeElement),
         new Blob('rgba(249, 129, 0, 0.5)', 50, 320, 0.7, this.canvasRef.nativeElement),
+        new Blob('rgba(29, 88, 198, 0.5)', 60, 300, 0.9, this.canvasRef.nativeElement),
         new Blob('rgba(29, 88, 198, 0.5)', 55, 260, 0.75, this.canvasRef.nativeElement)
+      ];
+    } else {
+      this.blobs = [
+        // Two orange variations
+        new Blob('rgba(249, 129, 0, 0.5)', 100, 500, 1.2, this.canvasRef.nativeElement),
+        new Blob('rgba(249, 129, 0, 0.5)', 90, 450, 1.1, this.canvasRef.nativeElement),
+
+        // Two blue variations
+        new Blob('rgba(29, 88, 198, 0.5)', 100, 480, 1.3, this.canvasRef.nativeElement),
+        new Blob('rgba(29, 88, 198, 0.5)', 95, 420, 1.15, this.canvasRef.nativeElement),
+
+        // Two orange variations
+        new Blob('rgba(249, 129, 0, 0.5)', 100, 500, 1.2, this.canvasRef.nativeElement),
+        new Blob('rgba(249, 129, 0, 0.5)', 90, 450, 1.1, this.canvasRef.nativeElement),
+
+        // Two blue variations
+        new Blob('rgba(29, 88, 198, 0.5)', 100, 480, 1.3, this.canvasRef.nativeElement),
+        new Blob('rgba(29, 88, 198, 0.5)', 95, 420, 1.15, this.canvasRef.nativeElement),
+
+        // Two orange variations
+        new Blob('rgba(249, 129, 0, 0.5)', 100, 500, 1.2, this.canvasRef.nativeElement),
+        new Blob('rgba(249, 129, 0, 0.5)', 90, 450, 1.1, this.canvasRef.nativeElement),
+
+        // Two blue variations
+        new Blob('rgba(29, 88, 198, 0.5)', 100, 480, 1.3, this.canvasRef.nativeElement),
+        new Blob('rgba(29, 88, 198, 0.5)', 95, 420, 1.15, this.canvasRef.nativeElement)
       ];
     }
   }
@@ -143,7 +149,7 @@ class Blob {
   public y: number;
   public size: number;
   private color: string;
-  public blur: number;
+  private blur: number;
   public vx: number;
   public vy: number;
   private angle: number;
@@ -184,13 +190,7 @@ class Blob {
 
   draw(ctx: CanvasRenderingContext2D): void {
     ctx.save();
-    if ('filter' in ctx) {
-      ctx.filter = `blur(${this.blur}px)`;
-    } else {
-      // Fallback for devices that do not support the filter property
-      (ctx as CanvasRenderingContext2D).shadowColor = this.color;
-      (ctx as CanvasRenderingContext2D).shadowBlur = this.blur;
-    }
+    ctx.filter = `blur(${this.blur}px)`;
     ctx.fillStyle = this.color;
     ctx.beginPath();
     // Create slightly irregular blob shape
