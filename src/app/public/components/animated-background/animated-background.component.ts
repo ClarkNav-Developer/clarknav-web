@@ -1,15 +1,44 @@
-import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, HostListener } from '@angular/core';
+// Polyfill for requestAnimationFrame
+(function() {
+  let lastTime = 0;
+  const vendors = ['ms', 'moz', 'webkit', 'o'];
+  for (let x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+    window.requestAnimationFrame = (window as any)[vendors[x] + 'RequestAnimationFrame'];
+    window.cancelAnimationFrame = (window as any)[vendors[x] + 'CancelAnimationFrame'] ||
+                                  (window as any)[vendors[x] + 'CancelRequestAnimationFrame'];
+  }
+
+  if (!window.requestAnimationFrame) {
+    window.requestAnimationFrame = function(callback) {
+      const currTime = new Date().getTime();
+      const timeToCall = Math.max(0, 16 - (currTime - lastTime));
+      const id = window.setTimeout(function() { callback(currTime + timeToCall); }, timeToCall);
+      lastTime = currTime + timeToCall;
+      return id;
+    };
+  }
+
+  if (!window.cancelAnimationFrame) {
+    window.cancelAnimationFrame = function(id) {
+      clearTimeout(id);
+    };
+  }
+}());
+
+import { Component, ElementRef, ViewChild, AfterViewInit, HostListener, OnDestroy } from '@angular/core';
 
 @Component({
   selector: 'app-animated-background',
   templateUrl: './animated-background.component.html',
   styleUrls: ['./animated-background.component.scss']
 })
-export class AnimatedBackgroundComponent implements AfterViewInit {
+export class AnimatedBackgroundComponent implements AfterViewInit, OnDestroy {
   @ViewChild('backgroundCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
   private ctx!: CanvasRenderingContext2D;
   private blobs: Blob[] = [];
   private animationFrameId!: number;
+  private lastRenderTime = 0;
+  private readonly frameRate = 30; // Target frame rate
 
   ngAfterViewInit(): void {
     const canvas = this.canvasRef.nativeElement;
@@ -27,43 +56,31 @@ export class AnimatedBackgroundComponent implements AfterViewInit {
   }
 
   private initBlobs(): void {
-    // Create blobs with specified colors
+    // Reduce the number of blobs for better performance
     this.blobs = [
-      // Two orange variations
       new Blob('rgba(249, 129, 0, 0.5)', 60, 280, 0.8, this.canvasRef.nativeElement),
-      new Blob('rgba(249, 129, 0, 0.5)', 50, 320, 0.7, this.canvasRef.nativeElement),
-  
-      // Two blue variations
       new Blob('rgba(29, 88, 198, 0.5)', 60, 300, 0.9, this.canvasRef.nativeElement),
-      new Blob('rgba(29, 88, 198, 0.5)', 55, 260, 0.75, this.canvasRef.nativeElement),
-  
-      // Additional orange blobs
-      new Blob('rgba(249, 129, 0, 0.5)', 60, 280, 0.8, this.canvasRef.nativeElement),
       new Blob('rgba(249, 129, 0, 0.5)', 50, 320, 0.7, this.canvasRef.nativeElement),
-  
-      // Additional blue blobs
-      new Blob('rgba(29, 88, 198, 0.5)', 60, 300, 0.9, this.canvasRef.nativeElement),
-      new Blob('rgba(29, 88, 198, 0.5)', 55, 260, 0.75, this.canvasRef.nativeElement),
-  
-      // Additional orange blobs
-      new Blob('rgba(249, 129, 0, 0.5)', 60, 280, 0.8, this.canvasRef.nativeElement),
-      new Blob('rgba(249, 129, 0, 0.5)', 50, 320, 0.7, this.canvasRef.nativeElement),
-  
-      // Additional blue blobs
-      new Blob('rgba(29, 88, 198, 0.5)', 60, 300, 0.9, this.canvasRef.nativeElement),
       new Blob('rgba(29, 88, 198, 0.5)', 55, 260, 0.75, this.canvasRef.nativeElement)
     ];
   }
 
-  private animate(): void {
+  private animate(timestamp = 0): void {
+    const deltaTime = timestamp - this.lastRenderTime;
+    if (deltaTime < 1000 / this.frameRate) {
+      this.animationFrameId = requestAnimationFrame((ts) => this.animate(ts));
+      return;
+    }
+    this.lastRenderTime = timestamp;
+
     // Clear canvas with transparency
     this.ctx.clearRect(0, 0, this.canvasRef.nativeElement.width, this.canvasRef.nativeElement.height);
-  
+
     // Update and draw blobs
     for (let i = 0; i < this.blobs.length; i++) {
       const blob = this.blobs[i];
       blob.update();
-  
+
       // Check for collisions with other blobs
       for (let j = i + 1; j < this.blobs.length; j++) {
         const otherBlob = this.blobs[j];
@@ -71,19 +88,19 @@ export class AnimatedBackgroundComponent implements AfterViewInit {
         const dy = blob.y - otherBlob.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         const minDistance = (blob.size + otherBlob.size) / 2 + 2; // Add a small gap
-  
+
         if (distance < minDistance) {
           // Resolve collision by adjusting positions and velocities
           const angle = Math.atan2(dy, dx);
           const overlap = minDistance - distance;
           const adjustX = Math.cos(angle) * overlap / 2;
           const adjustY = Math.sin(angle) * overlap / 2;
-  
+
           blob.x += adjustX;
           blob.y += adjustY;
           otherBlob.x -= adjustX;
           otherBlob.y -= adjustY;
-  
+
           // Swap velocities
           const tempVx = blob.vx;
           const tempVy = blob.vy;
@@ -93,11 +110,11 @@ export class AnimatedBackgroundComponent implements AfterViewInit {
           otherBlob.vy = tempVy;
         }
       }
-  
+
       blob.draw(this.ctx);
     }
-  
-    this.animationFrameId = requestAnimationFrame(() => this.animate());
+
+    this.animationFrameId = requestAnimationFrame((ts) => this.animate(ts));
   }
 
   ngOnDestroy(): void {
@@ -128,7 +145,7 @@ class Blob {
     this.size = size || Math.random() * 300 + 200;
     this.color = color;
     this.blur = blur;
-    const speedFactor = speed || 1;
+    const speedFactor = (speed || 1) * 2; // Increase the speed factor
     this.vx = (Math.random() - 0.5) * 0.5 * speedFactor;
     this.vy = (Math.random() - 0.5) * 0.5 * speedFactor;
 
