@@ -6,6 +6,9 @@
     height: 100%;
     background-color: transparent;
     z-index: -1;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(20px);
+    -moz-backdrop-filter: blur(20px);
 }
 
 canvas {
