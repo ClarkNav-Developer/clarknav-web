@@ -1,30 +1,3 @@
-// Polyfill for requestAnimationFrame
-(function() {
-  let lastTime = 0;
-  const vendors = ['ms', 'moz', 'webkit', 'o'];
-  for (let x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-    window.requestAnimationFrame = (window as any)[vendors[x] + 'RequestAnimationFrame'];
-    window.cancelAnimationFrame = (window as any)[vendors[x] + 'CancelAnimationFrame'] ||
-                                  (window as any)[vendors[x] + 'CancelRequestAnimationFrame'];
-  }
-
-  if (!window.requestAnimationFrame) {
-    window.requestAnimationFrame = function(callback) {
-      const currTime = new Date().getTime();
-      const timeToCall = Math.max(0, 16 - (currTime - lastTime));
-      const id = window.setTimeout(function() { callback(currTime + timeToCall); }, timeToCall);
-      lastTime = currTime + timeToCall;
-      return id;
-    };
-  }
-
-  if (!window.cancelAnimationFrame) {
-    window.cancelAnimationFrame = function(id) {
-      clearTimeout(id);
-    };
-  }
-}());
-
 import { Component, ElementRef, ViewChild, AfterViewInit, HostListener, OnDestroy } from '@angular/core';
 
 @Component({
@@ -39,13 +12,17 @@ export class AnimatedBackgroundComponent implements AfterViewInit, OnDestroy {
   private animationFrameId!: number;
   private lastRenderTime = 0;
   private readonly frameRate = 30; // Target frame rate
+  private isLowTierMobile = false;
 
   ngAfterViewInit(): void {
+    this.isLowTierMobile = this.checkIfLowTierMobile();
     const canvas = this.canvasRef.nativeElement;
     this.ctx = canvas.getContext('2d')!;
     this.resizeCanvas();
     this.initBlobs();
-    this.animate();
+    if (!this.isLowTierMobile) {
+      this.animate();
+    }
   }
 
   @HostListener('window:resize')
@@ -56,13 +33,19 @@ export class AnimatedBackgroundComponent implements AfterViewInit, OnDestroy {
   }
 
   private initBlobs(): void {
-    // Reduce the number of blobs for better performance
-    this.blobs = [
-      new Blob('rgba(249, 129, 0, 0.5)', 60, 280, 0.8, this.canvasRef.nativeElement),
-      new Blob('rgba(29, 88, 198, 0.5)', 60, 300, 0.9, this.canvasRef.nativeElement),
-      new Blob('rgba(249, 129, 0, 0.5)', 50, 320, 0.7, this.canvasRef.nativeElement),
-      new Blob('rgba(29, 88, 198, 0.5)', 55, 260, 0.75, this.canvasRef.nativeElement)
-    ];
+    if (this.isLowTierMobile) {
+      this.blobs = [
+        new Blob('rgba(249, 129, 0, 0.5)', 30, 140, 0.4, this.canvasRef.nativeElement),
+        new Blob('rgba(29, 88, 198, 0.5)', 30, 150, 0.45, this.canvasRef.nativeElement)
+      ];
+    } else {
+      this.blobs = [
+        new Blob('rgba(249, 129, 0, 0.5)', 60, 280, 0.8, this.canvasRef.nativeElement),
+        new Blob('rgba(29, 88, 198, 0.5)', 60, 300, 0.9, this.canvasRef.nativeElement),
+        new Blob('rgba(249, 129, 0, 0.5)', 50, 320, 0.7, this.canvasRef.nativeElement),
+        new Blob('rgba(29, 88, 198, 0.5)', 55, 260, 0.75, this.canvasRef.nativeElement)
+      ];
+    }
   }
 
   private animate(timestamp = 0): void {
@@ -121,6 +104,11 @@ export class AnimatedBackgroundComponent implements AfterViewInit, OnDestroy {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
+  }
+
+  private checkIfLowTierMobile(): boolean {
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+    return /android|iphone|ipad|ipod/i.test(userAgent) && window.devicePixelRatio < 2;
   }
 }
 
