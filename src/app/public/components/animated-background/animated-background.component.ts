@@ -190,7 +190,13 @@ class Blob {
 
   draw(ctx: CanvasRenderingContext2D): void {
     ctx.save();
-    ctx.filter = `blur(${this.blur}px)`;
+    if ('filter' in ctx) {
+      ctx.filter = `blur(${this.blur}px)`;
+    } else {
+      // Fallback for devices that do not support the filter property
+      (ctx as any).shadowColor = this.color;
+      (ctx as any).shadowBlur = this.blur;
+    }
     ctx.fillStyle = this.color;
     ctx.beginPath();
     // Create slightly irregular blob shape
