@@ -13,20 +13,35 @@ export class AnimatedBackgroundComponent implements AfterViewInit, OnDestroy {
   private lastRenderTime = 0;
   private readonly frameRate = 30; // Target frame rate
   private isLowTierMobile = false;
+  testFallback: boolean = false;
+
+  private checkCanvasSupport(): boolean {
+    const canvas = document.createElement('canvas');
+    return !!(canvas.getContext && canvas.getContext('2d'));
+  }
 
   ngAfterViewInit(): void {
-    this.isLowTierMobile = this.checkIfLowTierMobile();
-    const canvas = this.canvasRef.nativeElement;
-    this.ctx = canvas.getContext('2d')!;
-    this.resizeCanvas();
-    this.initBlobs();
-    if (!this.isLowTierMobile) {
-      this.animate();
-    }
-
-    // Check for filter support and apply fallback if necessary
-    if (!('filter' in this.ctx)) {
+    const hasCanvasSupport = this.checkCanvasSupport();
+    
+    if (this.testFallback) {
       this.applyFallbackBlur();
+      this.setRandomBlobPositions();
+    } else {
+      if (!hasCanvasSupport) {
+        // Add class to parent element to trigger the CSS fallback
+        if (this.canvasRef.nativeElement.parentElement) {
+          this.canvasRef.nativeElement.parentElement.classList.add('no-canvas-support');
+        }
+      } else {
+        this.isLowTierMobile = this.checkIfLowTierMobile();
+        const canvas = this.canvasRef.nativeElement;
+        this.ctx = canvas.getContext('2d')!;
+        this.resizeCanvas();
+        this.initBlobs();
+        if (!this.isLowTierMobile) {
+          this.animate();
+        }
+      }
     }
   }
 
@@ -151,6 +166,16 @@ export class AnimatedBackgroundComponent implements AfterViewInit, OnDestroy {
     for (const blob of this.blobs) {
       blob.blur = 0; // Disable blur for fallback
     }
+  }
+
+  private setRandomBlobPositions(): void {
+    const blobs = document.querySelectorAll('.fallback-background .blob');
+    blobs.forEach(blob => {
+      const top = Math.random() * 100;
+      const left = Math.random() * 100;
+      (blob as HTMLElement).style.setProperty('--blob-top', `${top}%`);
+      (blob as HTMLElement).style.setProperty('--blob-left', `${left}%`);
+    });
   }
 }
 
