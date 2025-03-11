@@ -38,12 +38,38 @@ export class AnimatedBackgroundComponent implements AfterViewInit, OnDestroy {
         new Blob('rgba(249, 129, 0, 0.5)', 30, 140, 0.4, this.canvasRef.nativeElement),
         new Blob('rgba(29, 88, 198, 0.5)', 30, 150, 0.45, this.canvasRef.nativeElement)
       ];
-    } else {
+    } else if (this.isMidTierMobile()) {
       this.blobs = [
         new Blob('rgba(249, 129, 0, 0.5)', 60, 280, 0.8, this.canvasRef.nativeElement),
-        new Blob('rgba(29, 88, 198, 0.5)', 60, 300, 0.9, this.canvasRef.nativeElement),
         new Blob('rgba(249, 129, 0, 0.5)', 50, 320, 0.7, this.canvasRef.nativeElement),
+        new Blob('rgba(29, 88, 198, 0.5)', 60, 300, 0.9, this.canvasRef.nativeElement),
         new Blob('rgba(29, 88, 198, 0.5)', 55, 260, 0.75, this.canvasRef.nativeElement)
+      ];
+    } else {
+      this.blobs = [
+        // Two orange variations
+        new Blob('rgba(249, 129, 0, 0.5)', 100, 500, 1.2, this.canvasRef.nativeElement),
+        new Blob('rgba(249, 129, 0, 0.5)', 90, 450, 1.1, this.canvasRef.nativeElement),
+
+        // Two blue variations
+        new Blob('rgba(29, 88, 198, 0.5)', 100, 480, 1.3, this.canvasRef.nativeElement),
+        new Blob('rgba(29, 88, 198, 0.5)', 95, 420, 1.15, this.canvasRef.nativeElement),
+
+        // Two orange variations
+        new Blob('rgba(249, 129, 0, 0.5)', 100, 500, 1.2, this.canvasRef.nativeElement),
+        new Blob('rgba(249, 129, 0, 0.5)', 90, 450, 1.1, this.canvasRef.nativeElement),
+
+        // Two blue variations
+        new Blob('rgba(29, 88, 198, 0.5)', 100, 480, 1.3, this.canvasRef.nativeElement),
+        new Blob('rgba(29, 88, 198, 0.5)', 95, 420, 1.15, this.canvasRef.nativeElement),
+
+        // Two orange variations
+        new Blob('rgba(249, 129, 0, 0.5)', 100, 500, 1.2, this.canvasRef.nativeElement),
+        new Blob('rgba(249, 129, 0, 0.5)', 90, 450, 1.1, this.canvasRef.nativeElement),
+
+        // Two blue variations
+        new Blob('rgba(29, 88, 198, 0.5)', 100, 480, 1.3, this.canvasRef.nativeElement),
+        new Blob('rgba(29, 88, 198, 0.5)', 95, 420, 1.15, this.canvasRef.nativeElement)
       ];
     }
   }
@@ -109,6 +135,11 @@ export class AnimatedBackgroundComponent implements AfterViewInit, OnDestroy {
   private checkIfLowTierMobile(): boolean {
     const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
     return /android|iphone|ipad|ipod/i.test(userAgent) && window.devicePixelRatio < 2;
+  }
+
+  private isMidTierMobile(): boolean {
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+    return /android|iphone|ipad|ipod/i.test(userAgent) && window.devicePixelRatio >= 2 && window.devicePixelRatio < 3;
   }
 }
 
