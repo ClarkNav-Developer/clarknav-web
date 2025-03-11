@@ -23,6 +23,11 @@ export class AnimatedBackgroundComponent implements AfterViewInit, OnDestroy {
     if (!this.isLowTierMobile) {
       this.animate();
     }
+
+    // Check for filter support and apply fallback if necessary
+    if (!('filter' in this.ctx)) {
+      this.applyFallbackBlur();
+    }
   }
 
   @HostListener('window:resize')
@@ -141,6 +146,12 @@ export class AnimatedBackgroundComponent implements AfterViewInit, OnDestroy {
     const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
     return /android|iphone|ipad|ipod/i.test(userAgent) && window.devicePixelRatio >= 2 && window.devicePixelRatio < 3;
   }
+
+  private applyFallbackBlur(): void {
+    for (const blob of this.blobs) {
+      blob.blur = 0; // Disable blur for fallback
+    }
+  }
 }
 
 // Blob class
@@ -149,7 +160,7 @@ class Blob {
   public y: number;
   public size: number;
   private color: string;
-  private blur: number;
+  public blur: number;
   public vx: number;
   public vy: number;
   private angle: number;
@@ -194,8 +205,8 @@ class Blob {
       ctx.filter = `blur(${this.blur}px)`;
     } else {
       // Fallback for devices that do not support the filter property
-      (ctx as any).shadowColor = this.color;
-      (ctx as any).shadowBlur = this.blur;
+      (ctx as CanvasRenderingContext2D).shadowColor = this.color;
+      (ctx as CanvasRenderingContext2D).shadowBlur = this.blur;
     }
     ctx.fillStyle = this.color;
     ctx.beginPath();
