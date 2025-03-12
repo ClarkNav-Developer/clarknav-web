@@ -75,7 +75,8 @@
         border-radius: 5px;
         justify-content: space-evenly;
         flex-wrap: wrap;
-        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .1)
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .1);
+        cursor: pointer;
     }
 
     .route-list-box a {
