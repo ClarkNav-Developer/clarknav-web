@@ -1,7 +1,7 @@
 <div class="desktop-view">
   <div class="floating-overlay" (click)="closeWindow($event)" *ngIf="!showHistoryBar"></div>
   <div class="floating-window" *ngIf="!showHistoryBar">
-    <!-- <app-animated-background class="animated-background"></app-animated-background> -->
+    <app-animated-background class="animated-background"></app-animated-background>
     <button class="close-btn" (click)="closeWindow($event)">X</button>
     <div class="content">
       <div class="menu-list-container">
