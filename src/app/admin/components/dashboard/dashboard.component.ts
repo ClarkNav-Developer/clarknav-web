@@ -69,6 +69,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.initializeDashboard();
     this.fareConfig = {...this.fareService.getFareConfig()};
+    this.setupNavigation();
   }
 
   ngAfterViewInit(): void {
@@ -93,20 +94,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   // Data loading methods
   private async loadDashboardData(): Promise<void> {
     this.isLoading = true;
-    const cacheKey = 'dashboardData';
 
     try {
-      const cachedData = await this.cacheService.get<{
-        routeUsages: RouteUsage[],
-        locationSearches: LocationSearch[]
-      }>(cacheKey).toPromise();
-
-      if (cachedData) {
-        this.handleCachedDashboardData(cachedData);
-      } else {
-        await this.fetchFreshDashboardData(cacheKey);
-      }
-
+      await this.fetchFreshDashboardData();
       this.initializeCharts();
     } catch (error) {
       this.handleDataLoadError('dashboard data', error);
@@ -123,7 +113,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.locationSearches = cachedData.locationSearches;
   }
 
-  private async fetchFreshDashboardData(cacheKey: string): Promise<void> {
+  private async fetchFreshDashboardData(): Promise<void> {
     const [routeUsages, locationSearches] = await Promise.all([
       this.routesService.getRouteUsages().toPromise(),
       this.locationService.getLocationSearches().toPromise()
@@ -131,11 +121,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.routeUsages = routeUsages ?? [];
     this.locationSearches = locationSearches ?? [];
-
-    this.cacheService.set(cacheKey, {
-      routeUsages: this.routeUsages,
-      locationSearches: this.locationSearches
-    });
   }
 
   updateFare(): void {
@@ -154,10 +139,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private loadUsers(): void {
-    const cacheKey = 'users';
-
-    this.cacheService.get<User[]>(cacheKey).pipe(
-      switchMap(cachedData => cachedData ? this.handleCachedUsers(cachedData) : this.fetchFreshUsers(cacheKey)),
+    this.userService.getUsers().pipe(
+      tap(users => {
+        this.users = users;
+        this.filteredUsers = users;
+      }),
       takeUntil(this.destroy$)
     ).subscribe({
       error: error => this.handleDataLoadError('users', error)
@@ -181,10 +167,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private loadFeedbacks(): void {
-    const cacheKey = 'feedbacks';
-
-    this.cacheService.get<Feedback[]>(cacheKey).pipe(
-      switchMap(cachedData => cachedData ? this.handleCachedFeedbacks(cachedData) : this.fetchFreshFeedbacks(cacheKey)),
+    this.userService.getFeedbacks().pipe(
+      tap(feedbacks => {
+        this.feedbacks = feedbacks;
+      }),
       takeUntil(this.destroy$)
     ).subscribe({
       error: error => this.handleDataLoadError('feedbacks', error)
@@ -463,31 +449,31 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   private setupNavigation(): void {
     const navLinks = document.querySelectorAll('.nav-link');
     const contentSections = document.querySelectorAll('.content-section');
-
+  
     navLinks.forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-
+  
         // Remove active class from all links
         navLinks.forEach(link => link.classList.remove('active'));
-
+  
         // Add active class to the clicked link
-        (e.target as HTMLElement).classList.add('active');
-
+        (link as HTMLElement).classList.add('active');
+  
         // Hide all content sections
-        contentSections.forEach(section => (section as HTMLElement).style.display = 'none');
-
+        contentSections.forEach(section => (section as HTMLElement).classList.remove('active'));
+  
         // Show the target content section
-        const target = (e.target as HTMLElement).getAttribute('data-target');
+        const target = link.getAttribute('data-target');
         if (target) {
           const targetSection = document.getElementById(target);
           if (targetSection) {
-            targetSection.style.display = 'block';
+            targetSection.classList.add('active');
           }
         }
       });
     });
-
+  
     // Show the default section (Dashboard) on page load
     const defaultLink = document.querySelector('.nav-link.active');
     if (defaultLink) {
