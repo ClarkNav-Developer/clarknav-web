@@ -24,7 +24,7 @@ export class SuggestedRoutesService {
   private getCachedRoutes(key: string): any | null {
     const cachedRoutes = localStorage.getItem(key);
     if (cachedRoutes) {
-      console.log('Suggested routes loaded from cache');
+      console.debug('Suggested routes loaded from cache');
     }
     return cachedRoutes ? JSON.parse(cachedRoutes) : null;
   }
@@ -96,9 +96,9 @@ export class SuggestedRoutesService {
 
   saveNavigationHistory(origin: string, destination: string, routeDetails: any, navigationConfirmed: boolean): Observable<any> {
     const body = { origin, destination, route_details: routeDetails, navigation_confirmed: navigationConfirmed };
-    console.log('Saving navigation history:', body);
+    console.debug('Saving navigation history:', body);
     return this.http.post(environment.navigationHistoriesUrl, body).pipe(
-      tap(response => console.log('Navigation history saved:', response)),
+      tap(response => console.debug('Navigation history saved:', response)),
       catchError(error => {
         console.error('Error saving navigation history:', error);
         return throwError(error);
@@ -107,9 +107,9 @@ export class SuggestedRoutesService {
   }
 
   storeRouteUsage(routeUsage: RouteUsage): Observable<RouteUsage> {
-    console.log('Storing route usage:', routeUsage); // Debugging log
+    console.debug('Storing route usage:', routeUsage); // Debugging log
     return this.http.post<RouteUsage>(environment.routeUsagesUrl, routeUsage).pipe(
-      tap(response => console.log('Route usage saved:', response)),
+      tap(response => console.debug('Route usage saved:', response)),
       catchError(error => {
         console.error('Error saving route usage:', error);
         return throwError(error);

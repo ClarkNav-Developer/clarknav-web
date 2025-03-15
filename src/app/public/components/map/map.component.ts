@@ -32,7 +32,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     // Subscribe to real-time GPS updates
     this.websocketService.on('gpsUpdate', (data) => {
-      console.log('Real-time GPS update:', data);
+      console.debug('Real-time GPS update:', data);
       this.mapService.updateRealTimeLocation(data); // Pass data to MapService
     });
   }

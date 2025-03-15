@@ -137,7 +137,7 @@ export class AccountComponent implements OnInit {
       next: (response) => {
         this.navigationHistories = (response as any[]).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
         this.historiesFetched = true;
-        console.log('Navigation histories fetched successfully:', this.navigationHistories);
+        console.debug('Navigation histories fetched successfully:', this.navigationHistories);
       },
       error: (error) => {
         console.error('Error fetching navigation histories:', error);
@@ -156,7 +156,7 @@ export class AccountComponent implements OnInit {
   }
 
   viewRoute(history: any) {
-    console.log('Viewing route with the following details:', history);
+    console.debug('Viewing route with the following details:', history);
     this.mapService.clearMap(); // Clear any existing routes on the map
 
     // Render the route on the map
@@ -219,7 +219,7 @@ export class AccountComponent implements OnInit {
     event.preventDefault(); // Prevent the default link behavior
     this.authService.logout().subscribe({
       next: () => {
-        console.log('Logged out successfully');
+        console.debug('Logged out successfully');
         this.router.navigate(['/login']); // Redirect to /login
       },
       error: (error) => {
@@ -252,7 +252,7 @@ export class AccountComponent implements OnInit {
     this.authService.updateCredentials(updatedCredentials).subscribe({
       next: (response) => {
         if (response) {
-          console.log('Credentials updated successfully');
+          console.debug('Credentials updated successfully');
           toastr.info('Credentials updated successfully');
         } else {
           console.error('Failed to update credentials');
@@ -276,7 +276,7 @@ export class AccountComponent implements OnInit {
     }
     this.http.post(environment.bugReportsUrl, formData).subscribe({
       next: (response) => {
-        console.log('Bug report submitted successfully', response);
+        console.debug('Bug report submitted successfully', response);
         toastr.success('Bug report submitted successfully');
       },
       error: (error) => {
@@ -290,7 +290,7 @@ export class AccountComponent implements OnInit {
     event.preventDefault();
     this.http.post(environment.feedbackUrl, this.feedback).subscribe({
       next: (response) => {
-        console.log('Feedback submitted successfully', response);
+        console.debug('Feedback submitted successfully', response);
         toastr.success('Feedback submitted successfully');
       },
       error: (error) => {

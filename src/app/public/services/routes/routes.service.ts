@@ -57,21 +57,21 @@ export class RoutesService {
         this.taxiRoutes = data.routes.taxi || []; // Load taxi routes
         localStorage.setItem(this.cacheKey, JSON.stringify(data));
         localStorage.setItem(this.versionKey, serverVersion);
-        console.log('Routes loaded from server:', data);
+        console.debug('Routes loaded from server:', data);
       } else {
         const cachedData = JSON.parse(cachedRoutes);
         if (cachedData.version === serverVersion) {
           this.jeepneyRoutes = cachedData.routes.jeepney || [];
           this.busRoutes = cachedData.routes.bus || [];
           this.taxiRoutes = cachedData.routes.taxi || []; // Load taxi routes
-          console.log('Routes loaded from cache:', cachedData);
+          console.debug('Routes loaded from cache:', cachedData);
         } else {
           this.jeepneyRoutes = data.routes.jeepney || [];
           this.busRoutes = data.routes.bus || [];
           this.taxiRoutes = data.routes.taxi || []; // Load taxi routes
           localStorage.setItem(this.cacheKey, JSON.stringify(data));
           localStorage.setItem(this.versionKey, serverVersion);
-          console.log('Routes loaded from server:', data);
+          console.debug('Routes loaded from server:', data);
         }
       }
       this.routesLoadedSubject.next(true); // Notify that routes are loaded
@@ -102,7 +102,7 @@ export class RoutesService {
     const route = allRoutes.find(route => route.routeId === routeId);
 
     // Log route details for debugging
-    console.log('Route by ID:', routeId, route);
+    console.debug('Route by ID:', routeId, route);
 
     return route;
   }

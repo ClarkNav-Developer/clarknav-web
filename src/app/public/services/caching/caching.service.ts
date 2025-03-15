@@ -10,15 +10,15 @@ export class CacheService {
   get<T>(key: string): Observable<T | null> {
     const cachedData = this.cache.get(key);
     if (cachedData) {
-      console.log(`Cache hit for key: ${key}`);
+      console.debug(`Cache hit for key: ${key}`);
     } else {
-      console.log(`Cache miss for key: ${key}`);
+      console.debug(`Cache miss for key: ${key}`);
     }
     return of(cachedData || null);
   }
 
   set<T>(key: string, data: T): void {
-    console.log(`Setting cache for key: ${key}`);
+    console.debug(`Setting cache for key: ${key}`);
     this.cache.set(key, data);
   }
 

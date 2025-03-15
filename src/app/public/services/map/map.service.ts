@@ -66,7 +66,7 @@ export class MapService {
     const key = this.getCacheKey(request);
     const cachedResponse = localStorage.getItem(key);
     if (cachedResponse) {
-      console.log('Directions loaded from cache');
+      console.debug('Directions loaded from cache');
       return JSON.parse(cachedResponse);
     }
     return null;
@@ -160,17 +160,17 @@ initializeMap(map: any) {
         if (cachedTerminals) {
           const cachedData = JSON.parse(cachedTerminals);
           if (cachedData.version === serverVersion) {
-            console.log('Terminals loaded from cache:', cachedData);
+            console.debug('Terminals loaded from cache:', cachedData);
             this.processTerminalsData(cachedData);
           } else {
-            console.log('Fetching terminals from service');
-            console.log('Terminals response:', data); // Log the response
+            console.debug('Fetching terminals from service');
+            console.debug('Terminals response:', data); // Log the response
             localStorage.setItem('terminalsData', JSON.stringify(data));
             this.processTerminalsData(data);
           }
         } else {
-          console.log('Fetching terminals from service');
-          console.log('Terminals response:', data); // Log the response
+          console.debug('Fetching terminals from service');
+          console.debug('Terminals response:', data); // Log the response
           localStorage.setItem('terminalsData', JSON.stringify(data));
           this.processTerminalsData(data);
         }
@@ -249,11 +249,11 @@ initializeMap(map: any) {
       const serverVersion = data.version;
   
       if (cachedData && cachedData.version === serverVersion) {
-        console.log('Tourist spots loaded from cache:', cachedData);
+        console.debug('Tourist spots loaded from cache:', cachedData);
         this.displayTouristSpots(cachedData.spots);
       } else {
         if (data && data.spots) {
-          console.log('Tourist spots loaded from API:', data);
+          console.debug('Tourist spots loaded from API:', data);
           this.cacheTouristSpots(data);
           this.displayTouristSpots(data.spots);
         } else {

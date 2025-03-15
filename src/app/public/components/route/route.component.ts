@@ -330,7 +330,7 @@ export class RouteComponent implements OnInit, OnDestroy {
     if (routeInfo) {
       this.routeInfo = routeInfo;
       // Optionally add analytics tracking
-      console.log(`Info displayed for route ${this.currentRouteId}`);
+      console.debug(`Info displayed for route ${this.currentRouteId}`);
     } else {
       this.routeInfo = '<p class="no-info">No information available for this route.</p>';
     }
