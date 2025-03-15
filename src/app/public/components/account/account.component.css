@@ -41,7 +41,8 @@
     border: none;
     border-radius: 5px;
     padding: 5px 10px;
-    cursor: pointer
+    cursor: pointer;
+    z-index: 1
   }
 
   .close-btn:hover,
@@ -421,7 +422,7 @@
     padding: 20px 40px;
     background: #fff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
-    border-radius: 20px;
+    border-radius: 8px;
     z-index: 1000
   }
 

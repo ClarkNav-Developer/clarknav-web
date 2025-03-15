@@ -34,6 +34,11 @@ export class BottomNavigationComponent {
   }
 
   openAccountComponent() {
-    this.floatingWindowService.open('account');
+    const isMobile = window.innerWidth <= 767;
+    if (isMobile) {
+      this.floatingWindowService.open('account-mobile');
+    } else {
+      this.floatingWindowService.open('account-desktop');
+    }
   }
 }

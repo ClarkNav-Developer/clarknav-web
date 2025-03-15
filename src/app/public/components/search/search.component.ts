@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { GoogleMapsLoaderService } from '../../services/geocoding/google-maps-loader.service';
 import { AuthService } from '../../../auth/auth.service';
 import { RouteUsage } from '../../../models/routeusage';
+import { SideNavService } from '../../services/side-nav/side-nav.service';
 
 declare var google: any;
 
@@ -100,6 +101,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     private googleMapsLoader: GoogleMapsLoaderService,
     private authService: AuthService, // Add this line
     private cdr: ChangeDetectorRef, // Add ChangeDetectorRef
+    private sideNavService: SideNavService // Add SideNavService
   ) { 
     this.navigationService.stopNavigation$.subscribe(() => {
       this.stopNavigation();
@@ -116,6 +118,9 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
       this.bottomSheetService.setRenderer(this.renderer);
       this.locationService.resolveAddresses();
       this.startUpdatingDuration();
+      this.sideNavService.sideNavVisible$.subscribe(visible => {
+        this.showSideNav = visible;
+      });
     }).catch(error => {
       console.error('Error loading Google Maps API:', error);
     });
@@ -154,6 +159,27 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   toggleMobileContainer(): void {
     this.bottomSheetService.toggleMobileContainer();
     this.mapService.clearMarkers(); // Clear the markers on the map
+
+    // Clear the autocomplete inputs and reset locations
+    const inputs = [
+      'search-box',
+      'search-box-2',
+      'search-box-mobile',
+      'search-box-mobile-2',
+      'current-location-box',
+      'current-location-box-mobile',
+    ].map(id => document.getElementById(id) as HTMLInputElement);
+
+    inputs.forEach(input => {
+      if (input) {
+        input.value = '';
+      }
+    });
+
+    this.currentLocation = null;
+    this.destination = null;
+    this.locationService.currentLocation = null;
+    this.locationService.destination = null;
   }
 
   toggleBottomSheet(): void {
@@ -176,6 +202,34 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.containerState = this.containerState === 'in' ? 'out' : 'in';
     this.searchContainerState = this.searchContainerState === 'down' ? 'up' : 'down';
     this.mapService.clearMarkers(); // Clear the markers on the map
+    this.mapService.clearRouteRenderers(); // Clear the route renderers on the map
+
+    // Clear the autocomplete inputs and reset locations
+    const inputs = [
+      'search-box',
+      'search-box-2',
+      'search-box-mobile',
+      'search-box-mobile-2',
+      'current-location-box',
+      'current-location-box-mobile',
+    ].map(id => document.getElementById(id) as HTMLInputElement);
+
+    inputs.forEach(input => {
+      if (input) {
+        input.value = '';
+      }
+    });
+
+    this.currentLocation = null;
+    this.destination = null;
+    this.locationService.currentLocation = null;
+    this.locationService.destination = null;
+
+    // Clear the suggested routes
+    this.suggestedRoutes = [];
+
+    // Reset the transport selection
+    this.searchPerformed = false;
   }
 
   toggleSearchContainerMobile(): void {

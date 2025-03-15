@@ -53,13 +53,17 @@
     .menu-container {
         display: flex;
         flex-direction: column;
-        align-items: center
+        align-items: center;
     }
 
     .menu-container button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         background-color: transparent;
         border: none;
-        color: #000
+        color: #000;
+        cursor: pointer;
     }
 }
 

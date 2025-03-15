@@ -4,6 +4,7 @@ import { FloatingWindowService } from '../../../floating-window.service';
 import { MapService } from '../../services/map/map.service';
 import { RoutesService } from '../../services/routes/routes.service';
 import { LocationService } from '../../services/geocoding/location.service';
+import { SideNavService } from '../../services/side-nav/side-nav.service';
 import { SuggestedRoutesService } from '../../services/routes/suggested-routes.service';
 import { Subscription } from 'rxjs';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -43,6 +44,7 @@ export class RouteComponent implements OnInit, OnDestroy {
     private routesService: RoutesService,
     private suggestedRoutesService: SuggestedRoutesService,
     private locationService: LocationService,
+    private sideNavService: SideNavService,
     private renderer: Renderer2,
     private http: HttpClient
   ) {
@@ -173,30 +175,37 @@ export class RouteComponent implements OnInit, OnDestroy {
 
   renderRoute1() {
     this.renderRoute('J1');
+    this.sideNavService.hideSideNav(); // Hide side-nav-mobile
   }
 
   renderRoute2() {
     this.renderRoute('J2');
+    this.sideNavService.hideSideNav(); // Hide side-nav-mobile
   }
 
   renderRoute3() {
     this.renderRoute('J3');
+    this.sideNavService.hideSideNav(); // Hide side-nav-mobile
   }
 
   renderRoute5() {
     this.renderRoute('J5');
+    this.sideNavService.hideSideNav(); // Hide side-nav-mobile
   }
 
   renderRoute6() {
     this.renderRoute('J6');
+    this.sideNavService.hideSideNav(); // Hide side-nav-mobile
   }
 
   renderRoute7() {
     this.renderRoute('B1');
+    this.sideNavService.hideSideNav(); // Hide side-nav-mobile
   }
 
   renderRoute8() {
     this.renderRoute('B2');
+    this.sideNavService.hideSideNav(); // Hide side-nav-mobile
   }
 
   showRouteListAgain() {
@@ -212,6 +221,8 @@ export class RouteComponent implements OnInit, OnDestroy {
     if (floatingWindow) {
       this.renderer.removeClass(floatingWindow, 'bottom-position');
     }
+
+    this.sideNavService.showSideNav(); // Show side-nav-mobile
   }
 
   private routeInfoHtmlMap: { [key: string]: string } = {
