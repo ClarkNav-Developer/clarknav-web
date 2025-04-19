@@ -16,11 +16,11 @@ export class WebsocketService {
     }); // Replace with your Heroku app URL
 
     this.socket.on('connect', () => {
-      console.log('WebSocket connected');
+      console.debug('WebSocket connected');
     });
 
     this.socket.on('disconnect', () => {
-      console.log('WebSocket disconnected');
+      console.debug('WebSocket disconnected');
     });
   }
 
@@ -39,13 +39,13 @@ export class WebsocketService {
   // Add methods for real-time tracking
   public subscribeToRealTimeTracking(callback: (data: any) => void): void {
     this.on('realTimeTrackingUpdate', (data) => {
-      console.log('Received real-time location update:', data);
+      console.debug('Received real-time location update:', data);
       callback(data);
     });
   }
 
   public sendLocationUpdate(location: { lat: number; lng: number }): void {
-    console.log('Sending location update:', location);
+    console.debug('Sending location update:', location);
     this.emit('locationUpdate', location);
   }
 }

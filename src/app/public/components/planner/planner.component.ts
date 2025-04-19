@@ -164,7 +164,7 @@ export class PlannerComponent implements OnInit {
 
     this.http.post(environment.customRoutesUrl, routePayload).subscribe({
       next: (response) => {
-        console.log('Route saved:', response);
+        console.debug('Route saved:', response);
         toastr.success('Route successfully saved.');
         this.fetchSavedRoutes();
         this.routeData = null;

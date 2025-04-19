@@ -76,7 +76,7 @@ export class LocationService {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude,
               };
-              console.log('Current Location:', this.currentLocation);
+              console.debug('Current Location:', this.currentLocation);
               const currentLocationInput = document.getElementById(
                 'current-location-box'
               ) as HTMLInputElement;
@@ -128,7 +128,7 @@ export class LocationService {
         this.currentLocation,
         (address: string) => {
           this.currentLocationAddress = address || 'Unable to resolve address';
-          console.log(
+          console.debug(
             'Resolved current location address:',
             this.currentLocationAddress
           );
@@ -144,7 +144,7 @@ export class LocationService {
         this.destination,
         (address: string) => {
           this.destinationAddress = address || 'Unable to resolve address';
-          console.log('Resolved destination address:', this.destinationAddress);
+          console.debug('Resolved destination address:', this.destinationAddress);
           this.saveLocationSearchIfComplete();
         }
       );
@@ -160,15 +160,15 @@ export class LocationService {
       this.currentLocationAddress !== 'Current location not set' &&
       this.destinationAddress !== 'Destination not set'
     ) {
-      console.log('Saving location search with the following details:');
-      console.log('Current Location Address:', this.currentLocationAddress);
-      console.log('Destination Address:', this.destinationAddress);
+      console.debug('Saving location search with the following details:');
+      console.debug('Current Location Address:', this.currentLocationAddress);
+      console.debug('Destination Address:', this.destinationAddress);
       this.createLocationSearch(
         this.currentLocationAddress,
         this.destinationAddress
       ).subscribe(
         (response) => {
-          console.log('Location search saved:', response);
+          console.debug('Location search saved:', response);
         },
         (error) => {
           console.error('Error saving location search:', error);

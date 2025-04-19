@@ -297,7 +297,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   
       // Display message if no routes are found
       if (this.suggestedRoutes.length === 0) {
-        console.log("No suggested routes found. Please check your input.");
+        console.debug("No suggested routes found. Please check your input.");
       }
   
       // Calculate distance, duration, and fare for each route
@@ -307,8 +307,8 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         this.fareService.calculateDuration(this.currentLocation!, this.destination!, transportMode, (duration, arrivalTime) => {
           route.duration = duration;
           route.arrivalTime = arrivalTime;
-          console.log('Updated duration:', duration); // Log the updated duration
-          console.log('Updated arrival time:', arrivalTime); // Log the updated arrival time
+          console.debug('Updated duration:', duration); // Log the updated duration
+          console.debug('Updated arrival time:', arrivalTime); // Log the updated arrival time
         });
         this.fareService.calculateFare(route);
       });
@@ -398,20 +398,20 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
           this.route = { duration: null };
           this.showAllRoutes = true;
           this.renderRoutesOnMap(); // Render all routes
-          console.log('Cleared selected route and rendered all routes.');
+          console.debug('Cleared selected route and rendered all routes.');
       } else {
           this.selectedRoute = route;
           this.route = route;
           this.showAllRoutes = false;
           this.renderRoutesOnMap(route, true); // Pass true to indicate it's a selection action
-          console.log('Selected route:', route);
+          console.debug('Selected route:', route);
   
           // Save navigation history if the user is authenticated
           if (this.authService.isAuthenticated) {
-              console.log('Saving navigation history with the following details:');
-              console.log('Origin:', this.locationService.currentLocationAddress);
-              console.log('Destination:', this.locationService.destinationAddress);
-              console.log('Route Details:', { path: route.path, color: route.color });
+              console.debug('Saving navigation history with the following details:');
+              console.debug('Origin:', this.locationService.currentLocationAddress);
+              console.debug('Destination:', this.locationService.destinationAddress);
+              console.debug('Route Details:', { path: route.path, color: route.color });
   
               this.suggestedRoutesService.saveNavigationHistory(
                   this.locationService.currentLocationAddress,
@@ -419,12 +419,12 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
                   { path: route.path, color: route.color },
                   true
               ).subscribe(response => {
-                  console.log('Navigation history saved:', response);
+                  console.debug('Navigation history saved:', response);
               }, error => {
                   console.error('Error saving navigation history:', error);
               });
           } else {
-              console.log('User is not authenticated. Navigation history will not be saved.');
+              console.debug('User is not authenticated. Navigation history will not be saved.');
           }
   
           // Store route usage
@@ -438,12 +438,12 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
               destination: this.locationService.destinationAddress
           };
   
-          console.log('Storing route usage with the following details:');
-          console.log('Route Usage:', routeUsage);
+          console.debug('Storing route usage with the following details:');
+          console.debug('Route Usage:', routeUsage);
   
           this.suggestedRoutesService.storeRouteUsage(routeUsage).subscribe({
               next: (response) => {
-                  console.log('Route usage stored successfully:', response);
+                  console.debug('Route usage stored successfully:', response);
               },
               error: (error) => {
                   console.error('Error storing route usage:', error);
@@ -461,10 +461,10 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   
     // Save navigation history if the user is authenticated
     if (this.authService.isAuthenticated) {
-      console.log('Saving navigation history with the following details:');
-      console.log('Origin:', this.locationService.currentLocationAddress);
-      console.log('Destination:', this.locationService.destinationAddress);
-      console.log('Route Details:', { path: route.path, color: route.color });
+      console.debug('Saving navigation history with the following details:');
+      console.debug('Origin:', this.locationService.currentLocationAddress);
+      console.debug('Destination:', this.locationService.destinationAddress);
+      console.debug('Route Details:', { path: route.path, color: route.color });
   
       this.suggestedRoutesService.saveNavigationHistory(
         this.locationService.currentLocationAddress,
@@ -472,12 +472,12 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         { path: route.path, color: route.color },
         true
       ).subscribe(response => {
-        console.log('Navigation history saved:', response);
+        console.debug('Navigation history saved:', response);
       }, error => {
         console.error('Error saving navigation history:', error);
       });
     } else {
-      console.log('User is not authenticated. Navigation history will not be saved.');
+      console.debug('User is not authenticated. Navigation history will not be saved.');
     }
   
     // Store route usage
@@ -491,12 +491,12 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
       destination: this.locationService.destinationAddress
     };
   
-    console.log('Storing route usage with the following details:');
-    console.log('Route Usage:', routeUsage);
+    console.debug('Storing route usage with the following details:');
+    console.debug('Route Usage:', routeUsage);
   
     this.suggestedRoutesService.storeRouteUsage(routeUsage).subscribe({
       next: (response) => {
-        console.log('Route usage stored successfully:', response);
+        console.debug('Route usage stored successfully:', response);
       },
       error: (error) => {
         console.error('Error storing route usage:', error);
@@ -550,7 +550,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   stopNavigation(): void {
-    console.log('Stopping navigation...');
+    console.debug('Stopping navigation...');
     this.navigationService.stopRealTimeTracking();
     this.mapService.clearMap(); // Clear all markers and routes rendered on the map
     this.mapService.removeRealTimeMarker(); // Remove the real-time marker
@@ -562,7 +562,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     // Stop updating duration
     this.isNavigationActive = false;
     this.stopUpdatingDuration();
-    console.log('Navigation stopped and duration update interval cleared.');
+    console.debug('Navigation stopped and duration update interval cleared.');
   }
 
   /*------------------------------------------
@@ -589,8 +589,8 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
             this.fareService.calculateRemainingDuration(this.currentLocation, this.destination, (duration, arrivalTime) => {
               this.route.duration = duration;
               this.route.arrivalTime = arrivalTime;
-              console.log('Updated duration:', duration); // Log the updated duration
-              console.log('Updated arrival time:', arrivalTime); // Log the updated arrival time
+              console.debug('Updated duration:', duration); // Log the updated duration
+              console.debug('Updated arrival time:', arrivalTime); // Log the updated arrival time
               this.cdr.detectChanges(); // Trigger change detection
             });
           }
@@ -607,9 +607,9 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.updateDurationInterval) {
       clearInterval(this.updateDurationInterval);
       this.updateDurationInterval = null;
-      console.log('Duration update interval cleared.');
+      console.debug('Duration update interval cleared.');
     } else {
-      console.log('No duration update interval to clear.');
+      console.debug('No duration update interval to clear.');
     }
   }
 
