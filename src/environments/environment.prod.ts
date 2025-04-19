@@ -4,9 +4,9 @@ const apiUrl = 'https://api.clarknav.com';
 
 export const environment = {
     production: true,
-    googleMapsApiKey: 'AIzaSyBcBSQmpNYjVOZtWYCKuP8kka1M60sfbHo', 
+    // googleMapsApiKey: 'AIzaSyBcBSQmpNYjVOZtWYCKuP8kka1M60sfbHo', 
     // // NEW API KEY
-    // googleMapsApiKey: 'AIzaSyDiudS4qTFzpF3NE-dx8PL-t8Rr6GI0RDo', 
+    googleMapsApiKey: 'AIzaSyDiudS4qTFzpF3NE-dx8PL-t8Rr6GI0RDo', 
     //OLD API KEY
 
     apiUrl: apiUrl,
