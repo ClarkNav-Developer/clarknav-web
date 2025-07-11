@@ -71,7 +71,7 @@ export class NavigationService {
       );
       this.websocketService.subscribeToRealTimeTracking((data) => {
         this.ngZone.run(() => {
-          console.log('Processing real-time location update from WebSocket:', data);
+          console.debug('Processing real-time location update from WebSocket:', data);
           this.mapService.updateRealTimeLocation(data);
         });
       });
@@ -88,16 +88,16 @@ export class NavigationService {
   private async requestWakeLock() {
     try {
       if (document.visibilityState === 'visible' && !this.wakeLock) {
-        console.log('Requesting wake lock...');
+        console.debug('Requesting wake lock...');
         this.wakeLock = await navigator.wakeLock.request('screen');
         this.wakeLock.addEventListener('release', () => {
-          console.log('Wake Lock was released');
+          console.debug('Wake Lock was released');
           // Attempt to re-acquire the wake lock
           this.requestWakeLock();
         });
-        console.log('Wake Lock is active');
+        console.debug('Wake Lock is active');
       } else {
-        console.log('Page is not visible or wake lock is already active, wake lock not requested');
+        console.debug('Page is not visible or wake lock is already active, wake lock not requested');
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -118,11 +118,11 @@ export class NavigationService {
 
   private releaseWakeLock() {
     if (this.wakeLock !== null) {
-      console.log('Releasing wake lock...');
+      console.debug('Releasing wake lock...');
       this.wakeLock.release()
         .then(() => {
           this.wakeLock = null;
-          console.log('Wake Lock was released');
+          console.debug('Wake Lock was released');
         })
         .catch((err: unknown) => {
           if (err instanceof Error) {
@@ -135,7 +135,7 @@ export class NavigationService {
   }
 
   private handleVisibilityChange() {
-    console.log(`Visibility changed: ${document.visibilityState}`);
+    console.debug(`Visibility changed: ${document.visibilityState}`);
     if (document.visibilityState === 'visible') {
       this.requestWakeLock();
     } else {
@@ -161,7 +161,7 @@ export class NavigationService {
     const key = this.getCacheKey(request);
     const cachedResponse = localStorage.getItem(key);
     if (cachedResponse) {
-      console.log('Navigation route loaded from cache');
+      console.debug('Navigation route loaded from cache');
       return JSON.parse(cachedResponse);
     }
     return null;
@@ -190,8 +190,8 @@ export class NavigationService {
       return;
     }
   
-    console.log('Nearest start waypoint:', nearestStartWaypoint);
-    console.log('Nearest end waypoint:', nearestEndWaypoint);
+    console.debug('Nearest start waypoint:', nearestStartWaypoint);
+    console.debug('Nearest end waypoint:', nearestEndWaypoint);
   
     // Use route color for walking path
     const routePaths = this.routesService.findAllRoutePaths(nearestStartWaypoint, nearestEndWaypoint);
@@ -342,7 +342,7 @@ export class NavigationService {
         this.userMarker = null;
       }
 
-      console.log('Real-time tracking stopped.');
+      console.debug('Real-time tracking stopped.');
     }
 
     // Clear the interval
